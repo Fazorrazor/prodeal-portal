@@ -65,7 +65,7 @@ export async function ChemicalCatalog() {
             ))}
           </ScrollReveal>
           <div className="mt-16 text-center">
-            <GlobalQuoteCTA slug="chemicals" label="Initiate Chemical Quote" />
+            <GlobalQuoteCTA slug="chemicals" label="Request a Quote" />
           </div>
         </>
       )}

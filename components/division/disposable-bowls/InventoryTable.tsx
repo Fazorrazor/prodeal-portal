@@ -99,7 +99,7 @@ export async function InventoryTable() {
 
       {products && products.length > 0 && (
         <div className="mt-12 text-center">
-          <GlobalQuoteCTA slug="bowls" label="Request Bulk Order" />
+          <GlobalQuoteCTA slug="bowls" label="Request a Quote" />
         </div>
       )}
     </ScrollReveal>

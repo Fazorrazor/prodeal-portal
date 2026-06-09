@@ -11,7 +11,7 @@ interface GlobalQuoteCTAProps {
   className?: string;
 }
 
-export function GlobalQuoteCTA({ slug, label = 'Start an Inquiry', theme = 'dark', className }: GlobalQuoteCTAProps) {
+export function GlobalQuoteCTA({ slug, label = 'Request a Quote', theme = 'dark', className }: GlobalQuoteCTAProps) {
   const openBuilder = useQuoteStore((state) => state.openBuilder);
 
   return (

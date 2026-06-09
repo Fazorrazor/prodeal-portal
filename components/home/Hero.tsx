@@ -46,7 +46,7 @@ export function Hero() {
               href="#divisions" 
               className="w-full sm:w-auto px-6 py-3.5 sm:px-8 sm:py-4 bg-brand-blue text-white font-heading font-bold rounded-lg shadow-lg shadow-brand-blue/30 hover:bg-brand-deep-blue transition-colors flex items-center justify-center gap-2 text-base"
             >
-              Start an Inquiry
+              Request a Quote
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link 

@@ -42,7 +42,7 @@ export async function ProductCatalog() {
             ))}
           </ScrollReveal>
           <div className="mt-16 text-center">
-            <GlobalQuoteCTA slug="printing" label="Configure Printing Order" />
+            <GlobalQuoteCTA slug="printing" label="Request a Quote" />
           </div>
         </>
       )}

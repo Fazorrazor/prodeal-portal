@@ -47,7 +47,7 @@ export async function SignageGallery() {
             })}
           </ScrollReveal>
           <div className="mt-16 text-center">
-            <GlobalQuoteCTA slug="signages" label="Start 3D Signage Inquiry" />
+            <GlobalQuoteCTA slug="signages" label="Request a Quote" />
           </div>
         </>
       )}
