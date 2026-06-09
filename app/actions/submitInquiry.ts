@@ -1,6 +1,6 @@
 'use server';
 
-import { createServer } from '../../lib/supabase/server';
+import { createServiceRoleClient } from '../../lib/supabase/server';
 import { inquiryRateLimit } from '../../lib/ratelimit';
 import { InquirySubmissionSchema, DIVISION_SCHEMAS } from '../../lib/validators/inquiry';
 import { headers } from 'next/headers';
@@ -45,7 +45,7 @@ export async function submitInquiry(formData: any) {
       return { success: false, error: 'Invalid division specific data.', details: parsedInquiry.error.errors };
     }
 
-    const supabase = createServer() as any;
+    const supabase = createServiceRoleClient() as any;
 
     // 4. Get the division ID (use simple memory cache to avoid sequential DB round-trip)
     let divisionId = (global as any).divisionCache?.[divisionSlug];

@@ -1,4 +1,4 @@
-import { createServer } from '../../../../lib/supabase/server';
+import { createServiceRoleClient } from '../../../../lib/supabase/server';
 import { StatusTimeline } from '../../../../components/track/StatusTimeline';
 import { FileText, Building2, User } from 'lucide-react';
 import Link from 'next/link';
@@ -8,7 +8,7 @@ export const fetchCache = 'force-no-store';
 export const revalidate = 0;
 
 export default async function TrackingPortalPage({ params }: { params: { trackingId: string } }) {
-  const supabase = createServer() as any;
+  const supabase = createServiceRoleClient() as any;
   
   // Safe fetch using inner joins for strongly typed relations if possible, or simple selects
   const { data: inquiry, error } = await supabase
