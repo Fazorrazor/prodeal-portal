@@ -266,6 +266,7 @@ export function QuoteBuilderModal() {
                         <div>
                           <label htmlFor="inquiry-signtype" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Sign Type</label>
                           <select id="inquiry-signtype" {...register('inquiry.signType' as any)} className="w-full py-3 min-h-[48px] text-sm font-bold uppercase tracking-widest bg-transparent border-0 border-b-2 border-brand-border/60 outline-none focus:border-brand-blue transition-colors cursor-pointer text-brand-deep-blue">
+                            <option value="3d_signage">3D Signage</option>
                             <option value="3d_lettering">3D Lettering</option>
                             <option value="lightbox">Lightbox</option>
                             <option value="standee">Standee</option>

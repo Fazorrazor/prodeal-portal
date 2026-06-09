@@ -6,15 +6,17 @@ import { ScrollReveal } from '../../shared/ScrollReveal';
 import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
 import { GlobalQuoteCTA } from '../../shared/GlobalQuoteCTA';
 
-export async function ProductCatalog() {
+export async function ProductCatalog({ searchParams }: { searchParams?: { category?: string } }) {
   const supabase = createServerComponentClient({ cookies });
   
-  // Fetch from products table filtered by division_id. 
-  // We need to get the division_id for 'printing' first, or join.
+  const category = searchParams?.category || 'Souvenirs';
+
+  // Fetch from products table filtered by division_id and category
   const { data: products, error } = await supabase
     .from('products')
     .select('*, divisions!inner(slug)')
     .eq('divisions.slug', 'printing')
+    .eq('category', category)
     .order('name')
     .limit(50);
 

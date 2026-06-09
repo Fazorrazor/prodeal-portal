@@ -48,7 +48,7 @@ export async function InventoryTable() {
                   </td>
                   <td className="p-4 text-sm text-brand-deep-blue font-bold">{product.metadata?.size || 'Standard'}</td>
                   <td className="p-4 text-sm text-brand-deep-blue font-bold">{product.metadata?.material || 'Kraft Paper'}</td>
-                  <td className="p-4 font-bold font-mono text-brand-red">{product.minimum_order_quantity}</td>
+                  <td className="p-4 font-bold font-mono text-brand-red">{(product.metadata as any)?.moq || 100}</td>
                   <td className="py-4 pl-4 text-right">
                     <StockBadge level={product.metadata?.stock_level as string | undefined} />
                   </td>

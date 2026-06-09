@@ -8,7 +8,7 @@ export const ContactDetailsSchema = z.object({
 });
 
 export const SignageInquirySchema = z.object({
-  signType:     z.enum(['3d_lettering', 'lightbox', 'standee', 'vehicle_wrap', 'other']),
+  signType:     z.enum(['3d_signage', '3d_lettering', 'lightbox', 'standee', 'vehicle_wrap', 'other']),
   width:        z.number().positive().max(10000),   // mm
   height:       z.number().positive().max(10000),   // mm
   quantity:     z.number().int().min(1).max(500),
