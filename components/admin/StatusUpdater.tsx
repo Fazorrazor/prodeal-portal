@@ -37,10 +37,11 @@ export function StatusUpdater({ inquiryId, currentStatus }: { inquiryId: string,
   return (
     <div className="flex items-baseline gap-3 relative">
       {isUpdating && <Loader2 className="w-3 h-3 text-brand-blue animate-spin absolute -left-5 top-1" />}
-      <label className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60">
+      <label htmlFor={`status-updater-${inquiryId}`} className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60">
         Status:
       </label>
       <select 
+        id={`status-updater-${inquiryId}`}
         value={status}
         onChange={handleStatusChange}
         disabled={isUpdating}

@@ -37,7 +37,9 @@ export function AdminTopbar() {
           <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none transition-colors group-focus-within:text-brand-blue">
             <Search className="h-4 w-4 text-brand-deep-blue/40 group-focus-within:text-brand-blue transition-colors" />
           </div>
+          <label htmlFor="global-search" className="sr-only">Global Search</label>
           <input 
+            id="global-search"
             type="text" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

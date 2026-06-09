@@ -20,7 +20,9 @@ export function ChemicalSearchBar() {
       <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none text-brand-deep-blue/40">
         <Search className="w-5 h-5" />
       </div>
+      <label htmlFor="chemical-search" className="sr-only">Search Chemicals</label>
       <input
+        id="chemical-search"
         type="text"
         placeholder="SEARCH BY CHEMICAL NAME OR CAS NUMBER..."
         value={localTerm}
