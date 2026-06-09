@@ -86,6 +86,7 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
               <button 
                 onClick={() => !isSubmitting && setIsOpen(false)}
                 className="p-2 text-brand-deep-blue/40 hover:text-brand-red transition-colors"
+                aria-label="Close panel"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -95,8 +96,9 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Full Name</label>
+                  <label htmlFor="staff-name" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Full Name</label>
                   <input 
+                    id="staff-name"
                     required
                     type="text"
                     value={formData.fullName}
@@ -107,8 +109,9 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Email Address</label>
+                  <label htmlFor="staff-email" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Email Address</label>
                   <input 
+                    id="staff-email"
                     required
                     type="email"
                     value={formData.email}
@@ -119,8 +122,9 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Initial Password</label>
+                  <label htmlFor="staff-pass" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Initial Password</label>
                   <input 
+                    id="staff-pass"
                     required
                     type="text"
                     minLength={8}
@@ -132,8 +136,9 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">WhatsApp Phone</label>
+                  <label htmlFor="staff-phone" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">WhatsApp Phone</label>
                   <input 
+                    id="staff-phone"
                     required
                     type="tel"
                     value={formData.whatsappPhone}
@@ -145,8 +150,9 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">System Role</label>
+                    <label htmlFor="staff-role" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">System Role</label>
                     <select
+                      id="staff-role"
                       value={formData.role}
                       onChange={e => setFormData({...formData, role: e.target.value, divisionId: e.target.value === USER_ROLES.ADMIN ? '' : formData.divisionId})}
                       className="w-full bg-transparent border-b-2 border-brand-border/60 pb-2 text-sm font-bold text-brand-deep-blue focus:outline-none focus:border-brand-blue uppercase tracking-widest"
@@ -158,8 +164,9 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Division</label>
+                    <label htmlFor="staff-division" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Division</label>
                     <select 
+                      id="staff-division"
                       required={formData.role === USER_ROLES.AGENT}
                       disabled={formData.role === USER_ROLES.ADMIN}
                       value={formData.divisionId}

@@ -36,7 +36,7 @@ function TrackingReceipt({ trackingId, onClose }: { trackingId: string, onClose:
             {displayText}
           </span>
         </div>
-        <button type="button" onClick={copyTracking} className="p-4 bg-brand-deep-blue/5 hover:bg-brand-blue hover:text-white transition-colors relative z-10">
+        <button type="button" onClick={copyTracking} className="p-4 bg-brand-deep-blue/5 hover:bg-brand-blue hover:text-white transition-colors relative z-10" aria-label="Copy tracking ID">
           <Copy className="w-5 h-5" />
         </button>
       </div>
@@ -168,6 +168,7 @@ export function QuoteBuilderModal() {
               onClick={handleClose}
               disabled={status === 'submitting'}
               className="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center text-brand-deep-blue/40 hover:text-brand-red transition-colors disabled:opacity-50 bg-brand-surface rounded-full"
+              aria-label="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
@@ -210,8 +211,9 @@ export function QuoteBuilderModal() {
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
                     <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Full Name *</label>
+                      <label htmlFor="contact-name" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Full Name *</label>
                       <input 
+                        id="contact-name"
                         {...register('contact.name')} 
                         className={`w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors ${errors.contact?.name ? 'border-brand-red text-brand-red' : 'border-brand-border/60 text-brand-deep-blue focus:border-brand-blue'}`}
                         placeholder="JOHN DOE"
@@ -219,16 +221,18 @@ export function QuoteBuilderModal() {
                       {errors.contact?.name && <p className="text-brand-red text-[10px] uppercase font-bold tracking-widest mt-2">{errors.contact.name.message}</p>}
                     </div>
                     <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Company (Optional)</label>
+                      <label htmlFor="contact-company" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Company (Optional)</label>
                       <input 
+                        id="contact-company"
                         {...register('contact.companyName')} 
                         className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue"
                         placeholder="ACME CORP"
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Email *</label>
+                      <label htmlFor="contact-email" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Email *</label>
                       <input 
+                        id="contact-email"
                         type="email"
                         {...register('contact.email')} 
                         className={`w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors ${errors.contact?.email ? 'border-brand-red text-brand-red' : 'border-brand-border/60 text-brand-deep-blue focus:border-brand-blue'}`}
@@ -237,8 +241,9 @@ export function QuoteBuilderModal() {
                       {errors.contact?.email && <p className="text-brand-red text-[10px] uppercase font-bold tracking-widest mt-2">{errors.contact.email.message}</p>}
                     </div>
                     <div>
-                      <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">WhatsApp Phone *</label>
+                      <label htmlFor="contact-phone" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">WhatsApp Phone *</label>
                       <input 
+                        id="contact-phone"
                         type="tel"
                         {...register('contact.phone')} 
                         className={`w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors ${errors.contact?.phone ? 'border-brand-red text-brand-red' : 'border-brand-border/60 text-brand-deep-blue focus:border-brand-blue'}`}
@@ -259,8 +264,8 @@ export function QuoteBuilderModal() {
                     {activeSlug === 'signages' && (
                       <>
                         <div>
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Sign Type</label>
-                          <select {...register('inquiry.signType' as any)} className="w-full py-3 min-h-[48px] text-sm font-bold uppercase tracking-widest bg-transparent border-0 border-b-2 border-brand-border/60 outline-none focus:border-brand-blue transition-colors cursor-pointer text-brand-deep-blue">
+                          <label htmlFor="inquiry-signtype" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Sign Type</label>
+                          <select id="inquiry-signtype" {...register('inquiry.signType' as any)} className="w-full py-3 min-h-[48px] text-sm font-bold uppercase tracking-widest bg-transparent border-0 border-b-2 border-brand-border/60 outline-none focus:border-brand-blue transition-colors cursor-pointer text-brand-deep-blue">
                             <option value="3d_lettering">3D Lettering</option>
                             <option value="lightbox">Lightbox</option>
                             <option value="standee">Standee</option>
@@ -269,16 +274,16 @@ export function QuoteBuilderModal() {
                           </select>
                         </div>
                         <div>
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Quantity</label>
-                          <input type="number" {...register('inquiry.quantity' as any, { valueAsNumber: true })} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" />
+                          <label htmlFor="inquiry-qty1" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Quantity</label>
+                          <input id="inquiry-qty1" type="number" {...register('inquiry.quantity' as any, { valueAsNumber: true })} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" />
                         </div>
                         <div>
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Width (mm)</label>
-                          <input type="number" {...register('inquiry.width' as any, { valueAsNumber: true })} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" />
+                          <label htmlFor="inquiry-width" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Width (mm)</label>
+                          <input id="inquiry-width" type="number" {...register('inquiry.width' as any, { valueAsNumber: true })} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" />
                         </div>
                         <div>
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Height (mm)</label>
-                          <input type="number" {...register('inquiry.height' as any, { valueAsNumber: true })} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" />
+                          <label htmlFor="inquiry-height" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Height (mm)</label>
+                          <input id="inquiry-height" type="number" {...register('inquiry.height' as any, { valueAsNumber: true })} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" />
                         </div>
                       </>
                     )}
@@ -286,13 +291,13 @@ export function QuoteBuilderModal() {
                     {activeSlug === 'printing' && (
                       <>
                         <div className="sm:col-span-2">
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Product Type</label>
-                          <input {...register('inquiry.productType' as any)} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" placeholder="E.G. BRANDED SHIRTS" />
+                          <label htmlFor="inquiry-productType" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Product Type</label>
+                          <input id="inquiry-productType" {...register('inquiry.productType' as any)} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" placeholder="E.G. BRANDED SHIRTS" />
                           {(errors as any)?.inquiry?.productType && <p className="text-brand-red text-[10px] uppercase font-bold tracking-widest mt-2">{(errors as any).inquiry.productType.message}</p>}
                         </div>
                         <div>
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Quantity</label>
-                          <input type="number" {...register('inquiry.quantity' as any, { valueAsNumber: true })} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" />
+                          <label htmlFor="inquiry-qty2" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Quantity</label>
+                          <input id="inquiry-qty2" type="number" {...register('inquiry.quantity' as any, { valueAsNumber: true })} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" />
                         </div>
                         <div className="flex items-center gap-3 mt-4 sm:mt-6">
                           <input type="checkbox" id="hasArtwork" {...register('inquiry.hasArtwork' as any)} className="w-5 h-5 border-2 border-brand-border/60 accent-brand-blue" />
@@ -304,18 +309,18 @@ export function QuoteBuilderModal() {
                     {activeSlug === 'bowls' && (
                       <>
                         <div>
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Product SKU / Type</label>
-                          <input {...register('inquiry.productSku' as any)} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" placeholder="E.G. BOWL-500ML" />
+                          <label htmlFor="inquiry-sku" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Product SKU / Type</label>
+                          <input id="inquiry-sku" {...register('inquiry.productSku' as any)} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" placeholder="E.G. BOWL-500ML" />
                           {(errors as any)?.inquiry?.productSku && <p className="text-brand-red text-[10px] uppercase font-bold tracking-widest mt-2">{(errors as any).inquiry.productSku.message}</p>}
                         </div>
                         <div>
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Quantity (MOQ 100)</label>
-                          <input type="number" {...register('inquiry.quantity' as any, { valueAsNumber: true })} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" />
+                          <label htmlFor="inquiry-qty3" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Quantity (MOQ 100)</label>
+                          <input id="inquiry-qty3" type="number" {...register('inquiry.quantity' as any, { valueAsNumber: true })} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" />
                           {(errors as any)?.inquiry?.quantity && <p className="text-brand-red text-[10px] uppercase font-bold tracking-widest mt-2">{(errors as any).inquiry.quantity.message}</p>}
                         </div>
                         <div className="sm:col-span-2">
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Delivery Address</label>
-                          <input {...register('inquiry.deliveryAddr' as any)} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" placeholder="FULL ADDRESS" />
+                          <label htmlFor="inquiry-delivery" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Delivery Address</label>
+                          <input id="inquiry-delivery" {...register('inquiry.deliveryAddr' as any)} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" placeholder="FULL ADDRESS" />
                           {(errors as any)?.inquiry?.deliveryAddr && <p className="text-brand-red text-[10px] uppercase font-bold tracking-widest mt-2">{(errors as any).inquiry.deliveryAddr.message}</p>}
                         </div>
                       </>
@@ -324,13 +329,13 @@ export function QuoteBuilderModal() {
                     {activeSlug === 'chemicals' && (
                       <>
                         <div className="sm:col-span-2">
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Chemical Name</label>
-                          <input {...register('inquiry.productName' as any)} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" placeholder="E.G. SODIUM HYDROXIDE" />
+                          <label htmlFor="inquiry-chemname" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Chemical Name</label>
+                          <input id="inquiry-chemname" {...register('inquiry.productName' as any)} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" placeholder="E.G. SODIUM HYDROXIDE" />
                           {(errors as any)?.inquiry?.productName && <p className="text-brand-red text-[10px] uppercase font-bold tracking-widest mt-2">{(errors as any).inquiry.productName.message}</p>}
                         </div>
                         <div>
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Grade</label>
-                          <select {...register('inquiry.grade' as any)} className="w-full py-3 min-h-[48px] text-sm font-bold uppercase tracking-widest bg-transparent border-0 border-b-2 border-brand-border/60 outline-none focus:border-brand-blue transition-colors cursor-pointer text-brand-deep-blue">
+                          <label htmlFor="inquiry-grade" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Grade</label>
+                          <select id="inquiry-grade" {...register('inquiry.grade' as any)} className="w-full py-3 min-h-[48px] text-sm font-bold uppercase tracking-widest bg-transparent border-0 border-b-2 border-brand-border/60 outline-none focus:border-brand-blue transition-colors cursor-pointer text-brand-deep-blue">
                             <option value="industrial">Industrial</option>
                             <option value="lab">Laboratory</option>
                             <option value="food">Food</option>
@@ -338,13 +343,13 @@ export function QuoteBuilderModal() {
                           </select>
                         </div>
                         <div>
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Quantity (Kg/L)</label>
-                          <input type="number" step="0.1" {...register('inquiry.quantityKg' as any, { valueAsNumber: true })} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" />
+                          <label htmlFor="inquiry-qtykg" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Quantity (Kg/L)</label>
+                          <input id="inquiry-qtykg" type="number" step="0.1" {...register('inquiry.quantityKg' as any, { valueAsNumber: true })} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue" />
                           {(errors as any)?.inquiry?.quantityKg && <p className="text-brand-red text-[10px] uppercase font-bold tracking-widest mt-2">{(errors as any).inquiry.quantityKg.message}</p>}
                         </div>
                         <div className="sm:col-span-2">
-                          <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Intended Use (Mandatory)</label>
-                          <textarea {...register('inquiry.intendedUse' as any)} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue h-20" placeholder="REQUIRED FOR REGULATORY COMPLIANCE" />
+                          <label htmlFor="inquiry-use" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">Intended Use (Mandatory)</label>
+                          <textarea id="inquiry-use" {...register('inquiry.intendedUse' as any)} className="w-full py-3 min-h-[48px] text-base font-bold bg-transparent border-0 border-b-2 outline-none transition-colors border-brand-border/60 text-brand-deep-blue focus:border-brand-blue h-20" placeholder="REQUIRED FOR REGULATORY COMPLIANCE" />
                           {(errors as any)?.inquiry?.intendedUse && <p className="text-brand-red text-[10px] uppercase font-bold tracking-widest mt-2">{(errors as any).inquiry.intendedUse.message}</p>}
                         </div>
                         <div className="sm:col-span-2 flex items-center gap-3 mt-2">

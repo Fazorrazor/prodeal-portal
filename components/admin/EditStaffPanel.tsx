@@ -66,6 +66,7 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
         onClick={() => setIsOpen(true)}
         className="p-2 transition-colors text-brand-deep-blue/60 hover:text-brand-blue"
         title="Edit Staff Member"
+        aria-label="Edit Staff Member"
       >
         <Pen className="w-4 h-4" />
       </button>
@@ -90,6 +91,7 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
               <button 
                 onClick={() => !isSubmitting && setIsOpen(false)}
                 className="p-2 text-brand-deep-blue/40 hover:text-brand-red transition-colors"
+                aria-label="Close panel"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -99,8 +101,9 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Full Name</label>
+                  <label htmlFor="edit-name" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Full Name</label>
                   <input 
+                    id="edit-name"
                     required
                     type="text"
                     value={formData.fullName}
@@ -110,8 +113,9 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">WhatsApp Phone</label>
+                  <label htmlFor="edit-phone" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">WhatsApp Phone</label>
                   <input 
+                    id="edit-phone"
                     required
                     type="tel"
                     value={formData.whatsappPhone}
@@ -122,8 +126,9 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">System Role</label>
+                    <label htmlFor="edit-role" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">System Role</label>
                     <select 
+                      id="edit-role"
                       value={formData.role}
                       onChange={e => setFormData({...formData, role: e.target.value, divisionId: e.target.value === USER_ROLES.ADMIN ? '' : formData.divisionId})}
                       className="w-full bg-transparent border-b-2 border-brand-border/60 pb-2 text-sm font-bold text-brand-deep-blue focus:outline-none focus:border-brand-blue uppercase tracking-widest"
@@ -135,8 +140,9 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Division</label>
+                    <label htmlFor="edit-division" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Division</label>
                     <select 
+                      id="edit-division"
                       required={formData.role === USER_ROLES.AGENT}
                       disabled={formData.role === USER_ROLES.ADMIN}
                       value={formData.divisionId}

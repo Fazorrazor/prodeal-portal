@@ -27,7 +27,7 @@ export function TrustBadges() {
         >
           <motion.div variants={itemVariants} className="flex flex-col items-center pt-8 md:pt-0">
             <div className="w-12 h-1 bg-brand-blue mb-6 rounded-full" />
-            <h3 className="font-heading font-bold text-xl mb-3">Enterprise Scale</h3>
+            <h2 className="font-heading font-bold text-xl mb-3">Enterprise Scale</h2>
             <p className="text-white/60 text-sm max-w-xs mx-auto">
               Equipped to handle high-volume B2B orders across four distinct industrial divisions.
             </p>
@@ -35,7 +35,7 @@ export function TrustBadges() {
           
           <motion.div variants={itemVariants} className="flex flex-col items-center pt-8 md:pt-0">
             <div className="w-12 h-1 bg-brand-red mb-6 rounded-full" />
-            <h3 className="font-heading font-bold text-xl mb-3">Precision Timing</h3>
+            <h2 className="font-heading font-bold text-xl mb-3">Precision Timing</h2>
             <p className="text-white/60 text-sm max-w-xs mx-auto">
               Strict adherence to delivery deadlines with real-time WhatsApp inquiry routing.
             </p>
@@ -43,7 +43,7 @@ export function TrustBadges() {
           
           <motion.div variants={itemVariants} className="flex flex-col items-center pt-8 md:pt-0">
             <div className="w-12 h-1 bg-brand-blue mb-6 rounded-full" />
-            <h3 className="font-heading font-bold text-xl mb-3">Total Reliability</h3>
+            <h2 className="font-heading font-bold text-xl mb-3">Total Reliability</h2>
             <p className="text-white/60 text-sm max-w-xs mx-auto">
               No client login required. Frictionless procurement designed strictly for professionals.
             </p>
