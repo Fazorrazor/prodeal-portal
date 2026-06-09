@@ -26,16 +26,7 @@ import { SafetyNotice } from '../../../../components/division/chemicals/SafetyNo
 // live inventory freshness, while keeping the other routes fast and static.
 
 
-export const revalidate = 300;
-
-export function generateStaticParams() {
-  return [
-    { slug: 'signages' },
-    { slug: 'printing' },
-    { slug: 'bowls' },
-    { slug: 'chemicals' },
-  ];
-}
+export const dynamic = 'force-dynamic';
 
 export default function DivisionPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
