@@ -1,0 +1,97 @@
+'use server';
+
+import { createServer } from '../../lib/supabase/server';
+import { inquiryRateLimit } from '../../lib/ratelimit';
+import { InquirySubmissionSchema, DIVISION_SCHEMAS } from '../../lib/validators/inquiry';
+import { headers } from 'next/headers';
+import { logError } from '../../lib/logger';
+
+export async function submitInquiry(formData: any) {
+  try {
+    // 1. Rate Limit Check (Fail-open on timeout to prevent Redis from becoming a bottleneck)
+    const ip = headers().get('x-forwarded-for') ?? '127.0.0.1';
+    try {
+      const { success } = await Promise.race([
+        inquiryRateLimit.limit(ip),
+        new Promise<{ success: boolean }>((_, reject) => 
+          setTimeout(() => reject(new Error('Rate limit timeout')), 800)
+        )
+      ]);
+      
+      if (!success) {
+        return { success: false, error: 'Rate limit exceeded. Please try again later.' };
+      }
+    } catch (rlError) {
+      console.warn('[Rate Limit Warning] Upstash timed out or failed. Failing open to allow business request:', rlError);
+      // We continue execution. A temporary Redis outage should not stop business inquiries.
+    }
+
+    // 2. Validate overall schema structure
+    const parsedData = InquirySubmissionSchema.safeParse(formData);
+    if (!parsedData.success) {
+      return { success: false, error: 'Invalid form data structure.', details: parsedData.error.errors };
+    }
+
+    const { divisionSlug, contact, inquiry, fileIds } = parsedData.data;
+
+    // 3. Validate division-specific payload
+    const DivisionSchema = DIVISION_SCHEMAS[divisionSlug as keyof typeof DIVISION_SCHEMAS];
+    if (!DivisionSchema) {
+       return { success: false, error: 'Invalid division selected.' };
+    }
+
+    const parsedInquiry = DivisionSchema.safeParse(inquiry);
+    if (!parsedInquiry.success) {
+      return { success: false, error: 'Invalid division specific data.', details: parsedInquiry.error.errors };
+    }
+
+    const supabase = createServer() as any;
+
+    // 4. Get the division ID (use simple memory cache to avoid sequential DB round-trip)
+    let divisionId = (global as any).divisionCache?.[divisionSlug];
+    
+    if (!divisionId) {
+      const { data: divisionRecord, error: divisionError } = await supabase
+        .from('divisions')
+        .select('id')
+        .eq('slug', divisionSlug)
+        .single();
+
+      if (divisionError || !divisionRecord) {
+        return { success: false, error: 'Division not found in database.' };
+      }
+      
+      divisionId = divisionRecord.id;
+      if (!(global as any).divisionCache) (global as any).divisionCache = {};
+      (global as any).divisionCache[divisionSlug] = divisionId;
+    }
+
+    // 5. Insert into inquiries table
+    const { data: newInquiry, error: insertError } = await supabase
+      .from('inquiries')
+      .insert({
+        division_id: divisionId,
+        contact_name: contact.name,
+        contact_email: contact.email,
+        contact_phone: contact.phone,
+        company_name: contact.companyName || null,
+        inquiry_payload: parsedInquiry.data,
+        attachments: fileIds,
+        status: 'new'
+      })
+      .select('tracking_uuid')
+      .single();
+
+    if (insertError) {
+      await logError('SubmitInquiry Action - Insert Error', insertError, { formData });
+      return { success: false, error: 'Failed to save inquiry to database.' };
+    }
+
+    // 6. Return success with tracking ID
+    return { success: true, trackingId: newInquiry.tracking_uuid };
+
+  } catch (error) {
+    await logError('SubmitInquiry Action - Unknown Error', error, { formData });
+    return { success: false, error: 'Internal server error.' };
+  }
+}

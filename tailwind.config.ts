@@ -9,9 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        brand: {
+          'deep-blue': '#0A1628',
+          'blue':      '#1A56DB',
+          'red':       '#E02424',
+          'blue-muted':'#3B5998',
+          'surface':   '#F3F6FB',
+          'border':    '#CBD5E1',
+        }
       },
+      fontFamily: {
+        display: ['var(--font-bebas-neue)', 'sans-serif'],
+        heading: ['var(--font-dm-sans)', 'sans-serif'],
+        body:    ['var(--font-ibm-plex-sans)', 'sans-serif']
+      }
     },
   },
   plugins: [],
