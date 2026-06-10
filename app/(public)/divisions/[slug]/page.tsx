@@ -18,7 +18,6 @@ import { BulkOrderNote } from '../../../../components/division/disposable-bowls/
 // Components for Chemicals
 import { ChemicalCatalog } from '../../../../components/division/chemicals/ChemicalCatalog';
 import { ChemicalSearchBar } from '../../../../components/division/chemicals/ChemicalSearchBar';
-import { ChemicalFilters } from '../../../../components/division/chemicals/ChemicalFilters';
 import { SafetyNotice } from '../../../../components/division/chemicals/SafetyNotice';
 
 // Set the baseline revalidation to 300 (5 minutes). 
@@ -28,7 +27,7 @@ import { SafetyNotice } from '../../../../components/division/chemicals/SafetyNo
 
 export const dynamic = 'force-dynamic';
 
-export default function DivisionPage({ params, searchParams }: { params: { slug: string }, searchParams: { category?: string } }) {
+export default function DivisionPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
   
   if (!(slug in DIVISION_DATA)) {
@@ -51,7 +50,7 @@ export default function DivisionPage({ params, searchParams }: { params: { slug:
       {slug === 'printing' && (
         <div className="flex flex-col gap-8">
           <DivisionErrorBoundary>
-            <ProductCatalog searchParams={searchParams} />
+            <ProductCatalog />
           </DivisionErrorBoundary>
         </div>
       )}
@@ -69,7 +68,6 @@ export default function DivisionPage({ params, searchParams }: { params: { slug:
         <div className="flex flex-col">
           <SafetyNotice />
           <ChemicalSearchBar />
-          <ChemicalFilters />
           <DivisionErrorBoundary>
             <ChemicalCatalog />
           </DivisionErrorBoundary>

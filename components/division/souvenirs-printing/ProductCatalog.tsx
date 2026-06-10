@@ -1,53 +1,71 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
-import { ProductFilters } from './ProductFilters';
+
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
 import { GlobalQuoteCTA } from '../../shared/GlobalQuoteCTA';
 
-export async function ProductCatalog({ searchParams }: { searchParams?: { category?: string } }) {
+export async function ProductCatalog() {
   const supabase = createServerComponentClient({ cookies });
   
-  const category = searchParams?.category || 'Souvenirs';
-
-  // Fetch from products table filtered by division_id and category
+  // Fetch all products for the division
   const { data: products, error } = await supabase
     .from('products')
     .select('*, divisions!inner(slug)')
     .eq('divisions.slug', 'printing')
-    .eq('category', category)
     .order('name')
-    .limit(50);
+    .limit(100);
 
   if (error) {
-    throw new Error('Failed to load printing catalog');
+    throw new Error('Failed to load catalog');
   }
 
+  const souvenirs = products?.filter(p => p.category === 'Souvenirs') || [];
+  const printing = products?.filter(p => p.category === 'Printing') || [];
+
   return (
-    <div>
-      <h2 className="font-heading font-bold text-3xl text-brand-deep-blue mb-8 text-center">Standard Catalog</h2>
-      <ProductFilters />
+    <div className="flex flex-col gap-16">
       
-      {!products || products.length === 0 ? (
-        <div className="text-center py-12 border-y-2 border-brand-border/60">
-          <h3 className="font-heading font-bold text-2xl text-brand-deep-blue uppercase tracking-tighter">All Clear.</h3>
-          <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/60 mt-2">No products available in the catalog yet.</p>
-        </div>
-      ) : (
-        <>
+      {/* Souvenirs Section */}
+      <section>
+        <h2 className="font-heading font-bold text-2xl text-brand-deep-blue mb-8 border-b-2 border-brand-border/60 pb-2 uppercase tracking-tight">Souvenirs</h2>
+        {souvenirs.length === 0 ? (
+          <div className="py-8">
+            <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/60">No souvenirs available yet.</p>
+          </div>
+        ) : (
           <ScrollReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
+            {souvenirs.map((product) => (
               <ScrollRevealItem key={product.id} className="h-full">
                 <ProductCard product={product} />
               </ScrollRevealItem>
             ))}
           </ScrollReveal>
-          <div className="mt-16 text-center">
-            <GlobalQuoteCTA slug="printing" label="Request a Quote" />
+        )}
+      </section>
+
+      {/* Printing Section */}
+      <section>
+        <h2 className="font-heading font-bold text-2xl text-brand-deep-blue mb-8 border-b-2 border-brand-border/60 pb-2 uppercase tracking-tight">Printing</h2>
+        {printing.length === 0 ? (
+          <div className="py-8">
+            <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/60">No printing products available yet.</p>
           </div>
-        </>
-      )}
+        ) : (
+          <ScrollReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {printing.map((product) => (
+              <ScrollRevealItem key={product.id} className="h-full">
+                <ProductCard product={product} />
+              </ScrollRevealItem>
+            ))}
+          </ScrollReveal>
+        )}
+      </section>
+
+      <div className="mt-8 text-center border-t-2 border-brand-border/60 pt-16">
+        <GlobalQuoteCTA slug="printing" label="Request a Quote" />
+      </div>
     </div>
   );
 }

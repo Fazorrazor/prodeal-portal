@@ -1,6 +1,6 @@
 export const PUBLIC_NAV_LINKS = [
   { name: '3D Signages', href: '/divisions/signages' },
-  { name: 'Printing', href: '/divisions/printing' },
+  { name: 'Souvenirs & Printing', href: '/divisions/printing' },
   { name: 'Bowls', href: '/divisions/bowls' },
   { name: 'Chemicals', href: '/divisions/chemicals' },
 ];
