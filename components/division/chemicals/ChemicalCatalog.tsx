@@ -2,9 +2,9 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
 import { SDSDownloadButton } from './SDSDownloadButton';
+import Link from 'next/link';
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
-import { GlobalQuoteCTA } from '../../shared/GlobalQuoteCTA';
 
 export async function ChemicalCatalog() {
   const supabase = createServerComponentClient({ cookies });
@@ -67,18 +67,23 @@ export async function ChemicalCatalog() {
                         {(product.metadata as any)?.moq || 250} KG
                       </span>
                     </div>
-                    <SDSDownloadButton 
-                      documentId={product.id} 
-                      chemicalName={product.name} 
-                    />
+                    <div className="flex gap-2">
+                      <SDSDownloadButton 
+                        documentId={product.id} 
+                        chemicalName={product.name} 
+                      />
+                      <Link 
+                        href={`/inquiry/${product.id}`}
+                        className="px-4 py-2 border border-brand-deep-blue text-brand-deep-blue text-[10px] font-bold uppercase tracking-widest hover:bg-brand-deep-blue hover:text-white transition-colors"
+                      >
+                        Inquire
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </ScrollRevealItem>
             ))}
           </ScrollReveal>
-          <div className="mt-16 text-center">
-            <GlobalQuoteCTA slug="chemicals" label="Request a Quote" />
-          </div>
         </>
       )}
     </div>

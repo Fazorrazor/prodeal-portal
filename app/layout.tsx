@@ -3,7 +3,7 @@ import { Bebas_Neue, DM_Sans, IBM_Plex_Sans } from 'next/font/google';
 import './globals.css';
 import { ZustandProvider } from './providers/ZustandProvider';
 import { ToastProvider } from './providers/ToastProvider';
-import { QuoteBuilderModal } from '../components/quote-builder/QuoteBuilderModal';
+
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -39,7 +39,6 @@ export default function RootLayout({
         <ZustandProvider>
           <ToastProvider>
             {children}
-            <QuoteBuilderModal />
           </ToastProvider>
         </ZustandProvider>
       </body>

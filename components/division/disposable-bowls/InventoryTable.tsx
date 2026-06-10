@@ -1,8 +1,8 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { ScrollReveal } from '../../shared/ScrollReveal';
-import { GlobalQuoteCTA } from '../../shared/GlobalQuoteCTA';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export async function InventoryTable() {
   const supabase = createServerComponentClient({ cookies });
@@ -31,6 +31,7 @@ export async function InventoryTable() {
               <th className="p-4 font-heading font-bold text-brand-deep-blue text-xs uppercase tracking-widest">Material</th>
               <th className="p-4 font-heading font-bold text-brand-deep-blue text-xs uppercase tracking-widest">MOQ</th>
               <th className="py-4 pl-4 font-heading font-bold text-brand-deep-blue text-xs uppercase tracking-widest text-right">Status</th>
+              <th className="py-4 pl-4 w-24"></th>
             </tr>
           </thead>
           <tbody>
@@ -62,6 +63,20 @@ export async function InventoryTable() {
                   <td className="p-4 font-bold font-mono text-brand-red">{(product.metadata as any)?.moq || 100}</td>
                   <td className="py-4 pl-4 text-right">
                     <StockBadge level={product.metadata?.stock_level as string | undefined} />
+                  </td>
+                  <td className="py-4 pl-4 text-right">
+                    {(product.metadata as any)?.stock_level === 'out_of_stock' ? (
+                      <span className="inline-block px-4 py-2 border-2 border-brand-border/30 text-brand-border font-bold uppercase tracking-widest text-[10px] cursor-not-allowed">
+                        Inquire
+                      </span>
+                    ) : (
+                      <Link 
+                        href={`/inquiry/${product.id}`}
+                        className="inline-block px-4 py-2 bg-brand-deep-blue text-white font-bold uppercase tracking-widest text-[10px] hover:bg-brand-blue transition-colors"
+                      >
+                        Inquire
+                      </Link>
+                    )}
                   </td>
                 </tr>
               ))
@@ -112,16 +127,27 @@ export async function InventoryTable() {
                 <span className="text-[10px] text-brand-deep-blue/40 uppercase font-bold tracking-widest">Minimum Order</span>
                 <span className="font-bold font-mono text-brand-red">{(product.metadata as any)?.moq || 100} UNITS</span>
               </div>
+              
+              <div className="mt-4">
+                {(product.metadata as any)?.stock_level === 'out_of_stock' ? (
+                  <span className="block w-full text-center px-4 py-3 border-2 border-brand-border/30 text-brand-border font-bold uppercase tracking-widest text-xs cursor-not-allowed">
+                    Out of Stock
+                  </span>
+                ) : (
+                  <Link 
+                    href={`/inquiry/${product.id}`}
+                    className="block w-full text-center px-4 py-3 bg-brand-deep-blue text-white font-bold uppercase tracking-widest text-xs hover:bg-brand-blue transition-colors"
+                  >
+                    Inquire About This
+                  </Link>
+                )}
+              </div>
             </div>
           ))
         )}
       </div>
 
-      {products && products.length > 0 && (
-        <div className="mt-12 text-center">
-          <GlobalQuoteCTA slug="bowls" label="Request a Quote" />
-        </div>
-      )}
+      </div>
     </ScrollReveal>
   );
 }

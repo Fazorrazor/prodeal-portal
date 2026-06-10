@@ -1,9 +1,9 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
+import Link from 'next/link';
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
-import { GlobalQuoteCTA } from '../../shared/GlobalQuoteCTA';
 
 export async function SignageGallery() {
   const supabase = createServerComponentClient({ cookies });
@@ -33,40 +33,38 @@ export async function SignageGallery() {
             {products.map((product) => (
                 <ScrollRevealItem key={product.id}>
                   {product.image_path ? (
-                    <GalleryImage 
-                      src={product.image_path} 
-                      alt={product.name} 
-                    />
+                    <GalleryImage product={product} />
                   ) : (
                     <div className="w-full aspect-[4/3] bg-black/5 flex items-center justify-center font-bold text-brand-deep-blue/40 uppercase text-xs">No Image Available</div>
                   )}
                 </ScrollRevealItem>
             ))}
           </ScrollReveal>
-          <div className="mt-16 text-center">
-            <GlobalQuoteCTA slug="signages" label="Request a Quote" />
-          </div>
         </>
       )}
     </div>
   );
 }
 
-function GalleryImage({ src, alt }: { src: string; alt: string }) {
+function GalleryImage({ product }: { product: any }) {
   return (
     <div className="break-inside-avoid relative overflow-hidden group border-2 border-brand-border/60 hover:border-brand-blue transition-colors">
-      {/* Replaced with Next/Image for optimized LCP */}
       <Image 
-        src={src}
-        alt={alt}
+        src={product.image_path}
+        alt={product.name}
         width={600}
-        height={400}
-        className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-        loading="lazy"
+        height={800}
+        className="w-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
       />
-      <div className="absolute inset-0 bg-brand-deep-blue/0 group-hover:bg-brand-deep-blue/20 transition-colors duration-300 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-brand-deep-blue/80 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-end">
-        <p className="text-[10px] font-bold text-white uppercase tracking-widest truncate">{alt}</p>
+      <div className="absolute inset-0 bg-brand-deep-blue/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
+        <h3 className="text-white font-heading font-bold text-xl uppercase tracking-tighter mb-4 text-center">{product.name}</h3>
+        <Link 
+          href={`/inquiry/${product.id}`}
+          className="px-6 py-3 border-2 border-white text-white font-heading font-bold uppercase tracking-widest text-xs hover:bg-white hover:text-brand-deep-blue transition-colors"
+        >
+          Inquire
+        </Link>
       </div>
     </div>
   );

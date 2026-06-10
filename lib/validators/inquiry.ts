@@ -8,7 +8,8 @@ export const ContactDetailsSchema = z.object({
 });
 
 export const SignageInquirySchema = z.object({
-  signType:     z.enum(['3d_signage', '3d_lettering', 'lightbox', 'standee', 'vehicle_wrap', 'other']),
+  productId:    z.string().uuid(),
+  productName:  z.string(),
   width:        z.number().positive().max(10000),   // mm
   height:       z.number().positive().max(10000),   // mm
   quantity:     z.number().int().min(1).max(500),
@@ -18,7 +19,8 @@ export const SignageInquirySchema = z.object({
 });
 
 export const PrintingInquirySchema = z.object({
-  productType:  z.string().min(2).max(100),
+  productId:    z.string().uuid(),
+  productName:  z.string(),
   quantity:     z.number().int().min(1).max(10000),
   hasArtwork:   z.boolean(),
   printSides:   z.enum(['single', 'double', 'all_over']).optional(),
@@ -26,7 +28,8 @@ export const PrintingInquirySchema = z.object({
 });
 
 export const BowlsInquirySchema = z.object({
-  productSku:   z.string().min(2).max(50),
+  productId:    z.string().uuid(),
+  productName:  z.string(),
   quantity:     z.number().int().min(100),          // Enforce MOQ
   deliveryDate: z.string().datetime().optional(),
   deliveryAddr: z.string().max(300),
@@ -34,8 +37,8 @@ export const BowlsInquirySchema = z.object({
 });
 
 export const ChemicalInquirySchema = z.object({
-  productName:  z.string().min(2).max(200),
-  casNumber:    z.string().regex(/^\d{2,7}-\d{2}-\d$/).optional(),
+  productId:    z.string().uuid(),
+  productName:  z.string(),
   grade:        z.enum(['industrial', 'lab', 'food', 'pharmaceutical']),
   quantityKg:   z.number().positive(),
   intendedUse:  z.string().min(10).max(500),        // Required for compliance
@@ -54,5 +57,5 @@ export const InquirySubmissionSchema = z.object({
   divisionSlug: z.enum(['signages', 'printing', 'bowls', 'chemicals']),
   contact:      ContactDetailsSchema,
   inquiry:      z.record(z.unknown()), // Validated against DIVISION_SCHEMAS dynamically
-  fileIds:      z.array(z.string().uuid()).max(5),
+  fileIds:      z.array(z.string()).max(5),
 });

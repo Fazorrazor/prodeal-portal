@@ -1,10 +1,9 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
-
+import Link from 'next/link';
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
-import { GlobalQuoteCTA } from '../../shared/GlobalQuoteCTA';
 
 export async function ProductCatalog() {
   const supabase = createServerComponentClient({ cookies });
@@ -62,10 +61,6 @@ export async function ProductCatalog() {
           </ScrollReveal>
         )}
       </section>
-
-      <div className="mt-8 text-center border-t-2 border-brand-border/60 pt-16">
-        <GlobalQuoteCTA slug="printing" label="Request a Quote" />
-      </div>
     </div>
   );
 }
@@ -97,6 +92,12 @@ function ProductCard({ product }: { product: any }) {
             <span className="text-[10px] font-bold text-brand-deep-blue/40 uppercase tracking-widest mb-0.5">Min. Order</span>
             <span className="text-sm font-bold text-brand-red font-mono">{(product.metadata as any)?.moq || 100} UNITS</span>
           </div>
+          <Link 
+            href={`/inquiry/${product.id}`}
+            className="px-4 py-2 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest hover:bg-brand-blue transition-colors"
+          >
+            Inquire
+          </Link>
         </div>
       </div>
     </div>

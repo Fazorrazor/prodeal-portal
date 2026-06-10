@@ -2,14 +2,17 @@
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { File as FileIcon, Image as ImageIcon, X, UploadCloud, Loader2 } from 'lucide-react';
-import { useQuoteStore, UploadedFile } from '../../store/quoteStore';
 import { toast } from 'sonner';
+import { UploadedFile } from '../../store/quoteStore'; // We can keep using the type
 
-export function FileUploadZone() {
-  const addFile = useQuoteStore((state) => state.addFile);
-  const removeFile = useQuoteStore((state) => state.removeFile);
-  const uploadedFiles = useQuoteStore((state) => state.uploadedFiles);
-  const division = useQuoteStore((state) => state.division) || 'general';
+interface FileUploadZoneProps {
+  uploadedFiles: UploadedFile[];
+  onAddFile: (file: UploadedFile) => void;
+  onRemoveFile: (url: string) => void;
+  divisionSlug: string;
+}
+
+export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisionSlug }: FileUploadZoneProps) {
   
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -25,7 +28,7 @@ export function FileUploadZone() {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('divisionSlug', division);
+      formData.append('divisionSlug', divisionSlug);
 
       // We'll fake progress by animating it until the fetch resolves, 
       // since fetch doesn't natively support upload progress.
@@ -55,7 +58,7 @@ export function FileUploadZone() {
         mimeType: result.mimeType,
       };
       
-      addFile(newFile);
+      onAddFile(newFile);
       toast.success('File uploaded successfully');
       
     } catch (error: any) {
@@ -66,7 +69,7 @@ export function FileUploadZone() {
         setUploadProgress(0);
       }, 500);
     }
-  }, [addFile, division]);
+  }, [onAddFile, divisionSlug]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -109,7 +112,7 @@ export function FileUploadZone() {
               </div>
               <button
                 type="button"
-                onClick={() => removeFile(file.url)}
+                onClick={() => onRemoveFile(file.url)}
                 className="p-3 text-brand-deep-blue/40 hover:text-brand-surface hover:bg-brand-red border border-transparent hover:border-brand-red transition-colors"
                 title="Remove file"
               >
