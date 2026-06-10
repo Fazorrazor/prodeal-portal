@@ -8,25 +8,21 @@ import { GlobalQuoteCTA } from '../../shared/GlobalQuoteCTA';
 export async function SignageGallery() {
   const supabase = createServerComponentClient({ cookies });
   
-  // Fetch files from the public bucket
-  const { data, error } = await supabase.storage.from('product-images').list('signages', {
-    limit: 12,
-    offset: 0,
-    sortBy: { column: 'name', order: 'asc' },
-  });
+  const { data: products, error } = await supabase
+    .from('products')
+    .select('*, divisions!inner(slug)')
+    .eq('divisions.slug', 'signages')
+    .order('name');
 
   if (error) {
     throw new Error('Failed to load gallery images');
   }
 
-  // Filter out any hidden files or folders
-  const files = data?.filter(file => file.name !== '.emptyFolderPlaceholder') || [];
-
   return (
     <div>
       <h2 className="font-heading font-bold text-3xl text-brand-deep-blue mb-8 text-center">Recent Installations</h2>
       
-      {files.length === 0 ? (
+      {!products || products.length === 0 ? (
         <div className="text-center py-12 border-y-2 border-brand-border/60">
           <h3 className="font-heading font-bold text-2xl text-brand-deep-blue uppercase tracking-tighter">All Clear.</h3>
           <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/60 mt-2">No gallery images uploaded yet.</p>
@@ -34,17 +30,18 @@ export async function SignageGallery() {
       ) : (
         <>
           <ScrollReveal className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-            {files.map((file) => {
-              const { data: publicUrlData } = supabase.storage.from('product-images').getPublicUrl(`signages/${file.name}`);
-              return (
-                <ScrollRevealItem key={file.id}>
-                  <GalleryImage 
-                    src={publicUrlData.publicUrl} 
-                    alt={file.name} 
-                  />
+            {products.map((product) => (
+                <ScrollRevealItem key={product.id}>
+                  {product.image_path ? (
+                    <GalleryImage 
+                      src={product.image_path} 
+                      alt={product.name} 
+                    />
+                  ) : (
+                    <div className="w-full aspect-[4/3] bg-black/5 flex items-center justify-center font-bold text-brand-deep-blue/40 uppercase text-xs">No Image Available</div>
+                  )}
                 </ScrollRevealItem>
-              );
-            })}
+            ))}
           </ScrollReveal>
           <div className="mt-16 text-center">
             <GlobalQuoteCTA slug="signages" label="Request a Quote" />

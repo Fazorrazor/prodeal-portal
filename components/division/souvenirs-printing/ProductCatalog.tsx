@@ -53,8 +53,7 @@ export async function ProductCatalog({ searchParams }: { searchParams?: { catego
 }
 
 function ProductCard({ product }: { product: any }) {
-  // Try to get an image from metadata if it exists, otherwise use a placeholder
-  const imageUrl = product.metadata?.image_url || 'https://via.placeholder.com/400x300?text=No+Image';
+  const imageUrl = product.image_path || 'https://via.placeholder.com/400x300?text=No+Image';
   const priceRange = product.metadata?.price_range || 'Quote Only';
 
   return (
