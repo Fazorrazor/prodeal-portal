@@ -38,7 +38,7 @@ export async function ProductCatalog({ searchParams }: { searchParams?: { catego
         <>
           <ScrollReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product) => (
-              <ScrollRevealItem key={product.id}>
+              <ScrollRevealItem key={product.id} className="h-full">
                 <ProductCard product={product} />
               </ScrollRevealItem>
             ))}
@@ -57,7 +57,7 @@ function ProductCard({ product }: { product: any }) {
   const priceRange = product.metadata?.price_range || 'Quote Only';
 
   return (
-    <div className="flex flex-col border-b-2 border-brand-border/60 pb-6 group hover:border-brand-blue transition-colors">
+    <div className="flex flex-col h-full border-b-2 border-brand-border/60 pb-6 group hover:border-brand-blue transition-colors">
       <div className="relative w-full aspect-video bg-black/5 overflow-hidden">
         <Image 
           src={imageUrl} 
@@ -77,7 +77,7 @@ function ProductCard({ product }: { product: any }) {
         <div className="mt-auto flex items-center justify-between border-t border-brand-border/30 pt-4">
           <div className="flex flex-col">
             <span className="text-[10px] font-bold text-brand-deep-blue/40 uppercase tracking-widest mb-0.5">Min. Order</span>
-            <span className="text-sm font-bold text-brand-red font-mono">{product.minimum_order_quantity} UNITS</span>
+            <span className="text-sm font-bold text-brand-red font-mono">{(product.metadata as any)?.moq || 100} UNITS</span>
           </div>
         </div>
       </div>
