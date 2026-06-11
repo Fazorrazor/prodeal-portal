@@ -32,13 +32,13 @@ export function InquiryPayloadViewer({ payload }: { payload: any }) {
           // Format keys cleanly (e.g., 'delivery_address' -> 'Delivery Address')
           const formattedKey = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
           return (
-            <div 
+              <div 
               key={key}
-              className="animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both"
+              className={`animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both ${key === 'message' ? 'col-span-full' : ''}`}
               style={{ animationDelay: `${i * 50}ms` }}
             >
               <span className="block text-[10px] uppercase tracking-widest text-brand-deep-blue/60 mb-1">{formattedKey}</span>
-              <span className="block text-sm font-bold text-brand-deep-blue break-words font-mono">
+              <span className={`block text-sm font-bold text-brand-deep-blue break-words ${key === 'message' ? 'whitespace-pre-wrap' : 'font-mono'}`}>
                 {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : String(value)}
               </span>
             </div>

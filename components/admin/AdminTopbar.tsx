@@ -43,7 +43,7 @@ export function AdminTopbar() {
             type="text" 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search tracking ID, client, or phone..." 
+            placeholder="Search ticket ID, client, or phone..." 
             className="w-full pl-8 pr-4 py-1.5 bg-transparent border-0 border-b border-brand-border/60 focus:border-brand-blue outline-none transition-all font-mono text-brand-deep-blue text-sm placeholder:text-brand-deep-blue/30"
           />
         </form>

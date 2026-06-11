@@ -67,7 +67,7 @@ export async function submitInquiry(formData: any) {
       (global as any).divisionCache[divisionSlug] = divisionId;
     }
 
-    // 5. Find an active staff member for auto-assignment
+    // 5. Find an active staff member for assignment (Load Balancing)
     const { data: staffMembers, error: staffError } = await supabase
       .from('staff_members')
       .select('id, whatsapp_phone')
@@ -78,13 +78,45 @@ export async function submitInquiry(formData: any) {
       await logError('SubmitInquiry Action - Staff Lookup Error', staffError, { divisionId });
     }
 
-    // Pick a random active staff member if available (simple load balancing)
     let assignedStaff = null;
     let staffPhone = null;
+    
     if (staffMembers && staffMembers.length > 0) {
-      const randomIndex = Math.floor(Math.random() * staffMembers.length);
-      assignedStaff = staffMembers[randomIndex].id;
-      staffPhone = staffMembers[randomIndex].whatsapp_phone;
+      const staffIds = staffMembers.map((s: any) => s.id);
+      
+      // Calculate current workload (open tickets) for each active staff member
+      const { data: workloadData, error: workloadError } = await supabase
+        .from('inquiries')
+        .select('assigned_staff')
+        .in('assigned_staff', staffIds)
+        .in('status', ['new', 'in_progress']);
+
+      const workloads = staffMembers.reduce((acc: Record<string, number>, staff: any) => {
+        acc[staff.id] = 0;
+        return acc;
+      }, {});
+
+      if (!workloadError && workloadData) {
+        workloadData.forEach((w: any) => {
+          if (w.assigned_staff in workloads) {
+            workloads[w.assigned_staff]++;
+          }
+        });
+      }
+
+      // Pick the staff member with the lowest number of open tickets
+      let minWorkload = Infinity;
+      let selectedStaff = staffMembers[0];
+
+      staffMembers.forEach((staff: any) => {
+        if (workloads[staff.id] < minWorkload) {
+          minWorkload = workloads[staff.id];
+          selectedStaff = staff;
+        }
+      });
+
+      assignedStaff = selectedStaff.id;
+      staffPhone = selectedStaff.whatsapp_phone;
     }
 
     // 6. Insert into inquiries table

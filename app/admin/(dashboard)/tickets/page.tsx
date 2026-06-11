@@ -14,6 +14,11 @@ async function TicketsData({ searchParams }: { searchParams: { [key: string]: st
   const statusFilter = searchParams.status || 'all';
   const searchFilter = searchParams.search || '';
   
+  const page = parseInt(searchParams.page || '1');
+  const limit = 50;
+  const from = (page - 1) * limit;
+  const to = from + limit - 1;
+
   let query = supabase
     .from('inquiries')
     .select(`
@@ -26,9 +31,9 @@ async function TicketsData({ searchParams }: { searchParams: { [key: string]: st
       divisions (
         display_name
       )
-    `)
+    `, { count: 'exact' })
     .order('created_at', { ascending: false })
-    .limit(50);
+    .range(from, to);
 
   if (statusFilter !== 'all') {
     query = query.eq('status', statusFilter);
@@ -39,13 +44,21 @@ async function TicketsData({ searchParams }: { searchParams: { [key: string]: st
     query = query.or(`tracking_uuid.ilike.${searchTerm},contact_name.ilike.${searchTerm},company_name.ilike.${searchTerm},contact_phone.ilike.${searchTerm}`);
   }
 
-  const { data: inquiries, error } = await query;
+  const { data: inquiries, error, count } = await query;
 
   if (error) {
     throw new Error(`Supabase Error: ${error.message} | Details: ${error.details || error.hint}`);
   }
 
-  return <TicketTable inquiries={inquiries || []} />;
+  const totalPages = count ? Math.ceil(count / limit) : 1;
+
+  return <TicketTable 
+    inquiries={inquiries || []} 
+    currentPage={page} 
+    totalPages={totalPages} 
+    currentStatus={statusFilter}
+    currentSearch={searchFilter}
+  />;
 }
 
 export default function TicketListPage({ searchParams }: { searchParams: { [key: string]: string | undefined } }) {

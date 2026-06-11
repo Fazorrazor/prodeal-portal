@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { PUBLIC_NAV_LINKS, TRACKING_LINK } from '../../lib/config/navigation';
+import { PUBLIC_NAV_LINKS } from '../../lib/config/navigation';
 
 export function FooterLinks() {
   return (
@@ -14,7 +14,6 @@ export function FooterLinks() {
       </div>
       <div className="flex flex-col gap-3">
         <h2 className="font-heading font-semibold text-brand-deep-blue">Support</h2>
-        <Link href={TRACKING_LINK.href} className="text-sm text-brand-deep-blue/70 hover:text-brand-blue transition-colors">{TRACKING_LINK.name}</Link>
         <a href="mailto:support@prodealindustries.com" className="text-sm text-brand-deep-blue/70 hover:text-brand-blue transition-colors">Contact Us</a>
       </div>
     </div>

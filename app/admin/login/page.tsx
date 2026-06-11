@@ -2,7 +2,7 @@ import { AdminLoginForm } from '../../../components/admin/AdminLoginForm';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Admin Login | Pro Deal Industries',
+  title: 'Admin Login | Prodeal Industries',
 };
 
 export default function AdminLoginPage() {
@@ -15,7 +15,7 @@ export default function AdminLoginPage() {
         </div>
         <h1 className="font-heading font-bold text-3xl text-brand-deep-blue uppercase tracking-tighter mb-4">Desktop Only</h1>
         <p className="text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest max-w-sm leading-relaxed">
-          The Pro Deal Industries admin portal is optimized for data density and requires a larger screen. Please access this page from a desktop or laptop device.
+          The Prodeal Industries admin portal is optimized for data density and requires a larger screen. Please access this page from a desktop or laptop device.
         </p>
       </div>
 

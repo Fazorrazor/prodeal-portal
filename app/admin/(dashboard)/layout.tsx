@@ -27,7 +27,7 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
           </div>
           <h1 className="font-heading font-bold text-3xl text-brand-deep-blue uppercase tracking-tighter mb-4">Desktop Only</h1>
           <p className="text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest max-w-sm leading-relaxed">
-            The Pro Deal Industries admin portal is optimized for data density and requires a larger screen. Please access this dashboard from a desktop or laptop device.
+            The Prodeal Industries admin portal is optimized for data density and requires a larger screen. Please access this dashboard from a desktop or laptop device.
           </p>
         </div>
 

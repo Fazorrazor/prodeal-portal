@@ -31,7 +31,7 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
       <div className="h-16 flex items-center px-6 relative">
         <AnimatedBorder direction="bottom" />
         <h1 className="font-display text-xl tracking-tighter flex items-baseline">
-          <strong className="font-extrabold text-brand-deep-blue mr-1.5">PRO DEAL</strong>
+          <strong className="font-extrabold text-brand-deep-blue mr-1.5">Prodeal</strong>
           <span className="text-xs text-brand-blue/60 font-body uppercase tracking-widest ml-2">Admin</span>
         </h1>
       </div>

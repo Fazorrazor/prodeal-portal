@@ -43,7 +43,7 @@ export function RecentTicketsTable({ inquiries }: { inquiries: any[] }) {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-brand-border/60">
-              <th className="py-4 pr-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Tracking ID</th>
+              <th className="py-4 pr-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Ticket ID</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Product / Division</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Client</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Status</th>

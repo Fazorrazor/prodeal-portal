@@ -1,6 +1,6 @@
 'use client'; // needs framer-motion for initial load animations
 import Link from 'next/link';
-import { ArrowRight, Search } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const containerVariants = {
@@ -37,7 +37,7 @@ export function Hero() {
           </motion.h1>
           
           <motion.p variants={itemVariants} className="text-sm sm:text-base md:text-xl text-brand-deep-blue/70 max-w-2xl mb-8 md:mb-12 font-body leading-relaxed px-4 md:px-0">
-            Pro Deal Industries is the trusted partner for massive-scale procurement.
+            Prodeal Industries is the trusted partner for massive-scale procurement.
             From custom 3D Signages to Industrial Chemicals, we handle the volume you demand without compromise.
           </motion.p>
           
@@ -48,13 +48,6 @@ export function Hero() {
             >
               Request a Quote
               <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link 
-              href="/track" 
-              className="w-full sm:w-auto px-8 py-3 sm:py-4 bg-transparent sm:bg-white text-brand-deep-blue/60 sm:text-brand-deep-blue border-none sm:border border-brand-border hover:text-brand-blue sm:hover:border-brand-blue font-heading font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base underline sm:no-underline"
-            >
-              Track Existing Order
-              <Search className="w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
           </motion.div>
         </motion.div>

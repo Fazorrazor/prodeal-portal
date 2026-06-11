@@ -46,13 +46,20 @@ export default async function SettingsPage() {
           </div>
           
           <div className="space-y-6">
+            <div className="bg-brand-blue/5 border-l border-brand-blue p-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <p className="text-xs font-mono text-brand-deep-blue/80">
+                <span className="font-bold text-brand-deep-blue uppercase tracking-widest text-[10px]">Security Lock: </span>
+                WhatsApp API credentials are hardcoded into the Vercel environment for security. To update these, modify your <code className="bg-black/5 px-1 py-0.5 rounded">.env.local</code> file or Vercel Project Settings and trigger a redeploy.
+              </p>
+            </div>
+
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6 animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both" style={{ animationDelay: '100ms' }}>
               <p className="w-48 text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 shrink-0">
                 Phone Number ID
               </p>
               <div className="flex items-center gap-4">
                 <code className="text-brand-deep-blue font-mono text-sm font-bold">
-                  {process.env.META_WA_PHONE_NUMBER_ID || 'Not Configured'}
+                  {process.env.META_WA_PHONE_NUMBER_ID || process.env.WHATSAPP_PHONE_ID || 'Not Configured'}
                 </code>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600">
                   Active
@@ -88,7 +95,7 @@ export default async function SettingsPage() {
           
           <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both" style={{ animationDelay: '300ms' }}>
             <p className="text-sm text-brand-deep-blue/60 max-w-xl">
-              Pro Deal portal utilizes heavy caching at the edge to ensure maximum performance for clients. 
+              Prodeal portal utilizes heavy caching at the edge to ensure maximum performance for clients. 
               If product catalogs or chemical documentation links are not updating on the live site after database changes, you can manually trigger a global cache purge.
             </p>
             <div className="pt-2">

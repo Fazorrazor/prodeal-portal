@@ -43,14 +43,16 @@ export default async function AdminDashboardOverview() {
     throw new Error(`Dashboard Supabase Error: ${error.message} | Details: ${error.details || error.hint}`);
   }
 
-  const allInquiries = inquiries || [];
+  // Calculate true metrics using database counts instead of local arrays
+  const [{ count: total }, { count: pending }, { count: resolved }] = await Promise.all([
+    supabase.from('inquiries').select('*', { count: 'exact', head: true }),
+    supabase.from('inquiries').select('*', { count: 'exact', head: true }).in('status', ['new', 'in_progress']),
+    supabase.from('inquiries').select('*', { count: 'exact', head: true }).eq('status', 'closed')
+  ]);
   
-  const total = allInquiries.length;
-  const pending = allInquiries.filter((i: any) => i.status === 'new' || i.status === 'in_progress').length;
-  const resolved = allInquiries.filter((i: any) => i.status === 'closed').length;
-  
-  // Calculate avg time (mocked for now, as accurate tracking requires inquiry_events delta calculation)
-  const avgTime = pending > 0 ? "2.4 hrs" : "0 hrs";
+  // Calculate avg time via Database RPC (accurately accounts for inquiry events delta)
+  const { data: avgHoursData } = await supabase.rpc('get_avg_resolution_time_hrs');
+  const avgTime = `${avgHoursData || 0} hrs`;
 
   const recent = allInquiries.slice(0, 20);
 

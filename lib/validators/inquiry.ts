@@ -7,50 +7,17 @@ export const ContactDetailsSchema = z.object({
   companyName: z.string().max(150).optional(),
 });
 
-export const SignageInquirySchema = z.object({
+export const BaseInquirySchema = z.object({
   productId:    z.string().uuid(),
   productName:  z.string(),
-  width:        z.number().positive().max(10000),   // mm
-  height:       z.number().positive().max(10000),   // mm
-  quantity:     z.number().int().min(1),
-  materialPref: z.string().max(200).optional(),
-  deadline:     z.string().datetime().optional(),
-  notes:        z.string().max(1000).optional(),
-});
-
-export const PrintingInquirySchema = z.object({
-  productId:    z.string().uuid(),
-  productName:  z.string(),
-  quantity:     z.number().int().min(1),
-  hasArtwork:   z.boolean(),
-  printSides:   z.enum(['single', 'double', 'all_over']).optional(),
-  notes:        z.string().max(1000).optional(),
-});
-
-export const BowlsInquirySchema = z.object({
-  productId:    z.string().uuid(),
-  productName:  z.string(),
-  quantity:     z.number().int().min(1),
-  deliveryDate: z.string().datetime().optional(),
-  deliveryAddr: z.string().max(300),
-  notes:        z.string().max(500).optional(),
-});
-
-export const ChemicalInquirySchema = z.object({
-  productId:    z.string().uuid(),
-  productName:  z.string(),
-  grade:        z.enum(['industrial', 'lab', 'food', 'pharmaceutical']),
-  quantityKg:   z.number().positive(),
-  intendedUse:  z.string().min(10).max(500),        // Required for compliance
-  hasHazmatExp: z.boolean(),
-  notes:        z.string().max(500).optional(),
+  message:      z.string().min(10, "Please tell us a bit more about what you need.").max(1000),
 });
 
 export const DIVISION_SCHEMAS = {
-  signages:  SignageInquirySchema,
-  printing:  PrintingInquirySchema,
-  bowls:     BowlsInquirySchema,
-  chemicals: ChemicalInquirySchema,
+  signages:  BaseInquirySchema,
+  printing:  BaseInquirySchema,
+  bowls:     BaseInquirySchema,
+  chemicals: BaseInquirySchema,
 } as const;
 
 export const InquirySubmissionSchema = z.object({

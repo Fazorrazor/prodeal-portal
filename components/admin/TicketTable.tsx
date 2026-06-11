@@ -10,7 +10,21 @@ function ScrambledUUID({ uuid }: { uuid: string }) {
   return <span className="font-mono text-sm text-brand-deep-blue font-bold">{displayText}...</span>;
 }
 
-export function TicketTable({ inquiries }: { inquiries: any[] }) {
+interface TicketTableProps {
+  inquiries: any[];
+  currentPage?: number;
+  totalPages?: number;
+  currentStatus?: string;
+  currentSearch?: string;
+}
+
+export function TicketTable({ 
+  inquiries, 
+  currentPage = 1, 
+  totalPages = 1, 
+  currentStatus = 'all', 
+  currentSearch = '' 
+}: TicketTableProps) {
   if (!inquiries || inquiries.length === 0) {
     return (
       <div className="py-16 flex flex-col items-start border-t border-brand-border/60">
@@ -22,13 +36,21 @@ export function TicketTable({ inquiries }: { inquiries: any[] }) {
     );
   }
 
+  const buildPageUrl = (page: number) => {
+    const params = new URLSearchParams();
+    if (currentStatus !== 'all') params.set('status', currentStatus);
+    if (currentSearch) params.set('search', currentSearch);
+    params.set('page', page.toString());
+    return `/admin/tickets?${params.toString()}`;
+  };
+
   return (
     <div className="mt-8">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-brand-border/60">
-              <th className="py-4 pr-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Tracking ID</th>
+              <th className="py-4 pr-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Ticket ID</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Product / Division</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Client</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Status</th>
@@ -82,6 +104,42 @@ export function TicketTable({ inquiries }: { inquiries: any[] }) {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between border-t border-brand-border/60 py-4 mt-2">
+          <p className="text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">
+            Page {currentPage} of {totalPages}
+          </p>
+          <div className="flex items-center gap-2">
+            {currentPage > 1 ? (
+              <Link 
+                href={buildPageUrl(currentPage - 1)}
+                className="px-4 py-2 border border-brand-border/60 text-xs font-bold uppercase tracking-widest text-brand-deep-blue hover:bg-brand-deep-blue hover:text-white transition-colors"
+              >
+                Previous
+              </Link>
+            ) : (
+              <span className="px-4 py-2 border border-brand-border/30 text-xs font-bold uppercase tracking-widest text-brand-deep-blue/30 cursor-not-allowed">
+                Previous
+              </span>
+            )}
+            
+            {currentPage < totalPages ? (
+              <Link 
+                href={buildPageUrl(currentPage + 1)}
+                className="px-4 py-2 border border-brand-border/60 text-xs font-bold uppercase tracking-widest text-brand-deep-blue hover:bg-brand-deep-blue hover:text-white transition-colors"
+              >
+                Next
+              </Link>
+            ) : (
+              <span className="px-4 py-2 border border-brand-border/30 text-xs font-bold uppercase tracking-widest text-brand-deep-blue/30 cursor-not-allowed">
+                Next
+              </span>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

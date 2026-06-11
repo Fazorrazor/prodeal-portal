@@ -101,7 +101,7 @@ async function TicketDetail({ id }: { id: string }) {
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-bold text-brand-deep-blue font-mono">{inquiry.contact_phone}</p>
                   <a 
-                    href={`https://wa.me/${inquiry.contact_phone.replace(/\D/g, '')}?text=Hi ${encodeURIComponent(inquiry.contact_name)}, regarding your Pro Deal inquiry (${inquiry.tracking_uuid.substring(0,8)}):`}
+                    href={`https://wa.me/${inquiry.contact_phone.replace(/\D/g, '')}?text=Hi ${encodeURIComponent(inquiry.contact_name)}, regarding your Prodeal inquiry (${inquiry.tracking_uuid.substring(0,8)}):`}
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="p-1 hover:bg-black/5 text-brand-deep-blue/60 hover:text-brand-blue transition-colors"

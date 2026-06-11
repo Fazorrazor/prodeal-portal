@@ -3,14 +3,10 @@ import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2, AlertCircle, Copy, ArrowRight } from 'lucide-react';
+import { Loader2, AlertCircle, ArrowRight } from 'lucide-react';
 import { ContactDetailsSchema, DIVISION_SCHEMAS } from '../../../../lib/validators/inquiry';
 import { submitInquiry } from '../../../../app/actions/submitInquiry';
-import { FileUploadZone } from '../../../../components/quote-builder/FileUploadZone';
-import { UploadedFile } from '../../../../store/quoteStore';
-import { useScrambleText } from '../../../../lib/hooks/useScrambleText';
 import { AnimatedBorder } from '../../../../components/admin/AnimatedBorder';
-import { toast } from 'sonner';
 
 interface InquiryFormClientProps {
   product: any;
@@ -18,40 +14,37 @@ interface InquiryFormClientProps {
   defaultMoq: number;
 }
 
-function TrackingReceipt({ trackingId, divisionSlug }: { trackingId: string; divisionSlug: string }) {
-  const { displayText } = useScrambleText(trackingId, 200, 1500);
+function SuccessReceipt({ divisionSlug, phone }: { divisionSlug: string; phone: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Smoothly scroll this component into view, which automatically handles
-    // the fact that this right column is an overflow-y-auto scrolling container.
     containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
-
-  const copyTracking = () => {
-    navigator.clipboard.writeText(trackingId);
-    toast.success('Copied to clipboard!');
-  };
 
   return (
     <div ref={containerRef} className="flex flex-col py-6 md:py-8 h-full scroll-mt-32">
       <h3 className="font-heading font-bold text-3xl md:text-4xl text-brand-deep-blue mb-4 tracking-tighter uppercase">Inquiry Logged.</h3>
-      <p className="text-xs font-bold text-brand-red/80 mb-8 uppercase tracking-widest leading-relaxed border-l-2 border-brand-red pl-4">
-        Your data has been successfully routed to our specialists via WhatsApp.
-        Retain the following code to track progress via the tracking portal.
-      </p>
+      
+      <div className="border-l-2 border-brand-deep-blue pl-4 mb-8">
+        <p className="text-sm font-bold text-brand-deep-blue/80 uppercase tracking-widest leading-relaxed mb-4">
+          Your request has been prioritized and routed to our division specialists.
+        </p>
+        <p className="text-sm font-bold text-brand-deep-blue uppercase tracking-widest leading-relaxed">
+          A representative will initiate contact via WhatsApp at <span className="text-brand-blue font-mono">{phone}</span> shortly to finalize your requirements.
+        </p>
+      </div>
 
-      <div className="border-y-2 border-brand-deep-blue/20 py-6 mb-8 flex items-center justify-between relative overflow-hidden bg-black/5 px-4 md:px-6">
+      <div className="border-y-2 border-brand-deep-blue/20 py-6 mb-8 relative overflow-hidden bg-black/5 px-4 md:px-6">
         <AnimatedBorder direction="left" delay={0.2} />
         <div className="relative z-10">
-          <p className="text-[10px] font-bold text-brand-blue uppercase tracking-widest mb-1">Decrypted Tracking UUID</p>
-          <span className="font-mono font-bold text-xl md:text-2xl text-brand-deep-blue tracking-tight">
-            {displayText}
-          </span>
+          <p className="text-[10px] font-bold text-brand-red uppercase tracking-widest mb-2 flex items-center gap-2">
+            <AlertCircle className="w-3 h-3" /> Priority Support Escallation
+          </p>
+          <p className="text-xs font-bold text-brand-deep-blue/80 uppercase tracking-widest leading-relaxed">
+            If you do not receive a response within 60 minutes, please contact our priority line at <br/>
+            <span className="font-mono text-brand-deep-blue text-sm mt-1 block">+233 (0) 54 000 0000</span>
+          </p>
         </div>
-        <button type="button" onClick={copyTracking} className="p-3 bg-brand-deep-blue text-white hover:bg-brand-blue transition-colors relative z-10" aria-label="Copy tracking ID">
-          <Copy className="w-5 h-5" />
-        </button>
       </div>
 
       <button
@@ -69,7 +62,6 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [trackingId, setTrackingId] = useState('');
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
 
   const DivisionSpecificSchema = DIVISION_SCHEMAS[divisionSlug as keyof typeof DIVISION_SCHEMAS] || DIVISION_SCHEMAS.signages;
 
@@ -83,6 +75,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(FormSchema),
@@ -90,10 +83,6 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
       inquiry: {
         productId: product.id,
         productName: product.name,
-        quantity: defaultMoq,
-        // Set safe defaults to prevent mount errors
-        ...(divisionSlug === 'signages' ? { width: 1000, height: 500, signType: '3d_signage' } : {}),
-        ...(divisionSlug === 'chemicals' ? { quantityKg: defaultMoq } : {}),
       } as any
     }
   });
@@ -105,7 +94,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
       divisionSlug,
       contact: data.contact,
       inquiry: data.inquiry,
-      fileIds: uploadedFiles.map(f => f.url)
+      fileIds: []
     };
 
     const result = await submitInquiry(payload);
@@ -119,16 +108,8 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
     }
   };
 
-  const handleAddFile = (file: UploadedFile) => {
-    setUploadedFiles(prev => [...prev, file]);
-  };
-
-  const handleRemoveFile = (url: string) => {
-    setUploadedFiles(prev => prev.filter(f => f.url !== url));
-  };
-
-  if (status === 'success' && trackingId) {
-    return <TrackingReceipt trackingId={trackingId} divisionSlug={divisionSlug} />;
+  if (status === 'success') {
+    return <SuccessReceipt divisionSlug={divisionSlug} phone={getValues('contact.phone')} />;
   }
 
   if (status === 'error') {
@@ -197,121 +178,22 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
         </div>
       </div>
 
-      {/* Product Specific Requirements */}
+      {/* Request Details Section */}
       <div className="space-y-8">
         <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tight border-b-2 border-brand-deep-blue pb-2">
-          2. Specifications
+          2. Request Details
         </h3>
-
-        {/* Signages specific fields */}
-        {divisionSlug === 'signages' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            <div>
-              <label className={labelClass}>Width (mm)</label>
-              <input {...register('inquiry.width', { valueAsNumber: true })} type="number" inputMode="numeric" className={inputClass} />
-              {(errors.inquiry as any)?.width && <p className={errorClass}>{(errors.inquiry as any).width.message}</p>}
-            </div>
-            <div>
-              <label className={labelClass}>Height (mm)</label>
-              <input {...register('inquiry.height', { valueAsNumber: true })} type="number" inputMode="numeric" className={inputClass} />
-              {(errors.inquiry as any)?.height && <p className={errorClass}>{(errors.inquiry as any).height.message}</p>}
-            </div>
-            <div>
-              <label className={labelClass}>Quantity</label>
-              <input {...register('inquiry.quantity', { valueAsNumber: true })} type="number" inputMode="numeric" className={inputClass} />
-              {(errors.inquiry as any)?.quantity && <p className={errorClass}>{(errors.inquiry as any).quantity.message}</p>}
-            </div>
-            <div>
-              <label className={labelClass}>Material Preference</label>
-              <input {...register('inquiry.materialPref')} className={inputClass} placeholder="e.g. Acrylic, Metal" />
-            </div>
-          </div>
-        )}
-
-        {/* Printing specific fields */}
-        {divisionSlug === 'printing' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            <div>
-              <label className={labelClass}>Quantity</label>
-              <input {...register('inquiry.quantity', { valueAsNumber: true })} type="number" inputMode="numeric" className={inputClass} />
-              {(errors.inquiry as any)?.quantity && <p className={errorClass}>{(errors.inquiry as any).quantity.message}</p>}
-            </div>
-            <div>
-              <label className={labelClass}>Print Sides</label>
-              <select {...register('inquiry.printSides')} className={inputClass}>
-                <option value="single">Single Sided</option>
-                <option value="double">Double Sided</option>
-                <option value="all_over">All Over Print</option>
-              </select>
-            </div>
-            <div className="sm:col-span-2 flex items-center gap-3 py-2">
-              <input type="checkbox" {...register('inquiry.hasArtwork')} id="hasArtwork" className="w-5 h-5 text-brand-deep-blue focus:ring-brand-blue border-brand-border" />
-              <label htmlFor="hasArtwork" className="text-sm font-bold text-brand-deep-blue uppercase tracking-widest cursor-pointer">I have print-ready artwork</label>
-            </div>
-          </div>
-        )}
-
-        {/* Bowls specific fields */}
-        {divisionSlug === 'bowls' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            <div>
-              <label className={labelClass}>Quantity</label>
-              <input {...register('inquiry.quantity', { valueAsNumber: true })} type="number" inputMode="numeric" className={inputClass} />
-              {(errors.inquiry as any)?.quantity && <p className={errorClass}>{(errors.inquiry as any).quantity.message}</p>}
-            </div>
-            <div className="sm:col-span-2">
-              <label className={labelClass}>Delivery Address</label>
-              <input {...register('inquiry.deliveryAddr')} className={inputClass} placeholder="Full address for delivery" />
-              {(errors.inquiry as any)?.deliveryAddr && <p className={errorClass}>{(errors.inquiry as any).deliveryAddr.message}</p>}
-            </div>
-          </div>
-        )}
-
-        {/* Chemicals specific fields */}
-        {divisionSlug === 'chemicals' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            <div>
-              <label className={labelClass}>Quantity (KG)</label>
-              <input {...register('inquiry.quantityKg', { valueAsNumber: true })} type="number" inputMode="numeric" className={inputClass} />
-              {(errors.inquiry as any)?.quantityKg && <p className={errorClass}>{(errors.inquiry as any).quantityKg.message}</p>}
-            </div>
-            <div>
-              <label className={labelClass}>Grade Requirement</label>
-              <select {...register('inquiry.grade')} className={inputClass}>
-                <option value="industrial">Industrial Grade</option>
-                <option value="lab">Laboratory Grade</option>
-                <option value="food">Food Grade</option>
-                <option value="pharmaceutical">Pharmaceutical Grade</option>
-              </select>
-            </div>
-            <div className="sm:col-span-2">
-              <label className={labelClass}>Intended Use (Compliance Requirement)</label>
-              <textarea {...register('inquiry.intendedUse')} className={`${inputClass} resize-none`} rows={2} placeholder="Please describe the intended application..." />
-              {(errors.inquiry as any)?.intendedUse && <p className={errorClass}>{(errors.inquiry as any).intendedUse.message}</p>}
-            </div>
-            <div className="sm:col-span-2 flex items-center gap-3 py-2">
-              <input type="checkbox" {...register('inquiry.hasHazmatExp')} id="hasHazmatExp" className="w-5 h-5 text-brand-deep-blue focus:ring-brand-blue border-brand-border" />
-              <label htmlFor="hasHazmatExp" className="text-sm font-bold text-brand-deep-blue uppercase tracking-widest cursor-pointer">Facility handles Hazmat materials</label>
-            </div>
-          </div>
-        )}
-
-        {/* Global Notes */}
-        <div className="pt-4">
-          <label className={labelClass}>Additional Requirements (Optional)</label>
-          <textarea {...register('inquiry.notes')} className={`${inputClass} resize-none`} rows={2} placeholder="Any specific details we should know?" />
+        <div>
+          <label className={labelClass}>What do you need?</label>
+          <textarea 
+            {...register('inquiry.message')} 
+            className={`${inputClass} min-h-[120px] resize-y leading-relaxed`} 
+            placeholder="Please describe the specifics of your request, quantities, deadlines, or any other relevant details..." 
+          />
+          {/* @ts-ignore - Dynamic nested error access */}
+          {errors.inquiry?.message && <p className={errorClass}>{errors.inquiry.message.message}</p>}
         </div>
       </div>
-
-      {/* Attachments Section for Signages/Printing */}
-      {(divisionSlug === 'signages' || divisionSlug === 'printing') && (
-        <FileUploadZone
-          uploadedFiles={uploadedFiles}
-          onAddFile={handleAddFile}
-          onRemoveFile={handleRemoveFile}
-          divisionSlug={divisionSlug}
-        />
-      )}
 
       {/* Submit Button */}
       <div className="pt-8 border-t-2 border-brand-border/60">

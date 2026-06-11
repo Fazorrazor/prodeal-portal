@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import Image from 'next/image';
 import Link from 'next/link';
+import { ProductImageFallback } from '../../shared/ProductImageFallback';
 
 export async function InventoryTable() {
   const supabase = createServerComponentClient({ cookies });
@@ -48,7 +49,7 @@ export async function InventoryTable() {
                       {product.image_path ? (
                         <Image src={product.image_path} alt={product.name} width={48} height={48} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-[8px] font-bold text-brand-deep-blue/40 uppercase">No Img</div>
+                        <ProductImageFallback />
                       )}
                     </Link>
                   </td>
@@ -92,7 +93,7 @@ export async function InventoryTable() {
                     {product.image_path ? (
                       <Image src={product.image_path} alt={product.name} width={64} height={64} className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[8px] font-bold text-brand-deep-blue/40 uppercase text-center p-1">No Img</div>
+                      <ProductImageFallback />
                     )}
                   </Link>
                   <div>

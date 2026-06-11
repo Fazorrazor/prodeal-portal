@@ -3,7 +3,8 @@ import { Bebas_Neue, DM_Sans, IBM_Plex_Sans } from 'next/font/google';
 import './globals.css';
 import { ZustandProvider } from './providers/ZustandProvider';
 import { ToastProvider } from './providers/ToastProvider';
-
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -24,7 +25,7 @@ const ibmPlexSans = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Pro Deal Industries',
+  title: 'Prodeal Industries',
   description: 'Built for Industry. Delivered with Precision.',
 };
 
@@ -41,6 +42,8 @@ export default function RootLayout({
             {children}
           </ToastProvider>
         </ZustandProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

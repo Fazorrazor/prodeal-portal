@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
+import { ProductImageFallback } from '../../shared/ProductImageFallback';
 
 export async function ChemicalCatalog({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
   const supabase = createServerComponentClient({ cookies });
@@ -41,8 +42,8 @@ export async function ChemicalCatalog({ searchParams }: { searchParams?: { [key:
             {products.map((product) => (
               <ScrollRevealItem key={product.id} className="h-full">
                 <div className="h-full flex flex-col border-b-2 border-brand-border/60 pb-8 md:hover:border-brand-blue transition-colors group">
-                  {product.image_path && (
-                    <Link href={`/inquiry/${product.id}?from=chemicals`} className="relative w-full aspect-video bg-black/5 overflow-hidden mb-6 block group/image active:opacity-80 transition-opacity">
+                  <Link href={`/inquiry/${product.id}?from=chemicals`} className="relative w-full aspect-video bg-black/5 overflow-hidden mb-6 block group/image active:opacity-80 transition-opacity">
+                    {product.image_path ? (
                       <Image 
                         src={product.image_path} 
                         alt={product.name} 
@@ -50,8 +51,10 @@ export async function ChemicalCatalog({ searchParams }: { searchParams?: { [key:
                         height={300} 
                         className="w-full h-full object-cover transition-transform duration-700 md:group-hover/image:scale-105 md:group-hover:scale-105"
                       />
-                    </Link>
-                  )}
+                    ) : (
+                      <ProductImageFallback className="transition-transform duration-700 md:group-hover/image:scale-105 md:group-hover:scale-105" />
+                    )}
+                  </Link>
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <Link href={`/inquiry/${product.id}?from=chemicals`} className="block w-fit">
