@@ -48,31 +48,37 @@ export async function SignageGallery() {
 
 function GalleryImage({ product }: { product: any }) {
   return (
-    <div className="break-inside-avoid relative overflow-hidden group border-2 border-brand-border/60 hover:border-brand-blue transition-colors flex flex-col">
-      <div className="relative">
-      <Image 
-        src={product.image_path}
-        alt={product.name}
-        width={600}
-        height={800}
-        className="w-full object-cover grayscale-0 opacity-100 md:grayscale md:opacity-80 md:group-hover:grayscale-0 md:group-hover:opacity-100 transition-all duration-700"
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-      />
-      <div className="hidden md:flex absolute inset-0 bg-brand-deep-blue/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col items-center justify-center p-4">
-        <h3 className="text-white font-heading font-bold text-xl uppercase tracking-tighter mb-4 text-center">{product.name}</h3>
-        <Link 
-          href={`/inquiry/${product.id}?from=signages`}
-          className="px-6 py-3 border-2 border-white text-white font-heading font-bold uppercase tracking-widest text-xs hover:bg-white hover:text-brand-deep-blue transition-colors"
-        >
-          Inquire
+    <div className="break-inside-avoid relative overflow-hidden group border-2 border-brand-border/60 md:hover:border-brand-blue transition-colors flex flex-col">
+      <div className="relative group/image">
+        <Link href={`/inquiry/${product.id}?from=signages`} className="block active:opacity-80 transition-opacity">
+          <Image 
+            src={product.image_path}
+            alt={product.name}
+            width={600}
+            height={800}
+            className="w-full object-cover grayscale-0 opacity-100 md:grayscale md:opacity-80 md:group-hover/image:grayscale-0 md:group-hover/image:opacity-100 md:group-hover:grayscale-0 md:group-hover:opacity-100 transition-all duration-700"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
         </Link>
-      </div>
+        <div className="hidden md:flex absolute inset-0 bg-brand-deep-blue/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col items-center justify-center p-4 pointer-events-none">
+          <Link href={`/inquiry/${product.id}?from=signages`} className="pointer-events-auto mb-4 block">
+            <h3 className="text-white font-heading font-bold text-xl uppercase tracking-tighter text-center md:hover:text-brand-blue transition-colors">{product.name}</h3>
+          </Link>
+          <Link 
+            href={`/inquiry/${product.id}?from=signages`}
+            className="pointer-events-auto px-6 py-3 border-2 border-white text-white font-heading font-bold uppercase tracking-widest text-xs md:hover:bg-white md:hover:text-brand-deep-blue active:bg-white/80 transition-colors"
+          >
+            Inquire
+          </Link>
+        </div>
       </div>
       <div className="flex md:hidden flex-col items-center justify-center p-6 bg-brand-surface border-t-2 border-brand-border/60">
-        <h3 className="text-brand-deep-blue font-heading font-bold text-xl uppercase tracking-tighter mb-3 text-center leading-tight">{product.name}</h3>
+        <Link href={`/inquiry/${product.id}?from=signages`} className="block w-full mb-3 active:opacity-70 transition-opacity">
+          <h3 className="text-brand-deep-blue font-heading font-bold text-xl uppercase tracking-tighter text-center leading-tight md:hover:text-brand-blue transition-colors">{product.name}</h3>
+        </Link>
         <Link 
           href={`/inquiry/${product.id}?from=signages`}
-          className="w-full text-center px-6 py-4 bg-brand-deep-blue text-white font-heading font-bold uppercase tracking-widest text-xs hover:bg-brand-blue transition-colors"
+          className="w-full text-center px-6 py-4 bg-brand-deep-blue text-white font-heading font-bold uppercase tracking-widest text-xs md:hover:bg-brand-blue active:bg-brand-blue active:scale-[0.98] transition-all"
         >
           Inquire
         </Link>

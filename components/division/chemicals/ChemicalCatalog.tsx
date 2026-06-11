@@ -40,26 +40,28 @@ export async function ChemicalCatalog({ searchParams }: { searchParams?: { [key:
           <ScrollReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((product) => (
               <ScrollRevealItem key={product.id} className="h-full">
-                <div className="h-full flex flex-col border-b-2 border-brand-border/60 pb-8 hover:border-brand-blue transition-colors group">
+                <div className="h-full flex flex-col border-b-2 border-brand-border/60 pb-8 md:hover:border-brand-blue transition-colors group">
                   {product.image_path && (
-                    <div className="relative w-full aspect-video bg-black/5 overflow-hidden mb-6">
+                    <Link href={`/inquiry/${product.id}?from=chemicals`} className="relative w-full aspect-video bg-black/5 overflow-hidden mb-6 block group/image active:opacity-80 transition-opacity">
                       <Image 
                         src={product.image_path} 
                         alt={product.name} 
                         width={400} 
                         height={300} 
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-700 md:group-hover/image:scale-105 md:group-hover:scale-105"
                       />
-                    </div>
+                    </Link>
                   )}
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h3 className="font-heading font-bold text-2xl text-brand-deep-blue uppercase tracking-tight">{product.name}</h3>
+                      <Link href={`/inquiry/${product.id}?from=chemicals`} className="block w-fit">
+                        <h3 className="font-heading font-bold text-2xl text-brand-deep-blue uppercase tracking-tight md:hover:text-brand-blue transition-colors">{product.name}</h3>
+                      </Link>
                       <div className="text-[10px] font-mono font-bold text-brand-deep-blue/40 mt-1 uppercase tracking-widest">
                         CAS: {product.metadata?.cas_number || 'N/A'}
                       </div>
                     </div>
-                    <span className="px-2 py-1 border border-brand-deep-blue/20 text-[10px] font-bold text-brand-deep-blue uppercase tracking-widest whitespace-nowrap group-hover:border-brand-blue group-hover:text-brand-blue transition-colors">
+                    <span className="px-2 py-1 border border-brand-deep-blue/20 text-[10px] font-bold text-brand-deep-blue uppercase tracking-widest whitespace-nowrap md:group-hover:border-brand-blue md:group-hover:text-brand-blue transition-colors">
                       {product.metadata?.grade || 'Industrial'}
                     </span>
                   </div>
@@ -72,7 +74,7 @@ export async function ChemicalCatalog({ searchParams }: { searchParams?: { [key:
 
                     <Link 
                       href={`/inquiry/${product.id}?from=chemicals`}
-                      className="w-full py-3 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest text-center hover:bg-brand-blue transition-colors"
+                      className="w-full py-3 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest text-center md:hover:bg-brand-blue active:bg-brand-blue active:scale-[0.98] transition-all"
                     >
                       Inquire About This
                     </Link>

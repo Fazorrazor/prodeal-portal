@@ -6,7 +6,7 @@ CREATE POLICY "guest_insert_inquiry" ON inquiries
 
 CREATE POLICY "guest_select_own_inquiry" ON inquiries
   FOR SELECT TO anon
-  USING (true);
+  USING (false);
 
 CREATE POLICY "staff_select_own_division" ON inquiries
   FOR SELECT TO authenticated

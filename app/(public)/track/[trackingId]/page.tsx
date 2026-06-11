@@ -3,6 +3,7 @@ import { StatusTimeline } from '../../../../components/track/StatusTimeline';
 import { FileText, Building2, User } from 'lucide-react';
 import Link from 'next/link';
 import { TrackAnimationWrapper } from '../../../../components/track/TrackAnimationWrapper';
+import { BackButton } from '../../../../components/shared/BackButton';
 
 export const fetchCache = 'force-no-store';
 export const revalidate = 0;
@@ -49,6 +50,9 @@ export default async function TrackingPortalPage({ params }: { params: { trackin
   return (
     <div className="min-h-screen bg-brand-surface py-12 px-4">
       <TrackAnimationWrapper>
+        <div className="mb-8 md:hidden">
+          <BackButton fallbackHref="/track" />
+        </div>
         
         {/* Header */}
         <div className="border-b-2 border-brand-border/60 pb-8 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">

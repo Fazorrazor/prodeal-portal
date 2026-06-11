@@ -70,28 +70,30 @@ function ProductCard({ product, isPriority = false }: { product: any, isPriority
   const priceRange = product.metadata?.price_range || 'Quote Only';
 
   return (
-    <div className="flex flex-col h-full border-b-2 border-brand-border/60 pb-6 group hover:border-brand-blue transition-colors">
-      <div className="relative w-full aspect-video bg-black/5 overflow-hidden">
+    <div className="flex flex-col h-full border-b-2 border-brand-border/60 pb-6 group md:hover:border-brand-blue transition-colors">
+      <Link href={`/inquiry/${product.id}?from=printing`} className="relative w-full aspect-video bg-black/5 overflow-hidden block group/image active:opacity-80 transition-opacity">
         <Image 
           src={imageUrl} 
           alt={product.name}
           width={400}
           height={300}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-700 md:group-hover/image:scale-105 md:group-hover:scale-105"
           priority={isPriority}
         />
         <div className="absolute top-0 right-0 bg-white/90 backdrop-blur-sm text-brand-deep-blue px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest border-l border-b border-brand-border/30">
           {priceRange}
         </div>
-      </div>
+      </Link>
       <div className="pt-4 flex flex-col flex-1">
-        <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tight mb-2">{product.name}</h3>
+        <Link href={`/inquiry/${product.id}?from=printing`} className="block w-fit">
+          <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tight mb-2 md:hover:text-brand-blue transition-colors">{product.name}</h3>
+        </Link>
         <p className="text-sm text-brand-deep-blue/60 font-body mb-6 leading-relaxed">{product.description || 'Customizable corporate merchandise'}</p>
         <div className="mt-auto flex flex-col border-t border-brand-border/30 pt-4">
 
           <Link 
             href={`/inquiry/${product.id}?from=printing`}
-            className="w-full py-3 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest text-center hover:bg-brand-blue transition-colors"
+            className="w-full py-3 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest text-center md:hover:bg-brand-blue active:bg-brand-blue active:scale-[0.98] transition-all"
           >
             Inquire About This
           </Link>

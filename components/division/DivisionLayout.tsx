@@ -1,5 +1,6 @@
 import { DivisionHero } from './DivisionHero';
 import { DivisionContent } from './DivisionContent';
+import { CrossDivisionLinks } from './CrossDivisionLinks';
 
 interface DivisionLayoutProps {
   children: React.ReactNode;
@@ -14,6 +15,7 @@ export function DivisionLayout({ children, title, tagline, slug }: DivisionLayou
       <DivisionHero title={title} tagline={tagline} slug={slug} />
       <DivisionContent>
         {children}
+        <CrossDivisionLinks currentSlug={slug} />
       </DivisionContent>
     </div>
   );

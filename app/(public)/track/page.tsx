@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Loader2, MapPin, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { BackButton } from '../../../components/shared/BackButton';
 
 export default function TrackSearchPage() {
   const [trackingId, setTrackingId] = useState('');
@@ -27,6 +28,9 @@ export default function TrackSearchPage() {
         transition={{ type: 'spring', damping: 25, stiffness: 120 }}
         className="w-full max-w-2xl relative z-10 px-4 sm:px-0"
       >
+        <div className="mb-8 md:hidden">
+          <BackButton fallbackHref="/" />
+        </div>
         <div className="text-center mb-16">
           <h1 className="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-brand-deep-blue mb-4 uppercase tracking-tighter">
             Track Inquiry

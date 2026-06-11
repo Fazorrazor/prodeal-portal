@@ -7,21 +7,35 @@ export const metadata: Metadata = {
 
 export default function AdminLoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-brand-surface p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-brand-border/40 p-8 sm:p-10">
-        
-        <div className="text-center mb-8">
-          <h1 className="font-heading font-bold text-3xl tracking-wide text-brand-deep-blue">
-            PRO<span className="text-brand-red">DEAL</span> <span className="text-brand-blue">ADMIN</span>
-          </h1>
-          <p className="text-brand-deep-blue/60 text-sm mt-2">
-            Secure portal access for authorized personnel only.
-          </p>
+    <>
+      {/* Mobile Blocker */}
+      <div className="lg:hidden flex flex-col items-center justify-center min-h-screen bg-brand-surface p-6 text-center border-t-4 border-brand-red">
+        <div className="w-16 h-16 border-2 border-brand-red flex items-center justify-center mb-6">
+          <span className="font-heading font-bold text-2xl text-brand-red">!</span>
         </div>
-
-        <AdminLoginForm />
-
+        <h1 className="font-heading font-bold text-3xl text-brand-deep-blue uppercase tracking-tighter mb-4">Desktop Only</h1>
+        <p className="text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest max-w-sm leading-relaxed">
+          The Pro Deal Industries admin portal is optimized for data density and requires a larger screen. Please access this page from a desktop or laptop device.
+        </p>
       </div>
-    </div>
+
+      {/* Desktop Login */}
+      <div className="hidden lg:flex min-h-screen flex-col items-center justify-center bg-brand-surface p-4">
+        <div className="w-full max-w-md border-t-4 border-brand-deep-blue pt-12">
+          
+          <div className="text-center mb-12">
+            <h1 className="font-heading font-bold text-4xl tracking-tighter uppercase text-brand-deep-blue">
+              System <span className="text-brand-blue">Login</span>
+            </h1>
+            <p className="text-brand-deep-blue/60 text-[10px] uppercase font-bold tracking-widest mt-4">
+              Secure portal access for authorized personnel only
+            </p>
+          </div>
+
+          <AdminLoginForm />
+
+        </div>
+      </div>
+    </>
   );
 }
