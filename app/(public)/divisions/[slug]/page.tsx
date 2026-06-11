@@ -27,7 +27,13 @@ import { SafetyNotice } from '../../../../components/division/chemicals/SafetyNo
 
 export const dynamic = 'force-dynamic';
 
-export default function DivisionPage({ params }: { params: { slug: string } }) {
+export default function DivisionPage({ 
+  params,
+  searchParams 
+}: { 
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   const { slug } = params;
   
   if (!(slug in DIVISION_DATA)) {
@@ -56,11 +62,11 @@ export default function DivisionPage({ params }: { params: { slug: string } }) {
       )}
 
       {slug === 'bowls' && (
-        <div className="flex flex-col">
-          <BulkOrderNote />
+        <div className="flex flex-col gap-8">
           <DivisionErrorBoundary>
             <InventoryTable />
           </DivisionErrorBoundary>
+          <BulkOrderNote />
         </div>
       )}
 
@@ -69,7 +75,7 @@ export default function DivisionPage({ params }: { params: { slug: string } }) {
           <SafetyNotice />
           <ChemicalSearchBar />
           <DivisionErrorBoundary>
-            <ChemicalCatalog />
+            <ChemicalCatalog searchParams={searchParams} />
           </DivisionErrorBoundary>
         </div>
       )}

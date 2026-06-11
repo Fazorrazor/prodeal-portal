@@ -44,7 +44,7 @@ export function RecentTicketsTable({ inquiries }: { inquiries: any[] }) {
           <thead>
             <tr className="border-b border-brand-border/60">
               <th className="py-4 pr-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Tracking ID</th>
-              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Division</th>
+              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Product / Division</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Client</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Status</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Received</th>
@@ -60,8 +60,11 @@ export function RecentTicketsTable({ inquiries }: { inquiries: any[] }) {
               >
                 <td className="py-4 pr-4"><ScrambledUUID uuid={inquiry.tracking_uuid} /></td>
                 <td className="px-4 py-4">
-                  <span className="text-sm font-semibold text-brand-deep-blue">
+                  <span className="block text-[10px] uppercase font-bold text-brand-deep-blue/60 tracking-widest mb-0.5">
                     {inquiry.divisions?.display_name || 'Unknown'}
+                  </span>
+                  <span className="text-sm font-semibold text-brand-deep-blue line-clamp-1">
+                    {inquiry.inquiry_payload?.productName || 'General Inquiry'}
                   </span>
                 </td>
                 <td className="px-4 py-4">

@@ -48,20 +48,31 @@ export async function SignageGallery() {
 
 function GalleryImage({ product }: { product: any }) {
   return (
-    <div className="break-inside-avoid relative overflow-hidden group border-2 border-brand-border/60 hover:border-brand-blue transition-colors">
+    <div className="break-inside-avoid relative overflow-hidden group border-2 border-brand-border/60 hover:border-brand-blue transition-colors flex flex-col">
+      <div className="relative">
       <Image 
         src={product.image_path}
         alt={product.name}
         width={600}
         height={800}
-        className="w-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
+        className="w-full object-cover grayscale-0 opacity-100 md:grayscale md:opacity-80 md:group-hover:grayscale-0 md:group-hover:opacity-100 transition-all duration-700"
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
       />
-      <div className="absolute inset-0 bg-brand-deep-blue/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4">
+      <div className="hidden md:flex absolute inset-0 bg-brand-deep-blue/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col items-center justify-center p-4">
         <h3 className="text-white font-heading font-bold text-xl uppercase tracking-tighter mb-4 text-center">{product.name}</h3>
         <Link 
           href={`/inquiry/${product.id}`}
           className="px-6 py-3 border-2 border-white text-white font-heading font-bold uppercase tracking-widest text-xs hover:bg-white hover:text-brand-deep-blue transition-colors"
+        >
+          Inquire
+        </Link>
+      </div>
+      </div>
+      <div className="flex md:hidden flex-col items-center justify-center p-6 bg-brand-surface border-t-2 border-brand-border/60">
+        <h3 className="text-brand-deep-blue font-heading font-bold text-xl uppercase tracking-tighter mb-3 text-center leading-tight">{product.name}</h3>
+        <Link 
+          href={`/inquiry/${product.id}`}
+          className="w-full text-center px-6 py-4 bg-brand-deep-blue text-white font-heading font-bold uppercase tracking-widest text-xs hover:bg-brand-blue transition-colors"
         >
           Inquire
         </Link>

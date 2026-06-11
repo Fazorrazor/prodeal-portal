@@ -35,9 +35,9 @@ export async function ProductCatalog() {
           </div>
         ) : (
           <ScrollReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {souvenirs.map((product) => (
+            {souvenirs.map((product, index) => (
               <ScrollRevealItem key={product.id} className="h-full">
-                <ProductCard product={product} />
+                <ProductCard product={product} isPriority={index < 4} />
               </ScrollRevealItem>
             ))}
           </ScrollReveal>
@@ -53,9 +53,9 @@ export async function ProductCatalog() {
           </div>
         ) : (
           <ScrollReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {printing.map((product) => (
+            {printing.map((product, index) => (
               <ScrollRevealItem key={product.id} className="h-full">
-                <ProductCard product={product} />
+                <ProductCard product={product} isPriority={index < 4} />
               </ScrollRevealItem>
             ))}
           </ScrollReveal>
@@ -65,7 +65,7 @@ export async function ProductCatalog() {
   );
 }
 
-function ProductCard({ product }: { product: any }) {
+function ProductCard({ product, isPriority = false }: { product: any, isPriority?: boolean }) {
   const imageUrl = product.image_path || 'https://via.placeholder.com/400x300?text=No+Image';
   const priceRange = product.metadata?.price_range || 'Quote Only';
 
@@ -78,25 +78,22 @@ function ProductCard({ product }: { product: any }) {
           width={400}
           height={300}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          loading="lazy"
+          priority={isPriority}
         />
-        <div className="absolute top-0 right-0 bg-brand-deep-blue text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest">
+        <div className="absolute top-0 right-0 bg-white/90 backdrop-blur-sm text-brand-deep-blue px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest border-l border-b border-brand-border/30">
           {priceRange}
         </div>
       </div>
       <div className="pt-4 flex flex-col flex-1">
         <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tight mb-2">{product.name}</h3>
         <p className="text-sm text-brand-deep-blue/60 font-body mb-6 leading-relaxed">{product.description || 'Customizable corporate merchandise'}</p>
-        <div className="mt-auto flex items-center justify-between border-t border-brand-border/30 pt-4">
-          <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-brand-deep-blue/40 uppercase tracking-widest mb-0.5">Min. Order</span>
-            <span className="text-sm font-bold text-brand-red font-mono">{(product.metadata as any)?.moq || 100} UNITS</span>
-          </div>
+        <div className="mt-auto flex flex-col border-t border-brand-border/30 pt-4">
+
           <Link 
             href={`/inquiry/${product.id}`}
-            className="px-4 py-2 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest hover:bg-brand-blue transition-colors"
+            className="w-full py-3 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest text-center hover:bg-brand-blue transition-colors"
           >
-            Inquire
+            Inquire About This
           </Link>
         </div>
       </div>

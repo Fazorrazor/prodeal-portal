@@ -29,7 +29,7 @@ export async function InventoryTable() {
               <th className="py-4 pr-4 font-heading font-bold text-brand-deep-blue text-xs uppercase tracking-widest">SKU / Product</th>
               <th className="p-4 font-heading font-bold text-brand-deep-blue text-xs uppercase tracking-widest">Size</th>
               <th className="p-4 font-heading font-bold text-brand-deep-blue text-xs uppercase tracking-widest">Material</th>
-              <th className="p-4 font-heading font-bold text-brand-deep-blue text-xs uppercase tracking-widest">MOQ</th>
+
               <th className="py-4 pl-4 font-heading font-bold text-brand-deep-blue text-xs uppercase tracking-widest text-right">Status</th>
               <th className="py-4 pl-4 w-24"></th>
             </tr>
@@ -60,7 +60,7 @@ export async function InventoryTable() {
                   </td>
                   <td className="p-4 text-sm text-brand-deep-blue font-bold">{product.metadata?.size || 'Standard'}</td>
                   <td className="p-4 text-sm text-brand-deep-blue font-bold">{product.metadata?.material || 'Kraft Paper'}</td>
-                  <td className="p-4 font-bold font-mono text-brand-red">{(product.metadata as any)?.moq || 100}</td>
+
                   <td className="py-4 pl-4 text-right">
                     <StockBadge level={product.metadata?.stock_level as string | undefined} />
                   </td>
@@ -123,11 +123,7 @@ export async function InventoryTable() {
                 </div>
               </div>
               
-              <div className="flex justify-between items-center border-t border-brand-border/20 pt-4 mt-4">
-                <span className="text-[10px] text-brand-deep-blue/40 uppercase font-bold tracking-widest">Minimum Order</span>
-                <span className="font-bold font-mono text-brand-red">{(product.metadata as any)?.moq || 100} UNITS</span>
-              </div>
-              
+
               <div className="mt-4">
                 {(product.metadata as any)?.stock_level === 'out_of_stock' ? (
                   <span className="block w-full text-center px-4 py-3 border-2 border-brand-border/30 text-brand-border font-bold uppercase tracking-widest text-xs cursor-not-allowed">
@@ -145,8 +141,6 @@ export async function InventoryTable() {
             </div>
           ))
         )}
-      </div>
-
       </div>
     </ScrollReveal>
   );

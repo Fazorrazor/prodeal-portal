@@ -67,10 +67,8 @@ export default async function TrackingPortalPage({ params }: { params: { trackin
         </div>
 
         {/* Timeline */}
-        <div className="border-b-2 border-brand-border/60 pb-12 mb-12 overflow-x-auto">
-          <div className="min-w-[600px] sm:min-w-0">
-            <StatusTimeline currentStatus={inquiry.status} />
-          </div>
+        <div className="border-b-2 border-brand-border/60 pb-12 mb-12">
+          <StatusTimeline currentStatus={inquiry.status} />
         </div>
 
         {/* Details Grid */}
@@ -117,10 +115,15 @@ export default async function TrackingPortalPage({ params }: { params: { trackin
                     </div>
                   </li>
                </ul>
-             ) : (
+             ) : inquiry.status === 'new' ? (
                <div className="h-full flex flex-col justify-center opacity-60">
                   <p className="text-xl font-heading font-bold uppercase tracking-tight text-brand-deep-blue mb-1">Pending Assignment</p>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60">An agent will be assigned shortly.</p>
+               </div>
+             ) : (
+               <div className="h-full flex flex-col justify-center opacity-60">
+                  <p className="text-xl font-heading font-bold uppercase tracking-tight text-brand-deep-blue mb-1">Unassigned</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60">Handled directly by Administrative Team.</p>
                </div>
              )}
           </div>

@@ -98,8 +98,8 @@ export function AlertsPanel() {
                     <p className="text-sm font-bold text-brand-deep-blue leading-tight mb-1 group-hover:text-brand-blue transition-colors">
                       {alert.contact_name}
                     </p>
-                    <p className="text-xs font-mono text-brand-deep-blue/60">
-                      {alert.divisions?.display_name} • ID: {alert.tracking_uuid.split('-')[0]}
+                    <p className="text-xs font-mono text-brand-deep-blue/60 line-clamp-1">
+                      {alert.inquiry_payload?.productName || alert.divisions?.display_name} • ID: {alert.tracking_uuid.split('-')[0]}
                     </p>
                   </Link>
                 ))}

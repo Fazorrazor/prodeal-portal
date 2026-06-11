@@ -148,11 +148,11 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
           ) : (
             <>
               <UploadCloud className="w-10 h-10 text-brand-deep-blue/40 mb-4" />
-              <p className="text-xs font-bold uppercase tracking-widest text-brand-deep-blue text-center mb-2">
-                <span className="text-brand-blue">Tap to select</span>
+              <p className="text-xs font-bold uppercase tracking-widest text-brand-red/80 text-center mb-2">
+                <span className="text-brand-red">Tap to select</span>
                 <span className="hidden sm:inline"> or drop files</span>
               </p>
-              <p className="text-[10px] font-mono font-bold text-brand-deep-blue/40 text-center uppercase tracking-widest px-4">
+              <p className="text-[10px] font-mono font-bold text-brand-red/60 text-center uppercase tracking-widest px-4">
                 PDF / JPG / PNG (MAX 10MB)
               </p>
             </>

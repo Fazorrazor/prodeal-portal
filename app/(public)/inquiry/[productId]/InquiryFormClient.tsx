@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -18,23 +18,30 @@ interface InquiryFormClientProps {
   defaultMoq: number;
 }
 
-function TrackingReceipt({ trackingId }: { trackingId: string }) {
+function TrackingReceipt({ trackingId, divisionSlug }: { trackingId: string; divisionSlug: string }) {
   const { displayText } = useScrambleText(trackingId, 200, 1500);
-  
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Smoothly scroll this component into view, which automatically handles
+    // the fact that this right column is an overflow-y-auto scrolling container.
+    containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
   const copyTracking = () => {
     navigator.clipboard.writeText(trackingId);
     toast.success('Copied to clipboard!');
   };
 
   return (
-    <div className="flex flex-col py-12 h-full">
-      <h3 className="font-heading font-bold text-3xl md:text-5xl text-brand-deep-blue mb-4 tracking-tighter uppercase">Inquiry Logged.</h3>
-      <p className="text-xs font-bold text-brand-deep-blue/60 mb-12 uppercase tracking-widest leading-relaxed border-l-2 border-brand-blue pl-4">
-        Your data has been successfully routed to our specialists via WhatsApp. 
+    <div ref={containerRef} className="flex flex-col py-6 md:py-8 h-full scroll-mt-32">
+      <h3 className="font-heading font-bold text-3xl md:text-4xl text-brand-deep-blue mb-4 tracking-tighter uppercase">Inquiry Logged.</h3>
+      <p className="text-xs font-bold text-brand-red/80 mb-8 uppercase tracking-widest leading-relaxed border-l-2 border-brand-red pl-4">
+        Your data has been successfully routed to our specialists via WhatsApp.
         Retain the following code to track progress via the tracking portal.
       </p>
-      
-      <div className="border-y-2 border-brand-deep-blue/20 py-8 mb-12 flex items-center justify-between relative overflow-hidden bg-black/5 px-6">
+
+      <div className="border-y-2 border-brand-deep-blue/20 py-6 mb-8 flex items-center justify-between relative overflow-hidden bg-black/5 px-4 md:px-6">
         <AnimatedBorder direction="left" delay={0.2} />
         <div className="relative z-10">
           <p className="text-[10px] font-bold text-brand-blue uppercase tracking-widest mb-1">Decrypted Tracking UUID</p>
@@ -42,14 +49,14 @@ function TrackingReceipt({ trackingId }: { trackingId: string }) {
             {displayText}
           </span>
         </div>
-        <button type="button" onClick={copyTracking} className="p-4 bg-brand-deep-blue text-white hover:bg-brand-blue transition-colors relative z-10" aria-label="Copy tracking ID">
+        <button type="button" onClick={copyTracking} className="p-3 bg-brand-deep-blue text-white hover:bg-brand-blue transition-colors relative z-10" aria-label="Copy tracking ID">
           <Copy className="w-5 h-5" />
         </button>
       </div>
-      
-      <button 
+
+      <button
         type="button"
-        onClick={() => window.location.href = `/divisions/${window.location.pathname.split('/')[2]}`}
+        onClick={() => window.location.href = `/divisions/${divisionSlug}`}
         className="w-full sm:w-auto px-8 py-4 bg-brand-deep-blue text-white font-heading font-bold uppercase tracking-widest text-xs border-2 border-brand-deep-blue hover:bg-transparent hover:text-brand-deep-blue transition-colors self-start flex items-center justify-center gap-2"
       >
         Return to Catalog <ArrowRight className="w-4 h-4" />
@@ -93,7 +100,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
 
   const onSubmit = async (data: FormData) => {
     setStatus('submitting');
-    
+
     const payload = {
       divisionSlug,
       contact: data.contact,
@@ -120,8 +127,8 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
     setUploadedFiles(prev => prev.filter(f => f.url !== url));
   };
 
-  if (status === 'success') {
-    return <TrackingReceipt trackingId={trackingId} />;
+  if (status === 'success' && trackingId) {
+    return <TrackingReceipt trackingId={trackingId} divisionSlug={divisionSlug} />;
   }
 
   if (status === 'error') {
@@ -134,7 +141,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
         <p className="text-xs font-bold text-brand-red mb-8 uppercase tracking-widest max-w-sm">
           {errorMessage}
         </p>
-        <button 
+        <button
           type="button"
           onClick={() => setStatus('idle')}
           className="px-8 py-4 bg-brand-red text-white font-heading font-bold uppercase tracking-widest text-xs hover:bg-transparent hover:text-brand-red border-2 border-brand-red transition-colors"
@@ -151,7 +158,17 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   const errorClass = "text-[10px] text-brand-red font-bold tracking-widest uppercase mt-1";
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-12 pb-24">
+    <>
+      <div className="mb-12">
+        <h2 className="font-heading font-bold text-3xl text-brand-deep-blue uppercase tracking-tight mb-2">
+          Inquiry Details
+        </h2>
+        <p className="text-xs font-bold text-brand-red/80 uppercase tracking-widest">
+          Please provide the specifications below. A representative will contact you via WhatsApp shortly.
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-12 pb-24">
       {/* Contact Details Section */}
       <div className="space-y-8">
         <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tight border-b-2 border-brand-deep-blue pb-2">
@@ -185,7 +202,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
         <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tight border-b-2 border-brand-deep-blue pb-2">
           2. Specifications
         </h3>
-        
+
         {/* Signages specific fields */}
         {divisionSlug === 'signages' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -215,7 +232,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
         {divisionSlug === 'printing' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div>
-              <label className={labelClass}>Quantity (Min {defaultMoq})</label>
+              <label className={labelClass}>Quantity</label>
               <input {...register('inquiry.quantity', { valueAsNumber: true })} type="number" inputMode="numeric" className={inputClass} />
               {(errors.inquiry as any)?.quantity && <p className={errorClass}>{(errors.inquiry as any).quantity.message}</p>}
             </div>
@@ -238,7 +255,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
         {divisionSlug === 'bowls' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <div>
-              <label className={labelClass}>Quantity (Min {defaultMoq})</label>
+              <label className={labelClass}>Quantity</label>
               <input {...register('inquiry.quantity', { valueAsNumber: true })} type="number" inputMode="numeric" className={inputClass} />
               {(errors.inquiry as any)?.quantity && <p className={errorClass}>{(errors.inquiry as any).quantity.message}</p>}
             </div>
@@ -288,18 +305,18 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
 
       {/* Attachments Section for Signages/Printing */}
       {(divisionSlug === 'signages' || divisionSlug === 'printing') && (
-        <FileUploadZone 
-          uploadedFiles={uploadedFiles} 
-          onAddFile={handleAddFile} 
-          onRemoveFile={handleRemoveFile} 
-          divisionSlug={divisionSlug} 
+        <FileUploadZone
+          uploadedFiles={uploadedFiles}
+          onAddFile={handleAddFile}
+          onRemoveFile={handleRemoveFile}
+          divisionSlug={divisionSlug}
         />
       )}
 
       {/* Submit Button */}
       <div className="pt-8 border-t-2 border-brand-border/60">
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={status === 'submitting'}
           className="w-full h-14 bg-brand-deep-blue text-white font-heading font-bold text-lg uppercase tracking-widest hover:bg-brand-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
@@ -310,6 +327,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
           )}
         </button>
       </div>
-    </form>
+      </form>
+    </>
   );
 }

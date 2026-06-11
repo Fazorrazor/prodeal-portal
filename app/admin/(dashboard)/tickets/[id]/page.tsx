@@ -7,6 +7,7 @@ import { StatusUpdater } from '../../../../../components/admin/StatusUpdater';
 import { InquiryPayloadViewer } from '../../../../../components/admin/InquiryPayloadViewer';
 import { DivisionErrorBoundary } from '../../../../../components/shared/DivisionErrorBoundary';
 import { AnimatedBorder } from '../../../../../components/admin/AnimatedBorder';
+import { DeleteInquiryButton } from '../../../../../components/admin/DeleteInquiryButton';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -177,6 +178,9 @@ async function TicketDetail({ id }: { id: string }) {
               </div>
             </div>
           </section>
+          
+          {/* Danger Zone */}
+          <DeleteInquiryButton inquiryId={inquiry.id} />
         </div>
       </div>
     </div>

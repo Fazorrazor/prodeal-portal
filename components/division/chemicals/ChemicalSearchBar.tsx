@@ -1,19 +1,29 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
-import { useQuoteStore } from '../../../store/quoteStore';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 
 export function ChemicalSearchBar() {
-  const setSearchTerm = useQuoteStore((state) => state.setSearchTerm);
-  const [localTerm, setLocalTerm] = useState('');
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  
+  const [localTerm, setLocalTerm] = useState(searchParams.get('q') || '');
 
-  // Debounce the global state update to prevent excessive renders
+  // Debounce the URL update to prevent excessive renders
   useEffect(() => {
     const timer = setTimeout(() => {
-      setSearchTerm(localTerm);
+      const current = new URLSearchParams(Array.from(searchParams.entries()));
+      if (localTerm.trim()) {
+        current.set('q', localTerm.trim());
+      } else {
+        current.delete('q');
+      }
+      // using router.replace to avoid building up a huge history stack for every keystroke
+      router.replace(`${pathname}?${current.toString()}`, { scroll: false });
     }, 300);
     return () => clearTimeout(timer);
-  }, [localTerm, setSearchTerm]);
+  }, [localTerm, pathname, router, searchParams]);
 
   return (
     <div className="relative max-w-xl mx-auto mb-12">

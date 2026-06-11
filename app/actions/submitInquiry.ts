@@ -5,6 +5,7 @@ import { inquiryRateLimit } from '../../lib/ratelimit';
 import { InquirySubmissionSchema, DIVISION_SCHEMAS } from '../../lib/validators/inquiry';
 import { headers } from 'next/headers';
 import { logError } from '../../lib/logger';
+import { sendWhatsAppAlert } from '../../lib/whatsapp/send';
 
 export async function submitInquiry(formData: any) {
   try {
@@ -66,11 +67,32 @@ export async function submitInquiry(formData: any) {
       (global as any).divisionCache[divisionSlug] = divisionId;
     }
 
-    // 5. Insert into inquiries table
+    // 5. Find an active staff member for auto-assignment
+    const { data: staffMembers, error: staffError } = await supabase
+      .from('staff_members')
+      .select('id, whatsapp_phone')
+      .eq('division_id', divisionId)
+      .eq('is_active', true);
+
+    if (staffError) {
+      await logError('SubmitInquiry Action - Staff Lookup Error', staffError, { divisionId });
+    }
+
+    // Pick a random active staff member if available (simple load balancing)
+    let assignedStaff = null;
+    let staffPhone = null;
+    if (staffMembers && staffMembers.length > 0) {
+      const randomIndex = Math.floor(Math.random() * staffMembers.length);
+      assignedStaff = staffMembers[randomIndex].id;
+      staffPhone = staffMembers[randomIndex].whatsapp_phone;
+    }
+
+    // 6. Insert into inquiries table
     const { data: newInquiry, error: insertError } = await supabase
       .from('inquiries')
       .insert({
         division_id: divisionId,
+        assigned_staff: assignedStaff,
         contact_name: contact.name,
         contact_email: contact.email,
         contact_phone: contact.phone,
@@ -79,15 +101,43 @@ export async function submitInquiry(formData: any) {
         attachments: fileIds,
         status: 'new'
       })
-      .select('tracking_uuid')
+      .select('id, tracking_uuid, divisions(display_name)')
       .single();
 
-    if (insertError) {
+    if (insertError || !newInquiry) {
       await logError('SubmitInquiry Action - Insert Error', insertError, { formData });
       return { success: false, error: 'Failed to save inquiry to database.' };
     }
 
-    // 6. Return success with tracking ID
+    // 7. Enforce RULE 4: Trigger WhatsApp API
+    if (staffPhone) {
+      const divisionName = Array.isArray(newInquiry.divisions) 
+        ? newInquiry.divisions[0]?.display_name 
+        : (newInquiry.divisions as any)?.display_name || divisionSlug;
+
+      const waResult = await sendWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName);
+
+      if (!waResult.success) {
+        // Rollback the database write if WA fails (Strict Rule 4 compliance)
+        await supabase.from('inquiries').delete().eq('id', newInquiry.id);
+        return { success: false, error: 'Failed to notify agent. Inquiry was not submitted.' };
+      }
+
+      // Update the inquiry with the WA message ID
+      await supabase
+        .from('inquiries')
+        .update({ 
+          wa_message_id: waResult.messageId, 
+          wa_sent_at: new Date().toISOString() 
+        })
+        .eq('id', newInquiry.id);
+    } else {
+      // If no staff is available, we log a warning but the business decides if it should fail.
+      // Based on B2B norms, we accept the ticket but flag it as unassigned.
+      console.warn(`[WARN] Inquiry ${newInquiry.tracking_uuid} submitted but no active staff found for division.`);
+    }
+
+    // 8. Return success with tracking ID
     return { success: true, trackingId: newInquiry.tracking_uuid };
 
   } catch (error) {

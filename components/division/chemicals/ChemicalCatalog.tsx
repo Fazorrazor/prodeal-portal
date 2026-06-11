@@ -1,20 +1,28 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
-import { SDSDownloadButton } from './SDSDownloadButton';
+
 import Link from 'next/link';
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
 
-export async function ChemicalCatalog() {
+export async function ChemicalCatalog({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
   const supabase = createServerComponentClient({ cookies });
   
-  const { data: products, error } = await supabase
+  let query = supabase
     .from('products')
     .select('*, divisions!inner(slug)')
     .eq('divisions.slug', 'chemicals')
-    .order('name')
-    .limit(50);
+    .order('name');
+
+  const q = typeof searchParams?.q === 'string' ? searchParams.q : undefined;
+
+  if (q) {
+    const term = `%${q}%`;
+    query = query.or(`name.ilike.${term},metadata->>cas_number.ilike.${term}`);
+  }
+
+  const { data: products, error } = await query.limit(50);
 
   if (error) {
     throw new Error('Failed to load chemical catalog');
@@ -60,25 +68,14 @@ export async function ChemicalCatalog() {
                     {product.description || 'Standard industrial chemical formulation.'}
                   </p>
                   
-                  <div className="pt-4 border-t border-brand-border/30 flex items-center justify-between mt-auto">
-                    <div className="flex flex-col">
-                      <span className="text-[10px] font-bold text-brand-deep-blue/40 uppercase tracking-widest mb-0.5">Min. Order</span>
-                      <span className="text-sm font-bold text-brand-red font-mono">
-                        {(product.metadata as any)?.moq || 250} KG
-                      </span>
-                    </div>
-                    <div className="flex gap-2">
-                      <SDSDownloadButton 
-                        documentId={product.id} 
-                        chemicalName={product.name} 
-                      />
-                      <Link 
-                        href={`/inquiry/${product.id}`}
-                        className="px-4 py-2 border border-brand-deep-blue text-brand-deep-blue text-[10px] font-bold uppercase tracking-widest hover:bg-brand-deep-blue hover:text-white transition-colors"
-                      >
-                        Inquire
-                      </Link>
-                    </div>
+                  <div className="pt-4 border-t border-brand-border/30 flex flex-col mt-auto">
+
+                    <Link 
+                      href={`/inquiry/${product.id}`}
+                      className="w-full py-3 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest text-center hover:bg-brand-blue transition-colors"
+                    >
+                      Inquire About This
+                    </Link>
                   </div>
                 </div>
               </ScrollRevealItem>

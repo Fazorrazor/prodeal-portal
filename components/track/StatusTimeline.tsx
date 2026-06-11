@@ -7,9 +7,9 @@ interface Props {
 export function StatusTimeline({ currentStatus }: Props) {
   const steps = [
     { id: 'new', label: 'Received', icon: Clock },
-    { id: 'processing', label: 'Processing', icon: Circle },
+    { id: 'in_progress', label: 'In Progress', icon: Circle },
     { id: 'quoted', label: 'Quote Ready', icon: FileText },
-    { id: 'completed', label: 'Completed', icon: PackageCheck },
+    { id: 'closed', label: 'Closed', icon: PackageCheck },
   ];
 
   const safeStatus = currentStatus?.toLowerCase() || 'new';
@@ -18,14 +18,17 @@ export function StatusTimeline({ currentStatus }: Props) {
 
   return (
     <div className="relative">
-      {/* Background Line */}
-      <div className="absolute top-6 left-6 right-6 h-1 bg-brand-border/40 hidden sm:block" />
-      
-      {/* Active Line */}
-      <div 
-        className="absolute top-6 left-6 h-1 bg-brand-blue transition-all duration-1000 hidden sm:block" 
-        style={{ width: `${(currentIndex / (steps.length - 1)) * 100}%` }}
-      />
+      {/* Lines Container to prevent bleed */}
+      <div className="absolute top-6 left-6 right-6 h-1 hidden sm:block">
+        {/* Background Line */}
+        <div className="absolute inset-0 bg-brand-border/40" />
+        
+        {/* Active Line */}
+        <div 
+          className="absolute inset-y-0 left-0 bg-brand-blue transition-all duration-1000" 
+          style={{ width: `${(currentIndex / (steps.length - 1)) * 100}%` }}
+        />
+      </div>
 
       <div className="relative z-10 flex flex-col sm:flex-row justify-between gap-6 sm:gap-0">
         {steps.map((step, index) => {
