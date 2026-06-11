@@ -1,17 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { cn } from '../../lib/utils';
 import { ALL_MAIN_LINKS } from '../../lib/config/navigation';
 
-export function NavLinks() {
+function NavLinksContent() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const fromParam = searchParams.get('from');
 
   return (
     <nav className="hidden md:flex items-center gap-6 lg:gap-8">
       {ALL_MAIN_LINKS.map((link) => {
-        const isActive = pathname.startsWith(link.href);
+        const slug = link.href.split('/').pop();
+        const isActive = pathname.startsWith(link.href) || (pathname.startsWith('/inquiry') && fromParam === slug);
         return (
           <Link
             key={link.href}
@@ -26,5 +30,13 @@ export function NavLinks() {
         );
       })}
     </nav>
+  );
+}
+
+export function NavLinks() {
+  return (
+    <Suspense fallback={<nav className="hidden md:flex items-center gap-6 lg:gap-8" />}>
+      <NavLinksContent />
+    </Suspense>
   );
 }

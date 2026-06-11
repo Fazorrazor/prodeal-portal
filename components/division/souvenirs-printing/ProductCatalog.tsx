@@ -90,7 +90,7 @@ function ProductCard({ product, isPriority = false }: { product: any, isPriority
         <div className="mt-auto flex flex-col border-t border-brand-border/30 pt-4">
 
           <Link 
-            href={`/inquiry/${product.id}`}
+            href={`/inquiry/${product.id}?from=printing`}
             className="w-full py-3 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest text-center hover:bg-brand-blue transition-colors"
           >
             Inquire About This

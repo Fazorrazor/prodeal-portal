@@ -71,7 +71,7 @@ export async function InventoryTable() {
                       </span>
                     ) : (
                       <Link 
-                        href={`/inquiry/${product.id}`}
+                        href={`/inquiry/${product.id}?from=bowls`}
                         className="inline-block px-4 py-2 bg-brand-deep-blue text-white font-bold uppercase tracking-widest text-[10px] hover:bg-brand-blue transition-colors"
                       >
                         Inquire
@@ -131,7 +131,7 @@ export async function InventoryTable() {
                   </span>
                 ) : (
                   <Link 
-                    href={`/inquiry/${product.id}`}
+                    href={`/inquiry/${product.id}?from=disposable-bowls`}
                     className="block w-full text-center px-4 py-3 bg-brand-deep-blue text-white font-bold uppercase tracking-widest text-xs hover:bg-brand-blue transition-colors"
                   >
                     Inquire About This
