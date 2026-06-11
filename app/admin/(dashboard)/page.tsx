@@ -54,7 +54,7 @@ export default async function AdminDashboardOverview() {
   const { data: avgHoursData } = await supabase.rpc('get_avg_resolution_time_hrs');
   const avgTime = `${avgHoursData || 0} hrs`;
 
-  const recent = allInquiries.slice(0, 20);
+  const recent = (inquiries || []).slice(0, 20);
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2">
