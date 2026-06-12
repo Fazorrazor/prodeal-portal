@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
+import { ImageLightbox } from '../../shared/ImageLightbox';
 
 export async function SignageGallery() {
   const supabase = createServerComponentClient({ cookies });
@@ -50,7 +51,7 @@ function GalleryImage({ product }: { product: any }) {
   return (
     <div className="break-inside-avoid relative overflow-hidden group border-2 border-brand-border/60 md:hover:border-brand-blue transition-colors flex flex-col">
       <div className="relative group/image">
-        <Link href={`/inquiry/${product.id}?from=signages`} className="block active:opacity-80 transition-opacity">
+        <ImageLightbox src={product.image_path} alt={product.name} className="block active:opacity-80 transition-opacity">
           <Image 
             src={product.image_path}
             alt={product.name}
@@ -59,11 +60,14 @@ function GalleryImage({ product }: { product: any }) {
             className="w-full object-cover grayscale-0 opacity-100 md:grayscale md:opacity-80 md:group-hover/image:grayscale-0 md:group-hover/image:opacity-100 md:group-hover:grayscale-0 md:group-hover:opacity-100 transition-all duration-700"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
-        </Link>
-        <div className="hidden md:flex absolute inset-0 bg-brand-deep-blue/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col items-center justify-center p-4 pointer-events-none">
-          <Link href={`/inquiry/${product.id}?from=signages`} className="pointer-events-auto mb-4 block">
+        </ImageLightbox>
+        <div className="hidden md:flex absolute inset-0 bg-brand-deep-blue/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col items-center justify-center p-4 pointer-events-none text-center">
+          <Link href={`/inquiry/${product.id}?from=signages`} className="pointer-events-auto mb-2 block">
             <h3 className="text-white font-heading font-bold text-xl uppercase tracking-tighter text-center md:hover:text-brand-blue transition-colors">{product.name}</h3>
           </Link>
+          <p className="text-white/90 text-sm font-body mb-4 px-4 line-clamp-3">
+            {product.description || 'Custom fabricated 3D signage solution.'}
+          </p>
           <Link 
             href={`/inquiry/${product.id}?from=signages`}
             className="pointer-events-auto px-6 py-3 border-2 border-white text-white font-heading font-bold uppercase tracking-widest text-xs md:hover:bg-white md:hover:text-brand-deep-blue active:bg-white/80 transition-colors"
@@ -73,9 +77,12 @@ function GalleryImage({ product }: { product: any }) {
         </div>
       </div>
       <div className="flex md:hidden flex-col items-center justify-center p-6 bg-brand-surface border-t-2 border-brand-border/60">
-        <Link href={`/inquiry/${product.id}?from=signages`} className="block w-full mb-3 active:opacity-70 transition-opacity">
+        <Link href={`/inquiry/${product.id}?from=signages`} className="block w-full mb-2 active:opacity-70 transition-opacity">
           <h3 className="text-brand-deep-blue font-heading font-bold text-xl uppercase tracking-tighter text-center leading-tight md:hover:text-brand-blue transition-colors">{product.name}</h3>
         </Link>
+        <p className="text-sm text-brand-deep-blue/70 font-body mb-4 text-center leading-relaxed">
+          {product.description || 'Custom fabricated 3D signage solution.'}
+        </p>
         <Link 
           href={`/inquiry/${product.id}?from=signages`}
           className="w-full text-center px-6 py-4 bg-brand-deep-blue text-white font-heading font-bold uppercase tracking-widest text-xs md:hover:bg-brand-blue active:bg-brand-blue active:scale-[0.98] transition-all"

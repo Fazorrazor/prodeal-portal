@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
 import { ProductImageFallback } from '../../shared/ProductImageFallback';
+import { ImageLightbox } from '../../shared/ImageLightbox';
 
 export async function ProductCatalog() {
   const supabase = createServerComponentClient({ cookies });
@@ -71,7 +72,7 @@ function ProductCard({ product, isPriority = false }: { product: any, isPriority
 
   return (
     <div className="flex flex-col h-full border-b-2 border-brand-border/60 pb-6 group md:hover:border-brand-blue transition-colors">
-      <Link href={`/inquiry/${product.id}?from=printing`} className="relative w-full aspect-video bg-black/5 overflow-hidden block group/image active:opacity-80 transition-opacity">
+      <ImageLightbox src={product.image_path || ''} alt={product.name} className="relative w-full aspect-video bg-black/5 overflow-hidden block group/image active:opacity-80 transition-opacity">
         {product.image_path ? (
           <Image 
             src={product.image_path} 
@@ -87,7 +88,7 @@ function ProductCard({ product, isPriority = false }: { product: any, isPriority
         <div className="absolute top-0 right-0 bg-white/90 backdrop-blur-sm text-brand-deep-blue px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest border-l border-b border-brand-border/30">
           {priceRange}
         </div>
-      </Link>
+      </ImageLightbox>
       <div className="pt-4 flex flex-col flex-1">
         <Link href={`/inquiry/${product.id}?from=printing`} className="block w-fit">
           <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tight mb-2 md:hover:text-brand-blue transition-colors">{product.name}</h3>

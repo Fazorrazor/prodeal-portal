@@ -4,6 +4,7 @@ import { ScrollReveal } from '../../shared/ScrollReveal';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ProductImageFallback } from '../../shared/ProductImageFallback';
+import { ImageLightbox } from '../../shared/ImageLightbox';
 
 export async function InventoryTable() {
   const supabase = createServerComponentClient({ cookies });
@@ -45,19 +46,20 @@ export async function InventoryTable() {
               products.map((product) => (
                 <tr key={product.id} className="border-b border-brand-border/30 md:hover:bg-black/5 transition-colors group">
                   <td className="py-4 pr-4">
-                    <Link href={`/inquiry/${product.id}?from=bowls`} className="block w-12 h-12 bg-black/5 overflow-hidden shrink-0 active:opacity-80 transition-opacity">
+                    <ImageLightbox src={product.image_path || ''} alt={product.name} className="block w-12 h-12 bg-black/5 overflow-hidden shrink-0 active:opacity-80 transition-opacity">
                       {product.image_path ? (
                         <Image src={product.image_path} alt={product.name} width={48} height={48} className="w-full h-full object-cover" />
                       ) : (
                         <ProductImageFallback />
                       )}
-                    </Link>
+                    </ImageLightbox>
                   </td>
                   <td className="py-4 pr-4">
                     <Link href={`/inquiry/${product.id}?from=bowls`} className="block w-fit">
                       <div className="font-heading font-bold text-brand-deep-blue uppercase tracking-tight md:hover:text-brand-blue transition-colors">{product.name}</div>
                     </Link>
                     <div className="text-[10px] text-brand-deep-blue/40 font-mono font-bold tracking-widest mt-1 uppercase">{product.id.split('-')[0]}</div>
+                    <div className="text-xs text-brand-deep-blue/70 mt-1 max-w-xs">{product.description || 'Premium disposable catering bowl.'}</div>
                   </td>
                   <td className="p-4 text-sm text-brand-deep-blue font-bold">{product.metadata?.size || 'Standard'}</td>
                   <td className="p-4 text-sm text-brand-deep-blue font-bold">{product.metadata?.material || 'Kraft Paper'}</td>
@@ -89,13 +91,13 @@ export async function InventoryTable() {
             <div key={product.id} className="border-b-2 border-brand-border/60 py-6 flex flex-col gap-1">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex gap-4">
-                  <Link href={`/inquiry/${product.id}?from=bowls`} className="block w-16 h-16 bg-black/5 shrink-0 overflow-hidden active:opacity-80 transition-opacity">
+                  <ImageLightbox src={product.image_path || ''} alt={product.name} className="block w-16 h-16 bg-black/5 shrink-0 overflow-hidden active:opacity-80 transition-opacity">
                     {product.image_path ? (
                       <Image src={product.image_path} alt={product.name} width={64} height={64} className="w-full h-full object-cover" />
                     ) : (
                       <ProductImageFallback />
                     )}
-                  </Link>
+                  </ImageLightbox>
                   <div>
                     <Link href={`/inquiry/${product.id}?from=bowls`} className="block w-fit">
                       <div className="font-bold text-brand-deep-blue font-heading text-xl uppercase tracking-tight leading-tight md:hover:text-brand-blue transition-colors">{product.name}</div>
@@ -115,6 +117,8 @@ export async function InventoryTable() {
                   <span className="text-brand-deep-blue font-bold">{product.metadata?.material || 'Kraft Paper'}</span>
                 </div>
               </div>
+              
+              <p className="text-sm text-brand-deep-blue/70 mt-2 mb-2">{product.description || 'Premium disposable catering bowl.'}</p>
               
 
               <div className="mt-4">

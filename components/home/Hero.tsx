@@ -26,10 +26,7 @@ export function Hero() {
           animate="visible"
           className="max-w-4xl mx-auto text-center flex flex-col items-center"
         >
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-deep-blue/5 border border-brand-deep-blue/10 mb-5 md:mb-8">
-            <span className="w-2 h-2 rounded-full bg-brand-blue animate-pulse" />
-            <span className="text-sm font-medium text-brand-deep-blue/80">B2B Procurement Portal</span>
-          </motion.div>
+
           
           <motion.h1 variants={itemVariants} className="font-display text-[2.75rem] leading-[1.1] sm:text-5xl md:text-7xl text-brand-deep-blue md:leading-[0.9] tracking-tight mb-4 md:mb-8 px-2 md:px-0">
             BUILT FOR INDUSTRY.<br className="hidden md:block" />
@@ -37,7 +34,7 @@ export function Hero() {
           </motion.h1>
           
           <motion.p variants={itemVariants} className="text-sm sm:text-base md:text-xl text-brand-deep-blue/70 max-w-2xl mb-8 md:mb-12 font-body leading-relaxed px-4 md:px-0">
-            Prodeal Industries is the trusted partner for massive-scale procurement.
+            Prodeal Industries Ltd. is the trusted partner for massive-scale procurement.
             From custom 3D Signages to Industrial Chemicals, we handle the volume you demand without compromise.
           </motion.p>
           

@@ -25,7 +25,7 @@ const ibmPlexSans = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Prodeal Industries',
+  title: 'Prodeal Industries Ltd.',
   description: 'Built for Industry. Delivered with Precision.',
 };
 
