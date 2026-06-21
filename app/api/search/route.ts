@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { searchRateLimit } from '../../../lib/ratelimit';
 
+export const dynamic = 'force-dynamic';
+
 // Input validation schema
 const searchSchema = z.object({
   q: z.string().trim().min(2, "Search query must be at least 2 characters").max(100, "Search query is too long"),
