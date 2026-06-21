@@ -42,7 +42,7 @@ export async function GET() {
       .limit(5);
 
     // 3. Optional: Filter by division if the caller is an agent
-    if (staff.role === USER_ROLES.AGENT && staff.division_ids && staff.division_ids.length > 0) {
+    if (staff.role === USER_ROLES.STAFF && staff.division_ids && staff.division_ids.length > 0) {
       query.in('division_id', staff.division_ids);
     }
 

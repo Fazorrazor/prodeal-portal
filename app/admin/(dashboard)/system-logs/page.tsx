@@ -18,7 +18,7 @@ export default async function SystemLogsPage() {
       .select('role')
       .eq('auth_user_id', user.id)
       .single();
-    if (staff?.role !== 'admin') {
+    if ((staff as any)?.role !== 'admin') {
       redirect('/admin');
     }
   } else {

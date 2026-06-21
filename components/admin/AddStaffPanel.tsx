@@ -46,7 +46,7 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
       toast.success('Staff member provisioned successfully');
       setIsOpen(false);
       setFormData({
-        fullName: '', email: '', password: '', whatsappPhone: '', role: USER_ROLES.AGENT, divisionIds: []
+        fullName: '', email: '', password: '', whatsappPhone: '', role: USER_ROLES.STAFF, divisionIds: []
       });
       router.refresh();
       

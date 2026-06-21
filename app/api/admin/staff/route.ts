@@ -13,7 +13,7 @@ const staffSchema = z.object({
   role: z.enum(ROLE_VALUES),
   divisionIds: z.array(z.string()).optional()
 }).refine(data => {
-  if (data.role === USER_ROLES.AGENT && (!data.divisionIds || data.divisionIds.length === 0)) return false;
+  if (data.role === USER_ROLES.STAFF && (!data.divisionIds || data.divisionIds.length === 0)) return false;
   return true;
 }, {
   message: "Agents must be assigned to at least one division",
@@ -77,7 +77,7 @@ export async function POST(req: Request) {
         full_name: fullName,
         whatsapp_phone: whatsappPhone,
         role: role,
-        division_ids: role === USER_ROLES.AGENT ? divisionIds || [] : [],
+        division_ids: role === USER_ROLES.STAFF ? divisionIds || [] : [],
         is_active: true
       });
 

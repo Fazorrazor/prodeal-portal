@@ -72,9 +72,9 @@ async function TrackingDataLoader({ trackingId }: { trackingId: string }) {
   return (
     <TrackingTimeline 
       trackingId={trackingId}
-      status={inquiry.status as any}
-      createdAt={inquiry.created_at}
-      updatedAt={inquiry.updated_at}
+      status={(inquiry as any).status as any}
+      createdAt={(inquiry as any).created_at}
+      updatedAt={(inquiry as any).updated_at}
     />
   );
 }

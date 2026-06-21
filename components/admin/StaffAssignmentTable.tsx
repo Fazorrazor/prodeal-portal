@@ -99,7 +99,7 @@ export async function StaffAssignmentTable({ hideManageLink = false }: { hideMan
                 </td>
                 <td className="px-4 py-4 text-sm font-semibold text-brand-deep-blue align-middle">
                   {member.division_ids && member.division_ids.length > 0 
-                    ? member.division_ids.map((id: string) => divisions?.find((d: { id: string; display_name: string }) => d.id === id)?.display_name).filter(Boolean).join(', ')
+                    ? member.division_ids.map((id: string) => ((divisions as any[]) || []).find((d: any) => d.id === id)?.display_name).filter(Boolean).join(', ')
                     : 'Unassigned'}
                 </td>
                 <td className="px-4 py-4 text-brand-deep-blue/60 font-mono text-xs align-middle">

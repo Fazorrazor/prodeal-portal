@@ -3,7 +3,12 @@ import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { File as FileIcon, Image as ImageIcon, X, UploadCloud, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { UploadedFile } from '../../store/quoteStore'; // We can keep using the type
+export interface UploadedFile {
+  name: string;
+  url: string;
+  size: number;
+  mimeType: string;
+}
 
 interface FileUploadZoneProps {
   uploadedFiles: UploadedFile[];
