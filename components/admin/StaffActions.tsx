@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Power } from 'lucide-react';
+import { Loader2, Power, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { EditStaffPanel } from './EditStaffPanel';
 
@@ -23,8 +23,33 @@ interface Division {
 
 export function StaffActions({ member, divisions, currentUserId }: { member: StaffMember, divisions: Division[], currentUserId?: string }) {
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [optimisticActive, setOptimisticActive] = useState(member.is_active);
   const router = useRouter();
+
+  const deleteStaff = async () => {
+    if (!window.confirm(`Are you sure you want to permanently delete ${member.full_name}? This action cannot be undone.`)) {
+      return;
+    }
+    
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`/api/admin/staff/${member.id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to delete staff member');
+      }
+      
+      toast.success(`Staff member ${member.full_name} deleted successfully`);
+      router.refresh();
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'An error occurred');
+      setIsDeleting(false); 
+    }
+  };
 
   const toggleStatus = async () => {
     // Optimistically snap the switch immediately for a tactile hardware feel
@@ -69,10 +94,19 @@ export function StaffActions({ member, divisions, currentUserId }: { member: Sta
     <div className="flex items-center justify-end gap-6">
       <EditStaffPanel staff={member} divisions={divisions} />
       
+      <button
+        onClick={deleteStaff}
+        disabled={isUpdating || isDeleting}
+        className="p-2 text-brand-deep-blue/40 hover:text-brand-red transition-colors disabled:opacity-50"
+        title="Delete Account"
+      >
+        {isDeleting ? <Loader2 className="w-4 h-4 animate-spin text-brand-red" /> : <Trash2 className="w-4 h-4" />}
+      </button>
+
       {/* iOS-Style Toggle Switch */}
       <button
         onClick={toggleStatus}
-        disabled={isUpdating}
+        disabled={isUpdating || isDeleting}
         className={`
           relative inline-flex items-center w-14 h-8 rounded-full 
           transition-colors duration-300 ease-in-out cursor-pointer disabled:opacity-50 
