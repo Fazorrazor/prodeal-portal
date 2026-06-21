@@ -8,7 +8,6 @@ import { logError } from '../../../../lib/logger';
 const staffSchema = z.object({
   fullName: z.string().min(2, "Full name is required"),
   email: z.string().email("Valid email is required"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
   whatsappPhone: z.string().min(8, "Valid phone is required"),
   role: z.enum(ROLE_VALUES),
   divisionIds: z.array(z.string()).optional()
@@ -52,14 +51,17 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    const { fullName, email, password, whatsappPhone, role, divisionIds } = validatedData.data;
+    const { fullName, email, whatsappPhone, role, divisionIds } = validatedData.data;
 
     // 4. Create auth user securely via Admin API
     const adminClient = createAdminClient();
     
+    const firstName = fullName.trim().split(' ')[0].toLowerCase();
+    const generatedPassword = `${firstName}@prodeal123`;
+    
     const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
       email,
-      password,
+      password: generatedPassword,
       email_confirm: true,
       user_metadata: { full_name: fullName }
     });

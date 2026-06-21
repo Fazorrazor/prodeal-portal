@@ -90,25 +90,7 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* Bottom: Division count strip */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.9 }}
-          className="mt-16 lg:mt-24 pt-6 border-t border-brand-border/30 flex flex-wrap gap-6 sm:gap-12"
-        >
-          {[
-            { label: 'Divisions', value: '04' },
-            { label: 'Service Regions', value: 'GH' },
-            { label: 'Inquiry Mode', value: 'WhatsApp' },
-            { label: 'Client Login', value: 'None' },
-          ].map(({ label, value }) => (
-            <div key={label} className="flex flex-col gap-1">
-              <span className="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-brand-deep-blue/40">{label}</span>
-              <span className="text-sm font-mono font-bold text-brand-deep-blue tracking-tight">{value}</span>
-            </div>
-          ))}
-        </motion.div>
+
       </div>
     </section>
   );
