@@ -7,7 +7,6 @@ import { logError } from '../../../../lib/logger';
 
 const staffSchema = z.object({
   fullName: z.string().min(2, "Full name is required"),
-  email: z.string().email("Valid email is required"),
   whatsappPhone: z.string().min(8, "Valid phone is required"),
   role: z.enum(ROLE_VALUES),
   divisionIds: z.array(z.string()).optional()
@@ -51,23 +50,24 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    const { fullName, email, whatsappPhone, role, divisionIds } = validatedData.data;
+    const { fullName, whatsappPhone, role, divisionIds } = validatedData.data;
 
     // 4. Create auth user securely via Admin API
     const adminClient = createAdminClient();
     
     const firstName = fullName.trim().split(' ')[0].toLowerCase();
+    const generatedEmail = `${firstName}@prodeal.com`;
     const generatedPassword = `${firstName}@prodeal123`;
     
     const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
-      email,
+      email: generatedEmail,
       password: generatedPassword,
       email_confirm: true,
       user_metadata: { full_name: fullName }
     });
 
     if (authError) {
-      await logError('POST /api/admin/staff (Auth)', authError, { email, role });
+      await logError('POST /api/admin/staff (Auth)', authError, { email: generatedEmail, role });
       return NextResponse.json({ error: 'Failed to create auth user.' }, { status: 400 });
     }
 

@@ -19,7 +19,6 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
 
   const [formData, setFormData] = useState({
     fullName: '',
-    email: '',
     whatsappPhone: '',
     role: USER_ROLES.STAFF as string,
     divisionIds: [] as string[]
@@ -45,7 +44,7 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
       toast.success('Staff member provisioned successfully');
       setIsOpen(false);
       setFormData({
-        fullName: '', email: '', whatsappPhone: '', role: USER_ROLES.STAFF, divisionIds: []
+        fullName: '', whatsappPhone: '', role: USER_ROLES.STAFF, divisionIds: []
       });
       router.refresh();
       
@@ -107,18 +106,6 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="staff-email" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Email Address</label>
-                  <input 
-                    id="staff-email"
-                    required
-                    type="email"
-                    value={formData.email}
-                    onChange={e => setFormData({...formData, email: e.target.value})}
-                    className="w-full bg-transparent border-0 border-b-2 border-brand-border/60 focus:border-brand-blue py-2 outline-none transition-colors text-sm font-bold font-mono text-brand-deep-blue placeholder:font-normal placeholder:font-sans placeholder:text-brand-deep-blue/30"
-                    placeholder="agent@prodeal.com"
-                  />
-                </div>
 
 
                 <div>
