@@ -71,19 +71,30 @@ export function AdminWalkthrough() {
         showProgress: true,
         animate: true,
         allowClose: false, // Forces them to interact with the tour
+        disableActiveInteraction: true, // Prevents clicking the highlighted element itself
+        allowKeyboardControl: false, // Disable keyboard interactions outside
         overlayColor: 'rgba(9, 25, 43, 0.85)', // brand-deep-blue
         popoverClass: 'brutalist-driver-popover',
         doneBtnText: 'Finish Tour',
         nextBtnText: 'Next →',
         prevBtnText: '← Prev',
         onHighlightStarted: (element, step) => {
+          // Lock scroll globally so user cannot scroll away
+          document.body.style.overflow = 'hidden';
+          
           // Robust scroll focus logic
           const selector = typeof step?.element === 'string' ? step.element : '';
           if (selector) {
             const domNode = document.querySelector(selector);
             if (domNode) {
-              // Scroll the container so the element is perfectly in the center of the screen
+              // Temporarily restore overflow to allow native scrollIntoView to work
+              document.body.style.overflow = '';
               domNode.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+              
+              // Re-lock scroll after the smooth scroll animation completes (~500ms)
+              setTimeout(() => {
+                document.body.style.overflow = 'hidden';
+              }, 500);
             }
           }
         },
@@ -91,6 +102,8 @@ export function AdminWalkthrough() {
           if (!driverObj.hasNextStep() || confirm("Are you sure you want to skip the walkthrough?")) {
             // Set completion flag in localStorage
             localStorage.setItem(tourKey, 'true');
+            // Restore scroll
+            document.body.style.overflow = '';
             driverObj.destroy();
           }
         },
