@@ -61,8 +61,8 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
       onAddFile(newFile);
       toast.success('File uploaded successfully');
       
-    } catch (error: any) {
-      toast.error(error.message || 'An error occurred during upload');
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'An error occurred during upload');
     } finally {
       setTimeout(() => {
         setIsUploading(false);

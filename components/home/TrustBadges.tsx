@@ -1,54 +1,70 @@
 'use client'; // needs framer-motion for scroll animations
 import { motion } from 'framer-motion';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15 }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { type: 'spring', damping: 25, stiffness: 120 } }
-};
+const STATS = [
+  {
+    value: 'B2B',
+    label: 'Procurement Model',
+    sub: 'Enterprise & Commercial',
+    accent: 'bg-brand-blue',
+  },
+  {
+    value: '<2h',
+    label: 'Response Target',
+    sub: 'Via WhatsApp Direct',
+    accent: 'bg-brand-red',
+  },
+  {
+    value: '0',
+    label: 'Client Logins Required',
+    sub: 'Fully Anonymous Inquiry',
+    accent: 'bg-brand-blue',
+  },
+];
 
 export function TrustBadges() {
   return (
-    <section className="py-16 bg-brand-deep-blue text-white relative z-20 shadow-2xl">
+    <section className="bg-brand-deep-blue relative z-20">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center divide-y md:divide-y-0 md:divide-x divide-white/10"
-        >
-          <motion.div variants={itemVariants} className="flex flex-col items-center pt-8 md:pt-0">
-            <div className="w-12 h-1 bg-brand-blue mb-6 rounded-full" />
-            <h2 className="font-heading font-bold text-xl mb-3">Enterprise Scale</h2>
-            <p className="text-white/60 text-sm max-w-xs mx-auto">
-              Equipped to handle high-volume B2B orders across four distinct industrial divisions.
-            </p>
-          </motion.div>
-          
-          <motion.div variants={itemVariants} className="flex flex-col items-center pt-8 md:pt-0">
-            <div className="w-12 h-1 bg-brand-red mb-6 rounded-full" />
-            <h2 className="font-heading font-bold text-xl mb-3">Precision Timing</h2>
-            <p className="text-white/60 text-sm max-w-xs mx-auto">
-              Strict adherence to delivery deadlines with real-time WhatsApp inquiry routing.
-            </p>
-          </motion.div>
-          
-          <motion.div variants={itemVariants} className="flex flex-col items-center pt-8 md:pt-0">
-            <div className="w-12 h-1 bg-brand-blue mb-6 rounded-full" />
-            <h2 className="font-heading font-bold text-xl mb-3">Total Reliability</h2>
-            <p className="text-white/60 text-sm max-w-xs mx-auto">
-              No client login required. Frictionless procurement designed strictly for professionals.
-            </p>
-          </motion.div>
-        </motion.div>
+        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
+          {STATS.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.4, delay: i * 0.1 }}
+              className="px-6 lg:px-10 py-10 flex flex-col gap-4"
+            >
+              {/* Accent bar */}
+              <motion.div
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
+                style={{ originX: 0 }}
+                className={`w-8 h-[3px] ${stat.accent}`}
+              />
+
+              {/* Value */}
+              <div className="flex items-baseline gap-2">
+                <span className="font-mono font-bold text-4xl sm:text-5xl text-white tracking-tighter leading-none">
+                  {stat.value}
+                </span>
+              </div>
+
+              {/* Labels */}
+              <div className="flex flex-col gap-1 border-t border-white/10 pt-4">
+                <span className="font-heading font-bold text-sm uppercase tracking-widest text-white">
+                  {stat.label}
+                </span>
+                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">
+                  {stat.sub}
+                </span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

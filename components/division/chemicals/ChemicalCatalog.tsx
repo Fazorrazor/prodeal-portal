@@ -1,30 +1,21 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import Image from 'next/image';
-
 import Link from 'next/link';
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
 import { ProductImageFallback } from '../../shared/ProductImageFallback';
 import { ImageLightbox } from '../../shared/ImageLightbox';
 
-export async function ChemicalCatalog({ searchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
+export async function ChemicalCatalog() {
   const supabase = createServerComponentClient({ cookies });
-  
-  let query = supabase
+
+  const { data: products, error } = await supabase
     .from('products')
     .select('*, divisions!inner(slug)')
     .eq('divisions.slug', 'chemicals')
-    .order('name');
-
-  const q = typeof searchParams?.q === 'string' ? searchParams.q : undefined;
-
-  if (q) {
-    const term = `%${q}%`;
-    query = query.or(`name.ilike.${term},metadata->>cas_number.ilike.${term}`);
-  }
-
-  const { data: products, error } = await query.limit(50);
+    .order('name')
+    .limit(50);
 
   if (error) {
     throw new Error('Failed to load chemical catalog');
@@ -32,63 +23,110 @@ export async function ChemicalCatalog({ searchParams }: { searchParams?: { [key:
 
   return (
     <div>
+      {/* Section header */}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-8">
+        <div>
+          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/40 mb-1.5">
+            — Product Register
+          </p>
+          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue tracking-tighter uppercase leading-none">
+            Available Products
+          </h2>
+        </div>
+        {products && products.length > 0 && (
+          <p className="text-[10px] font-mono text-brand-deep-blue/40 uppercase tracking-widest">
+            {products.length} compound{products.length !== 1 ? 's' : ''} listed
+          </p>
+        )}
+      </div>
+
       {!products || products.length === 0 ? (
-        <div className="text-center py-12 border-y-2 border-brand-border/60">
-          <h3 className="font-heading font-bold text-2xl text-brand-deep-blue uppercase tracking-tighter">All Clear.</h3>
-          <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/60 mt-2">No chemical products registered in the database.</p>
+        <div className="border-t border-brand-border/30 pt-8">
+          <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tighter">
+            No products registered.
+          </h3>
+          <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/40 mt-1">
+            Contact us directly for chemical inquiries.
+          </p>
         </div>
       ) : (
-        <>
-          <ScrollReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((product) => (
-              <ScrollRevealItem key={product.id} className="h-full">
-                <div className="h-full flex flex-col border-b-2 border-brand-border/60 pb-8 md:hover:border-brand-blue transition-colors group">
-                  <ImageLightbox src={product.image_path || ''} alt={product.name} className="relative w-full aspect-video bg-black/5 overflow-hidden mb-6 block group/image active:opacity-80 transition-opacity">
-                    {product.image_path ? (
-                      <Image 
-                        src={product.image_path} 
-                        alt={product.name} 
-                        width={400} 
-                        height={300} 
-                        className="w-full h-full object-cover transition-transform duration-700 md:group-hover/image:scale-105 md:group-hover:scale-105"
-                      />
-                    ) : (
-                      <ProductImageFallback className="transition-transform duration-700 md:group-hover/image:scale-105 md:group-hover:scale-105" />
-                    )}
-                  </ImageLightbox>
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <Link href={`/inquiry/${product.id}?from=chemicals`} className="block w-fit">
-                        <h3 className="font-heading font-bold text-2xl text-brand-deep-blue uppercase tracking-tight md:hover:text-brand-blue transition-colors">{product.name}</h3>
-                      </Link>
-                      <div className="text-[10px] font-mono font-bold text-brand-deep-blue/40 mt-1 uppercase tracking-widest">
-                        CAS: {product.metadata?.cas_number || 'N/A'}
-                      </div>
-                    </div>
-                    <span className="px-2 py-1 border border-brand-deep-blue/20 text-[10px] font-bold text-brand-deep-blue uppercase tracking-widest whitespace-nowrap md:group-hover:border-brand-blue md:group-hover:text-brand-blue transition-colors">
-                      {product.metadata?.grade || 'Industrial'}
-                    </span>
-                  </div>
-                  
-                  <p className="text-sm text-brand-deep-blue/70 font-body mb-8 flex-1 leading-relaxed">
-                    {product.description || 'Standard industrial chemical formulation.'}
-                  </p>
-                  
-                  <div className="pt-4 border-t border-brand-border/30 flex flex-col mt-auto">
-
-                    <Link 
-                      href={`/inquiry/${product.id}?from=chemicals`}
-                      className="w-full py-3 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest text-center md:hover:bg-brand-blue active:bg-brand-blue active:scale-[0.98] transition-all"
-                    >
-                      Inquire About This
-                    </Link>
-                  </div>
-                </div>
-              </ScrollRevealItem>
-            ))}
-          </ScrollReveal>
-        </>
+        <ScrollReveal className="flex flex-col">
+          {products.map((product) => (
+            <ScrollRevealItem key={product.id}>
+              <ChemicalRow product={product} />
+            </ScrollRevealItem>
+          ))}
+        </ScrollReveal>
       )}
+    </div>
+  );
+}
+
+function ChemicalRow({ product }: {
+  product: {
+    id: string;
+    name: string;
+    description?: string | null;
+    image_path?: string | null;
+    metadata?: { cas_number?: string; grade?: string } | null;
+    [key: string]: unknown;
+  }
+}) {
+  const grade = product.metadata?.grade || 'Industrial';
+  const cas = product.metadata?.cas_number;
+
+  return (
+    <div className="border-b border-brand-border/40 py-6 flex flex-col sm:flex-row gap-5 group active:bg-black/5 transition-colors">
+
+      {/* Image thumbnail */}
+      <ImageLightbox
+        src={product.image_path || ''}
+        alt={product.name}
+        className="block w-full sm:w-28 sm:h-28 aspect-video sm:aspect-square bg-black/5 overflow-hidden shrink-0 active:opacity-80 transition-opacity"
+      >
+        {product.image_path ? (
+          <Image
+            src={product.image_path}
+            alt={product.name}
+            width={112}
+            height={112}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <ProductImageFallback />
+        )}
+      </ImageLightbox>
+
+      {/* Data block */}
+      <div className="flex flex-col flex-1 min-w-0">
+        <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
+          <div>
+            <h3 className="font-heading font-bold text-lg sm:text-xl text-brand-deep-blue uppercase tracking-tight leading-snug">
+              {product.name}
+            </h3>
+            {cas && (
+              <div className="text-[10px] font-mono font-bold text-brand-deep-blue/40 mt-0.5 uppercase tracking-widest">
+                CAS: {cas}
+              </div>
+            )}
+          </div>
+          {/* Grade badge — bordered outline */}
+          <span className="shrink-0 px-3 py-1.5 border border-brand-deep-blue text-brand-deep-blue text-[9px] font-mono font-bold uppercase tracking-widest">
+            {grade}
+          </span>
+        </div>
+
+        <p className="text-xs sm:text-sm text-brand-deep-blue/60 font-body leading-relaxed mb-4 flex-1">
+          {product.description || 'Standard industrial chemical formulation.'}
+        </p>
+
+        <Link
+          href={`/inquiry/${product.id}?from=chemicals`}
+          className="inline-flex items-center justify-center w-full sm:w-auto sm:self-end px-6 py-3.5 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest active:bg-brand-blue transition-colors min-h-[44px]"
+        >
+          Inquire About This
+        </Link>
+      </div>
     </div>
   );
 }

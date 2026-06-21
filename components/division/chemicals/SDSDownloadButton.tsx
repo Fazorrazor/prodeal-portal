@@ -13,6 +13,7 @@ export function SDSDownloadButton({ documentId, chemicalName }: Props) {
 
   const handleDownload = async () => {
     setIsLoading(true);
+    console.log(`Generating SDS for document: ${documentId}`);
     // Simulate API delay for signed URL generation
     await new Promise((resolve) => setTimeout(resolve, 800));
     setIsLoading(false);

@@ -61,7 +61,8 @@ async function TicketsData({ searchParams }: { searchParams: { [key: string]: st
   />;
 }
 
-export default function TicketListPage({ searchParams }: { searchParams: { [key: string]: string | undefined } }) {
+export default async function TicketListPage(props: { searchParams: Promise<{ [key: string]: string | undefined }> }) {
+  const searchParams = await props.searchParams;
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pt-2 pb-6 relative">
@@ -70,13 +71,17 @@ export default function TicketListPage({ searchParams }: { searchParams: { [key:
           <h1 className="text-3xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">Ticket Master List</h1>
           <p className="text-brand-deep-blue/60 font-body text-sm">Manage all incoming division inquiries.</p>
         </div>
-        <TicketFilters currentStatus={searchParams.status || 'all'} />
+        <div id="tour-ticket-filters">
+          <TicketFilters currentStatus={searchParams.status || 'all'} />
+        </div>
       </div>
 
       <DivisionErrorBoundary>
-        <Suspense fallback={<TicketTableSkeleton />}>
-          <TicketsData searchParams={searchParams} />
-        </Suspense>
+        <div id="tour-ticket-table">
+          <Suspense fallback={<TicketTableSkeleton />}>
+            <TicketsData searchParams={searchParams} />
+          </Suspense>
+        </div>
       </DivisionErrorBoundary>
     </div>
   );

@@ -1,16 +1,35 @@
 import { z } from 'zod';
 
 export const ContactDetailsSchema = z.object({
-  name:        z.string().min(2).max(100),
-  email:       z.string().email(),
-  phone:       z.string().regex(/^\+[1-9]\d{6,14}$/, 'Must be E.164 format'),
-  companyName: z.string().max(150).optional(),
+  name: z
+    .string()
+    .min(2, 'Please enter your full name.')
+    .max(100, 'Name is too long — please shorten it.'),
+
+  email: z
+    .string()
+    .email('Please enter a valid email address (e.g. john@company.com).'),
+
+  phone: z
+    .string()
+    .regex(
+      /^\+[1-9]\d{6,14}$/,
+      'Please enter your number in international format, e.g. +233201234567.'
+    ),
+
+  companyName: z
+    .string()
+    .max(150, 'Company name is too long.')
+    .optional(),
 });
 
-export const BaseInquirySchema = z.object({
-  productId:    z.string().uuid(),
-  productName:  z.string(),
-  message:      z.string().min(10, "Please tell us a bit more about what you need.").max(1000),
+const BaseInquirySchema = z.object({
+  productId:   z.string().uuid(),
+  productName: z.string(),
+  message: z
+    .string()
+    .min(10, 'Please give us a bit more detail — at least a sentence about what you need.')
+    .max(1000, 'Your message is too long. Please keep it under 1000 characters.'),
 });
 
 export const DIVISION_SCHEMAS = {

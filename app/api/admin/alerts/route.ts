@@ -19,7 +19,7 @@ export async function GET() {
     // 2. Get caller's role to determine what alerts they can see
     const { data: staff } = await supabase
       .from('staff_members')
-      .select('role, division_id')
+      .select('role, division_ids')
       .eq('auth_user_id', user.id)
       .single();
 
@@ -42,8 +42,8 @@ export async function GET() {
       .limit(5);
 
     // 3. Optional: Filter by division if the caller is an agent
-    if (staff.role === USER_ROLES.AGENT && staff.division_id) {
-      query.eq('division_id', staff.division_id);
+    if (staff.role === USER_ROLES.AGENT && staff.division_ids && staff.division_ids.length > 0) {
+      query.in('division_id', staff.division_ids);
     }
 
     const { data: alerts, error: dbError } = await query;

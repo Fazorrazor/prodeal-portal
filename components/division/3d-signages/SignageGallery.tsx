@@ -21,7 +21,20 @@ export async function SignageGallery() {
 
   return (
     <div>
-      <h2 className="font-heading font-bold text-3xl text-brand-deep-blue mb-8 text-center">Recent Installations</h2>
+      {/* Section header */}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-8">
+        <div>
+          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/40 mb-1.5">
+            — Project Portfolio
+          </p>
+          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue tracking-tighter uppercase leading-none">
+            Recent Installations
+          </h2>
+        </div>
+        <p className="text-[10px] font-mono text-brand-deep-blue/40 uppercase tracking-widest">
+          Tap image to expand
+        </p>
+      </div>
       
       {!products || products.length === 0 ? (
         <div className="text-center py-12 border-y-2 border-brand-border/60">
@@ -47,7 +60,7 @@ export async function SignageGallery() {
   );
 }
 
-function GalleryImage({ product }: { product: any }) {
+function GalleryImage({ product }: { product: { id: string; name: string; description?: string | null; image_path: string } }) {
   return (
     <div className="break-inside-avoid relative overflow-hidden group border-2 border-brand-border/60 md:hover:border-brand-blue transition-colors flex flex-col">
       <div className="relative group/image">

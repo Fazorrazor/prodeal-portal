@@ -26,7 +26,7 @@ export function StatusUpdater({ inquiryId, currentStatus }: { inquiryId: string,
       
       toast.success('Status updated successfully');
       router.refresh(); // Refresh the page to load new timeline events
-    } catch (error) {
+    } catch {
       toast.error('Could not update status. Please try again.');
       setStatus(currentStatus); // Revert on failure
     } finally {

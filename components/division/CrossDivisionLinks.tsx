@@ -8,17 +8,37 @@ export function CrossDivisionLinks({ currentSlug }: { currentSlug: string }) {
   );
 
   return (
-    <div className="mt-24 pt-12 border-t-2 border-brand-border/60">
-      <h3 className="font-heading font-bold text-2xl text-brand-deep-blue uppercase tracking-tighter mb-8">Explore Other Divisions</h3>
-      <div className="flex flex-col sm:flex-row gap-4">
-        {otherDivisions.map((division) => (
+    <div className="mt-20 lg:mt-28 border-t-2 border-brand-deep-blue pt-6">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-0">
+        <div>
+          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/40 mb-1.5">
+            — Other Divisions
+          </p>
+          <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue tracking-tighter uppercase leading-none">
+            Explore Other Services
+          </h3>
+        </div>
+        <p className="text-[10px] font-mono text-brand-deep-blue/40 uppercase tracking-widest">
+          {otherDivisions.length} available
+        </p>
+      </div>
+
+      <div className="flex flex-col mt-0">
+        {otherDivisions.map((division, i) => (
           <Link
             key={division.href}
             href={division.href}
-            className="group flex-1 flex items-center justify-between px-6 py-6 border-2 border-brand-border/60 text-brand-deep-blue font-heading font-bold uppercase tracking-widest text-sm md:hover:border-brand-blue md:hover:text-brand-blue active:bg-black/5 transition-colors"
+            className="group flex items-center justify-between py-5 border-b border-brand-border/40 gap-4 active:bg-black/5 transition-colors"
           >
-            <span>{division.name}</span>
-            <ArrowRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+            <div className="flex items-center gap-5 sm:gap-8">
+              <span className="text-[10px] font-mono font-bold text-brand-deep-blue/25 tracking-widest shrink-0 hidden sm:block">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <span className="font-heading font-bold text-lg sm:text-xl text-brand-deep-blue uppercase tracking-tight group-active:text-brand-blue transition-colors">
+                {division.name}
+              </span>
+            </div>
+            <ArrowRight className="w-5 h-5 text-brand-deep-blue/25 shrink-0 transition-transform duration-200 group-active:translate-x-1" />
           </Link>
         ))}
       </div>

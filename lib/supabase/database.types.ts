@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -11,31 +11,6 @@ export type Database = {
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.5"
-  }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
   }
   public: {
     Tables: {
@@ -224,7 +199,7 @@ export type Database = {
         Row: {
           auth_user_id: string | null
           created_at: string | null
-          division_id: string | null
+          division_ids: string[] | null
           full_name: string
           id: string
           is_active: boolean | null
@@ -234,7 +209,7 @@ export type Database = {
         Insert: {
           auth_user_id?: string | null
           created_at?: string | null
-          division_id?: string | null
+          division_ids?: string[] | null
           full_name: string
           id?: string
           is_active?: boolean | null
@@ -244,29 +219,49 @@ export type Database = {
         Update: {
           auth_user_id?: string | null
           created_at?: string | null
-          division_id?: string | null
+          division_ids?: string[] | null
           full_name?: string
           id?: string
           is_active?: boolean | null
           role?: string | null
           whatsapp_phone?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "staff_members_division_id_fkey"
-            columns: ["division_id"]
-            isOneToOne: false
-            referencedRelation: "divisions"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
+      }
+      system_error_logs: {
+        Row: {
+          context: string
+          created_at: string
+          error_message: string
+          error_stack: string | null
+          id: string
+          metadata: Json | null
+        }
+        Insert: {
+          context: string
+          created_at?: string
+          error_message: string
+          error_stack?: string | null
+          id?: string
+          metadata?: Json | null
+        }
+        Update: {
+          context?: string
+          created_at?: string
+          error_message?: string
+          error_stack?: string | null
+          id?: string
+          metadata?: Json | null
+        }
+        Relationships: []
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_avg_resolution_time_hrs: { Args: never; Returns: number }
+      get_user_role: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never
@@ -395,9 +390,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {},
   },

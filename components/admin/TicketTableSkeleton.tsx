@@ -1,6 +1,4 @@
 export function TicketTableSkeleton() {
-  const rows = Array.from({ length: 10 });
-  
   return (
     <div className="mt-8">
       <div className="overflow-x-auto">

@@ -2,15 +2,43 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Bell, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { AnimatedBorder } from './AnimatedBorder';
+
+// A short, unobtrusive base64 'ping' sound
+const pingSoundBase64 = "data:audio/wav;base64,UklGRigCAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQCAAC7/wEAxP8GAKv/DACl/w8Aov8RAKH/EwCf/xUAnf8XAJv/GQCZ/xsAmP8dAJb/HwCU/yEAkv8jAJH/JQCQ/ycAjv8pAIz/KwCL/y0Aif8vAIf/MQCG/zMAhP81AIL/NwCB/zkAgP87AH7/PQB8/z8Aev9BAHn/QwB3/0UAdv9HAHT/SQBz/0sAcf9NAHD/TwBu/1EAbf9TAGv/VQBq/1cAaP9ZAGf/WwBl/10AZP9fAGL/YQBh/2MAYP9lAF7/ZwBd/2kAXP9rAFr/bQBZ/28AWP9xAFb/cwBV/3UAVP93AFP/eQBS/3sAUf99AFD/fwBO/4EATf+DAEz/hQBL/4cASv+JAEr/iwBJ/40ASP+PAEf/kQBG/5MASf+VAEr/lwBL/5kATP+bAE3/nQBO/58AT/+hAFD/owBR/6UAUv+nAFP/qQBU/6sAVf+tAFb/rwBX/7EAWP+zAFn/tQBa/7cAW/+5AFz/uwBd/70AXv+/AF//wQBg/8MAYf/FAGL/xwBj/8kAZP/LAGX/zQBm/88AZ//RAGj/0wBq/9UAa//XAGz/2QBu/9sAb//dAHH/3wBz/+EAdP/jAHb/5QB4/+cAev/pAHz/6wB+/+0AgP/vAIL/8QCE//MAhv/1AIj/9wCL//kAjv/7AJL//QCW//8AnAABAKIABA==";
+
+const playAlertSound = () => {
+  try {
+    const audio = new Audio(pingSoundBase64);
+    // Setting volume to avoid it being overly loud
+    audio.volume = 0.6;
+    audio.play().catch((e) => {
+      console.warn("Audio playback was blocked by the browser. Interaction required.", e);
+    });
+    
+    // Play a second beep for a double-beep effect
+    setTimeout(() => {
+      const audio2 = new Audio(pingSoundBase64);
+      audio2.volume = 0.6;
+      audio2.play().catch(() => {});
+    }, 150);
+  } catch (e) {
+    console.error("Audio playback error:", e);
+  }
+};
 
 export function AlertsPanel() {
   const [isOpen, setIsOpen] = useState(false);
-  const [alerts, setAlerts] = useState<any[]>([]);
+  const [alerts, setAlerts] = useState<Record<string, unknown>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const supabase = createClientComponentClient();
 
   // Fetch alerts when component mounts
   useEffect(() => {
@@ -19,7 +47,10 @@ export function AlertsPanel() {
         const res = await fetch('/api/admin/alerts');
         if (res.ok) {
           const data = await res.json();
-          setAlerts(data.alerts);
+          // Filter out locally dismissed alerts
+          const dismissed = JSON.parse(localStorage.getItem('dismissedAlerts') || '[]');
+          const activeAlerts = data.alerts.filter((a: Record<string, unknown>) => !dismissed.includes(a.id));
+          setAlerts(activeAlerts);
         }
       } catch (error) {
         console.error("Failed to fetch alerts:", error);
@@ -29,8 +60,21 @@ export function AlertsPanel() {
     };
     
     fetchAlerts();
-    // Optional: could poll every 30 seconds here
-  }, []);
+
+    const channel = supabase
+      .channel('admin-alerts')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'inquiries' }, () => {
+        playAlertSound();
+        toast.success('New inquiry received!');
+        fetchAlerts();
+        router.refresh();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [supabase, router]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -80,11 +124,16 @@ export function AlertsPanel() {
               </div>
             ) : (
               <div className="divide-y divide-brand-border/40">
-                {alerts.map((alert: any) => (
+                {alerts.map((alert: Record<string, any>) => (
                   <Link 
                     key={alert.id}
                     href={`/admin/tickets/${alert.id}`}
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => {
+                      const dismissed = JSON.parse(localStorage.getItem('dismissedAlerts') || '[]');
+                      localStorage.setItem('dismissedAlerts', JSON.stringify([...dismissed, alert.id]));
+                      setAlerts(current => current.filter(a => a.id !== alert.id));
+                      setIsOpen(false);
+                    }}
                     className="block p-4 hover:bg-black/5 transition-colors group"
                   >
                     <div className="flex justify-between items-start mb-1">

@@ -77,3 +77,77 @@ export async function deleteInquirySafely(inquiryId: string) {
     return { success: false, error: 'Internal server error during deletion.' };
   }
 }
+
+export async function bulkDeleteInquiriesSafely(inquiryIds: string[]) {
+  try {
+    const supabaseUser = createServer();
+    const { data: { session } } = await supabaseUser.auth.getSession();
+    
+    if (!session?.user) {
+      return { success: false, error: 'Unauthorized.' };
+    }
+
+    const supabaseAdmin = createServiceRoleClient();
+
+    const { data: staffData, error: staffError } = await supabaseAdmin
+      .from('staff_members')
+      .select('role')
+      .eq('auth_user_id', session.user.id)
+      .single();
+
+    if (staffError || staffData?.role !== 'admin') {
+      return { success: false, error: 'Forbidden. Admin access required to delete.' };
+    }
+
+    if (!inquiryIds || inquiryIds.length === 0) {
+      return { success: false, error: 'No inquiries provided.' };
+    }
+
+    // Check for attachments and remove them
+    const { data: inquiries, error: fetchError } = await supabaseAdmin
+      .from('inquiries')
+      .select('attachments')
+      .in('id', inquiryIds);
+
+    if (fetchError) {
+      return { success: false, error: 'Failed to fetch inquiries.' };
+    }
+
+    let allAttachments: string[] = [];
+    inquiries.forEach((inq) => {
+      if (inq.attachments && Array.isArray(inq.attachments)) {
+        allAttachments = allAttachments.concat(inq.attachments as string[]);
+      }
+    });
+
+    if (allAttachments.length > 0) {
+      const { error: storageError } = await supabaseAdmin
+        .storage
+        .from('inquiry-attachments')
+        .remove(allAttachments);
+        
+      if (storageError) {
+        await logError('BulkDeleteInquiry Action - Storage Error', storageError, { inquiryIds });
+      }
+    }
+
+    // Safely delete the rows
+    const { error: deleteError } = await supabaseAdmin
+      .from('inquiries')
+      .delete()
+      .in('id', inquiryIds);
+
+    if (deleteError) {
+       await logError('BulkDeleteInquiry Action - Database Error', deleteError, { inquiryIds });
+       return { success: false, error: 'Failed to delete inquiries from database.' };
+    }
+
+    revalidatePath('/admin/(dashboard)', 'layout');
+    
+    return { success: true };
+    
+  } catch (error) {
+    await logError('BulkDeleteInquiry Action - Unknown Error', error, { inquiryIds });
+    return { success: false, error: 'Internal server error during deletion.' };
+  }
+}

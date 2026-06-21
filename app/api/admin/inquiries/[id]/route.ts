@@ -7,10 +7,8 @@ const StatusUpdateSchema = z.object({
   status: z.enum(['new', 'in_progress', 'quoted', 'closed']),
 });
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const supabase = createServer() as any;
     

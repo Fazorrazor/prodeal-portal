@@ -3,6 +3,7 @@ import { DivisionLayout } from '../../../../components/division/DivisionLayout';
 import { DIVISION_DATA } from '../../../../lib/config/divisions';
 
 import { DivisionErrorBoundary } from '../../../../components/shared/DivisionErrorBoundary';
+import { Suspense } from 'react';
 
 // Components for 3D Signages
 import { SignageGallery } from '../../../../components/division/3d-signages/SignageGallery';
@@ -17,8 +18,6 @@ import { BulkOrderNote } from '../../../../components/division/disposable-bowls/
 
 // Components for Chemicals
 import { ChemicalCatalog } from '../../../../components/division/chemicals/ChemicalCatalog';
-import { ChemicalSearchBar } from '../../../../components/division/chemicals/ChemicalSearchBar';
-import { SafetyNotice } from '../../../../components/division/chemicals/SafetyNotice';
 
 // Set the baseline revalidation to 300 (5 minutes). 
 // This strictly satisfies the workflow requirement for the 'bowls' division's 
@@ -27,15 +26,18 @@ import { SafetyNotice } from '../../../../components/division/chemicals/SafetyNo
 
 export const revalidate = 300;
 
-export default function DivisionPage({ 
-  params,
-  searchParams 
-}: { 
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+export default async function DivisionPage(
+  props: { 
+    params: Promise<{ slug: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  }
+) {
+  // We DO NOT await searchParams here at the top level! 
+  // If we await it here, the ENTIRE page will suspend and unmount whenever the URL changes, 
+  // which destroys the search bar's DOM node and instantly loses focus.
+  const params = await props.params;
   const { slug } = params;
-  
+
   if (!(slug in DIVISION_DATA)) {
     notFound();
   }
@@ -71,11 +73,9 @@ export default function DivisionPage({
       )}
 
       {slug === 'chemicals' && (
-        <div className="flex flex-col">
-          <SafetyNotice />
-          <ChemicalSearchBar />
+        <div className="flex flex-col gap-8">
           <DivisionErrorBoundary>
-            <ChemicalCatalog searchParams={searchParams} />
+            <ChemicalCatalog />
           </DivisionErrorBoundary>
         </div>
       )}

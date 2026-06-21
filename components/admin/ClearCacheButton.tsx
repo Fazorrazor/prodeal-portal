@@ -17,7 +17,7 @@ export function ClearCacheButton() {
       } else {
         toast.error(`Failed to clear cache: ${res.error}`);
       }
-    } catch (error: any) {
+    } catch {
       toast.error('An unexpected error occurred while clearing cache.');
     } finally {
       setIsClearing(false);

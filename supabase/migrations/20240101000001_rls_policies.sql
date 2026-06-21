@@ -11,9 +11,11 @@ CREATE POLICY "guest_select_own_inquiry" ON inquiries
 CREATE POLICY "staff_select_own_division" ON inquiries
   FOR SELECT TO authenticated
   USING (
-    division_id = (
-      SELECT division_id FROM staff_members
-      WHERE auth_user_id = auth.uid()
+    division_id = ANY(
+      ARRAY(
+        SELECT unnest(division_ids) FROM staff_members
+        WHERE auth_user_id = auth.uid()
+      )
     )
   );
 
@@ -26,9 +28,11 @@ CREATE POLICY "admin_select_all" ON inquiries
 CREATE POLICY "staff_update_own_division" ON inquiries
   FOR UPDATE TO authenticated
   USING (
-    division_id = (
-      SELECT division_id FROM staff_members
-      WHERE auth_user_id = auth.uid()
+    division_id = ANY(
+      ARRAY(
+        SELECT unnest(division_ids) FROM staff_members
+        WHERE auth_user_id = auth.uid()
+      )
     )
   )
   WITH CHECK (true);
@@ -62,4 +66,5 @@ CREATE POLICY "admin_write_products" ON products
   FOR ALL TO authenticated
   USING (
     get_user_role() = 'admin'
+    
   );

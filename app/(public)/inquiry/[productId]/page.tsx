@@ -5,7 +5,8 @@ import { InquiryPageClient } from './InquiryPageClient';
 
 export const dynamic = 'force-dynamic';
 
-export default async function InquiryPage({ params }: { params: { productId: string } }) {
+export default async function InquiryPage(props: { params: Promise<{ productId: string }> }) {
+  const params = await props.params;
   const supabase = createServerComponentClient({ cookies });
 
   const { data: product, error } = await supabase

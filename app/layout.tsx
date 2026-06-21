@@ -1,27 +1,23 @@
 import type { Metadata } from 'next';
-import { Bebas_Neue, DM_Sans, IBM_Plex_Sans } from 'next/font/google';
 import './globals.css';
 import { ZustandProvider } from './providers/ZustandProvider';
 import { ToastProvider } from './providers/ToastProvider';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-const bebasNeue = Bebas_Neue({
-  weight: '400',
+import { Montserrat, Roboto } from 'next/font/google';
+
+const montserrat = Montserrat({
   subsets: ['latin'],
-  variable: '--font-bebas-neue',
+  variable: '--font-montserrat',
+  display: 'swap',
 });
 
-const dmSans = DM_Sans({
+const roboto = Roboto({
   weight: ['400', '500', '700'],
   subsets: ['latin'],
-  variable: '--font-dm-sans',
-});
-
-const ibmPlexSans = IBM_Plex_Sans({
-  weight: ['300', '400', '500', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-ibm-plex-sans',
+  variable: '--font-roboto',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -35,8 +31,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${bebasNeue.variable} ${dmSans.variable} ${ibmPlexSans.variable}`}>
-      <body className="font-body bg-brand-surface text-brand-deep-blue antialiased">
+    <html lang="en" className={`${montserrat.variable} ${roboto.variable}`} suppressHydrationWarning>
+      <body className="font-body bg-brand-surface text-brand-deep-blue antialiased" suppressHydrationWarning>
         <ZustandProvider>
           <ToastProvider>
             {children}

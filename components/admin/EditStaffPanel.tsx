@@ -17,7 +17,7 @@ interface StaffMember {
   full_name: string;
   whatsapp_phone: string;
   role: string;
-  division_id: string | null;
+  division_ids: string[] | null;
 }
 
 export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divisions: Division[] }) {
@@ -28,8 +28,8 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
   const [formData, setFormData] = useState({
     fullName: staff.full_name,
     whatsappPhone: staff.whatsapp_phone,
-    role: (staff.role || USER_ROLES.AGENT) as string,
-    divisionId: staff.division_id || ''
+    role: (staff.role || USER_ROLES.STAFF) as string,
+    divisionIds: staff.division_ids || []
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,8 +53,8 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
       setIsOpen(false);
       router.refresh();
       
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : 'An error occurred');
     } finally {
       setIsSubmitting(false);
     }
@@ -130,7 +130,7 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
                     <select 
                       id="edit-role"
                       value={formData.role}
-                      onChange={e => setFormData({...formData, role: e.target.value, divisionId: e.target.value === USER_ROLES.ADMIN ? '' : formData.divisionId})}
+                      onChange={e => setFormData({...formData, role: e.target.value, divisionIds: e.target.value === USER_ROLES.ADMIN ? [] : formData.divisionIds})}
                       className="w-full bg-transparent border-b-2 border-brand-border/60 pb-2 text-sm font-bold text-brand-deep-blue focus:outline-none focus:border-brand-blue uppercase tracking-widest"
                     >
                       {ROLE_VALUES.map(role => (
@@ -139,21 +139,28 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
                     </select>
                   </div>
 
-                  <div>
-                    <label htmlFor="edit-division" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Division</label>
-                    <select 
-                      id="edit-division"
-                      required={formData.role === USER_ROLES.AGENT}
-                      disabled={formData.role === USER_ROLES.ADMIN}
-                      value={formData.divisionId}
-                      onChange={e => setFormData({...formData, divisionId: e.target.value})}
-                      className="w-full bg-transparent border-b-2 border-brand-border/60 pb-2 text-sm font-bold text-brand-deep-blue focus:outline-none focus:border-brand-blue uppercase tracking-widest disabled:opacity-50"
-                    >
-                      <option value="" disabled>Select...</option>
+                  <div className={formData.role === USER_ROLES.ADMIN ? 'opacity-50 pointer-events-none' : ''}>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Services</label>
+                    <div className="space-y-3 mt-2">
                       {divisions.map(d => (
-                        <option key={d.id} value={d.id}>{d.display_name}</option>
+                        <label key={d.id} className="flex items-center gap-3 cursor-pointer group">
+                          <input 
+                            type="checkbox"
+                            checked={formData.divisionIds.includes(d.id)}
+                            onChange={(e) => {
+                              const newIds = e.target.checked 
+                                ? [...formData.divisionIds, d.id] 
+                                : formData.divisionIds.filter(id => id !== d.id);
+                              setFormData({...formData, divisionIds: newIds});
+                            }}
+                            className="w-4 h-4 rounded-none border-2 border-brand-border/60 text-brand-deep-blue focus:ring-brand-blue"
+                          />
+                          <span className="text-sm font-bold text-brand-deep-blue group-hover:text-brand-blue transition-colors">
+                            {d.display_name}
+                          </span>
+                        </label>
                       ))}
-                    </select>
+                    </div>
                   </div>
                 </div>
               </div>

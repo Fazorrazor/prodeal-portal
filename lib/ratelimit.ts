@@ -12,14 +12,20 @@ export const inquiryRateLimit = new Ratelimit({
   prefix: 'rl:inquiry',
 });
 
-export const whatsappRateLimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(60, '1 h'),
-  prefix: 'rl:whatsapp',
-});
-
 export const uploadRateLimit = new Ratelimit({
   redis,
   limiter: Ratelimit.slidingWindow(20, '1 h'),
   prefix: 'rl:upload',
+});
+
+export const trackRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(20, '1 m'), // 20 requests per minute to prevent brute-forcing IDs
+  prefix: 'rl:track',
+});
+
+export const searchRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(60, '1 m'), // 60 searches per minute
+  prefix: 'rl:search',
 });

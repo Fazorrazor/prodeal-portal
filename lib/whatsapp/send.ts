@@ -1,20 +1,23 @@
-import { buildWhatsAppMessage } from './buildMessage';
+import { buildWhatsAppMessage, WhatsAppContext } from './buildMessage';
 import { logError } from '../logger';
 
-export async function sendWhatsAppAlert(phone: string, trackingId: string, divisionName: string) {
+export async function sendWhatsAppAlert(phone: string, trackingId: string, divisionName: string, context: WhatsAppContext) {
   try {
     const token = process.env.WHATSAPP_TOKEN;
     const phoneId = process.env.WHATSAPP_PHONE_ID;
 
     if (!token || !phoneId) {
-      console.warn('WhatsApp environment variables missing. Simulating success for development.');
-      // In dev, if keys are missing, we pretend it worked so we don't break the flow
-      return { success: true, messageId: 'simulated_wa_' + Date.now() };
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('WhatsApp environment variables missing. Simulating success for development.');
+        return { success: true, messageId: 'simulated_wa_' + Date.now() };
+      } else {
+        throw new Error('CRITICAL: WhatsApp environment variables missing in production');
+      }
     }
 
-    const payload = buildWhatsAppMessage(phone, trackingId, divisionName);
+    const payload = buildWhatsAppMessage(phone, trackingId, divisionName, context);
 
-    const res = await fetch(`https://graph.facebook.com/v17.0/${phoneId}/messages`, {
+    const res = await fetch(`https://graph.facebook.com/v20.0/${phoneId}/messages`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,

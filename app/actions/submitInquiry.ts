@@ -10,7 +10,7 @@ import { sendWhatsAppAlert } from '../../lib/whatsapp/send';
 export async function submitInquiry(formData: any) {
   try {
     // 1. Rate Limit Check (Fail-open on timeout to prevent Redis from becoming a bottleneck)
-    const ip = headers().get('x-forwarded-for') ?? '127.0.0.1';
+    const ip = (await headers()).get('x-forwarded-for') ?? '127.0.0.1';
     try {
       const { success } = await Promise.race([
         inquiryRateLimit.limit(ip),
@@ -71,7 +71,7 @@ export async function submitInquiry(formData: any) {
     const { data: staffMembers, error: staffError } = await supabase
       .from('staff_members')
       .select('id, whatsapp_phone')
-      .eq('division_id', divisionId)
+      .contains('division_ids', [divisionId])
       .eq('is_active', true);
 
     if (staffError) {
@@ -147,7 +147,13 @@ export async function submitInquiry(formData: any) {
         ? newInquiry.divisions[0]?.display_name 
         : (newInquiry.divisions as any)?.display_name || divisionSlug;
 
-      const waResult = await sendWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName);
+      const waContext = {
+        divisionSlug,
+        inquiryData: parsedInquiry.data,
+        attachmentCount: fileIds ? fileIds.length : 0
+      };
+
+      const waResult = await sendWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext);
 
       if (!waResult.success) {
         // Rollback the database write if WA fails (Strict Rule 4 compliance)
@@ -169,8 +175,8 @@ export async function submitInquiry(formData: any) {
       console.warn(`[WARN] Inquiry ${newInquiry.tracking_uuid} submitted but no active staff found for division.`);
     }
 
-    // 8. Return success with tracking ID
-    return { success: true, trackingId: newInquiry.tracking_uuid };
+    // 8. Return success with tracking ID and assigned staff phone
+    return { success: true, trackingId: newInquiry.tracking_uuid, assignedPhone: staffPhone };
 
   } catch (error) {
     await logError('SubmitInquiry Action - Unknown Error', error, { formData });

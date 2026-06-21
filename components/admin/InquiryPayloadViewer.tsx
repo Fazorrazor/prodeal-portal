@@ -1,6 +1,6 @@
 import { AnimatedBorder } from './AnimatedBorder';
 
-export function InquiryPayloadViewer({ payload }: { payload: any }) {
+export function InquiryPayloadViewer({ payload }: { payload: { productId?: string; productName?: string; [key: string]: unknown } | null }) {
   if (!payload || Object.keys(payload).length === 0) return null;
 
   const { productId, productName, ...restPayload } = payload;

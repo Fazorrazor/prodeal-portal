@@ -64,15 +64,19 @@ export default async function AdminDashboardOverview() {
         <p className="text-brand-deep-blue/60 font-body text-sm max-w-xl">Welcome back. Here is the latest status of your division's inquiries.</p>
       </div>
 
-      <MetricsRow 
-        total={total}
-        pending={pending}
-        resolved={resolved}
-        avgTime={avgTime}
-      />
+      <div id="tour-metrics">
+        <MetricsRow 
+          total={total}
+          pending={pending}
+          resolved={resolved}
+          avgTime={avgTime}
+        />
+      </div>
 
       <div className="flex flex-col gap-12">
-        <RecentTicketsTable inquiries={recent} />
+        <div id="tour-recent-tickets">
+          <RecentTicketsTable inquiries={recent} />
+        </div>
         {userRole === 'admin' && <StaffAssignmentTable />}
       </div>
     </div>

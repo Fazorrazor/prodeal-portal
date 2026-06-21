@@ -36,7 +36,7 @@ function MobileDrawerContent() {
   }, [isOpen]);
 
   return (
-    <div className="md:hidden">
+    <div className="block">
       <button 
         onClick={() => setIsOpen(true)}
         className="p-2 -mr-2 text-brand-deep-blue transition-colors hover:text-brand-blue"
@@ -106,7 +106,7 @@ function MobileDrawerContent() {
 export function MobileDrawer() {
   return (
     <Suspense fallback={
-      <div className="md:hidden">
+      <div className="block">
         <button className="p-2 -mr-2 text-brand-deep-blue" aria-label="Menu loading">
           <Menu className="w-6 h-6" />
         </button>

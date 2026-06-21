@@ -11,13 +11,13 @@ const staffSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
   whatsappPhone: z.string().min(8, "Valid phone is required"),
   role: z.enum(ROLE_VALUES),
-  divisionId: z.string().optional()
+  divisionIds: z.array(z.string()).optional()
 }).refine(data => {
-  if (data.role === USER_ROLES.AGENT && !data.divisionId) return false;
+  if (data.role === USER_ROLES.AGENT && (!data.divisionIds || data.divisionIds.length === 0)) return false;
   return true;
 }, {
-  message: "Agents must be assigned to a division",
-  path: ["divisionId"]
+  message: "Agents must be assigned to at least one division",
+  path: ["divisionIds"]
 });
 
 export async function POST(req: Request) {
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    const { fullName, email, password, whatsappPhone, role, divisionId } = validatedData.data;
+    const { fullName, email, password, whatsappPhone, role, divisionIds } = validatedData.data;
 
     // 4. Create auth user securely via Admin API
     const adminClient = createAdminClient();
@@ -77,7 +77,7 @@ export async function POST(req: Request) {
         full_name: fullName,
         whatsapp_phone: whatsappPhone,
         role: role,
-        division_id: role === USER_ROLES.AGENT ? divisionId : null,
+        division_ids: role === USER_ROLES.AGENT ? divisionIds || [] : [],
         is_active: true
       });
 

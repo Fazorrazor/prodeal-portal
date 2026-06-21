@@ -19,12 +19,15 @@ const config: Config = {
         }
       },
       fontFamily: {
-        display: ['var(--font-bebas-neue)', 'sans-serif'],
-        heading: ['var(--font-dm-sans)', 'sans-serif'],
-        body:    ['var(--font-ibm-plex-sans)', 'sans-serif']
+        display: ['Roghin', 'var(--font-montserrat)', 'sans-serif'],
+        heading: ['Roghin', 'var(--font-montserrat)', 'sans-serif'],
+        body:    ['var(--font-roboto)', 'sans-serif']
       }
     },
   },
   plugins: [],
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
 };
 export default config;

@@ -39,13 +39,17 @@ export default async function StaffPage() {
             Manage system access and division assignments.
           </p>
         </div>
-        <AddStaffPanel divisions={divisions || []} />
+        <div id="tour-add-staff">
+          <AddStaffPanel divisions={divisions || []} />
+        </div>
       </div>
 
       <DivisionErrorBoundary>
-        <Suspense fallback={<StaffAssignmentTableSkeleton />}>
-          <StaffAssignmentTable hideManageLink={true} />
-        </Suspense>
+        <div id="tour-staff-table">
+          <Suspense fallback={<StaffAssignmentTableSkeleton />}>
+            <StaffAssignmentTable hideManageLink={true} />
+          </Suspense>
+        </div>
       </DivisionErrorBoundary>
     </div>
   );

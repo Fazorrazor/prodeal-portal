@@ -42,3 +42,87 @@
     display: none;
   }
 }
+
+/* Brutalist Driver.js Popover Overrides */
+.brutalist-driver-popover {
+  background-color: #F8FAFC !important; /* brand-surface */
+  border: 4px solid #09192B !important; /* brand-deep-blue */
+  border-radius: 0 !important; /* No rounded corners */
+  padding: 24px !important;
+  color: #09192B !important;
+  box-shadow: 8px 8px 0px 0px rgba(9, 25, 43, 1) !important; /* Hard shadow */
+  max-width: 350px !important;
+  font-family: inherit !important;
+}
+
+.brutalist-driver-popover .driver-popover-title {
+  font-family: 'Space Grotesk', system-ui, sans-serif !important; /* Heading font */
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: -0.05em !important;
+  margin-bottom: 12px !important;
+  color: #09192B !important;
+}
+
+.brutalist-driver-popover .driver-popover-description {
+  font-family: 'Space Grotesk', system-ui, sans-serif !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  color: rgba(9, 25, 43, 0.8) !important;
+  line-height: 1.5 !important;
+  margin-bottom: 24px !important;
+}
+
+.brutalist-driver-popover .driver-popover-footer {
+  margin-top: 0 !important;
+}
+
+.brutalist-driver-popover .driver-popover-progress-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  color: #DC2626 !important; /* brand-red */
+}
+
+.brutalist-driver-popover .driver-popover-navigation-btns {
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.brutalist-driver-popover button {
+  background-color: transparent !important;
+  border: 2px solid #09192B !important;
+  border-radius: 0 !important;
+  color: #09192B !important;
+  font-family: 'Space Grotesk', system-ui, sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  padding: 8px 16px !important;
+  transition: all 0.2s !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+.brutalist-driver-popover button:hover {
+  background-color: #09192B !important;
+  color: #F8FAFC !important;
+}
+
+.brutalist-driver-popover .driver-popover-close-btn {
+  top: 12px !important;
+  right: 12px !important;
+  color: #09192B !important;
+  opacity: 0.5 !important;
+}
+.brutalist-driver-popover .driver-popover-close-btn:hover {
+  opacity: 1 !important;
+  background-color: transparent !important;
+  color: #DC2626 !important;
+}
+
+.driver-overlay { z-index: 999998 !important; }
+.driver-active-element { z-index: 999999 !important; pointer-events: none !important; }
+.brutalist-driver-popover { z-index: 1000000 !important; }

@@ -1,6 +1,7 @@
 import { AdminSidebar } from '../../../components/admin/AdminSidebar';
 import { AdminTopbar } from '../../../components/admin/AdminTopbar';
 import { AdminAuthGuard } from '../../../components/admin/AdminAuthGuard';
+import { AdminWalkthrough } from '../../../components/admin/AdminWalkthrough';
 import { createServer } from '../../../lib/supabase/server';
 
 export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
@@ -20,6 +21,7 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
   return (
     <AdminAuthGuard>
       <>
+        <AdminWalkthrough />
         {/* Mobile Blocker */}
         <div className="lg:hidden flex flex-col items-center justify-center min-h-screen bg-brand-surface p-6 text-center border-t-4 border-brand-red">
           <div className="w-16 h-16 border-2 border-brand-red flex items-center justify-center mb-6">

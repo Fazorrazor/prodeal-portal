@@ -69,7 +69,6 @@ async function TicketDetail({ id }: { id: string }) {
         </div>
         <StatusUpdater inquiryId={inquiry.id} currentStatus={inquiry.status} />
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-12">
@@ -160,7 +159,11 @@ async function TicketDetail({ id }: { id: string }) {
                 >
                   <div className="flex items-center justify-center w-3 h-3 rounded-none bg-brand-deep-blue shrink-0 mt-1" />
                   <div>
-                    <p className="text-xs font-bold text-brand-deep-blue capitalize leading-none mb-1">{event.event_type.replace('_', ' ')}</p>
+                    <p className="text-xs font-bold text-brand-deep-blue capitalize leading-none mb-1">
+                      {event.event_type === 'status_changed' && event.payload?.new_status
+                        ? `Status Changed To ${event.payload.new_status.replace('_', ' ')}`
+                        : event.event_type.replace(/_/g, ' ')}
+                    </p>
                     <p className="text-[10px] font-mono text-brand-deep-blue/60">
                       {format(new Date(event.created_at), 'MMM d, h:mm a')}
                     </p>
@@ -187,7 +190,8 @@ async function TicketDetail({ id }: { id: string }) {
   );
 }
 
-export default function Page({ params }: { params: { id: string } }) {
+export default async function Page(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   return (
     <DivisionErrorBoundary>
       <TicketDetail id={params.id} />

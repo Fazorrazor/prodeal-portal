@@ -3,55 +3,52 @@ import { motion } from 'framer-motion';
 import { DivisionCard } from './DivisionCard';
 import { DIVISIONS_LIST } from '../../lib/config/divisions';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { opacity: 1, x: 0, transition: { type: 'spring', damping: 20, stiffness: 100 } }
-};
-
 export function DivisionGrid() {
-
   return (
-    <section id="divisions" className="py-24 bg-white relative z-20">
+    <section id="divisions" className="py-16 lg:py-24 bg-brand-surface relative z-20">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="mb-16 text-center max-w-2xl mx-auto"
+
+        {/* Section header */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: '-100px' }}
+          transition={{ duration: 0.5 }}
+          className="mb-12 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 border-b-2 border-brand-deep-blue pb-6"
         >
-          <h2 className="font-display text-4xl md:text-5xl text-brand-deep-blue tracking-wide mb-4">OUR DIVISIONS</h2>
-          <p className="text-brand-deep-blue/70 font-body">
-            Select a division below to browse catalogs, check live inventory, or submit a direct inquiry.
+          <div>
+            <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/40 mb-2">
+              — 04 Active Services
+            </p>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-brand-deep-blue tracking-tighter uppercase leading-none">
+              Our Services
+            </h2>
+          </div>
+          <p className="text-xs text-brand-deep-blue/50 font-body max-w-xs leading-relaxed">
+            Select a service to browse catalogs, check live inventory, or submit a direct inquiry.
           </p>
         </motion.div>
-        
-        <motion.div 
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          className="flex flex-col max-w-4xl mx-auto -mx-4 sm:mx-auto border-t border-brand-border/40"
-        >
-          {DIVISIONS_LIST.map((div) => (
-            <motion.div key={div.title} variants={itemVariants}>
-              <DivisionCard 
+
+        {/* Division list */}
+        <div className="flex flex-col">
+          {DIVISIONS_LIST.map((div, i) => (
+            <motion.div
+              key={div.title}
+              initial={{ opacity: 0, x: -16 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+            >
+              <DivisionCard
                 title={div.title}
                 description={div.tagline}
                 href={div.href}
                 accent={div.accent}
+                index={i}
               />
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

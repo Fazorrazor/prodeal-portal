@@ -3,7 +3,8 @@ import { createServer } from '../../../../../lib/supabase/server';
 import { USER_ROLES } from '../../../../../lib/config/roles';
 import { logError } from '../../../../../lib/logger';
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   try {
     const supabase = createServer() as any;
     
@@ -33,9 +34,20 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     if (body.whatsappPhone) updateData.whatsapp_phone = body.whatsappPhone;
     if (body.role) updateData.role = body.role;
     if (body.role === USER_ROLES.ADMIN) {
-      updateData.division_id = null;
-    } else if (body.divisionId !== undefined) {
-      updateData.division_id = body.divisionId;
+      updateData.division_ids = [];
+    } else if (body.divisionIds !== undefined) {
+      updateData.division_ids = body.divisionIds;
+    }
+
+    // Check if the target user is the caller themselves
+    const { data: targetStaff } = await supabase
+      .from('staff_members')
+      .select('auth_user_id')
+      .eq('id', params.id)
+      .single();
+
+    if (targetStaff?.auth_user_id === user.id) {
+      return NextResponse.json({ error: 'You cannot modify your own access privileges or active status from this interface.' }, { status: 403 });
     }
 
     if (Object.keys(updateData).length === 0) {

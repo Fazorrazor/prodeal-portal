@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2, AlertCircle, ArrowRight } from 'lucide-react';
+import { Loader2, AlertCircle, ArrowRight, Copy, CheckCircle2 } from 'lucide-react';
 import { ContactDetailsSchema, DIVISION_SCHEMAS } from '../../../../lib/validators/inquiry';
 import { submitInquiry } from '../../../../app/actions/submitInquiry';
 import { AnimatedBorder } from '../../../../components/admin/AnimatedBorder';
@@ -14,12 +14,26 @@ interface InquiryFormClientProps {
   defaultMoq: number;
 }
 
-function SuccessReceipt({ divisionSlug, phone }: { divisionSlug: string; phone: string }) {
+function SuccessReceipt({ divisionSlug, phone, assignedPhone, trackingId }: { divisionSlug: string; phone: string; assignedPhone?: string | null; trackingId: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
+
+  let displayPhone = assignedPhone || '233 (0) 54 000 0000';
+  // If it's a local Ghana number, format it nicely for display
+  if (displayPhone.startsWith('0') && displayPhone.length === 10) {
+    displayPhone = `233 (0) ${displayPhone.substring(1, 3)} ${displayPhone.substring(3, 6)} ${displayPhone.substring(6)}`;
+  }
+
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(trackingId);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div ref={containerRef} className="flex flex-col py-6 md:py-8 h-full scroll-mt-32">
@@ -34,6 +48,33 @@ function SuccessReceipt({ divisionSlug, phone }: { divisionSlug: string; phone: 
         </p>
       </div>
 
+      {/* Tracking ID Section */}
+      <div className="bg-brand-deep-blue p-6 md:p-8 mb-8 border border-brand-deep-blue relative overflow-hidden">
+        <AnimatedBorder direction="top" delay={0.1} />
+        <p className="text-[10px] font-bold text-white/60 uppercase tracking-[0.2em] mb-2">
+          Your Booking Reference
+        </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="font-mono text-2xl md:text-3xl font-bold text-white tracking-widest">
+            {trackingId}
+          </div>
+          <button
+            onClick={handleCopy}
+            className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-mono text-xs font-bold uppercase tracking-widest transition-colors shrink-0"
+          >
+            {copied ? (
+              <><CheckCircle2 className="w-4 h-4 text-brand-blue" /> Copied!</>
+            ) : (
+              <><Copy className="w-4 h-4" /> Copy ID</>
+            )}
+          </button>
+        </div>
+        <p className="text-xs font-medium text-white/80 mt-4 max-w-lg leading-relaxed">
+          Save this code to check your inquiry status anytime at 
+          <span className="font-bold text-white ml-1">prodealindustries.com/track</span>
+        </p>
+      </div>
+
       <div className="border-y-2 border-brand-deep-blue/20 py-6 mb-8 relative overflow-hidden bg-black/5 px-4 md:px-6">
         <AnimatedBorder direction="left" delay={0.2} />
         <div className="relative z-10">
@@ -41,8 +82,8 @@ function SuccessReceipt({ divisionSlug, phone }: { divisionSlug: string; phone: 
             <AlertCircle className="w-3 h-3" /> Priority Support Escallation
           </p>
           <p className="text-xs font-bold text-brand-deep-blue/80 uppercase tracking-widest leading-relaxed">
-            If you do not receive a response within 60 minutes, please contact our priority line at <br/>
-            <span className="font-mono text-brand-deep-blue text-sm mt-1 block">+233 (0) 54 000 0000</span>
+            If you do not receive a response within 12 hours, please contact our priority line at <br/>
+            <span className="font-mono text-brand-deep-blue text-sm mt-1 block">+{displayPhone}</span>
           </p>
         </div>
       </div>
@@ -62,6 +103,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [trackingId, setTrackingId] = useState('');
+  const [assignedPhone, setAssignedPhone] = useState<string | null>(null);
 
   const DivisionSpecificSchema = DIVISION_SCHEMAS[divisionSlug as keyof typeof DIVISION_SCHEMAS] || DIVISION_SCHEMAS.signages;
 
@@ -102,6 +144,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
     if (result.success && result.trackingId) {
       setStatus('success');
       setTrackingId(result.trackingId);
+      if (result.assignedPhone) setAssignedPhone(result.assignedPhone);
     } else {
       setStatus('error');
       setErrorMessage(result.error || 'Something went wrong.');
@@ -109,7 +152,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   };
 
   if (status === 'success') {
-    return <SuccessReceipt divisionSlug={divisionSlug} phone={getValues('contact.phone')} />;
+    return <SuccessReceipt divisionSlug={divisionSlug} phone={getValues('contact.phone')} assignedPhone={assignedPhone} trackingId={trackingId} />;
   }
 
   if (status === 'error') {
@@ -138,18 +181,68 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   const labelClass = "block text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest mb-1";
   const errorClass = "text-[10px] text-brand-red font-bold tracking-widest uppercase mt-1";
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === 'Enter') {
+      const target = e.target as HTMLElement;
+      
+      if (target.tagName === 'TEXTAREA') {
+        if (!e.shiftKey) {
+          e.preventDefault();
+          e.currentTarget.requestSubmit();
+        }
+        return;
+      }
+
+      // Allow buttons to function normally
+      if (target.tagName === 'BUTTON') {
+        return;
+      }
+
+      e.preventDefault();
+      
+      const form = e.currentTarget;
+      const elements = Array.from(form.elements) as HTMLElement[];
+      const index = elements.indexOf(target);
+      
+      if (index > -1) {
+        let nextElement = null;
+        for (let i = index + 1; i < elements.length; i++) {
+          const el = elements[i] as HTMLInputElement | HTMLTextAreaElement | HTMLButtonElement;
+          if (!el.disabled && el.tabIndex !== -1 && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'BUTTON')) {
+            nextElement = el;
+            break;
+          }
+        }
+        
+        if (nextElement) {
+          if (nextElement.tagName === 'BUTTON' && (nextElement as HTMLButtonElement).type === 'submit') {
+            form.requestSubmit();
+          } else {
+            nextElement.focus();
+          }
+        }
+      }
+    }
+  };
+
   return (
     <>
-      <div className="mb-12">
-        <h2 className="font-heading font-bold text-3xl text-brand-deep-blue uppercase tracking-tight mb-2">
+      <div className="mb-10">
+        <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/40 mb-2">
+          — Submit your request
+        </p>
+        <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-brand-deep-blue uppercase tracking-tighter leading-none mb-4">
           Inquiry Details
         </h2>
-        <p className="text-xs font-bold text-brand-red/80 uppercase tracking-widest">
-          Please provide the specifications below. A representative will contact you via WhatsApp shortly.
-        </p>
+        <div className="flex items-center gap-2 py-3 border-t border-b border-brand-border/40">
+          <span className="text-brand-red font-mono font-bold text-sm leading-none">→</span>
+          <span className="text-[10px] font-mono font-bold text-brand-deep-blue/55 uppercase tracking-[0.18em]">
+            A representative will contact you via WhatsApp shortly
+          </span>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-12 pb-24">
+      <form onSubmit={handleSubmit(onSubmit)} onKeyDown={handleKeyDown} className="space-y-12 pb-24">
       {/* Contact Details Section */}
       <div className="space-y-8">
         <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tight border-b-2 border-brand-deep-blue pb-2">
