@@ -4,7 +4,6 @@ import { createServer } from '../../../../lib/supabase/server';
 import { createAdminClient } from '../../../../lib/supabase/admin';
 import { USER_ROLES, ROLE_VALUES } from '../../../../lib/config/roles';
 import { logError } from '../../../../lib/logger';
-import { headers } from 'next/headers';
 import { adminRateLimit } from '../../../../lib/ratelimit';
 
 const staffSchema = z.object({
@@ -22,14 +21,16 @@ const staffSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    // 0. Check Upstash rate limit
-    const ip = (await headers()).get('x-forwarded-for') ?? '127.0.0.1';
-    const { success } = await adminRateLimit.limit(ip);
-    if (!success) {
-      return NextResponse.json({ error: 'Too Many Requests' }, { status: 429 });
+    // 0. Rate limiting
+    try {
+      const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+      const { success } = await adminRateLimit.limit(ip);
+      if (!success) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    } catch (e) {
+      console.warn('[Rate Limit Warning] Admin route rate limit check failed', e);
     }
 
-    const supabase = createServer();
+    const supabase = createServer() as any;
     
     // 1. Verify caller is authenticated
     const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -42,7 +43,7 @@ export async function POST(req: Request) {
       .from('staff_members')
       .select('role')
       .eq('auth_user_id', user.id)
-      .single<{ role: string }>();
+      .single();
 
     if (callerStaff?.role !== USER_ROLES.ADMIN) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -101,7 +102,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, userId: authData.user.id }, { status: 201 });
 
-  } catch (error: unknown) {
+  } catch (error: any) {
     await logError('POST /api/admin/staff (Unknown)', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }

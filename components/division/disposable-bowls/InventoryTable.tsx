@@ -1,4 +1,5 @@
-import { createPublicClient } from '../../../lib/supabase/server';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,18 +7,8 @@ import Link from 'next/link';
 import { ProductImageFallback } from '../../shared/ProductImageFallback';
 import { ImageLightbox } from '../../shared/ImageLightbox';
 
-function getStockBadge(level: string | undefined) {
-  if (level === 'out_of_stock') {
-    return <span className="inline-block px-2 py-1 bg-red-100 text-red-700 text-[9px] font-bold uppercase tracking-widest border border-red-200">Out of Stock</span>;
-  }
-  if (level === 'low_stock') {
-    return <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-[9px] font-bold uppercase tracking-widest border border-amber-200">Low Stock</span>;
-  }
-  return <span className="inline-block px-2 py-1 bg-emerald-100 text-emerald-700 text-[9px] font-bold uppercase tracking-widest border border-emerald-200">In Stock</span>;
-}
-
 export async function InventoryTable() {
-  const supabase = createPublicClient();
+  const supabase = createServerComponentClient({ cookies });
 
   const { data: products, error } = await supabase
     .from('products')
@@ -62,16 +53,13 @@ export async function InventoryTable() {
               <th className="p-4 font-heading font-bold text-brand-deep-blue text-xs uppercase tracking-widest">
                 Material
               </th>
-              <th className="p-4 font-heading font-bold text-brand-deep-blue text-xs uppercase tracking-widest">
-                Status
-              </th>
               <th className="py-4 pl-4 w-24" />
             </tr>
           </thead>
           <tbody>
             {!products || products.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-12">
+                <td colSpan={5} className="py-12">
                   <h3 className="font-heading font-bold text-2xl text-brand-deep-blue uppercase tracking-tighter">
                     All Clear.
                   </h3>
@@ -128,23 +116,14 @@ export async function InventoryTable() {
                   <td className="p-4 text-sm text-brand-deep-blue font-mono font-bold">
                     {product.metadata?.material || 'Food-grade Plastic'}
                   </td>
-                  <td className="p-4">
-                    {getStockBadge(product.metadata?.stock_level)}
-                  </td>
                   {/* CTA */}
                   <td className="py-4 pl-4 text-right">
-                    {product.metadata?.stock_level === 'out_of_stock' ? (
-                      <button disabled className="inline-block px-4 py-2 bg-slate-100 text-slate-400 font-bold uppercase tracking-widest text-[10px] cursor-not-allowed">
-                        Out of Stock
-                      </button>
-                    ) : (
-                      <Link
+                    <Link
                         href={`/inquiry/${product.id}?from=bowls`}
                         className="inline-block px-4 py-2 bg-brand-deep-blue text-white font-bold uppercase tracking-widest text-[10px] md:hover:bg-brand-blue active:bg-brand-blue transition-colors"
                       >
                         Inquire
                       </Link>
-                    )}
                   </td>
                 </tr>
               ))
@@ -204,7 +183,7 @@ export async function InventoryTable() {
                 </div>
 
                 {/* Meta row */}
-                <div className="grid grid-cols-3 gap-3 border-t border-brand-border/20 pt-3">
+                <div className="grid grid-cols-2 gap-3 border-t border-brand-border/20 pt-3">
                   <div>
                     <span className="block text-[9px] text-brand-deep-blue/35 uppercase font-bold tracking-widest mb-0.5">
                       Size
@@ -221,27 +200,15 @@ export async function InventoryTable() {
                       {product.metadata?.material || 'Food-grade Plastic'}
                     </span>
                   </div>
-                  <div>
-                    <span className="block text-[9px] text-brand-deep-blue/35 uppercase font-bold tracking-widest mb-0.5">
-                      Status
-                    </span>
-                    {getStockBadge(product.metadata?.stock_level)}
-                  </div>
                 </div>
 
                 {/* CTA */}
-                {product.metadata?.stock_level === 'out_of_stock' ? (
-                  <button disabled className="block w-full text-center py-4 bg-slate-100 text-slate-400 font-bold uppercase tracking-widest text-[10px] cursor-not-allowed min-h-[44px] flex items-center justify-center">
-                    Out of Stock
-                  </button>
-                ) : (
-                  <Link
-                    href={`/inquiry/${product.id}?from=bowls`}
-                    className="block w-full text-center py-4 bg-brand-deep-blue text-white font-bold uppercase tracking-widest text-[10px] active:bg-brand-blue transition-colors min-h-[44px] flex items-center justify-center"
-                  >
-                    Inquire About This
-                  </Link>
-                )}
+                <Link
+                  href={`/inquiry/${product.id}?from=bowls`}
+                  className="block w-full text-center py-4 bg-brand-deep-blue text-white font-bold uppercase tracking-widest text-[10px] active:bg-brand-blue transition-colors min-h-[44px] flex items-center justify-center"
+                >
+                  Inquire About This
+                </Link>
               </div>
           ))
         )}

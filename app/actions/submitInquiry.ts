@@ -46,7 +46,7 @@ export async function submitInquiry(formData: any) {
       return { success: false, error: 'Invalid division specific data.', details: parsedInquiry.error.errors };
     }
 
-    const supabase = createServiceRoleClient();
+    const supabase = createServiceRoleClient() as any;
 
     // 4. Get the division ID (use simple memory cache to avoid sequential DB round-trip)
     let divisionId = (global as any).divisionCache?.[divisionSlug];
@@ -56,7 +56,7 @@ export async function submitInquiry(formData: any) {
         .from('divisions')
         .select('id')
         .eq('slug', divisionSlug)
-        .single<{ id: string }>();
+        .single();
 
       if (divisionError || !divisionRecord) {
         return { success: false, error: 'Division not found in database.' };
@@ -72,7 +72,7 @@ export async function submitInquiry(formData: any) {
       .from('staff_members')
       .select('id, whatsapp_phone')
       .contains('division_ids', [divisionId])
-      .eq('is_active', true) as unknown as { data: { id: string, whatsapp_phone: string }[] | null, error: any };
+      .eq('is_active', true);
 
     if (staffError) {
       await logError('SubmitInquiry Action - Staff Lookup Error', staffError, { divisionId });
@@ -89,7 +89,7 @@ export async function submitInquiry(formData: any) {
         .from('inquiries')
         .select('assigned_staff')
         .in('assigned_staff', staffIds)
-        .in('status', ['new', 'in_progress']) as unknown as { data: { assigned_staff: string }[] | null, error: any };
+        .in('status', ['new', 'in_progress']);
 
       const workloads = staffMembers.reduce((acc: Record<string, number>, staff: any) => {
         acc[staff.id] = 0;
@@ -134,7 +134,7 @@ export async function submitInquiry(formData: any) {
         status: 'new'
       })
       .select('id, tracking_uuid, divisions(display_name)')
-      .single<{ id: string, tracking_uuid: string, divisions: { display_name: string } | { display_name: string }[] }>();
+      .single();
 
     if (insertError || !newInquiry) {
       await logError('SubmitInquiry Action - Insert Error', insertError, { formData });

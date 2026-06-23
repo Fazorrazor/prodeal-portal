@@ -1,4 +1,3 @@
-// 'use client' - needs useState for toggle and deletion state
 'use client';
 
 import { useState } from 'react';

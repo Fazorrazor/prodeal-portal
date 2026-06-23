@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createServer } from '../../../../../lib/supabase/server';
 import { z } from 'zod';
 import { logError } from '../../../../../lib/logger';
+import { adminRateLimit } from '../../../../../lib/ratelimit';
 
 const StatusUpdateSchema = z.object({
   status: z.enum(['new', 'in_progress', 'quoted', 'closed']),
@@ -10,6 +11,15 @@ const StatusUpdateSchema = z.object({
 export async function PATCH(request: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
+    // 0. Rate limiting
+    try {
+      const ip = request.headers.get('x-forwarded-for') ?? '127.0.0.1';
+      const { success } = await adminRateLimit.limit(ip);
+      if (!success) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    } catch (e) {
+      console.warn('[Rate Limit Warning] Admin route rate limit check failed', e);
+    }
+
     const supabase = createServer() as any;
     
     // 1. Auth check

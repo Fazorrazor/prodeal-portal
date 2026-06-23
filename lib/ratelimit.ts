@@ -32,6 +32,6 @@ export const searchRateLimit = new Ratelimit({
 
 export const adminRateLimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(60, '1 m'), // 60 admin actions per minute
+  limiter: Ratelimit.slidingWindow(50, '1 m'), // 50 requests per minute
   prefix: 'rl:admin',
 });

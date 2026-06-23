@@ -9,9 +9,13 @@ export async function POST(req: NextRequest) {
     const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
 
     // b. Check the uploadRateLimit from lib/ratelimit.ts
-    const { success } = await uploadRateLimit.limit(ip);
-    if (!success) {
-      return NextResponse.json({ error: 'Rate limit exceeded. Try again later.' }, { status: 429 });
+    try {
+      const { success } = await uploadRateLimit.limit(ip);
+      if (!success) {
+        return NextResponse.json({ error: 'Rate limit exceeded. Try again later.' }, { status: 429 });
+      }
+    } catch (e) {
+      console.warn('[Rate Limit Warning] Upload route rate limit check failed, failing open', e);
     }
 
     // c. Parse the incoming FormData and extract the file

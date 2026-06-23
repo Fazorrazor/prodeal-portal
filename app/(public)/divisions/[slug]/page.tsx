@@ -19,9 +19,12 @@ import { BulkOrderNote } from '../../../../components/division/disposable-bowls/
 // Components for Chemicals
 import { ChemicalCatalog } from '../../../../components/division/chemicals/ChemicalCatalog';
 
-// Set the baseline revalidation to 1800 (30 minutes). 
-// The bowls division has its own route to satisfy the 300s freshness requirement.
-export const revalidate = 1800;
+// Set the baseline revalidation to 300 (5 minutes). 
+// This strictly satisfies the workflow requirement for the 'bowls' division's 
+// live inventory freshness, while keeping the other routes fast and static.
+
+
+export const revalidate = 300;
 
 export default async function DivisionPage(
   props: { 

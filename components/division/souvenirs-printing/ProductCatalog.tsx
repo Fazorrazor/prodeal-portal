@@ -1,4 +1,5 @@
-import { createPublicClient } from '../../../lib/supabase/server';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ScrollReveal } from '../../shared/ScrollReveal';
@@ -7,7 +8,7 @@ import { ProductImageFallback } from '../../shared/ProductImageFallback';
 import { ImageLightbox } from '../../shared/ImageLightbox';
 
 export async function ProductCatalog() {
-  const supabase = createPublicClient();
+  const supabase = createServerComponentClient({ cookies });
 
   const { data: products, error } = await supabase
     .from('products')

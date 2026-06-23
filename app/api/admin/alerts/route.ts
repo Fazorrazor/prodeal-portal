@@ -2,12 +2,22 @@ import { NextResponse } from 'next/server';
 import { createServer } from '../../../../lib/supabase/server';
 import { USER_ROLES } from '../../../../lib/config/roles';
 import { logError } from '../../../../lib/logger';
+import { adminRateLimit } from '../../../../lib/ratelimit';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    // 0. Rate limiting
+    try {
+      const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+      const { success } = await adminRateLimit.limit(ip);
+      if (!success) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    } catch (e) {
+      console.warn('[Rate Limit Warning] Admin route rate limit check failed', e);
+    }
+
     const supabase = createServer() as any;
     
     // 1. Verify caller is authenticated

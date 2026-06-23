@@ -3,10 +3,30 @@ import { createServer } from '../../../../../lib/supabase/server';
 import { createAdminClient } from '../../../../../lib/supabase/admin';
 import { USER_ROLES } from '../../../../../lib/config/roles';
 import { logError } from '../../../../../lib/logger';
+import { z } from 'zod';
+import { adminRateLimit } from '../../../../../lib/ratelimit';
+import { ROLE_VALUES } from '../../../../../lib/config/roles';
+
+const UpdateStaffSchema = z.object({
+  fullName: z.string().min(2, "Full name is required").optional(),
+  whatsappPhone: z.string().min(8, "Valid phone is required").optional(),
+  role: z.enum(ROLE_VALUES as [string, ...string[]]).optional(),
+  divisionIds: z.array(z.string()).optional(),
+  is_active: z.boolean().optional()
+});
 
 export async function PATCH(req: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
+    // 0. Rate limiting
+    try {
+      const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+      const { success } = await adminRateLimit.limit(ip);
+      if (!success) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    } catch (e) {
+      console.warn('[Rate Limit Warning] Admin route rate limit check failed', e);
+    }
+
     const supabase = createServer() as any;
     
     // 1. Verify caller is authenticated
@@ -27,17 +47,21 @@ export async function PATCH(req: Request, props: { params: Promise<{ id: string 
     }
 
     const body = await req.json();
+    const validatedData = UpdateStaffSchema.safeParse(body);
+    if (!validatedData.success) {
+      return NextResponse.json({ error: 'Validation failed', details: validatedData.error.errors }, { status: 400 });
+    }
     
     // Build update payload dynamically based on what was sent
     const updateData: any = {};
-    if (typeof body.is_active === 'boolean') updateData.is_active = body.is_active;
-    if (body.fullName) updateData.full_name = body.fullName;
-    if (body.whatsappPhone) updateData.whatsapp_phone = body.whatsappPhone;
-    if (body.role) updateData.role = body.role;
-    if (body.role === USER_ROLES.ADMIN) {
+    if (validatedData.data.is_active !== undefined) updateData.is_active = validatedData.data.is_active;
+    if (validatedData.data.fullName) updateData.full_name = validatedData.data.fullName;
+    if (validatedData.data.whatsappPhone) updateData.whatsapp_phone = validatedData.data.whatsappPhone;
+    if (validatedData.data.role) updateData.role = validatedData.data.role;
+    if (validatedData.data.role === USER_ROLES.ADMIN) {
       updateData.division_ids = [];
-    } else if (body.divisionIds !== undefined) {
-      updateData.division_ids = body.divisionIds;
+    } else if (validatedData.data.divisionIds !== undefined) {
+      updateData.division_ids = validatedData.data.divisionIds;
     }
 
     // Check if the target user is the caller themselves
@@ -74,6 +98,15 @@ export async function PATCH(req: Request, props: { params: Promise<{ id: string 
 export async function DELETE(req: Request, props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
   try {
+    // 0. Rate limiting
+    try {
+      const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
+      const { success } = await adminRateLimit.limit(ip);
+      if (!success) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    } catch (e) {
+      console.warn('[Rate Limit Warning] Admin route rate limit check failed', e);
+    }
+
     const supabase = createServer() as any;
     
     // 1. Verify caller is authenticated

@@ -1,14 +1,14 @@
-import { createPublicClient } from '../../../lib/supabase/server';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
 import { ProductImageFallback } from '../../shared/ProductImageFallback';
 import { ImageLightbox } from '../../shared/ImageLightbox';
-import { SafetyNotice } from '../../shared/SafetyNotice';
 
 export async function ChemicalCatalog() {
-  const supabase = createPublicClient();
+  const supabase = createServerComponentClient({ cookies });
 
   const { data: products, error } = await supabase
     .from('products')
@@ -23,7 +23,6 @@ export async function ChemicalCatalog() {
 
   return (
     <div>
-      <SafetyNotice />
       {/* Section header */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-8">
         <div>
