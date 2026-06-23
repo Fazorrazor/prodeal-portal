@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
 async function TicketsData({ searchParams }: { searchParams: { [key: string]: string | undefined } }) {
-  const supabase = createServer() as any;
+  const supabase = await createServer() as any;
   const statusFilter = searchParams.status || 'all';
   const searchFilter = searchParams.search || '';
   

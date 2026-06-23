@@ -27,7 +27,7 @@ export async function PATCH(req: Request, props: { params: Promise<{ id: string 
       console.warn('[Rate Limit Warning] Admin route rate limit check failed', e);
     }
 
-    const supabase = createServer() as any;
+    const supabase = await createServer() as any;
     
     // 1. Verify caller is authenticated
     const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -107,7 +107,7 @@ export async function DELETE(req: Request, props: { params: Promise<{ id: string
       console.warn('[Rate Limit Warning] Admin route rate limit check failed', e);
     }
 
-    const supabase = createServer() as any;
+    const supabase = await createServer() as any;
     
     // 1. Verify caller is authenticated
     const { data: { user }, error: userError } = await supabase.auth.getUser();

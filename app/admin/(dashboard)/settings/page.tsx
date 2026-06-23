@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
 export default async function SettingsPage() {
-  const supabase = createServer() as any;
+  const supabase = await createServer() as any;
 
   // STRICT AUTH: Only 'admin' role can view settings
   const { data: { user } } = await supabase.auth.getUser();

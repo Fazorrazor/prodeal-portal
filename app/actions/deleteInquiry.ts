@@ -9,7 +9,7 @@ export async function deleteInquirySafely(inquiryId: string) {
     // 1. Verify the caller is an authenticated user
     // Even though middleware protects /admin routes, it is a hard requirement 
     // to verify auth in Server Actions that destroy data.
-    const supabaseUser = createServer();
+    const supabaseUser = await createServer();
     const { data: { session } } = await supabaseUser.auth.getSession();
     
     if (!session?.user) {
@@ -80,7 +80,7 @@ export async function deleteInquirySafely(inquiryId: string) {
 
 export async function bulkDeleteInquiriesSafely(inquiryIds: string[]) {
   try {
-    const supabaseUser = createServer();
+    const supabaseUser = await createServer();
     const { data: { session } } = await supabaseUser.auth.getSession();
     
     if (!session?.user) {

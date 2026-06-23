@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { createServer } from '../../lib/supabase/server';
 
 export async function clearPlatformCache() {
-  const supabase = createServer() as any;
+  const supabase = await createServer() as any;
   const { data: { user } } = await supabase.auth.getUser();
   
   if (!user) {

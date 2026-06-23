@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
 async function TicketDetail({ id }: { id: string }) {
-  const supabase = createServer() as any;
+  const supabase = await createServer() as any;
 
   const { data: inquiry, error } = await supabase
     .from('inquiries')

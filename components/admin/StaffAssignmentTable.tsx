@@ -6,7 +6,7 @@ import { AnimatedBorder } from './AnimatedBorder';
 import { StaffActions } from './StaffActions';
 
 export async function StaffAssignmentTable({ hideManageLink = false }: { hideManageLink?: boolean } = {}) {
-  const supabase = createServer();
+  const supabase = await createServer();
 
   const { data: { user } } = await supabase.auth.getUser();
 

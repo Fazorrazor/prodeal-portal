@@ -5,7 +5,7 @@ import { AdminWalkthrough } from '../../../components/admin/AdminWalkthrough';
 import { createServer } from '../../../lib/supabase/server';
 
 export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = createServer() as any;
+  const supabase = await createServer() as any;
   const { data: { user } } = await supabase.auth.getUser();
   let userRole = 'agent';
   

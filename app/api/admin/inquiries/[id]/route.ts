@@ -20,7 +20,7 @@ export async function PATCH(request: Request, props: { params: Promise<{ id: str
       console.warn('[Rate Limit Warning] Admin route rate limit check failed', e);
     }
 
-    const supabase = createServer() as any;
+    const supabase = await createServer() as any;
     
     // 1. Auth check
     const { data: { user }, error: authError } = await supabase.auth.getUser();

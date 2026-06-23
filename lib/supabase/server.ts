@@ -3,8 +3,11 @@ import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { Database } from './database.types';
 
-export const createServer = () => {
-  return createServerComponentClient<Database>({ cookies });
+export const createServer = async () => {
+  const cookieStore = await cookies();
+  return createServerComponentClient({ 
+    cookies: () => cookieStore as any
+  });
 };
 
 // Use this strictly for protected server operations (like file uploads) 

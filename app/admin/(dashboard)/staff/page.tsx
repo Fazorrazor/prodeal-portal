@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
 export default async function StaffPage() {
-  const supabase = createServer() as any;
+  const supabase = await createServer() as any;
   const { data: { user } } = await supabase.auth.getUser();
   
   if (user) {

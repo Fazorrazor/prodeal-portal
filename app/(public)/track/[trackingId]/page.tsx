@@ -40,11 +40,12 @@ export default async function TrackDetail(props: { params: Promise<{ trackingId:
 }
 
 async function TrackingDataLoader({ trackingId }: { trackingId: string }) {
-  const supabase = createServer();
+  const supabase = await createServer();
 
   const { data: inquiry, error } = await supabase
     .from('inquiries')
-    .select('id, status, division_id, created_at, updated_at')
+    .select('id, status, division_id, tracking_uuid, created_at, updated_at')
+
     .eq('tracking_uuid', trackingId)
     .single();
 

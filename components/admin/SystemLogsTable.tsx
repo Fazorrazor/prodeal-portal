@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { AnimatedBorder } from './AnimatedBorder';
 
 export async function SystemLogsTable() {
-  const supabase = createServer();
+  const supabase = await createServer();
 
   const { data: logs, error } = await supabase
     .from('system_error_logs')

@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       console.warn('[Rate Limit Warning] Admin route rate limit check failed', e);
     }
 
-    const supabase = createServer() as any;
+    const supabase = await createServer() as any;
     
     // 1. Verify caller is authenticated
     const { data: { user }, error: userError } = await supabase.auth.getUser();
