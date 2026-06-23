@@ -11,7 +11,7 @@
 @layer utilities {
   /* Sleek Custom Scrollbars and Smooth Scrolling */
   html {
-    /* scroll-behavior: smooth; Managed by Next.js data attribute instead */
+    scroll-behavior: smooth;
     scrollbar-width: thin;
     scrollbar-color: rgba(9, 25, 43, 0.2) transparent;
   }
