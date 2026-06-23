@@ -42,7 +42,7 @@ export async function POST(req: Request) {
       .from('staff_members')
       .select('role')
       .eq('auth_user_id', user.id)
-      .single();
+      .single<{ role: string }>();
 
     if (callerStaff?.role !== USER_ROLES.ADMIN) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });

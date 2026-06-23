@@ -56,7 +56,7 @@ export async function submitInquiry(formData: any) {
         .from('divisions')
         .select('id')
         .eq('slug', divisionSlug)
-        .single();
+        .single<{ id: string }>();
 
       if (divisionError || !divisionRecord) {
         return { success: false, error: 'Division not found in database.' };
@@ -72,7 +72,7 @@ export async function submitInquiry(formData: any) {
       .from('staff_members')
       .select('id, whatsapp_phone')
       .contains('division_ids', [divisionId])
-      .eq('is_active', true);
+      .eq('is_active', true) as unknown as { data: { id: string, whatsapp_phone: string }[] | null, error: any };
 
     if (staffError) {
       await logError('SubmitInquiry Action - Staff Lookup Error', staffError, { divisionId });
@@ -89,7 +89,7 @@ export async function submitInquiry(formData: any) {
         .from('inquiries')
         .select('assigned_staff')
         .in('assigned_staff', staffIds)
-        .in('status', ['new', 'in_progress']);
+        .in('status', ['new', 'in_progress']) as unknown as { data: { assigned_staff: string }[] | null, error: any };
 
       const workloads = staffMembers.reduce((acc: Record<string, number>, staff: any) => {
         acc[staff.id] = 0;
@@ -134,7 +134,7 @@ export async function submitInquiry(formData: any) {
         status: 'new'
       })
       .select('id, tracking_uuid, divisions(display_name)')
-      .single();
+      .single<{ id: string, tracking_uuid: string, divisions: { display_name: string } | { display_name: string }[] }>();
 
     if (insertError || !newInquiry) {
       await logError('SubmitInquiry Action - Insert Error', insertError, { formData });
