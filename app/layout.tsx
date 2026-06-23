@@ -31,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${montserrat.variable} ${roboto.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${montserrat.variable} ${roboto.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body className="font-body bg-brand-surface text-brand-deep-blue antialiased" suppressHydrationWarning>
         <ZustandProvider>
           <ToastProvider>
