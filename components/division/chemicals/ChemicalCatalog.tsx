@@ -1,5 +1,4 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createPublicClient } from '../../../lib/supabase/server';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ScrollReveal } from '../../shared/ScrollReveal';
@@ -9,7 +8,7 @@ import { ImageLightbox } from '../../shared/ImageLightbox';
 import { SafetyNotice } from '../../shared/SafetyNotice';
 
 export async function ChemicalCatalog() {
-  const supabase = createServerComponentClient({ cookies });
+  const supabase = createPublicClient();
 
   const { data: products, error } = await supabase
     .from('products')
