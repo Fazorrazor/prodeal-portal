@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     // 1. Rate Limiting (Security & Performance)
     try {
       if (process.env.UPSTASH_REDIS_REST_URL) {
-        const ip = req.ip || req.headers.get('x-forwarded-for') || 'anonymous';
+        const ip = req.headers.get('x-forwarded-for') || 'anonymous';
         const { success } = await searchRateLimit.limit(ip);
         if (!success) {
           return NextResponse.json({ error: 'Too many search requests. Please slow down.' }, { status: 429 });
