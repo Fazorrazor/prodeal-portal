@@ -25,7 +25,7 @@ export function DivisionHero({ title, tagline, slug }: DivisionHeroProps) {
         >
           <Link
             href="/"
-            className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-white/40 active:text-white transition-colors"
+            className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-white/60 active:text-white transition-colors"
           >
             Home
           </Link>

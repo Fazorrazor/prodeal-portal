@@ -92,7 +92,7 @@ function GalleryImage({ product }: { product: { id: string; name: string; descri
         <Link href={`/inquiry/${product.id}?from=signages`} className="block w-full mb-2 active:opacity-70 transition-opacity">
           <h3 className="text-brand-deep-blue font-heading font-bold text-xl uppercase tracking-tighter text-center leading-tight md:hover:text-brand-blue transition-colors">{product.name}</h3>
         </Link>
-        <p className="text-sm text-brand-deep-blue/70 font-body mb-4 text-center leading-relaxed">
+        <p className="text-sm text-brand-deep-blue/80 font-body mb-4 text-center leading-relaxed">
           {product.description || 'Custom fabricated 3D signage solution.'}
         </p>
         <Link 

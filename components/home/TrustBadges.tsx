@@ -58,7 +58,7 @@ export function TrustBadges() {
                 <span className="font-heading font-bold text-sm uppercase tracking-widest text-white">
                   {stat.label}
                 </span>
-                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40">
+                <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/60">
                   {stat.sub}
                 </span>
               </div>

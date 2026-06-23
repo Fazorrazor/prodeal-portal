@@ -91,7 +91,7 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
           <h2 className="text-2xl font-heading font-bold text-brand-red tracking-tight mb-2 uppercase">
             Inquiry Cancelled
           </h2>
-          <p className="text-brand-deep-blue/70">
+          <p className="text-brand-deep-blue/80">
             This inquiry has been marked as cancelled. Please contact our support team if you believe this is an error.
           </p>
         </div>

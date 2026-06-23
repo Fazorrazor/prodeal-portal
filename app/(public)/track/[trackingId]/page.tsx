@@ -21,7 +21,7 @@ export default async function TrackDetail(props: { params: Promise<{ trackingId:
             <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-tighter leading-none text-brand-red mb-6 uppercase">
               Too Many Requests.
             </h1>
-            <p className="text-lg font-mono text-brand-deep-blue/70 max-w-md">
+            <p className="text-lg font-mono text-brand-deep-blue/80 max-w-md">
               RATE LIMIT EXCEEDED. PLEASE WAIT A MINUTE BEFORE TRYING AGAIN.
             </p>
           </div>
@@ -56,7 +56,7 @@ async function TrackingDataLoader({ trackingId }: { trackingId: string }) {
           <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-tighter leading-none text-brand-deep-blue mb-6 uppercase">
             Not Found.
           </h1>
-          <p className="text-lg font-mono text-brand-deep-blue/70 mb-8 max-w-md">
+          <p className="text-lg font-mono text-brand-deep-blue/80 mb-8 max-w-md">
             THE TRACKING ID [{trackingId}] DOES NOT MATCH ANY ACTIVE INQUIRIES IN OUR SYSTEM.
           </p>
           <Link 

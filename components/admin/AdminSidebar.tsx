@@ -33,7 +33,7 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
         <AnimatedBorder direction="bottom" />
         <h1 className="font-display text-xl tracking-tighter flex items-baseline">
           <strong className="font-extrabold text-brand-deep-blue mr-1.5">Prodeal</strong>
-          <span className="text-xs text-brand-blue/60 font-body uppercase tracking-widest ml-2">Admin</span>
+          <span className="text-xs text-brand-blue/80 font-body uppercase tracking-widest ml-2">Admin</span>
         </h1>
       </div>
       
@@ -47,7 +47,7 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
               className={`flex items-center gap-3 px-3 py-2 text-sm font-semibold transition-all duration-300 rounded-md animate-in fade-in slide-in-from-left-4 fill-mode-both ${
                 isActive 
                   ? 'bg-brand-blue/10 text-brand-blue' 
-                  : 'text-brand-deep-blue/70 hover:bg-black/5 hover:text-brand-deep-blue'
+                  : 'text-brand-deep-blue/80 hover:bg-black/5 hover:text-brand-deep-blue'
               }`}
               style={{ animationDelay: `${100 + i * 50}ms` }}
             >
@@ -61,7 +61,7 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
         <AnimatedBorder direction="top" />
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2 text-sm font-semibold text-brand-deep-blue/70 hover:bg-brand-red/10 hover:text-brand-red transition-colors w-full rounded-md"
+          className="flex items-center gap-3 px-3 py-2 text-sm font-semibold text-brand-deep-blue/80 hover:bg-brand-red/10 hover:text-brand-red transition-colors w-full rounded-md"
         >
           Logout
         </button>

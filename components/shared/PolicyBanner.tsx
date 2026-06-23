@@ -34,7 +34,7 @@ export function PolicyBanner({ title, children, variant = 'info' }: PolicyBanner
           <h4 className={`font-heading font-bold text-lg mb-2 ${isWarning ? 'text-brand-red' : 'text-brand-deep-blue'}`}>
             {title}
           </h4>
-          <div className="text-sm sm:text-base text-brand-deep-blue/70 font-body leading-relaxed space-y-2">
+          <div className="text-sm sm:text-base text-brand-deep-blue/80 font-body leading-relaxed space-y-2">
             {children}
           </div>
         </div>

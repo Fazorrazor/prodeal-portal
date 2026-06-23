@@ -157,7 +157,7 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
                 <span className="text-brand-red">Tap to select</span>
                 <span className="hidden sm:inline"> or drop files</span>
               </p>
-              <p className="text-[10px] font-mono font-bold text-brand-red/60 text-center uppercase tracking-widest px-4">
+              <p className="text-[10px] font-mono font-bold text-brand-red/80 text-center uppercase tracking-widest px-4">
                 PDF / JPG / PNG (MAX 10MB)
               </p>
             </>

@@ -7,14 +7,14 @@ export function FooterLinks() {
       <div className="flex flex-col gap-3">
         <h2 className="font-heading font-semibold text-brand-deep-blue">Services</h2>
         {PUBLIC_NAV_LINKS.map(link => (
-          <Link key={link.href} href={link.href} className="text-sm text-brand-deep-blue/70 hover:text-brand-blue transition-colors">
+          <Link key={link.href} href={link.href} className="text-sm text-brand-deep-blue/80 hover:text-brand-blue transition-colors">
             {link.name === 'Chemicals' ? 'Industrial Chemicals' : link.name === 'Printing' ? 'Souvenirs & Printing' : link.name}
           </Link>
         ))}
       </div>
       <div className="flex flex-col gap-3">
         <h2 className="font-heading font-semibold text-brand-deep-blue">Support</h2>
-        <a href="mailto:support@prodealindustries.com" className="text-sm text-brand-deep-blue/70 hover:text-brand-blue transition-colors">Contact Us</a>
+        <a href="mailto:support@prodealindustries.com" className="text-sm text-brand-deep-blue/80 hover:text-brand-blue transition-colors">Contact Us</a>
       </div>
     </div>
   );

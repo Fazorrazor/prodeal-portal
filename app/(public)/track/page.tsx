@@ -16,7 +16,7 @@ export default function TrackPage() {
           <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-tighter leading-none text-brand-deep-blue mb-4">
             TRACK INQUIRY
           </h1>
-          <p className="text-sm font-mono text-brand-deep-blue/70 mb-8">
+          <p className="text-sm font-mono text-brand-deep-blue/80 mb-8">
             ENTER YOUR 16-CHARACTER TRACKING ID TO VIEW STATUS
           </p>
 

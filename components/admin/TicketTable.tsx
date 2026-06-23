@@ -169,7 +169,7 @@ export function TicketTable({
                     {inquiry.status.replace('_', ' ')}
                   </span>
                 </td>
-                <td className="px-4 py-4 text-xs text-brand-deep-blue/70 font-mono">
+                <td className="px-4 py-4 text-xs text-brand-deep-blue/80 font-mono">
                   {formatDistanceToNow(new Date(inquiry.created_at), { addSuffix: true })}
                 </td>
                 <td className="py-4 pl-4 text-right">

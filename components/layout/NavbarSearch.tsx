@@ -196,7 +196,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                                   {result.name}
                                 </h4>
                                 <div className="text-[10px] font-mono font-bold text-brand-deep-blue/80 mt-1 uppercase tracking-widest truncate">
-                                  <span className="mr-2 text-brand-blue/60">{result.divisions.slug.replace('-', ' ')}</span>
+                                  <span className="mr-2 text-brand-blue/80">{result.divisions.slug.replace('-', ' ')}</span>
                                   {result.sku && <span className="mr-2">SKU: {result.sku}</span>}
                                 </div>
                               </div>
@@ -335,7 +335,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                               {result.name}
                             </h4>
                             <div className="text-[8px] font-mono font-bold text-brand-deep-blue/80 mt-0.5 uppercase tracking-widest truncate">
-                              <span className="mr-2 text-brand-blue/60">{result.divisions.slug.replace('-', ' ')}</span>
+                              <span className="mr-2 text-brand-blue/80">{result.divisions.slug.replace('-', ' ')}</span>
                               {result.sku && <span className="mr-2">SKU: {result.sku}</span>}
                             </div>
                           </div>
