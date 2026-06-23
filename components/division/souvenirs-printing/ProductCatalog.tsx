@@ -147,7 +147,7 @@ function ProductCard({
         <h3 className="font-heading font-bold text-base sm:text-lg text-brand-deep-blue uppercase tracking-tight leading-snug mb-1.5">
           {product.name}
         </h3>
-        <p className="text-xs text-brand-deep-blue/55 font-body leading-relaxed mb-4 flex-1">
+        <p className="text-xs text-brand-deep-blue/80 font-body leading-relaxed mb-4 flex-1">
           {product.description || 'Customizable corporate merchandise'}
         </p>
         <Link

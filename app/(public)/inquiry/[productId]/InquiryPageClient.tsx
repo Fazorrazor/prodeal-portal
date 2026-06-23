@@ -38,7 +38,7 @@ export function InquiryPageClient({ product, moq }: { product: any, moq: number 
         <div className="px-5 py-3.5 border-b border-brand-border/40 flex justify-between items-center shrink-0">
           <Link
             href={`/divisions/${product.divisions.slug}`}
-            className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em] active:text-brand-blue transition-colors"
+            className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-brand-deep-blue/80 uppercase tracking-[0.2em] active:text-brand-blue transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Back
@@ -67,14 +67,14 @@ export function InquiryPageClient({ product, moq }: { product: any, moq: number 
             </ImageLightbox>
           ) : (
             <div className="w-16 h-16 shrink-0 bg-black/5 flex items-center justify-center">
-              <span className="text-[8px] font-mono text-brand-deep-blue/30 uppercase">No img</span>
+              <span className="text-[8px] font-mono text-brand-deep-blue/80 uppercase">No img</span>
             </div>
           )}
           <div className="min-w-0">
             <h1 className="font-heading font-bold text-base text-brand-deep-blue uppercase tracking-tight leading-snug line-clamp-2">
               {product.name}
             </h1>
-            <div className="text-[10px] font-mono text-brand-deep-blue/35 mt-0.5 uppercase tracking-widest">
+            <div className="text-[10px] font-mono text-brand-deep-blue/80 mt-0.5 uppercase tracking-widest">
               SKU: {product.id.split('-')[0]}
             </div>
           </div>
@@ -103,7 +103,7 @@ export function InquiryPageClient({ product, moq }: { product: any, moq: number 
               </div>
             </ImageLightbox>
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-[10px] font-mono font-bold text-brand-deep-blue/30 uppercase tracking-widest">
+            <div className="w-full h-full flex items-center justify-center text-[10px] font-mono font-bold text-brand-deep-blue/80 uppercase tracking-widest">
               No image available
             </div>
           )}
@@ -116,7 +116,7 @@ export function InquiryPageClient({ product, moq }: { product: any, moq: number 
           </h1>
           <div className="flex items-center gap-4">
             <div>
-              <span className="block text-[9px] font-mono font-bold text-brand-deep-blue/35 uppercase tracking-[0.2em] mb-0.5">
+              <span className="block text-[9px] font-mono font-bold text-brand-deep-blue/80 uppercase tracking-[0.2em] mb-0.5">
                 Product SKU
               </span>
               <span className="text-sm font-mono font-bold text-brand-deep-blue uppercase tracking-widest">
@@ -136,21 +136,21 @@ export function InquiryPageClient({ product, moq }: { product: any, moq: number 
             </span>
           </div>
 
-          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-brand-deep-blue/35 mb-4">
+          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-brand-deep-blue/80 mb-4">
             — What happens next
           </p>
 
           <div className="flex flex-col gap-0">
             {PROCESS_STEPS.map((step, i) => (
               <div key={step.index} className="flex gap-4 py-4 border-b border-brand-border/20 last:border-b-0">
-                <span className="text-[10px] font-mono font-bold text-brand-deep-blue/25 tracking-widest shrink-0 pt-0.5">
+                <span className="text-[10px] font-mono font-bold text-brand-deep-blue/80 tracking-widest shrink-0 pt-0.5">
                   {step.index}
                 </span>
                 <div>
                   <div className="text-sm font-heading font-bold text-brand-deep-blue uppercase tracking-tight leading-snug">
                     {step.label}
                   </div>
-                  <div className="text-[11px] text-brand-deep-blue/45 font-body mt-0.5 leading-relaxed">
+                  <div className="text-[11px] text-brand-deep-blue/80 font-body mt-0.5 leading-relaxed">
                     {step.detail}
                   </div>
                 </div>

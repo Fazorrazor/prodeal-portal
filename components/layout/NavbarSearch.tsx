@@ -187,7 +187,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                                     className="object-cover"
                                   />
                                 ) : (
-                                  <ImageIcon className="w-5 h-5 text-brand-deep-blue/20" />
+                                  <ImageIcon className="w-5 h-5 text-brand-deep-blue/80" />
                                 )}
                               </div>
                               
@@ -201,7 +201,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                                 </div>
                               </div>
                             </div>
-                            <ArrowRight className="w-5 h-5 text-brand-deep-blue/20 shrink-0" />
+                            <ArrowRight className="w-5 h-5 text-brand-deep-blue/80 shrink-0" />
                           </Link>
                         </li>
                       );
@@ -323,7 +323,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                                 className="object-cover"
                               />
                             ) : (
-                              <ImageIcon className="w-4 h-4 text-brand-deep-blue/20" />
+                              <ImageIcon className="w-4 h-4 text-brand-deep-blue/80" />
                             )}
                           </div>
                           
@@ -342,7 +342,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                         </div>
                         <ArrowRight className={cn(
                           "w-4 h-4 transition-all shrink-0",
-                          isSelected ? "text-brand-blue translate-x-1" : "text-brand-deep-blue/20 group-hover:text-brand-blue group-hover:translate-x-1"
+                          isSelected ? "text-brand-blue translate-x-1" : "text-brand-deep-blue/80 group-hover:text-brand-blue group-hover:translate-x-1"
                         )} />
                       </Link>
                     </li>

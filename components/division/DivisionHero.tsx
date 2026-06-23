@@ -25,12 +25,12 @@ export function DivisionHero({ title, tagline, slug }: DivisionHeroProps) {
         >
           <Link
             href="/"
-            className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-white/60 active:text-white transition-colors"
+            className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-white/80 active:text-white transition-colors"
           >
             Home
           </Link>
-          <span className="text-white/20 font-mono text-xs">›</span>
-          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-white/70">
+          <span className="text-white/80 font-mono text-xs">›</span>
+          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-white/80">
             {title}
           </span>
         </motion.nav>
@@ -62,7 +62,7 @@ export function DivisionHero({ title, tagline, slug }: DivisionHeroProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.4, delay: 0.3 }}
-              className="text-sm sm:text-base text-white/60 max-w-xl font-body leading-relaxed"
+              className="text-sm sm:text-base text-white/80 max-w-xl font-body leading-relaxed"
             >
               {tagline}
             </motion.p>

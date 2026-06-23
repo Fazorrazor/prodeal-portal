@@ -201,7 +201,7 @@ export function TicketTable({
                 Previous
               </Link>
             ) : (
-              <span className="px-4 py-2 border border-brand-border/30 text-xs font-bold uppercase tracking-widest text-brand-deep-blue/30 cursor-not-allowed">
+              <span className="px-4 py-2 border border-brand-border/30 text-xs font-bold uppercase tracking-widest text-brand-deep-blue/80 cursor-not-allowed">
                 Previous
               </span>
             )}
@@ -214,7 +214,7 @@ export function TicketTable({
                 Next
               </Link>
             ) : (
-              <span className="px-4 py-2 border border-brand-border/30 text-xs font-bold uppercase tracking-widest text-brand-deep-blue/30 cursor-not-allowed">
+              <span className="px-4 py-2 border border-brand-border/30 text-xs font-bold uppercase tracking-widest text-brand-deep-blue/80 cursor-not-allowed">
                 Next
               </span>
             )}

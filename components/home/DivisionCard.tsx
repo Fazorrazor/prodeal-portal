@@ -19,7 +19,7 @@ export function DivisionCard({ title, description, href, accent, index }: Divisi
       {/* Left: index number + title block */}
       <div className="flex items-start sm:items-center gap-5 sm:gap-8 flex-1 min-w-0">
         {/* Number */}
-        <span className="text-[10px] font-mono font-bold text-brand-deep-blue/25 tracking-widest shrink-0 hidden sm:block">
+        <span className="text-[10px] font-mono font-bold text-brand-deep-blue/80 tracking-widest shrink-0 hidden sm:block">
           {String(index + 1).padStart(2, '0')}
         </span>
 
@@ -49,7 +49,7 @@ export function DivisionCard({ title, description, href, accent, index }: Divisi
       <div className="shrink-0 flex items-center gap-2 transition-transform duration-300 group-hover:translate-x-1">
         <ArrowRight className={cn(
           'w-5 h-5 transition-colors duration-200',
-          'text-brand-deep-blue/20 group-hover:' + (accent === 'blue' ? 'text-brand-blue' : 'text-brand-red')
+          'text-brand-deep-blue/80 group-hover:' + (accent === 'blue' ? 'text-brand-blue' : 'text-brand-red')
         )} />
       </div>
     </Link>

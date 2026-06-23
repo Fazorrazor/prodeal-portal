@@ -172,10 +172,10 @@ export async function InventoryTable() {
                     <div className="font-heading font-bold text-base text-brand-deep-blue uppercase tracking-tight leading-snug">
                       {product.name}
                     </div>
-                    <div className="text-[10px] font-mono font-bold tracking-widest text-brand-deep-blue/35 mt-0.5 uppercase">
+                    <div className="text-[10px] font-mono font-bold tracking-widest text-brand-deep-blue/80 mt-0.5 uppercase">
                       {product.id.split('-')[0]}
                     </div>
-                    <p className="text-xs text-brand-deep-blue/55 mt-1.5 leading-relaxed">
+                    <p className="text-xs text-brand-deep-blue/80 mt-1.5 leading-relaxed">
                       {product.description || 'Premium disposable catering bowl.'}
                     </p>
                   </div>
@@ -184,7 +184,7 @@ export async function InventoryTable() {
                 {/* Meta row */}
                 <div className="grid grid-cols-2 gap-3 border-t border-brand-border/20 pt-3">
                   <div>
-                    <span className="block text-[9px] text-brand-deep-blue/35 uppercase font-bold tracking-widest mb-0.5">
+                    <span className="block text-[9px] text-brand-deep-blue/80 uppercase font-bold tracking-widest mb-0.5">
                       Size
                     </span>
                     <span className="text-brand-deep-blue font-mono font-bold text-sm">
@@ -192,7 +192,7 @@ export async function InventoryTable() {
                     </span>
                   </div>
                   <div>
-                    <span className="block text-[9px] text-brand-deep-blue/35 uppercase font-bold tracking-widest mb-0.5">
+                    <span className="block text-[9px] text-brand-deep-blue/80 uppercase font-bold tracking-widest mb-0.5">
                       Material
                     </span>
                     <span className="text-brand-deep-blue font-mono font-bold text-sm">

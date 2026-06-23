@@ -72,10 +72,10 @@ export function AdminTopbar() {
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleInputKeyDown}
             placeholder="Search ticket ID, client, or phone..." 
-            className="w-full pl-8 pr-16 py-1.5 bg-transparent border-0 border-b border-brand-border/60 focus:border-brand-blue outline-none transition-all font-mono text-brand-deep-blue text-sm placeholder:text-brand-deep-blue/30"
+            className="w-full pl-8 pr-16 py-1.5 bg-transparent border-0 border-b border-brand-border/60 focus:border-brand-blue outline-none transition-all font-mono text-brand-deep-blue text-sm placeholder:text-brand-deep-blue/80"
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none opacity-0 sm:opacity-100">
-            <span className="text-[10px] font-bold font-mono tracking-widest text-brand-deep-blue/30">PRESS /</span>
+            <span className="text-[10px] font-bold font-mono tracking-widest text-brand-deep-blue/80">PRESS /</span>
           </div>
         </form>
       </div>

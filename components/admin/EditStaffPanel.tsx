@@ -108,7 +108,7 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
                     type="text"
                     value={formData.fullName}
                     onChange={e => setFormData({...formData, fullName: e.target.value})}
-                    className="w-full bg-transparent border-0 border-b-2 border-brand-border/60 focus:border-brand-blue py-2 outline-none transition-colors text-sm font-bold text-brand-deep-blue placeholder:font-normal placeholder:text-brand-deep-blue/30"
+                    className="w-full bg-transparent border-0 border-b-2 border-brand-border/60 focus:border-brand-blue py-2 outline-none transition-colors text-sm font-bold text-brand-deep-blue placeholder:font-normal placeholder:text-brand-deep-blue/80"
                   />
                 </div>
 
@@ -120,7 +120,7 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
                     type="tel"
                     value={formData.whatsappPhone}
                     onChange={e => setFormData({...formData, whatsappPhone: e.target.value})}
-                    className="w-full bg-transparent border-0 border-b-2 border-brand-border/60 focus:border-brand-blue py-2 outline-none transition-colors text-sm font-bold font-mono text-brand-deep-blue placeholder:font-normal placeholder:font-sans placeholder:text-brand-deep-blue/30"
+                    className="w-full bg-transparent border-0 border-b-2 border-brand-border/60 focus:border-brand-blue py-2 outline-none transition-colors text-sm font-bold font-mono text-brand-deep-blue placeholder:font-normal placeholder:font-sans placeholder:text-brand-deep-blue/80"
                   />
                 </div>
 

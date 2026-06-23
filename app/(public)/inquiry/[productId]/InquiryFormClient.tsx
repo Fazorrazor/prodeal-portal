@@ -51,7 +51,7 @@ function SuccessReceipt({ divisionSlug, phone, assignedPhone, trackingId }: { di
       {/* Tracking ID Section */}
       <div className="bg-brand-deep-blue p-6 md:p-8 mb-8 border border-brand-deep-blue relative overflow-hidden">
         <AnimatedBorder direction="top" delay={0.1} />
-        <p className="text-[10px] font-bold text-white/60 uppercase tracking-[0.2em] mb-2">
+        <p className="text-[10px] font-bold text-white/80 uppercase tracking-[0.2em] mb-2">
           Your Booking Reference
         </p>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -177,7 +177,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   }
 
   // Common Brutalist Input Classes
-  const inputClass = "w-full bg-transparent border-b-2 border-brand-border/60 rounded-none px-0 py-3 text-brand-deep-blue font-bold placeholder:text-brand-deep-blue/20 focus:outline-none focus:border-brand-blue transition-colors focus:ring-0";
+  const inputClass = "w-full bg-transparent border-b-2 border-brand-border/60 rounded-none px-0 py-3 text-brand-deep-blue font-bold placeholder:text-brand-deep-blue/80 focus:outline-none focus:border-brand-blue transition-colors focus:ring-0";
   const labelClass = "block text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest mb-1";
   const errorClass = "text-[10px] text-brand-red font-bold tracking-widest uppercase mt-1";
 
@@ -236,7 +236,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
         </h2>
         <div className="flex items-center gap-2 py-3 border-t border-b border-brand-border/40">
           <span className="text-brand-red font-mono font-bold text-sm leading-none">→</span>
-          <span className="text-[10px] font-mono font-bold text-brand-deep-blue/55 uppercase tracking-[0.18em]">
+          <span className="text-[10px] font-mono font-bold text-brand-deep-blue/80 uppercase tracking-[0.18em]">
             A representative will contact you via WhatsApp shortly
           </span>
         </div>

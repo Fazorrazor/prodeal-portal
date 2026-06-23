@@ -31,14 +31,14 @@ export function CrossDivisionLinks({ currentSlug }: { currentSlug: string }) {
             className="group flex items-center justify-between py-5 border-b border-brand-border/40 gap-4 active:bg-black/5 transition-colors"
           >
             <div className="flex items-center gap-5 sm:gap-8">
-              <span className="text-[10px] font-mono font-bold text-brand-deep-blue/25 tracking-widest shrink-0 hidden sm:block">
+              <span className="text-[10px] font-mono font-bold text-brand-deep-blue/80 tracking-widest shrink-0 hidden sm:block">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <span className="font-heading font-bold text-lg sm:text-xl text-brand-deep-blue uppercase tracking-tight group-active:text-brand-blue transition-colors">
                 {division.name}
               </span>
             </div>
-            <ArrowRight className="w-5 h-5 text-brand-deep-blue/25 shrink-0 transition-transform duration-200 group-active:translate-x-1" />
+            <ArrowRight className="w-5 h-5 text-brand-deep-blue/80 shrink-0 transition-transform duration-200 group-active:translate-x-1" />
           </Link>
         ))}
       </div>

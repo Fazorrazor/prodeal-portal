@@ -55,7 +55,7 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
         aria-expanded={isOpen}
       >
         <div className="flex items-start sm:items-center gap-4 sm:gap-6 flex-1 min-w-0">
-          <span className="text-[10px] font-mono font-bold text-brand-deep-blue/25 tracking-widest shrink-0 hidden sm:block mt-0.5 sm:mt-0">
+          <span className="text-[10px] font-mono font-bold text-brand-deep-blue/80 tracking-widest shrink-0 hidden sm:block mt-0.5 sm:mt-0">
             {String(index + 1).padStart(2, '0')}
           </span>
           <span className="font-heading font-bold text-base sm:text-lg text-brand-deep-blue uppercase tracking-tight leading-snug">
@@ -74,7 +74,7 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
         'overflow-hidden transition-all duration-300 ease-in-out',
         isOpen ? 'max-h-60 pb-5' : 'max-h-0'
       )}>
-        <p className="text-sm text-brand-deep-blue/65 font-body leading-relaxed sm:pl-[calc(1rem+1.5rem)]">
+        <p className="text-sm text-brand-deep-blue/80 font-body leading-relaxed sm:pl-[calc(1rem+1.5rem)]">
           {answer}
         </p>
       </div>
