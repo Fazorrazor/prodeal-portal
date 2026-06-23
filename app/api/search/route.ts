@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { searchRateLimit } from '../../../lib/ratelimit';
-
+import Fuse from 'fuse.js';
 export const dynamic = 'force-dynamic';
 
 // Input validation schema
@@ -45,9 +45,7 @@ export async function GET(req: NextRequest) {
     // Supabase RLS is active. Public users can only read active products.
     const supabase = createRouteHandlerClient({ cookies });
     
-    const searchTerm = `%${q}%`;
-    
-    // We search across name, description, sku, and cas_number (in metadata JSON)
+    // Fetch active products for the division
     let query = supabase
       .from('products')
       .select(`
@@ -58,12 +56,10 @@ export async function GET(req: NextRequest) {
         description,
         image_path,
         division_id,
-        divisions!inner(slug)
+        divisions!inner(slug),
+        metadata
       `)
-      .or(`name.ilike.${searchTerm},sku.ilike.${searchTerm},description.ilike.${searchTerm},metadata->>cas_number.ilike.${searchTerm}`)
-      .eq('is_active', true)
-      .limit(limit)
-      .order('name');
+      .eq('is_active', true);
       
     if (division) {
       query = query.eq('divisions.slug', division);
@@ -76,8 +72,31 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to execute search' }, { status: 500 });
     }
 
-    // 4. Return Data
-    return NextResponse.json({ data: products });
+    // 4. Perform fuzzy search using Fuse.js
+    const fuse = new Fuse(products || [], {
+      keys: [
+        'name',
+        'sku',
+        'description',
+        'metadata.cas_number'
+      ],
+      threshold: 0.3, // Lower threshold means stricter matching
+      distance: 100,
+      ignoreLocation: true // Helps match words regardless of position
+    });
+
+    // If query is empty somehow, just return the first few products, 
+    // otherwise return fuzzy match results
+    let finalData = products || [];
+    if (q) {
+      const results = fuse.search(q);
+      finalData = results.map(r => r.item);
+    }
+
+    const topResults = finalData.slice(0, limit);
+
+    // 5. Return Data
+    return NextResponse.json({ data: topResults });
 
   } catch (error) {
     console.error('Unexpected search error:', error);
