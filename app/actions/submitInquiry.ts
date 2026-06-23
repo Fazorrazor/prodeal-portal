@@ -46,7 +46,7 @@ export async function submitInquiry(formData: any) {
       return { success: false, error: 'Invalid division specific data.', details: parsedInquiry.error.errors };
     }
 
-    const supabase = createServiceRoleClient() as any;
+    const supabase = createServiceRoleClient();
 
     // 4. Get the division ID (use simple memory cache to avoid sequential DB round-trip)
     let divisionId = (global as any).divisionCache?.[divisionSlug];

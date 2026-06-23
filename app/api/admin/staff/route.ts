@@ -4,6 +4,8 @@ import { createServer } from '../../../../lib/supabase/server';
 import { createAdminClient } from '../../../../lib/supabase/admin';
 import { USER_ROLES, ROLE_VALUES } from '../../../../lib/config/roles';
 import { logError } from '../../../../lib/logger';
+import { headers } from 'next/headers';
+import { adminRateLimit } from '../../../../lib/ratelimit';
 
 const staffSchema = z.object({
   fullName: z.string().min(2, "Full name is required"),
@@ -20,7 +22,14 @@ const staffSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const supabase = createServer() as any;
+    // 0. Check Upstash rate limit
+    const ip = (await headers()).get('x-forwarded-for') ?? '127.0.0.1';
+    const { success } = await adminRateLimit.limit(ip);
+    if (!success) {
+      return NextResponse.json({ error: 'Too Many Requests' }, { status: 429 });
+    }
+
+    const supabase = createServer();
     
     // 1. Verify caller is authenticated
     const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -92,7 +101,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, userId: authData.user.id }, { status: 201 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     await logError('POST /api/admin/staff (Unknown)', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
