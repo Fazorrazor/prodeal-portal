@@ -29,7 +29,7 @@ export default async function SettingsPage() {
       <div className="pb-6 relative">
         <AnimatedBorder direction="bottom" delay={0.1} className="h-[2px] !bg-brand-deep-blue" />
         <h1 className="text-3xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">System Settings</h1>
-        <p className="text-brand-deep-blue/60 text-sm mt-1">
+        <p className="text-brand-deep-blue/80 text-sm mt-1">
           Configure global platform integrations and division availability.
         </p>
       </div>
@@ -41,7 +41,7 @@ export default async function SettingsPage() {
             <AnimatedBorder direction="bottom" delay={0.3} />
             <Smartphone className="w-4 h-4 text-emerald-600" />
             <div>
-              <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60">WhatsApp Business API</h2>
+              <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80">WhatsApp Business API</h2>
             </div>
           </div>
           
@@ -54,7 +54,7 @@ export default async function SettingsPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6 animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both" style={{ animationDelay: '100ms' }}>
-              <p className="w-48 text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 shrink-0">
+              <p className="w-48 text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 shrink-0">
                 Phone Number ID
               </p>
               <div className="flex items-center gap-4">
@@ -68,14 +68,14 @@ export default async function SettingsPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-6 animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both" style={{ animationDelay: '200ms' }}>
-              <p className="w-48 text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 shrink-0">
+              <p className="w-48 text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 shrink-0">
                 Permanent Access Token
               </p>
               <div className="flex items-center gap-4">
-                <code className="text-brand-deep-blue/40 font-mono text-sm select-none">
+                <code className="text-brand-deep-blue/80 font-mono text-sm select-none">
                   ••••••••••••••••••••••••••••••••
                 </code>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/40">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80">
                   Hidden
                 </span>
               </div>
@@ -89,12 +89,12 @@ export default async function SettingsPage() {
             <AnimatedBorder direction="bottom" delay={0.4} />
             <HardDrive className="w-4 h-4 text-brand-blue" />
             <div>
-              <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60">Edge Cache Management</h2>
+              <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80">Edge Cache Management</h2>
             </div>
           </div>
           
           <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both" style={{ animationDelay: '300ms' }}>
-            <p className="text-sm text-brand-deep-blue/60 max-w-xl">
+            <p className="text-sm text-brand-deep-blue/80 max-w-xl">
               Prodeal portal utilizes heavy caching at the edge to ensure maximum performance for clients. 
               If product catalogs or chemical documentation links are not updating on the live site after database changes, you can manually trigger a global cache purge.
             </p>

@@ -109,7 +109,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-4 border-b border-brand-border/30 flex items-center gap-4">
-                <Search className="w-5 h-5 text-brand-deep-blue/40 shrink-0" />
+                <Search className="w-5 h-5 text-brand-deep-blue/80 shrink-0" />
                 <input
                   ref={inputRef}
                   type="text"
@@ -117,7 +117,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                   autoFocus
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="SEARCH..."
-                  className="flex-1 bg-transparent border-none outline-none text-base font-mono font-bold tracking-widest uppercase text-brand-deep-blue placeholder:text-brand-deep-blue/40"
+                  className="flex-1 bg-transparent border-none outline-none text-base font-mono font-bold tracking-widest uppercase text-brand-deep-blue placeholder:text-brand-deep-blue/80"
                 />
                 <button
                   onClick={() => {
@@ -133,7 +133,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
               <div className="flex-1 overflow-y-auto bg-brand-surface">
                 {isIdle && (
                   <div className="py-12 px-4 text-center">
-                    <p className="text-xs font-bold tracking-widest uppercase text-brand-deep-blue/40">
+                    <p className="text-xs font-bold tracking-widest uppercase text-brand-deep-blue/80">
                       Type at least 2 characters...
                     </p>
                   </div>
@@ -156,7 +156,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                 {hasNoResults && (
                   <div className="py-12 px-4 text-center">
                     <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tighter">0 Matches</h3>
-                    <p className="text-xs uppercase tracking-widest font-bold text-brand-deep-blue/60 mt-2">
+                    <p className="text-xs uppercase tracking-widest font-bold text-brand-deep-blue/80 mt-2">
                       No products found.
                     </p>
                   </div>
@@ -195,7 +195,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                                 <h4 className="font-heading font-bold text-sm uppercase tracking-tight text-brand-deep-blue line-clamp-1">
                                   {result.name}
                                 </h4>
-                                <div className="text-[10px] font-mono font-bold text-brand-deep-blue/50 mt-1 uppercase tracking-widest truncate">
+                                <div className="text-[10px] font-mono font-bold text-brand-deep-blue/80 mt-1 uppercase tracking-widest truncate">
                                   <span className="mr-2 text-brand-blue/60">{result.divisions.slug.replace('-', ' ')}</span>
                                   {result.sku && <span className="mr-2">SKU: {result.sku}</span>}
                                 </div>
@@ -237,14 +237,14 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
             if (query.trim().length >= 2 || results.length > 0) setIsOpen(true);
           }}
           placeholder="SEARCH"
-          className="flex-1 min-w-0 w-full bg-transparent border-none outline-none text-sm font-mono font-bold tracking-widest uppercase text-brand-deep-blue placeholder:text-brand-deep-blue/40"
+          className="flex-1 min-w-0 w-full bg-transparent border-none outline-none text-sm font-mono font-bold tracking-widest uppercase text-brand-deep-blue placeholder:text-brand-deep-blue/80"
           aria-label="Global search"
         />
         <div className="flex items-center gap-2 shrink-0">
           {!query ? (
              <Search className={cn(
                "w-4 h-4 transition-colors",
-               isOpen ? "text-brand-blue" : "text-brand-deep-blue/40 group-hover:text-brand-blue"
+               isOpen ? "text-brand-blue" : "text-brand-deep-blue/80 group-hover:text-brand-blue"
              )} />
           ) : (
             <button 
@@ -254,7 +254,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                 setQuery('');
                 setIsOpen(false);
               }}
-              className="p-1 text-brand-deep-blue/40 hover:text-brand-red transition-colors"
+              className="p-1 text-brand-deep-blue/80 hover:text-brand-red transition-colors"
               aria-label="Clear search"
             >
               <X className="w-4 h-4" />
@@ -268,7 +268,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
           <div className="flex-1 overflow-y-auto bg-brand-surface">
             {isIdle && (
               <div className="py-8 px-4 text-center bg-transparent">
-                <p className="text-[10px] font-bold tracking-widest uppercase text-brand-deep-blue/40">
+                <p className="text-[10px] font-bold tracking-widest uppercase text-brand-deep-blue/80">
                   Type at least 2 characters...
                 </p>
               </div>
@@ -291,7 +291,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
             {hasNoResults && (
               <div className="py-8 px-4 text-center bg-transparent">
                 <h3 className="font-heading font-bold text-lg text-brand-deep-blue uppercase tracking-tighter">0 Matches</h3>
-                <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/60 mt-1">
+                <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/80 mt-1">
                   No products found.
                 </p>
               </div>
@@ -334,7 +334,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                             )}>
                               {result.name}
                             </h4>
-                            <div className="text-[8px] font-mono font-bold text-brand-deep-blue/50 mt-0.5 uppercase tracking-widest truncate">
+                            <div className="text-[8px] font-mono font-bold text-brand-deep-blue/80 mt-0.5 uppercase tracking-widest truncate">
                               <span className="mr-2 text-brand-blue/60">{result.divisions.slug.replace('-', ' ')}</span>
                               {result.sku && <span className="mr-2">SKU: {result.sku}</span>}
                             </div>

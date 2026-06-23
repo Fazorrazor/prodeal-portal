@@ -25,7 +25,7 @@ export function SDSDownloadButton({ documentId, chemicalName }: Props) {
     <button 
       onClick={handleDownload}
       disabled={isLoading}
-      className="flex items-center gap-2 text-xs font-semibold text-brand-deep-blue/60 hover:text-brand-blue transition-colors p-2 rounded-md hover:bg-brand-blue/5"
+      className="flex items-center gap-2 text-xs font-semibold text-brand-deep-blue/80 hover:text-brand-blue transition-colors p-2 rounded-md hover:bg-brand-blue/5"
     >
       {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
       <span>Download SDS (PDF)</span>

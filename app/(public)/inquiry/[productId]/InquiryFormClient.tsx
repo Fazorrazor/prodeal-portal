@@ -178,7 +178,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
 
   // Common Brutalist Input Classes
   const inputClass = "w-full bg-transparent border-b-2 border-brand-border/60 rounded-none px-0 py-3 text-brand-deep-blue font-bold placeholder:text-brand-deep-blue/20 focus:outline-none focus:border-brand-blue transition-colors focus:ring-0";
-  const labelClass = "block text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest mb-1";
+  const labelClass = "block text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest mb-1";
   const errorClass = "text-[10px] text-brand-red font-bold tracking-widest uppercase mt-1";
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
@@ -228,7 +228,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   return (
     <>
       <div className="mb-10">
-        <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/40 mb-2">
+        <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-2">
           — Submit your request
         </p>
         <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-brand-deep-blue uppercase tracking-tighter leading-none mb-4">

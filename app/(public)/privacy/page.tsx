@@ -13,7 +13,7 @@ export default function PrivacyPolicyPage() {
         <h1 className="text-4xl md:text-5xl font-heading font-bold text-brand-deep-blue tracking-tighter uppercase mb-4">
           Privacy Policy
         </h1>
-        <p className="text-sm font-bold uppercase tracking-widest text-brand-deep-blue/60">
+        <p className="text-sm font-bold uppercase tracking-widest text-brand-deep-blue/80">
           Last Updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
         </p>
       </div>

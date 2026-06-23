@@ -11,14 +11,14 @@ export function CrossDivisionLinks({ currentSlug }: { currentSlug: string }) {
     <div className="mt-20 lg:mt-28 border-t-2 border-brand-deep-blue pt-6">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-0">
         <div>
-          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/40 mb-1.5">
+          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-1.5">
             — Other Divisions
           </p>
           <h3 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue tracking-tighter uppercase leading-none">
             Explore Other Services
           </h3>
         </div>
-        <p className="text-[10px] font-mono text-brand-deep-blue/40 uppercase tracking-widest">
+        <p className="text-[10px] font-mono text-brand-deep-blue/80 uppercase tracking-widest">
           {otherDivisions.length} available
         </p>
       </div>

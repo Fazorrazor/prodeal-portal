@@ -25,14 +25,14 @@ export async function InventoryTable() {
       {/* Section header */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-0">
         <div>
-          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/40 mb-1.5">
+          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-1.5">
             — Live Stock Register
           </p>
           <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue tracking-tighter uppercase leading-none">
             Inventory
           </h2>
         </div>
-        <p className="text-[10px] font-mono text-brand-deep-blue/40 uppercase tracking-widest">
+        <p className="text-[10px] font-mono text-brand-deep-blue/80 uppercase tracking-widest">
           Wholesale orders only
         </p>
       </div>
@@ -62,7 +62,7 @@ export async function InventoryTable() {
                   <h3 className="font-heading font-bold text-2xl text-brand-deep-blue uppercase tracking-tighter">
                     All Clear.
                   </h3>
-                  <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/40 mt-1">
+                  <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/80 mt-1">
                     No inventory data available.
                   </p>
                 </td>
@@ -101,10 +101,10 @@ export async function InventoryTable() {
                         {product.name}
                       </div>
                     </Link>
-                    <div className="text-[10px] text-brand-deep-blue/40 font-mono font-bold tracking-widest mt-0.5 uppercase">
+                    <div className="text-[10px] text-brand-deep-blue/80 font-mono font-bold tracking-widest mt-0.5 uppercase">
                       {product.id.split('-')[0]}
                     </div>
-                    <div className="text-xs text-brand-deep-blue/60 mt-1 max-w-xs leading-relaxed">
+                    <div className="text-xs text-brand-deep-blue/80 mt-1 max-w-xs leading-relaxed">
                       {product.description || 'Premium disposable catering bowl.'}
                     </div>
                   </td>
@@ -138,7 +138,7 @@ export async function InventoryTable() {
             <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tighter">
               All Clear.
             </h3>
-            <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/40 mt-1">
+            <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/80 mt-1">
               No inventory data available.
             </p>
           </div>

@@ -30,7 +30,7 @@ export async function ProductCatalog() {
       <section>
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-8">
           <div>
-            <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/40 mb-1.5">
+            <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-1.5">
               — Custom Merchandise
             </p>
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue tracking-tighter uppercase leading-none">
@@ -38,7 +38,7 @@ export async function ProductCatalog() {
             </h2>
           </div>
           {souvenirs.length > 0 && (
-            <p className="text-[10px] font-mono text-brand-deep-blue/40 uppercase tracking-widest">
+            <p className="text-[10px] font-mono text-brand-deep-blue/80 uppercase tracking-widest">
               {souvenirs.length} product{souvenirs.length !== 1 ? 's' : ''}
             </p>
           )}
@@ -49,7 +49,7 @@ export async function ProductCatalog() {
             <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tighter">
               No souvenirs yet.
             </h3>
-            <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/40 mt-1">
+            <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/80 mt-1">
               Check back soon — new products are added regularly.
             </p>
           </div>
@@ -68,7 +68,7 @@ export async function ProductCatalog() {
       <section>
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-8">
           <div>
-            <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/40 mb-1.5">
+            <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-1.5">
               — Commercial Print Services
             </p>
             <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue tracking-tighter uppercase leading-none">
@@ -76,7 +76,7 @@ export async function ProductCatalog() {
             </h2>
           </div>
           {printing.length > 0 && (
-            <p className="text-[10px] font-mono text-brand-deep-blue/40 uppercase tracking-widest">
+            <p className="text-[10px] font-mono text-brand-deep-blue/80 uppercase tracking-widest">
               {printing.length} product{printing.length !== 1 ? 's' : ''}
             </p>
           )}
@@ -87,7 +87,7 @@ export async function ProductCatalog() {
             <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tighter">
               No printing products yet.
             </h3>
-            <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/40 mt-1">
+            <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/80 mt-1">
               Check back soon — new products are added regularly.
             </p>
           </div>

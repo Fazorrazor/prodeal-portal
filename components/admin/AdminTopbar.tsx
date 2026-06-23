@@ -61,7 +61,7 @@ export function AdminTopbar() {
           }}
         >
           <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none transition-colors group-focus-within:text-brand-blue">
-            <Search className="h-4 w-4 text-brand-deep-blue/40 group-focus-within:text-brand-blue transition-colors" />
+            <Search className="h-4 w-4 text-brand-deep-blue/80 group-focus-within:text-brand-blue transition-colors" />
           </div>
           <label htmlFor="global-search" className="sr-only">Global Search</label>
           <input 
@@ -89,7 +89,7 @@ export function AdminTopbar() {
           <AnimatedBorder direction="left" delay={0.4} />
           <div className="hidden sm:block text-right">
             <p className="text-[10px] font-bold text-brand-deep-blue uppercase tracking-widest mb-0">Admin</p>
-            <p className="text-xs font-mono text-brand-deep-blue/60 truncate max-w-[150px]">{email || 'Loading...'}</p>
+            <p className="text-xs font-mono text-brand-deep-blue/80 truncate max-w-[150px]">{email || 'Loading...'}</p>
           </div>
         </div>
       </div>

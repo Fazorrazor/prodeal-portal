@@ -42,7 +42,7 @@ export async function StaffAssignmentTable({ hideManageLink = false }: { hideMan
         {header}
         <div className="py-16 flex flex-col items-start">
           <h3 className="text-2xl font-heading font-bold text-brand-deep-blue tracking-tighter mb-2">No Staff Found.</h3>
-          <p className="text-sm text-brand-deep-blue/60 font-body">
+          <p className="text-sm text-brand-deep-blue/80 font-body">
             There are currently no staff members assigned to your accessible divisions.
           </p>
         </div>
@@ -57,13 +57,13 @@ export async function StaffAssignmentTable({ hideManageLink = false }: { hideMan
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-brand-border/60">
-              <th className="py-4 pr-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest align-bottom">Name</th>
-              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest align-bottom">Role</th>
-              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest align-bottom">Service</th>
-              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest align-bottom">WhatsApp<br/>Phone</th>
-              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest align-bottom">Status</th>
-              <th className="py-4 pl-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest text-right align-bottom">Joined</th>
-              <th className="py-4 pl-4 pr-2 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest text-right align-bottom">Actions</th>
+              <th className="py-4 pr-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest align-bottom">Name</th>
+              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest align-bottom">Role</th>
+              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest align-bottom">Service</th>
+              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest align-bottom">WhatsApp<br/>Phone</th>
+              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest align-bottom">Status</th>
+              <th className="py-4 pl-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest text-right align-bottom">Joined</th>
+              <th className="py-4 pl-4 pr-2 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest text-right align-bottom">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-brand-border/40">
@@ -102,7 +102,7 @@ export async function StaffAssignmentTable({ hideManageLink = false }: { hideMan
                     ? member.division_ids.map((id: string) => ((divisions as any[]) || []).find((d: any) => d.id === id)?.display_name).filter(Boolean).join(', ')
                     : 'Unassigned'}
                 </td>
-                <td className="px-4 py-4 text-brand-deep-blue/60 font-mono text-xs align-middle">
+                <td className="px-4 py-4 text-brand-deep-blue/80 font-mono text-xs align-middle">
                   {member.whatsapp_phone}
                 </td>
                 <td className="px-4 py-4 align-middle">
@@ -112,7 +112,7 @@ export async function StaffAssignmentTable({ hideManageLink = false }: { hideMan
                     {member.is_active ? 'Active' : 'Inactive'}
                   </span>
                 </td>
-                <td className="py-4 pl-4 text-brand-deep-blue/60 text-xs font-mono text-right align-middle">
+                <td className="py-4 pl-4 text-brand-deep-blue/80 text-xs font-mono text-right align-middle">
                   {format(new Date(member.created_at), 'MMM d, yyyy')}
                 </td>
                 <td className="py-4 pl-4 pr-2 align-middle">

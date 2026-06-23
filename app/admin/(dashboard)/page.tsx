@@ -61,7 +61,7 @@ export default async function AdminDashboardOverview() {
       <div className="relative pb-4">
         <AnimatedBorder direction="bottom" delay={0.1} className="!bg-brand-deep-blue" />
         <h1 className="text-3xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">Dashboard</h1>
-        <p className="text-brand-deep-blue/60 font-body text-sm max-w-xl">Welcome back. Here is the latest status of your division's inquiries.</p>
+        <p className="text-brand-deep-blue/80 font-body text-sm max-w-xl">Welcome back. Here is the latest status of your division's inquiries.</p>
       </div>
 
       <div id="tour-metrics">

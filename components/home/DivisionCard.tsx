@@ -39,7 +39,7 @@ export function DivisionCard({ title, description, href, accent, index }: Divisi
           <h3 className="font-heading font-bold text-lg sm:text-xl md:text-2xl text-brand-deep-blue tracking-tight uppercase leading-none group-hover:text-brand-blue transition-colors duration-200">
             {title}
           </h3>
-          <p className="text-xs sm:text-sm text-brand-deep-blue/50 font-body leading-relaxed line-clamp-2">
+          <p className="text-xs sm:text-sm text-brand-deep-blue/80 font-body leading-relaxed line-clamp-2">
             {description}
           </p>
         </div>

@@ -79,11 +79,11 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
               <AnimatedBorder direction="bottom" delay={0.2} className="!bg-brand-deep-blue" />
               <div>
                 <h2 className="text-2xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">Provision Staff</h2>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60">System Access</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80">System Access</p>
               </div>
               <button 
                 onClick={() => !isSubmitting && setIsOpen(false)}
-                className="p-2 text-brand-deep-blue/40 hover:text-brand-red transition-colors"
+                className="p-2 text-brand-deep-blue/80 hover:text-brand-red transition-colors"
                 aria-label="Close panel"
               >
                 <X className="w-5 h-5" />
@@ -94,7 +94,7 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
               
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="staff-name" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Full Name</label>
+                  <label htmlFor="staff-name" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">Full Name</label>
                   <input 
                     id="staff-name"
                     required
@@ -109,7 +109,7 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
 
 
                 <div>
-                  <label htmlFor="staff-phone" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">WhatsApp Phone</label>
+                  <label htmlFor="staff-phone" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">WhatsApp Phone</label>
                   <input 
                     id="staff-phone"
                     required
@@ -123,7 +123,7 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="staff-role" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">System Role</label>
+                    <label htmlFor="staff-role" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">System Role</label>
                     <select
                       id="staff-role"
                       value={formData.role}
@@ -137,7 +137,7 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
                   </div>
 
                   <div className={formData.role === USER_ROLES.ADMIN ? 'opacity-50 pointer-events-none' : ''}>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Services</label>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">Services</label>
                     <div className="space-y-3 mt-2">
                       {divisions.map(d => (
                         <label key={d.id} className="flex items-center gap-3 cursor-pointer group">

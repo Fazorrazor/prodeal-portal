@@ -35,7 +35,7 @@ export default async function StaffPage() {
         <AnimatedBorder direction="bottom" delay={0.1} className="h-[2px] !bg-brand-deep-blue" />
         <div>
           <h1 className="text-3xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">Staff Roster</h1>
-          <p className="text-brand-deep-blue/60 text-sm mt-1">
+          <p className="text-brand-deep-blue/80 text-sm mt-1">
             Manage system access and division assignments.
           </p>
         </div>

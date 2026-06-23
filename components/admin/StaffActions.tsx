@@ -83,7 +83,7 @@ export function StaffActions({ member, divisions, currentUserId }: { member: Sta
   if (isSelf) {
     return (
       <div className="flex items-center justify-end">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/40">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80">
           Current User
         </span>
       </div>
@@ -97,7 +97,7 @@ export function StaffActions({ member, divisions, currentUserId }: { member: Sta
       <button
         onClick={deleteStaff}
         disabled={isUpdating || isDeleting}
-        className="p-2 text-brand-deep-blue/40 hover:text-brand-red transition-colors disabled:opacity-50"
+        className="p-2 text-brand-deep-blue/80 hover:text-brand-red transition-colors disabled:opacity-50"
         title="Delete Account"
       >
         {isDeleting ? <Loader2 className="w-4 h-4 animate-spin text-brand-red" /> : <Trash2 className="w-4 h-4" />}

@@ -131,7 +131,7 @@ export function InquiryPageClient({ product, moq }: { product: any, moq: number 
           {/* Routing strip */}
           <div className="flex items-center gap-2 mb-6 pb-4 border-b border-brand-border/30">
             <span className="text-brand-red text-base font-mono font-bold leading-none">→</span>
-            <span className="text-[10px] font-mono font-bold text-brand-deep-blue/60 uppercase tracking-[0.18em]">
+            <span className="text-[10px] font-mono font-bold text-brand-deep-blue/80 uppercase tracking-[0.18em]">
               Routed to {divisionName} team via WhatsApp
             </span>
           </div>

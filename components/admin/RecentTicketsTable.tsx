@@ -68,7 +68,7 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
         {header}
         <div className="py-16 flex flex-col items-start">
           <h3 className="text-2xl font-heading font-bold text-brand-deep-blue tracking-tighter mb-2">All clear.</h3>
-          <p className="text-sm text-brand-deep-blue/60 font-body">
+          <p className="text-sm text-brand-deep-blue/80 font-body">
             There are currently no recent tickets assigned to your division.
           </p>
         </div>
@@ -107,12 +107,12 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
                   className="w-4 h-4 rounded-none border-2 border-brand-border/60 text-brand-deep-blue focus:ring-brand-blue cursor-pointer"
                 />
               </th>
-              <th className="py-4 pr-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Ticket ID</th>
-              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Product / Service</th>
-              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Client</th>
-              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Status</th>
-              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest">Received</th>
-              <th className="py-4 pl-4 text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest text-right">Action</th>
+              <th className="py-4 pr-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest">Ticket ID</th>
+              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest">Product / Service</th>
+              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest">Client</th>
+              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest">Status</th>
+              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest">Received</th>
+              <th className="py-4 pl-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest text-right">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-brand-border/40">
@@ -132,7 +132,7 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
                 </td>
                 <td className="py-4 pr-4"><ScrambledUUID uuid={inquiry.tracking_uuid} /></td>
                 <td className="px-4 py-4">
-                  <span className="block text-[10px] uppercase font-bold text-brand-deep-blue/60 tracking-widest mb-0.5">
+                  <span className="block text-[10px] uppercase font-bold text-brand-deep-blue/80 tracking-widest mb-0.5">
                     {inquiry.divisions?.display_name || 'Unknown'}
                   </span>
                   <span className="text-sm font-semibold text-brand-deep-blue line-clamp-1">
@@ -141,14 +141,14 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
                 </td>
                 <td className="px-4 py-4">
                   <p className="text-sm font-bold text-brand-deep-blue">{inquiry.contact_name}</p>
-                  {inquiry.company_name && <p className="text-xs text-brand-deep-blue/60 font-mono">{inquiry.company_name}</p>}
+                  {inquiry.company_name && <p className="text-xs text-brand-deep-blue/80 font-mono">{inquiry.company_name}</p>}
                 </td>
                 <td className="px-4 py-4">
                   <span className={`inline-flex items-center text-xs font-bold uppercase tracking-widest
                     ${inquiry.status === 'new' ? 'text-brand-red' : ''}
                     ${inquiry.status === 'in_progress' ? 'text-amber-600' : ''}
                     ${inquiry.status === 'quoted' ? 'text-brand-blue' : ''}
-                    ${inquiry.status === 'closed' ? 'text-brand-deep-blue/40' : ''}
+                    ${inquiry.status === 'closed' ? 'text-brand-deep-blue/80' : ''}
                   `}>
                     {inquiry.status.replace('_', ' ')}
                   </span>
@@ -159,7 +159,7 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
                 <td className="py-4 pl-4 text-right">
                   <Link 
                     href={`/admin/tickets/${inquiry.id}`}
-                    className="inline-flex items-center justify-center p-1.5 text-brand-deep-blue/40 group-hover:text-brand-blue transition-colors"
+                    className="inline-flex items-center justify-center p-1.5 text-brand-deep-blue/80 group-hover:text-brand-blue transition-colors"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </Link>

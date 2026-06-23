@@ -49,7 +49,7 @@ async function TicketDetail({ id }: { id: string }) {
         <div className="flex items-start gap-4">
           <Link 
             href="/admin/tickets"
-            className="mt-1 p-1 hover:bg-black/5 transition-colors text-brand-deep-blue/60 hover:text-brand-deep-blue"
+            className="mt-1 p-1 hover:bg-black/5 transition-colors text-brand-deep-blue/80 hover:text-brand-deep-blue"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
@@ -62,7 +62,7 @@ async function TicketDetail({ id }: { id: string }) {
                 {inquiry.divisions?.display_name || 'Unknown Division'}
               </span>
             </div>
-            <p className="text-brand-deep-blue/60 font-mono text-sm">
+            <p className="text-brand-deep-blue/80 font-mono text-sm">
               Received {format(new Date(inquiry.created_at), 'MMM d, yyyy h:mm a')}
             </p>
           </div>
@@ -74,36 +74,36 @@ async function TicketDetail({ id }: { id: string }) {
         <div className="lg:col-span-2 space-y-12">
           {/* Client Details */}
           <section>
-            <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-4 pb-2 relative">
+            <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-4 pb-2 relative">
               <AnimatedBorder direction="bottom" delay={0.2} />
               Client Details
             </h2>
             <div className="grid grid-cols-2 gap-y-6 gap-x-4">
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-brand-deep-blue/60 mb-1">Contact Name</p>
+                <p className="text-[10px] uppercase tracking-widest text-brand-deep-blue/80 mb-1">Contact Name</p>
                 <p className="text-sm font-bold text-brand-deep-blue">{inquiry.contact_name}</p>
               </div>
               {inquiry.company_name && (
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-brand-deep-blue/60 mb-1">Company</p>
+                  <p className="text-[10px] uppercase tracking-widest text-brand-deep-blue/80 mb-1">Company</p>
                   <p className="text-sm font-bold text-brand-deep-blue">{inquiry.company_name}</p>
                 </div>
               )}
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-brand-deep-blue/60 mb-1">Email</p>
+                <p className="text-[10px] uppercase tracking-widest text-brand-deep-blue/80 mb-1">Email</p>
                 <a href={`mailto:${inquiry.contact_email}`} className="text-sm font-semibold text-brand-blue hover:text-brand-deep-blue transition-colors">
                   {inquiry.contact_email}
                 </a>
               </div>
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-brand-deep-blue/60 mb-1">WhatsApp</p>
+                <p className="text-[10px] uppercase tracking-widest text-brand-deep-blue/80 mb-1">WhatsApp</p>
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-bold text-brand-deep-blue font-mono">{inquiry.contact_phone}</p>
                   <a 
                     href={`https://wa.me/${inquiry.contact_phone.replace(/\D/g, '')}?text=Hi ${encodeURIComponent(inquiry.contact_name)}, regarding your Prodeal inquiry (${inquiry.tracking_uuid.substring(0,8)}):`}
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="p-1 hover:bg-black/5 text-brand-deep-blue/60 hover:text-brand-blue transition-colors"
+                    className="p-1 hover:bg-black/5 text-brand-deep-blue/80 hover:text-brand-blue transition-colors"
                   >
                     <MessageCircle className="w-4 h-4" />
                   </a>
@@ -118,7 +118,7 @@ async function TicketDetail({ id }: { id: string }) {
           {/* Attachments */}
           {inquiry.attachments && Array.isArray(inquiry.attachments) && inquiry.attachments.length > 0 && (
             <section>
-              <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-4 pb-2 flex items-center gap-2 relative">
+              <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-4 pb-2 flex items-center gap-2 relative">
                 <AnimatedBorder direction="bottom" delay={0.3} />
                 <Paperclip className="w-3 h-3" /> Attachments
               </h2>
@@ -132,7 +132,7 @@ async function TicketDetail({ id }: { id: string }) {
                     className="flex items-center gap-3 px-3 py-2 border border-brand-border/60 hover:border-brand-deep-blue text-xs font-bold text-brand-deep-blue transition-colors w-fit animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both"
                     style={{ animationDelay: `${i * 100}ms` }}
                   >
-                    <Paperclip className="w-3 h-3 text-brand-deep-blue/40" />
+                    <Paperclip className="w-3 h-3 text-brand-deep-blue/80" />
                     {file.name || `Attachment ${i + 1}`}
                   </a>
                 ))}
@@ -146,7 +146,7 @@ async function TicketDetail({ id }: { id: string }) {
           <AnimatedBorder direction="top" className="block lg:hidden" delay={0.4} />
           <AnimatedBorder direction="left" className="hidden lg:block" delay={0.4} />
           <section>
-            <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-6 flex items-center gap-2">
+            <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-6 flex items-center gap-2">
               <Clock className="w-3 h-3" /> Activity Timeline
             </h2>
             <div className="space-y-6 relative">
@@ -164,7 +164,7 @@ async function TicketDetail({ id }: { id: string }) {
                         ? `Status Changed To ${event.payload.new_status.replace('_', ' ')}`
                         : event.event_type.replace(/_/g, ' ')}
                     </p>
-                    <p className="text-[10px] font-mono text-brand-deep-blue/60">
+                    <p className="text-[10px] font-mono text-brand-deep-blue/80">
                       {format(new Date(event.created_at), 'MMM d, h:mm a')}
                     </p>
                   </div>
@@ -173,8 +173,8 @@ async function TicketDetail({ id }: { id: string }) {
               <div className="relative flex items-start gap-4">
                 <div className="flex items-center justify-center w-3 h-3 rounded-none border border-brand-deep-blue bg-transparent shrink-0 mt-1" />
                 <div>
-                  <p className="text-xs font-bold text-brand-deep-blue/60 leading-none mb-1">Ticket Received</p>
-                  <p className="text-[10px] font-mono text-brand-deep-blue/40">
+                  <p className="text-xs font-bold text-brand-deep-blue/80 leading-none mb-1">Ticket Received</p>
+                  <p className="text-[10px] font-mono text-brand-deep-blue/80">
                     {format(new Date(inquiry.created_at), 'MMM d, h:mm a')}
                   </p>
                 </div>

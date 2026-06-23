@@ -22,7 +22,7 @@ export default function TrackPage() {
 
           <form action={searchTracking} className="flex flex-col gap-4">
             <div className="flex flex-col">
-              <label htmlFor="trackingId" className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">
+              <label htmlFor="trackingId" className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">
                 Tracking ID
               </label>
               <input

@@ -31,14 +31,14 @@ export default async function SystemLogsPage() {
         <AnimatedBorder direction="bottom" delay={0.1} className="h-[2px] !bg-brand-deep-blue" />
         <div>
           <h1 className="text-3xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">System Logs</h1>
-          <p className="text-brand-deep-blue/60 text-sm mt-1">
+          <p className="text-brand-deep-blue/80 text-sm mt-1">
             Review background failures and system errors.
           </p>
         </div>
       </div>
 
       <DivisionErrorBoundary>
-        <Suspense fallback={<div className="h-64 flex items-center justify-center font-mono text-sm uppercase tracking-widest text-brand-deep-blue/60">Loading Logs...</div>}>
+        <Suspense fallback={<div className="h-64 flex items-center justify-center font-mono text-sm uppercase tracking-widest text-brand-deep-blue/80">Loading Logs...</div>}>
           <SystemLogsTable />
         </Suspense>
       </DivisionErrorBoundary>

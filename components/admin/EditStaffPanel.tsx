@@ -64,7 +64,7 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
     <>
       <button 
         onClick={() => setIsOpen(true)}
-        className="p-2 transition-colors text-brand-deep-blue/60 hover:text-brand-blue"
+        className="p-2 transition-colors text-brand-deep-blue/80 hover:text-brand-blue"
         title="Edit Staff Member"
         aria-label="Edit Staff Member"
       >
@@ -86,11 +86,11 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
               <AnimatedBorder direction="bottom" delay={0.2} className="!bg-brand-deep-blue" />
               <div>
                 <h2 className="text-2xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">Edit Staff</h2>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60">System Access</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80">System Access</p>
               </div>
               <button 
                 onClick={() => !isSubmitting && setIsOpen(false)}
-                className="p-2 text-brand-deep-blue/40 hover:text-brand-red transition-colors"
+                className="p-2 text-brand-deep-blue/80 hover:text-brand-red transition-colors"
                 aria-label="Close panel"
               >
                 <X className="w-5 h-5" />
@@ -101,7 +101,7 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
               
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="edit-name" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Full Name</label>
+                  <label htmlFor="edit-name" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">Full Name</label>
                   <input 
                     id="edit-name"
                     required
@@ -113,7 +113,7 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
                 </div>
 
                 <div>
-                  <label htmlFor="edit-phone" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">WhatsApp Phone</label>
+                  <label htmlFor="edit-phone" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">WhatsApp Phone</label>
                   <input 
                     id="edit-phone"
                     required
@@ -126,7 +126,7 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="edit-role" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">System Role</label>
+                    <label htmlFor="edit-role" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">System Role</label>
                     <select 
                       id="edit-role"
                       value={formData.role}
@@ -140,7 +140,7 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
                   </div>
 
                   <div className={formData.role === USER_ROLES.ADMIN ? 'opacity-50 pointer-events-none' : ''}>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">Services</label>
+                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">Services</label>
                     <div className="space-y-3 mt-2">
                       {divisions.map(d => (
                         <label key={d.id} className="flex items-center gap-3 cursor-pointer group">

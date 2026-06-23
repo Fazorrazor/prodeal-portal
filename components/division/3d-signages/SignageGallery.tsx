@@ -23,14 +23,14 @@ export async function SignageGallery() {
       {/* Section header */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-8">
         <div>
-          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/40 mb-1.5">
+          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-1.5">
             — Project Portfolio
           </p>
           <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue tracking-tighter uppercase leading-none">
             Recent Installations
           </h2>
         </div>
-        <p className="text-[10px] font-mono text-brand-deep-blue/40 uppercase tracking-widest">
+        <p className="text-[10px] font-mono text-brand-deep-blue/80 uppercase tracking-widest">
           Tap image to expand
         </p>
       </div>
@@ -38,7 +38,7 @@ export async function SignageGallery() {
       {!products || products.length === 0 ? (
         <div className="text-center py-12 border-y-2 border-brand-border/60">
           <h3 className="font-heading font-bold text-2xl text-brand-deep-blue uppercase tracking-tighter">All Clear.</h3>
-          <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/60 mt-2">No gallery images uploaded yet.</p>
+          <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/80 mt-2">No gallery images uploaded yet.</p>
         </div>
       ) : (
         <>
@@ -48,7 +48,7 @@ export async function SignageGallery() {
                   {product.image_path ? (
                     <GalleryImage product={product} />
                   ) : (
-                    <div className="w-full aspect-[4/3] bg-black/5 flex items-center justify-center font-bold text-brand-deep-blue/40 uppercase text-xs">No Image Available</div>
+                    <div className="w-full aspect-[4/3] bg-black/5 flex items-center justify-center font-bold text-brand-deep-blue/80 uppercase text-xs">No Image Available</div>
                   )}
                 </ScrollRevealItem>
             ))}

@@ -16,7 +16,7 @@ export function Hero() {
           className="flex items-center gap-3 mb-8"
         >
           <div className="w-6 h-px bg-brand-red" />
-          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/50">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80">
             Industrial B2B Procurement Portal
           </span>
         </motion.div>
@@ -51,7 +51,7 @@ export function Hero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.55 }}
-                className="mt-6 text-sm sm:text-base text-brand-deep-blue/60 font-body leading-relaxed max-w-md font-normal"
+                className="mt-6 text-sm sm:text-base text-brand-deep-blue/80 font-body leading-relaxed max-w-md font-normal"
               >
                 Prodeal Industries Ltd. is the trusted partner for massive-scale procurement.
                 From custom 3D Signages to Industrial Chemicals, we handle the volume you demand without compromise.
@@ -67,7 +67,7 @@ export function Hero() {
             className="flex flex-col gap-8 lg:max-w-xs lg:pb-2"
           >
             <div>
-              <p className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-brand-deep-blue/40 mb-2">
+              <p className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-brand-deep-blue/80 mb-2">
                 Delivered With
               </p>
               <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-brand-deep-blue tracking-tighter uppercase leading-none">
@@ -83,7 +83,7 @@ export function Hero() {
                 Request a Quote
                 <ArrowRight className="w-4 h-4 shrink-0" />
               </Link>
-              <p className="text-[10px] font-mono text-brand-deep-blue/40 tracking-widest uppercase">
+              <p className="text-[10px] font-mono text-brand-deep-blue/80 tracking-widest uppercase">
                 No login required — instant WhatsApp routing
               </p>
             </div>

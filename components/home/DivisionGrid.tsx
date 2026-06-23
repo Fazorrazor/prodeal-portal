@@ -17,14 +17,14 @@ export function DivisionGrid() {
           className="mb-12 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 border-b-2 border-brand-deep-blue pb-6"
         >
           <div>
-            <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/40 mb-2">
+            <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-2">
               — 04 Active Services
             </p>
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl md:text-5xl text-brand-deep-blue tracking-tighter uppercase leading-none">
               Our Services
             </h2>
           </div>
-          <p className="text-xs text-brand-deep-blue/50 font-body max-w-xs leading-relaxed">
+          <p className="text-xs text-brand-deep-blue/80 font-body max-w-xs leading-relaxed">
             Select a service to browse catalogs, check live inventory, or submit a direct inquiry.
           </p>
         </motion.div>

@@ -68,7 +68,7 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
         </h1>
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-1">
               Tracking ID
             </p>
             <p className="text-xl md:text-2xl font-mono text-brand-deep-blue font-bold tracking-widest">
@@ -76,7 +76,7 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
             </p>
           </div>
           <div className="text-left md:text-right">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-1">
               Last Updated
             </p>
             <p className="text-sm font-mono text-brand-deep-blue">
@@ -137,12 +137,12 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
                       className={`text-xl md:text-2xl font-heading font-bold tracking-tight mb-2 uppercase
                         ${isActive ? 'text-brand-blue' : 
                           isPast ? 'text-brand-deep-blue' : 
-                          'text-brand-deep-blue/40'}`}
+                          'text-brand-deep-blue/80'}`}
                     >
                       {step.label}
                     </motion.h3>
                     <p className={`text-sm md:text-base font-body
-                      ${isActive || isPast ? 'text-brand-deep-blue/80' : 'text-brand-deep-blue/40'}`}>
+                      ${isActive || isPast ? 'text-brand-deep-blue/80' : 'text-brand-deep-blue/80'}`}>
                       {step.desc}
                     </p>
                     {isActive && step.id === 'new' && (
@@ -159,7 +159,7 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
       )}
       
       <div className="mt-16 pt-8 border-t border-brand-border/30">
-        <p className="text-xs text-brand-deep-blue/60 uppercase tracking-widest text-center font-bold">
+        <p className="text-xs text-brand-deep-blue/80 uppercase tracking-widest text-center font-bold">
           Need immediate assistance? <a href="/contact" className="text-brand-blue hover:underline">Contact Support</a>
         </p>
       </div>

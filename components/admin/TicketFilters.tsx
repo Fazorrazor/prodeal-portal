@@ -18,7 +18,7 @@ export function TicketFilters({ currentStatus }: { currentStatus: string }) {
 
   return (
     <div className="flex items-baseline gap-3">
-      <label htmlFor="status-filter" className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60">
+      <label htmlFor="status-filter" className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80">
         Filter By Status:
       </label>
       <select 

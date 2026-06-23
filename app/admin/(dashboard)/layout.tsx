@@ -23,15 +23,15 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
       <>
         <AdminWalkthrough />
         {/* Mobile Blocker */}
-        <div className="lg:hidden flex flex-col items-center justify-center min-h-screen bg-brand-surface p-6 text-center border-t-4 border-brand-red">
+        <main className="lg:hidden flex flex-col items-center justify-center min-h-screen bg-brand-surface p-6 text-center border-t-4 border-brand-red">
           <div className="w-16 h-16 border-2 border-brand-red flex items-center justify-center mb-6">
             <span className="font-heading font-bold text-2xl text-brand-red">!</span>
           </div>
           <h1 className="font-heading font-bold text-3xl text-brand-deep-blue uppercase tracking-tighter mb-4">Desktop Only</h1>
-          <p className="text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest max-w-sm leading-relaxed">
+          <p className="text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest max-w-sm leading-relaxed">
             The Prodeal Industries admin portal is optimized for data density and requires a larger screen. Please access this dashboard from a desktop or laptop device.
           </p>
-        </div>
+        </main>
 
         {/* Main Desktop Dashboard */}
         <div className="hidden lg:flex h-screen bg-brand-surface overflow-hidden font-body text-brand-deep-blue">

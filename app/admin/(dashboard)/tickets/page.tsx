@@ -69,7 +69,7 @@ export default async function TicketListPage(props: { searchParams: Promise<{ [k
         <AnimatedBorder direction="bottom" delay={0.1} className="h-[2px] !bg-brand-deep-blue" />
         <div>
           <h1 className="text-3xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">Ticket Master List</h1>
-          <p className="text-brand-deep-blue/60 font-body text-sm">Manage all incoming division inquiries.</p>
+          <p className="text-brand-deep-blue/80 font-body text-sm">Manage all incoming division inquiries.</p>
         </div>
         <div id="tour-ticket-filters">
           <TicketFilters currentStatus={searchParams.status || 'all'} />

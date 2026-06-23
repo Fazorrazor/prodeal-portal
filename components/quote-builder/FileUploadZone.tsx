@@ -94,7 +94,7 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
 
   return (
     <div className="w-full mt-10">
-      <h3 className="text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest mb-6 border-b-2 border-brand-border/60 pb-2">
+      <h3 className="text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest mb-6 border-b-2 border-brand-border/60 pb-2">
         Attachments (Optional)
       </h3>
       
@@ -112,13 +112,13 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
                 </div>
                 <div className="truncate">
                   <p className="text-xs font-bold uppercase tracking-widest text-brand-deep-blue truncate">{file.name}</p>
-                  <p className="text-[10px] font-mono font-bold text-brand-deep-blue/40 mt-1">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                  <p className="text-[10px] font-mono font-bold text-brand-deep-blue/80 mt-1">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => onRemoveFile(file.url)}
-                className="p-3 text-brand-deep-blue/40 hover:text-brand-surface hover:bg-brand-red border border-transparent hover:border-brand-red transition-colors"
+                className="p-3 text-brand-deep-blue/80 hover:text-brand-surface hover:bg-brand-red border border-transparent hover:border-brand-red transition-colors"
                 title="Remove file"
               >
                 <X className="w-4 h-4" />
@@ -152,7 +152,7 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
             </div>
           ) : (
             <>
-              <UploadCloud className="w-10 h-10 text-brand-deep-blue/40 mb-4" />
+              <UploadCloud className="w-10 h-10 text-brand-deep-blue/80 mb-4" />
               <p className="text-xs font-bold uppercase tracking-widest text-brand-red/80 text-center mb-2">
                 <span className="text-brand-red">Tap to select</span>
                 <span className="hidden sm:inline"> or drop files</span>
