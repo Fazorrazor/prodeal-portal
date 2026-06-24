@@ -6,6 +6,7 @@ import { InquirySubmissionSchema, DIVISION_SCHEMAS } from '../../lib/validators/
 import { headers } from 'next/headers';
 import { logError } from '../../lib/logger';
 import { sendWhatsAppAlert } from '../../lib/whatsapp/send';
+import { sendTwilioWhatsAppAlert } from '../../lib/twilio/send';
 
 export async function submitInquiry(formData: any) {
   try {
@@ -153,7 +154,13 @@ export async function submitInquiry(formData: any) {
         attachmentCount: fileIds ? fileIds.length : 0
       };
 
-      const waResult = await sendWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext);
+      // --- META WHATSAPP LOGIC (GRAYED OUT) ---
+      // const waResult = await sendWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext);
+      // ----------------------------------------
+      
+      // --- TWILIO LOGIC (ACTIVE) ---
+      const waResult = await sendTwilioWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext);
+      // -----------------------------
 
       if (!waResult.success) {
         // Rollback the database write if WA fails (Strict Rule 4 compliance)

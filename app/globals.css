@@ -16,6 +16,17 @@
     scrollbar-color: rgba(9, 25, 43, 0.2) transparent;
   }
 
+  /* Hide scrollbar on mobile devices */
+  @media (max-width: 768px) {
+    html {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
