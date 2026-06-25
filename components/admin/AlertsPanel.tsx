@@ -69,6 +69,11 @@ export function AlertsPanel() {
         fetchAlerts();
         router.refresh();
       })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'inquiries' }, () => {
+        // If a ticket fails to send and gets deleted, automatically clear its alert
+        fetchAlerts();
+        router.refresh();
+      })
       .subscribe();
 
     return () => {

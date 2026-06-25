@@ -6,7 +6,10 @@ export class DivisionErrorBoundary extends Component<
   { hasError: boolean }
 > {
   state = { hasError: false };
-  static getDerivedStateFromError() { return { hasError: true }; }
+  static getDerivedStateFromError(error: any) { 
+    console.error("DivisionErrorBoundary caught an error:", error);
+    return { hasError: true }; 
+  }
 
   render() {
     if (this.state.hasError) {

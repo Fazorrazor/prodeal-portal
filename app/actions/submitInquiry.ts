@@ -163,19 +163,27 @@ export async function submitInquiry(formData: any) {
       // -----------------------------
 
       if (!waResult.success) {
-        // Rollback the database write if WA fails (Strict Rule 4 compliance)
-        await supabase.from('inquiries').delete().eq('id', newInquiry.id);
-        return { success: false, error: 'Failed to notify agent. Inquiry was not submitted.' };
+        // Rule 4 Override: We no longer rollback the database write if WhatsApp fails.
+        // We log the error internally so admins can see the agent was not notified, 
+        // but the customer still gets a "Success" screen.
+        await supabase
+          .from('inquiries')
+          .update({ 
+            internal_notes: `[SYSTEM_WARNING] WhatsApp notification failed to send: ${waResult.error || 'Unknown error'}` 
+          })
+          .eq('id', newInquiry.id);
+          
+        console.warn(`[WARN] Inquiry ${newInquiry.tracking_uuid} saved, but WhatsApp failed:`, waResult.error);
+      } else {
+        // Update the inquiry with the WA message ID on success
+        await supabase
+          .from('inquiries')
+          .update({ 
+            wa_message_id: waResult.messageId, 
+            wa_sent_at: new Date().toISOString() 
+          })
+          .eq('id', newInquiry.id);
       }
-
-      // Update the inquiry with the WA message ID
-      await supabase
-        .from('inquiries')
-        .update({ 
-          wa_message_id: waResult.messageId, 
-          wa_sent_at: new Date().toISOString() 
-        })
-        .eq('id', newInquiry.id);
     } else {
       // If no staff is available, we log a warning but the business decides if it should fail.
       // Based on B2B norms, we accept the ticket but flag it as unassigned.
