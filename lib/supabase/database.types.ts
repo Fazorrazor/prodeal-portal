@@ -56,6 +56,8 @@ export type Database = {
           updated_at: string | null
           wa_message_id: string | null
           wa_sent_at: string | null
+          wa_status: string
+          wa_retry_count: number
         }
         Insert: {
           assigned_staff?: string | null
@@ -74,6 +76,8 @@ export type Database = {
           updated_at?: string | null
           wa_message_id?: string | null
           wa_sent_at?: string | null
+          wa_status?: string
+          wa_retry_count?: number
         }
         Update: {
           assigned_staff?: string | null
@@ -92,6 +96,8 @@ export type Database = {
           updated_at?: string | null
           wa_message_id?: string | null
           wa_sent_at?: string | null
+          wa_status?: string
+          wa_retry_count?: number
         }
         Relationships: [
           {

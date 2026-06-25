@@ -19,50 +19,6 @@ export interface WhatsAppContext {
 }
 
 export function buildWhatsAppMessage(toPhone: string, trackingId: string, divisionName: string, context: WhatsAppContext) {
-  const { divisionSlug, inquiryData, attachmentCount } = context;
-  
-  let specificFields = '';
-  let divisionEmoji = '🏢';
-
-  if (divisionSlug === '3d-signages') {
-    divisionEmoji = '🏗️';
-    specificFields = `[ SIGNAGE DETAILS ]
-Sign Type: ${inquiryData.signType || 'N/A'}
-Dimensions: ${inquiryData.width || '?'}x${inquiryData.height || '?'}
-Material: ${inquiryData.materialPreference || 'N/A'}
-Quantity: ${inquiryData.quantity || '1'}`;
-  } else if (divisionSlug === 'souvenirs-printing') {
-    divisionEmoji = '🖨️';
-    specificFields = `[ PRINTING DETAILS ]
-Product: ${inquiryData.productType || 'N/A'}
-Quantity: ${inquiryData.quantity || '1'}
-Artwork Ready: ${inquiryData.artworkReady ? 'Yes' : 'No'}`;
-  } else if (divisionSlug === 'disposable-bowls') {
-    divisionEmoji = '🥣';
-    specificFields = `[ INVENTORY DETAILS ]
-Product SKU: ${inquiryData.sku || 'N/A'}
-Quantity: ${inquiryData.quantity || '1'}
-Delivery Required: ${inquiryData.deliveryAddress ? 'Yes' : 'No'}`;
-  } else if (divisionSlug === 'chemicals') {
-    divisionEmoji = '🧪';
-    specificFields = `[ CHEMICAL DETAILS ]
-Intended Use: ${inquiryData.intendedUse || 'N/A'}
-CAS Number: ${inquiryData.casNumber || 'N/A'}
-Grade: ${inquiryData.grade || 'N/A'}`;
-  } else {
-    specificFields = `[ INQUIRY DETAILS ]
-Please check the admin portal for specific fields.`;
-  }
-
-  const messageText = `*${divisionEmoji} NEW INQUIRY: ${divisionName.toUpperCase()}*
----------------------------
-TRACKING ID: ${trackingId}
-ATTACHMENTS: ${attachmentCount}
----------------------------
-${specificFields}
-
-Please log in to the admin portal to review the full details and respond.`;
-
   let formattedPhone = toPhone.replace(/\D/g, '');
   // If it's a local Ghana number starting with 0 and 10 digits long, convert to 233
   if (formattedPhone.startsWith('0') && formattedPhone.length === 10) {
@@ -72,9 +28,27 @@ Please log in to the admin portal to review the full details and respond.`;
   return {
     messaging_product: 'whatsapp',
     to: formattedPhone,
-    type: 'text',
-    text: {
-      body: messageText
+    type: 'template',
+    template: {
+      name: 'prodeal_new_inquiry',
+      language: {
+        code: 'en_US'
+      },
+      components: [
+        {
+          type: 'body',
+          parameters: [
+            {
+              type: 'text',
+              text: divisionName.toUpperCase()
+            },
+            {
+              type: 'text',
+              text: trackingId
+            }
+          ]
+        }
+      ]
     }
   };
 }

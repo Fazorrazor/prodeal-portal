@@ -1,6 +1,7 @@
 import { createServer } from '../../lib/supabase/server';
 import { format } from 'date-fns';
 import { AnimatedBorder } from './AnimatedBorder';
+import { CopyButton } from '../shared/CopyButton';
 
 export async function SystemLogsTable() {
   const supabase = await createServer();
@@ -60,11 +61,17 @@ export async function SystemLogsTable() {
                   {log.context}
                 </td>
                 <td className="px-4 py-4 text-sm font-semibold text-brand-deep-blue align-top max-w-sm">
-                  <div className="break-words mb-2">{log.error_message}</div>
+                  <div className="break-words mb-2 flex items-start justify-between gap-2">
+                    <span>{log.error_message}</span>
+                    <CopyButton text={log.error_message} label="Copied error message" />
+                  </div>
                   {log.error_stack && (
                     <details className="text-[10px] text-brand-deep-blue/80 font-mono mt-1 cursor-pointer">
-                      <summary className="hover:text-brand-blue uppercase tracking-widest font-bold">View Stack</summary>
-                      <div className="mt-2 p-2 bg-brand-deep-blue/5 border-l-2 border-brand-red whitespace-pre-wrap overflow-x-auto">
+                      <summary className="hover:text-brand-blue uppercase tracking-widest font-bold flex items-center gap-2">
+                        View Stack
+                        <CopyButton text={log.error_stack} label="Copied stack trace" />
+                      </summary>
+                      <div className="mt-2 p-2 bg-brand-deep-blue/5 border-l-2 border-brand-red whitespace-pre-wrap overflow-x-auto overflow-y-auto max-h-96">
                         {log.error_stack}
                       </div>
                     </details>
@@ -72,7 +79,10 @@ export async function SystemLogsTable() {
                 </td>
                 <td className="px-4 py-4 align-top">
                   {log.metadata && typeof log.metadata === 'object' && Object.keys(log.metadata).length > 0 ? (
-                    <div className="text-[10px] font-mono text-brand-deep-blue/80 bg-brand-deep-blue/5 p-2 border-l border-brand-deep-blue/20 max-w-[200px] break-words">
+                    <div className="text-[10px] font-mono text-brand-deep-blue/80 bg-brand-deep-blue/5 p-2 border-l border-brand-deep-blue/20 max-w-[200px] break-words relative group/meta">
+                      <div className="absolute top-1 right-1 opacity-0 group-hover/meta:opacity-100 transition-opacity bg-brand-surface/80 rounded backdrop-blur-sm">
+                        <CopyButton text={JSON.stringify(log.metadata, null, 2)} label="Copied metadata" />
+                      </div>
                       <pre className="whitespace-pre-wrap">{JSON.stringify(log.metadata, null, 2)}</pre>
                     </div>
                   ) : (

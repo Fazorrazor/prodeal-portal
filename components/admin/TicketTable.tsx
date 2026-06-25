@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useOptimistic } from 'react';
 import Link from 'next/link';
 import { ChevronRight, Trash2, Loader2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -42,9 +42,15 @@ export function TicketTable({
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
+  // Optimistic UI for instant visual feedback
+  const [optimisticInquiries, setOptimisticInquiries] = useOptimistic(
+    inquiries,
+    (state, deletedIds: string[]) => state.filter((inquiry) => !deletedIds.includes(inquiry.id))
+  );
+
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setSelectedTickets(inquiries.map(inq => inq.id));
+      setSelectedTickets(optimisticInquiries.map(inq => inq.id));
     } else {
       setSelectedTickets([]);
     }
@@ -62,19 +68,23 @@ export function TicketTable({
     if (selectedTickets.length === 0) return;
     if (!window.confirm(`Are you sure you want to permanently delete ${selectedTickets.length} tickets? This cannot be undone.`)) return;
 
-    setIsDeleting(true);
+    // Instantly hide from UI before waiting for database
+    setOptimisticInquiries(selectedTickets);
+    setSelectedTickets([]);
+    
+    // We don't set isDeleting to true here because the UI already removed them!
     const result = await bulkDeleteInquiriesSafely(selectedTickets);
 
     if (!result.success) {
       toast.error(result.error || 'Failed to delete tickets');
+      // A router.refresh() here will restore the tickets if it failed
+      router.refresh();
     } else {
       toast.success(`${selectedTickets.length} tickets permanently deleted`);
-      setSelectedTickets([]);
-      router.refresh();
     }
-    setIsDeleting(false);
   };
-  if (!inquiries || inquiries.length === 0) {
+
+  if (!optimisticInquiries || optimisticInquiries.length === 0) {
     return (
       <div className="py-16 flex flex-col items-start border-t border-brand-border/60">
         <h3 className="text-2xl font-heading font-bold text-brand-deep-blue tracking-tighter mb-2">All clear.</h3>
@@ -118,7 +128,7 @@ export function TicketTable({
               <th className="py-4 pl-4 pr-2 w-10">
                 <input 
                   type="checkbox" 
-                  checked={inquiries.length > 0 && selectedTickets.length === inquiries.length}
+                  checked={optimisticInquiries.length > 0 && selectedTickets.length === optimisticInquiries.length}
                   onChange={handleSelectAll}
                   className="w-4 h-4 rounded-none border-2 border-brand-border/60 text-brand-deep-blue focus:ring-brand-blue cursor-pointer"
                 />
@@ -132,7 +142,7 @@ export function TicketTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-brand-border/40">
-            {inquiries.map((inquiry, i) => (
+            {optimisticInquiries.map((inquiry, i) => (
               <tr 
                 key={inquiry.id} 
                 className={`hover:bg-black/5 transition-colors group animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both ${selectedTickets.includes(inquiry.id) ? 'bg-brand-blue/5' : ''}`}

@@ -169,6 +169,8 @@ export async function submitInquiry(formData: any) {
         await supabase
           .from('inquiries')
           .update({ 
+            wa_status: 'failed',
+            wa_retry_count: 1,
             internal_notes: `[SYSTEM_WARNING] WhatsApp notification failed to send: ${waResult.error || 'Unknown error'}` 
           })
           .eq('id', newInquiry.id);
@@ -180,7 +182,8 @@ export async function submitInquiry(formData: any) {
           .from('inquiries')
           .update({ 
             wa_message_id: waResult.messageId, 
-            wa_sent_at: new Date().toISOString() 
+            wa_sent_at: new Date().toISOString(),
+            wa_status: 'sent'
           })
           .eq('id', newInquiry.id);
       }
