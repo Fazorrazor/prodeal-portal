@@ -75,7 +75,7 @@ export function AdminLoginForm() {
         <form onSubmit={handleSendOtp} className="space-y-6 animate-in fade-in">
           <div>
             <label htmlFor="login-phone" className="block text-xs font-bold text-brand-deep-blue uppercase tracking-widest mb-2">
-              WhatsApp Phone Number
+              Mobile Phone Number
             </label>
             <input 
               id="login-phone"
