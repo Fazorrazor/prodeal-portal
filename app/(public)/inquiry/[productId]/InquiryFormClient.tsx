@@ -37,14 +37,14 @@ function SuccessReceipt({ divisionSlug, phone, assignedPhone, trackingId }: { di
 
   return (
     <div ref={containerRef} className="flex flex-col py-6 md:py-8 h-full scroll-mt-32">
-      <h3 className="font-heading font-bold text-3xl md:text-4xl text-brand-deep-blue mb-4 tracking-tighter uppercase">Inquiry Logged.</h3>
+      <h3 className="font-heading font-bold text-3xl md:text-4xl text-brand-deep-blue mb-4 tracking-tighter uppercase">Inquiry Received.</h3>
       
       <div className="border-l-2 border-brand-deep-blue pl-4 mb-8">
-        <p className="text-sm font-bold text-brand-deep-blue/80 uppercase tracking-widest leading-relaxed mb-4">
-          Your request has been prioritized and routed to our division specialists.
+        <p className="text-sm font-medium text-brand-deep-blue/90 leading-relaxed mb-4">
+          Thank you for reaching out. We have successfully routed your request directly to our division specialists.
         </p>
-        <p className="text-sm font-bold text-brand-deep-blue uppercase tracking-widest leading-relaxed">
-          A representative will initiate contact via WhatsApp at <span className="text-brand-blue font-mono">{phone}</span> shortly to finalize your requirements.
+        <p className="text-sm font-medium text-brand-deep-blue leading-relaxed">
+          One of our representatives will message you shortly on WhatsApp at <span className="text-brand-blue font-mono font-bold">{phone}</span> to discuss the details and provide your quote.
         </p>
       </div>
 
