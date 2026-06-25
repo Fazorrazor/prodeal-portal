@@ -76,9 +76,9 @@ export function AdminWalkthrough() {
       const driverObj = driver({
         showProgress: true,
         animate: true,
-        allowClose: false, // Forces them to interact with the tour
+        allowClose: true, // Allow them to click outside or hit 'X' to skip
         disableActiveInteraction: true, // Prevents clicking the highlighted element itself
-        allowKeyboardControl: false, // Disable keyboard interactions outside
+        allowKeyboardControl: true, // Enable keyboard interactions (Escape key to skip)
         overlayColor: 'rgba(9, 25, 43, 0.85)', // brand-deep-blue
         popoverClass: 'brutalist-driver-popover',
         doneBtnText: 'Finish Tour',
