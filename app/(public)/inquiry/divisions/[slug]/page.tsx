@@ -1,23 +1,23 @@
 import { notFound } from 'next/navigation';
-import { DivisionLayout } from '../../../../components/division/DivisionLayout';
-import { DIVISION_DATA } from '../../../../lib/config/divisions';
+import { DivisionLayout } from '../../../../../components/division/DivisionLayout';
+import { DIVISION_DATA } from '../../../../../lib/config/divisions';
 
-import { DivisionErrorBoundary } from '../../../../components/shared/DivisionErrorBoundary';
+import { DivisionErrorBoundary } from '../../../../../components/shared/DivisionErrorBoundary';
 import { Suspense } from 'react';
 
 // Components for 3D Signages
-import { SignageGallery } from '../../../../components/division/3d-signages/SignageGallery';
-import { ProjectFAQ } from '../../../../components/division/3d-signages/ProjectFAQ';
+import { SignageGallery } from '../../../../../components/division/3d-signages/SignageGallery';
+import { ProjectFAQ } from '../../../../../components/division/3d-signages/ProjectFAQ';
 
 // Components for Souvenirs & Printing
-import { ProductCatalog } from '../../../../components/division/souvenirs-printing/ProductCatalog';
+import { ProductCatalog } from '../../../../../components/division/souvenirs-printing/ProductCatalog';
 
 // Components for Disposable Bowls
-import { InventoryTable } from '../../../../components/division/disposable-bowls/InventoryTable';
-import { BulkOrderNote } from '../../../../components/division/disposable-bowls/BulkOrderNote';
+import { InventoryTable } from '../../../../../components/division/disposable-bowls/InventoryTable';
+import { BulkOrderNote } from '../../../../../components/division/disposable-bowls/BulkOrderNote';
 
 // Components for Chemicals
-import { ChemicalCatalog } from '../../../../components/division/chemicals/ChemicalCatalog';
+import { ChemicalCatalog } from '../../../../../components/division/chemicals/ChemicalCatalog';
 
 // Set the baseline revalidation to 300 (5 minutes). 
 // This strictly satisfies the workflow requirement for the 'bowls' division's 

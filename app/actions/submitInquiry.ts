@@ -154,12 +154,12 @@ export async function submitInquiry(formData: any) {
         attachmentCount: fileIds ? fileIds.length : 0
       };
 
-      // --- META WHATSAPP LOGIC (GRAYED OUT) ---
-      // const waResult = await sendWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext);
+      // --- META WHATSAPP LOGIC (ACTIVE) ---
+      const waResult = await sendWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext);
       // ----------------------------------------
       
-      // --- TWILIO LOGIC (ACTIVE) ---
-      const waResult = await sendTwilioWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext);
+      // --- TWILIO LOGIC (GRAYED OUT) ---
+      // const waResult = await sendTwilioWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext);
       // -----------------------------
 
       if (!waResult.success) {
