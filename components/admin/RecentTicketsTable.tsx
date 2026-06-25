@@ -9,6 +9,7 @@ import { useScrambleText } from '../../lib/hooks/useScrambleText';
 import { bulkDeleteInquiriesSafely } from '../../app/actions/deleteInquiry';
 import { useRouter } from 'next/navigation';
 import { AnimatedBorder } from './AnimatedBorder';
+import { ConfirmModal } from './ConfirmModal';
 
 function ScrambledUUID({ uuid }: { uuid: string }) {
   const { displayText } = useScrambleText(uuid.substring(0, 8).toUpperCase(), 400, 1000);
@@ -36,10 +37,15 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
     }
   };
 
-  const handleBulkDelete = async () => {
-    if (selectedTickets.length === 0) return;
-    if (!window.confirm(`Are you sure you want to permanently delete ${selectedTickets.length} tickets? This cannot be undone.`)) return;
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
+  const handleBulkDeleteClick = () => {
+    if (selectedTickets.length === 0) return;
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    setIsConfirmOpen(false);
     setIsDeleting(true);
     const result = await bulkDeleteInquiriesSafely(selectedTickets);
 
@@ -84,7 +90,7 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
             {selectedTickets.length} Selected
           </span>
           <button
-            onClick={handleBulkDelete}
+            onClick={handleBulkDeleteClick}
             disabled={isDeleting}
             className="flex items-center gap-2 bg-brand-red text-white px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-red-700 transition-colors disabled:opacity-50"
           >
@@ -169,6 +175,14 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
           </tbody>
         </table>
       </div>
+
+      <ConfirmModal 
+        isOpen={isConfirmOpen}
+        title="Delete Tickets"
+        message={`Are you sure you want to permanently delete ${selectedTickets.length} tickets? This cannot be undone.`}
+        onConfirm={confirmDelete}
+        onCancel={() => setIsConfirmOpen(false)}
+      />
     </div>
   );
 }

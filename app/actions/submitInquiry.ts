@@ -12,16 +12,22 @@ export async function submitInquiry(formData: any) {
   try {
     // 1. Rate Limit Check (Fail-open on timeout to prevent Redis from becoming a bottleneck)
     const ip = (await headers()).get('x-forwarded-for') ?? '127.0.0.1';
+    const reqDivisionSlug = formData?.divisionSlug || 'unknown';
+    const limitKey = `${ip}:${reqDivisionSlug}`;
+
     try {
       const { success } = await Promise.race([
-        inquiryRateLimit.limit(ip),
+        inquiryRateLimit.limit(limitKey),
         new Promise<{ success: boolean }>((_, reject) => 
           setTimeout(() => reject(new Error('Rate limit timeout')), 800)
         )
       ]);
       
       if (!success) {
-        return { success: false, error: 'Rate limit exceeded. Please try again later.' };
+        return { 
+          success: false, 
+          error: "You've submitted multiple requests for this service recently. Please wait a little while, or contact our priority line." 
+        };
       }
     } catch (rlError) {
       console.warn('[Rate Limit Warning] Upstash timed out or failed. Failing open to allow business request:', rlError);

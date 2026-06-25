@@ -8,7 +8,7 @@ const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_RE
 
 export const inquiryRateLimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(3, '1 h'),
+  limiter: Ratelimit.slidingWindow(5, '1 h'),
   prefix: 'rl:inquiry',
 });
 
