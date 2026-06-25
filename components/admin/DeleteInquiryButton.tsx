@@ -5,14 +5,20 @@ import { useRouter } from 'next/navigation';
 import { deleteInquirySafely } from '../../app/actions/deleteInquiry';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { ConfirmModal } from './ConfirmModal';
 
 export function DeleteInquiryButton({ inquiryId }: { inquiryId: string }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
-  const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to permanently delete this inquiry? This cannot be undone.")) return;
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
+  const handleDeleteClick = () => {
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    setIsConfirmOpen(false);
     setIsDeleting(true);
 
     const result = await deleteInquirySafely(inquiryId);
@@ -33,7 +39,7 @@ export function DeleteInquiryButton({ inquiryId }: { inquiryId: string }) {
         Danger Zone
       </h3>
       <button 
-        onClick={handleDelete}
+        onClick={handleDeleteClick}
         disabled={isDeleting}
         className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-red hover:bg-brand-red hover:text-white border border-brand-red transition-colors px-4 py-3 w-full justify-center disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-brand-red"
       >
@@ -45,6 +51,14 @@ export function DeleteInquiryButton({ inquiryId }: { inquiryId: string }) {
           'PERMANENTLY DELETE'
         )}
       </button>
+
+      <ConfirmModal 
+        isOpen={isConfirmOpen}
+        title="Delete Inquiry"
+        message="Are you sure you want to permanently delete this inquiry? This cannot be undone."
+        onConfirm={confirmDelete}
+        onCancel={() => setIsConfirmOpen(false)}
+      />
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Loader2, Power, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { EditStaffPanel } from './EditStaffPanel';
+import { ConfirmModal } from './ConfirmModal';
 
 interface StaffMember {
   id: string;
@@ -27,11 +28,14 @@ export function StaffActions({ member, divisions, currentUserId }: { member: Sta
   const [optimisticActive, setOptimisticActive] = useState(member.is_active);
   const router = useRouter();
 
-  const deleteStaff = async () => {
-    if (!window.confirm(`Are you sure you want to permanently delete ${member.full_name}? This action cannot be undone.`)) {
-      return;
-    }
-    
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const handleDeleteClick = () => {
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    setIsConfirmOpen(false);
     setIsDeleting(true);
     try {
       const res = await fetch(`/api/admin/staff/${member.id}`, {
@@ -95,7 +99,7 @@ export function StaffActions({ member, divisions, currentUserId }: { member: Sta
       <EditStaffPanel staff={member} divisions={divisions} />
       
       <button
-        onClick={deleteStaff}
+        onClick={handleDeleteClick}
         disabled={isUpdating || isDeleting}
         className="p-2 text-brand-deep-blue/80 hover:text-brand-red transition-colors disabled:opacity-50"
         title="Delete Account"
@@ -136,6 +140,14 @@ export function StaffActions({ member, divisions, currentUserId }: { member: Sta
           )}
         </span>
       </button>
+
+      <ConfirmModal 
+        isOpen={isConfirmOpen}
+        title="Delete Staff"
+        message={`Are you sure you want to permanently delete ${member.full_name}? This action cannot be undone.`}
+        onConfirm={confirmDelete}
+        onCancel={() => setIsConfirmOpen(false)}
+      />
     </div>
   );
 }

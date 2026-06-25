@@ -1,12 +1,16 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import { usePathname } from 'next/navigation';
+import { ConfirmModal } from './ConfirmModal';
 
 export function AdminWalkthrough() {
   const pathname = usePathname();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const driverRef = useRef<any>(null);
+  const tourKeyRef = useRef<string>('');
 
   useEffect(() => {
     // Determine the current page key and steps
@@ -64,6 +68,8 @@ export function AdminWalkthrough() {
     // Check localStorage to ensure this only runs once per device per page
     const hasSeenTour = localStorage.getItem(tourKey);
     if (hasSeenTour === 'true') return;
+    
+    tourKeyRef.current = tourKey;
 
     // Delay to ensure the entire DOM and animations have settled (especially Suspense boundaries)
     const timer = setTimeout(() => {
@@ -99,22 +105,42 @@ export function AdminWalkthrough() {
           }
         },
         onDestroyStarted: () => {
-          if (!driverObj.hasNextStep() || confirm("Are you sure you want to skip the walkthrough?")) {
-            // Set completion flag in localStorage
+          if (!driverObj.hasNextStep()) {
+            // Reached the end naturally
             localStorage.setItem(tourKey, 'true');
-            // Restore scroll
             document.body.style.overflow = '';
             driverObj.destroy();
+          } else {
+            // User interrupted the tour
+            setIsConfirmOpen(true);
           }
         },
         steps
       });
-
+      
+      driverRef.current = driverObj;
       driverObj.drive();
     }, 1500); // 1.5s delay to allow Suspense boundaries (tables) to load
 
     return () => clearTimeout(timer);
   }, [pathname]);
 
-  return null;
+  const confirmSkip = () => {
+    localStorage.setItem(tourKeyRef.current, 'true');
+    document.body.style.overflow = '';
+    driverRef.current?.destroy();
+    setIsConfirmOpen(false);
+  };
+
+  return (
+    <ConfirmModal 
+      isOpen={isConfirmOpen}
+      title="Skip Walkthrough"
+      message="Are you sure you want to skip the rest of this walkthrough?"
+      confirmText="Skip Walkthrough"
+      cancelText="Continue Tour"
+      onConfirm={confirmSkip}
+      onCancel={() => setIsConfirmOpen(false)}
+    />
+  );
 }
