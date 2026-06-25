@@ -62,23 +62,22 @@ export async function POST(req: Request) {
 
     const { fullName, whatsappPhone, role, divisionIds } = validatedData.data;
 
-    // 4. Create auth user securely via Admin API
+    // 4. Create auth user securely via Admin API using Phone number
     const adminClient = createAdminClient();
     
-    const firstName = fullName.trim().split(' ')[0].toLowerCase();
-    const generatedEmail = `${firstName}@prodeal.com`;
-    const generatedPassword = `${firstName}@prodeal123`;
+    // Format phone to E.164 if not already (assuming whatsappPhone is reasonably formatted, 
+    // Supabase requires E.164. Our form should enforce it, but let's make sure it has a +)
+    const formattedPhone = whatsappPhone.startsWith('+') ? whatsappPhone : `+${whatsappPhone}`;
     
     const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
-      email: generatedEmail,
-      password: generatedPassword,
-      email_confirm: true,
+      phone: formattedPhone,
+      phone_confirm: true,
       user_metadata: { full_name: fullName }
     });
 
     if (authError) {
-      await logError('POST /api/admin/staff (Auth)', authError, { email: generatedEmail, role });
-      return NextResponse.json({ error: 'Failed to create auth user.' }, { status: 400 });
+      await logError('POST /api/admin/staff (Auth)', authError, { phone: formattedPhone, role });
+      return NextResponse.json({ error: authError.message || 'Failed to create auth user.' }, { status: 400 });
     }
 
     // 5. Insert into staff_members table
