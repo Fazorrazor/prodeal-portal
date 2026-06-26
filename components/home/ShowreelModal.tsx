@@ -72,10 +72,10 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
       >
         <div className="flex flex-col">
           <span className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/60">
-            // SYS.ARCHIVE.VIEWER
+            // PRODEAL WORK GALLERY
           </span>
           <span className="font-mono text-sm font-bold text-brand-deep-blue">
-            FILE {currentIndex + 1} OF {filteredMedia.length}
+            MEDIA {currentIndex + 1} OF {filteredMedia.length}
           </span>
         </div>
 

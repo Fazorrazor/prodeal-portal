@@ -81,17 +81,24 @@ export function Hero() {
               </h2>
             </div>
 
-            {/* Brutalist Video Trigger */}
+            {/* Premium Brutalist Video Trigger */}
             <div 
               onClick={() => setIsShowreelOpen(true)}
-              className="relative w-full aspect-[21/9] sm:aspect-video overflow-hidden border-l-4 border-b-4 border-brand-deep-blue group cursor-pointer bg-brand-deep-blue/5"
+              className="relative w-full aspect-[21/9] sm:aspect-video overflow-hidden group cursor-pointer border border-brand-border/40 bg-brand-surface"
               role="button"
               aria-label="Open video showreel"
             >
-              {/* Metadata tag */}
-              <div className="absolute top-2 left-2 z-20 px-2 py-0.5 bg-brand-surface/90 border border-brand-deep-blue">
-                <span className="text-[8px] font-mono font-bold uppercase tracking-widest text-brand-deep-blue">
-                  // ACTIVE_OPERATIONS_FEED
+              {/* Technical Corner Accents */}
+              <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-brand-deep-blue z-20 pointer-events-none transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1" />
+              <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-brand-deep-blue z-20 pointer-events-none transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+              <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-brand-deep-blue z-20 pointer-events-none transition-transform group-hover:-translate-x-1 group-hover:translate-y-1" />
+              <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-brand-deep-blue z-20 pointer-events-none transition-transform group-hover:translate-x-1 group-hover:translate-y-1" />
+
+              {/* Glassmorphism Metadata Badge */}
+              <div className="absolute top-3 left-3 z-20 px-2 py-1 backdrop-blur-md bg-black/40 border border-white/20 rounded-sm">
+                <span className="text-[8px] font-mono font-bold uppercase tracking-[0.2em] text-white/90 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse" />
+                  RECENT PROJECTS
                 </span>
               </div>
               
@@ -102,15 +109,19 @@ export function Hero() {
                 muted
                 loop
                 playsInline
-                className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-luminosity group-hover:mix-blend-normal group-hover:opacity-100 transition-all duration-700"
+                className="absolute inset-0 w-full h-full object-cover opacity-70 mix-blend-luminosity group-hover:mix-blend-normal group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
               />
               
-              {/* Overlay Play Button */}
-              <div className="absolute inset-0 flex items-center justify-center bg-brand-deep-blue/20 group-hover:bg-transparent transition-colors z-10">
-                <div className="bg-brand-blue text-white px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] font-bold shadow-lg transform group-hover:scale-105 transition-transform duration-300 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-brand-red animate-pulse" />
-                  [ View Work Archive ]
+              {/* Overlay Glass Play Button */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-brand-deep-blue/20 group-hover:bg-black/10 transition-colors z-10">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full backdrop-blur-xl bg-white/10 border border-white/30 flex items-center justify-center text-white transform group-hover:scale-110 group-hover:bg-brand-blue/90 group-hover:border-brand-blue transition-all duration-500 shadow-2xl mb-3">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
                 </div>
+                <span className="text-[9px] font-mono font-bold uppercase tracking-[0.3em] text-white/90 drop-shadow-md">
+                  View Work Archive
+                </span>
               </div>
             </div>
 
