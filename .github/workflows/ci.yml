@@ -59,7 +59,7 @@ jobs:
 
       - name: Linting & Type-Checking
         run: |
-          npx eslint . --max-warnings=0
+          npm run lint
           npx tsc --noEmit
 
       - name: Unit Tests & Coverage
