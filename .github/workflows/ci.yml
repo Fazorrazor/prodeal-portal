@@ -1,0 +1,85 @@
+name: Pro Deal CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# Auto-cancel redundant pipelines (Question 40)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-and-security:
+    name: Code Quality & Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Enforce strict lockfile (Question 19)
+      - name: Install Dependencies
+        run: npm ci
+
+      # High-severity vulnerability sweep (Question 18)
+      - name: Dependency Security Audit
+        run: npm audit --audit-level=high
+
+      # Brutalist UX & Code Standards Enforcer (Question 4, 28)
+      - name: Run ESLint
+        run: npx eslint . --max-warnings=0
+
+      # Strict Type-Checking (Question 6)
+      - name: TypeScript Compiler Check
+        run: npx tsc --noEmit
+
+      # Automated Test Suite (Question 7, 30-32)
+      - name: Run Vitest Unit & UI Tests
+        run: npm run test -- --run
+
+  build-verification:
+    name: Next.js Edge & Bundle Verification
+    runs-on: ubuntu-latest
+    needs: quality-and-security
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      # Caching Next.js build to save 50-70% time (Question 16)
+      - name: Setup Next.js Build Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+      # Verify Edge compatibility and asset footprint (Question 21, 26)
+      - name: Verify Production Build
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+          # Staging placeholders to pass build without exposing real keys (Question 1, 15)
+          SUPABASE_SERVICE_ROLE_KEY: "dummy-key-for-build-only"
+          TWILIO_ACCOUNT_SID: "dummy-sid"
+          TWILIO_AUTH_TOKEN: "dummy-token"
+          CRON_SECRET: "dummy-cron-secret"
