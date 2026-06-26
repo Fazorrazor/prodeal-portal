@@ -12,6 +12,7 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
   const [activeCategory, setActiveCategory] = useState<Category>('all');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
+  const [isMediaLoading, setIsMediaLoading] = useState(true);
 
   // Filter media based on category
   const filteredMedia = SHOWREEL_MEDIA.filter(
@@ -26,6 +27,13 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
   useEffect(() => {
     setCurrentIndex(0);
   }, [activeCategory]);
+
+  const currentMedia = filteredMedia[currentIndex];
+
+  // Reset loading state when the active media file changes
+  useEffect(() => {
+    setIsMediaLoading(true);
+  }, [currentMedia?.src]);
 
   // Lock body scroll when open
   useEffect(() => {
@@ -55,8 +63,6 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
   const handlePrev = () => setCurrentIndex((prev) => (prev - 1 + filteredMedia.length) % filteredMedia.length);
 
   if (!isOpen || !isMounted || filteredMedia.length === 0) return null;
-
-  const currentMedia = filteredMedia[currentIndex];
 
   const modalContent = (
     <motion.div
@@ -122,6 +128,17 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
         className="relative w-full max-w-5xl h-[80vh] px-4 sm:px-16 flex items-center justify-center mt-16"
       >
         <div className="relative w-full h-full border-2 border-brand-deep-blue bg-black/5 overflow-hidden shadow-2xl flex items-center justify-center">
+          
+          {/* Brutalist Loading Spinner */}
+          {isMediaLoading && (
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-brand-surface/80 backdrop-blur-sm">
+              <div className="w-12 h-12 border-4 border-brand-deep-blue/20 border-t-brand-red animate-spin" />
+              <span className="mt-4 text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-brand-deep-blue animate-pulse">
+                Fetching Data
+              </span>
+            </div>
+          )}
+
           {currentMedia.type === 'video' ? (
             <video
               key={currentMedia.src} // Force unmount/remount to trigger autoplay on new source
@@ -130,7 +147,8 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
               autoPlay
               preload="none"
               playsInline
-              className="w-full h-full object-contain bg-black"
+              onLoadedData={() => setIsMediaLoading(false)}
+              className={`w-full h-full object-contain bg-black transition-opacity duration-300 ${isMediaLoading ? 'opacity-0' : 'opacity-100'}`}
             />
           ) : (
             <img
@@ -138,7 +156,8 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
               src={currentMedia.src}
               alt="Archive media"
               loading="lazy"
-              className="w-full h-full object-contain bg-black"
+              onLoad={() => setIsMediaLoading(false)}
+              className={`w-full h-full object-contain bg-black transition-opacity duration-300 ${isMediaLoading ? 'opacity-0' : 'opacity-100'}`}
             />
           )}
         </div>
