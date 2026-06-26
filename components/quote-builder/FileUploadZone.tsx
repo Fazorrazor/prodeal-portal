@@ -1,8 +1,9 @@
 'use client';
 import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { File as FileIcon, Image as ImageIcon, X, UploadCloud, Loader2 } from 'lucide-react';
+import { File as FileIcon, Image as ImageIcon, X, UploadCloud } from 'lucide-react';
 import { toast } from 'sonner';
+import LottieSpinner from '../ui/LottieSpinner';
 export interface UploadedFile {
   name: string;
   url: string;
@@ -141,7 +142,7 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
           
           {isUploading ? (
             <div className="flex flex-col items-center w-full max-w-xs mx-auto">
-              <Loader2 className="w-8 h-8 text-brand-blue animate-spin mb-4" />
+              <LottieSpinner size={32} className="mb-4" />
               <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue">Transmitting Data...</p>
               <div className="w-full h-1 bg-brand-border/60 mt-4 overflow-hidden">
                 <div 

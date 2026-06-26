@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight, Video, Image as ImageIcon, Grid } from 'lucide-react';
 import { SHOWREEL_MEDIA } from '../../lib/config/media';
+import LottieSpinner from '../ui/LottieSpinner';
 
 type Category = 'all' | 'video' | 'image';
 
@@ -129,10 +130,10 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
       >
         <div className="relative w-full h-full border-2 border-brand-deep-blue bg-black/5 overflow-hidden shadow-2xl flex items-center justify-center">
           
-          {/* Brutalist Loading Spinner */}
+          {/* Brutalist Lottie Loading Spinner */}
           {isMediaLoading && (
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-brand-surface/80 backdrop-blur-sm">
-              <div className="w-12 h-12 border-4 border-brand-deep-blue/20 border-t-brand-red animate-spin" />
+              <LottieSpinner size={64} className="mb-2" />
               <span className="mt-4 text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-brand-deep-blue animate-pulse">
                 LOADING
               </span>
