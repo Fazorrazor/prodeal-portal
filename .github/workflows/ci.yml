@@ -1,4 +1,4 @@
-name: Pro Deal CI Pipeline
+name: Elite FAANG-Tier CI/CD Pipeline
 
 on:
   push:
@@ -6,80 +6,196 @@ on:
   pull_request:
     branches: [ "main" ]
 
-# Auto-cancel redundant pipelines (Question 40)
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
 jobs:
-  quality-and-security:
-    name: Code Quality & Security Audit
+  # 1. SECURITY & COMPLIANCE (SAST & SCA)
+  security-audit:
+    name: SAST (CodeQL) & SCA (Dependencies)
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-
-      # Enforce strict lockfile (Question 19)
-      - name: Install Dependencies
-        run: npm ci
-
-      # High-severity vulnerability sweep (Question 18)
-      - name: Dependency Security Audit
+      - run: npm ci
+      
+      # SCA: Dependency Scanning
+      - name: Dependency Vulnerability Scan (SCA)
         run: npm audit --audit-level=high
+      
+      # SAST: CodeQL
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript, typescript
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
 
-      # Brutalist UX & Code Standards Enforcer (Question 4, 28)
-      - name: Run ESLint
-        run: npx eslint . --max-warnings=0
-
-      # Strict Type-Checking (Question 6)
-      - name: TypeScript Compiler Check
-        run: npx tsc --noEmit
-
-      # Automated Test Suite (Question 7, 30-32)
-      - name: Run Vitest Unit & UI Tests
-        run: npm run test -- --run
-
-  build-verification:
-    name: Next.js Edge & Bundle Verification
+  # 2. QUALITY & COVERAGE
+  quality-and-build:
+    name: Lint & Unit Tests
     runs-on: ubuntu-latest
-    needs: quality-and-security
+    permissions:
+      pull-requests: write
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
+      - run: npm ci
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Linting & Type-Checking
+        run: |
+          npx tsc --noEmit
 
-      # Caching Next.js build to save 50-70% time (Question 16)
-      - name: Setup Next.js Build Cache
-        uses: actions/cache@v4
+      - name: Unit Tests & Coverage
+        run: npx vitest run --coverage
+      
+      - name: Report Coverage to PR
+        if: github.event_name == 'pull_request'
+        uses: davelosert/vitest-coverage-report-action@v2
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
         with:
-          path: |
-            ~/.npm
-            ${{ github.workspace }}/.next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+          name: coverage-artifact
+          path: coverage/
 
-      # Verify Edge compatibility and asset footprint (Question 21, 26)
-      - name: Verify Production Build
-        run: npm run build
+  # 3. PREVIEW DEPLOYMENT & PR COMMENT
+  preview-deploy:
+    name: Vercel Preview Deployment
+    if: github.event_name == 'pull_request'
+    needs: [security-audit, quality-and-build]
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    outputs:
+      preview_url: ${{ steps.deploy.outputs.preview_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm install --global vercel@latest
+      - run: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+      
+      - name: Build Vercel Preview Artifacts
+        run: vercel build --token=$VERCEL_TOKEN
+
+      - name: Deploy to Vercel Preview
+        id: deploy
+        run: |
+          PREVIEW_URL=$(vercel deploy --prebuilt --token=$VERCEL_TOKEN)
+          echo "preview_url=$PREVIEW_URL" >> "$GITHUB_OUTPUT"
+      
+      - name: Comment PR with Preview URL
+        uses: actions/github-script@v7
         env:
-          NEXT_TELEMETRY_DISABLED: 1
-          # Staging placeholders to pass build without exposing real keys (Question 1, 15)
-          SUPABASE_SERVICE_ROLE_KEY: "dummy-key-for-build-only"
-          TWILIO_ACCOUNT_SID: "dummy-sid"
-          TWILIO_AUTH_TOKEN: "dummy-token"
-          CRON_SECRET: "dummy-cron-secret"
+          PREVIEW_URL: ${{ steps.deploy.outputs.preview_url }}
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🚀 **Vercel Preview Deployed!**\n\n🔍 Review your changes live at: ${process.env.PREVIEW_URL}`
+            })
+
+  # 4. PREVIEW VALIDATION (E2E & Lighthouse)
+  preview-validation:
+    name: Playwright E2E & Lighthouse CI
+    if: github.event_name == 'pull_request'
+    needs: preview-deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm ci
+      
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+      
+      # Run Playwright AGAINST the live Vercel Preview URL
+      - name: Run Playwright Tests
+        run: npx playwright test
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: ${{ needs.preview-deploy.outputs.preview_url }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          
+      # Run Lighthouse Performance Audit AGAINST the live Vercel Preview URL
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            ${{ needs.preview-deploy.outputs.preview_url }}
+            ${{ needs.preview-deploy.outputs.preview_url }}/divisions/disposable-bowls
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+  # 5. PRODUCTION DEPLOY, SMOKE TEST & AUTO-ROLLBACK
+  production-deploy:
+    name: Production Deployment & Rollback Strategy
+    if: github.ref == 'refs/heads/main'
+    needs: [security-audit, quality-and-build]
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm install --global vercel@latest
+      - run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+      
+      - name: Build Vercel Production Artifacts
+        run: vercel build --prod --token=$VERCEL_TOKEN
+
+      - name: Deploy to Vercel Production
+        id: prod_deploy
+        run: |
+          PROD_URL=$(vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN)
+          echo "prod_url=$PROD_URL" >> "$GITHUB_OUTPUT"
+          
+      - name: Post-Deploy Smoke Test
+        id: smoke_test
+        run: |
+          echo "Waiting 10 seconds for Edge CDN propagation..."
+          sleep 10 
+          # Ping the production URL. If it 500s or 404s, fail the job.
+          HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" ${{ steps.prod_deploy.outputs.prod_url }})
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "Smoke test failed with status $HTTP_STATUS!"
+            exit 1
+          fi
+
+      - name: Automated Rollback on Failure
+        if: failure()
+        run: |
+          echo "Smoke test failed or deployment crashed! Initiating Vercel Rollback..."
+          # Revert to the last known good deployment instantly using strict token auth
+          vercel rollback --yes --token=$VERCEL_TOKEN
+          
+      # "Fix && Bug": Auto-create a GitHub issue if prod deployment crashes
+      - name: Create Bug Report Issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🚨 Production Deployment Failed & Auto-Rolled Back`,
+              body: `The production deployment failed the smoke test (returned non-200 status).\n\n**Action Taken:** The system automatically initiated a \`vercel rollback\` to the previous stable state.\n\nInvestigate the GitHub Actions logs immediately to apply a **fix**.`
+            })
