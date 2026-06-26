@@ -6,5 +6,5 @@ test('buildWhatsAppMessage strips non-numeric characters from phone and sets cor
   
   expect(result.messaging_product).toBe('whatsapp');
   expect(result.to).toBe('233541234567');
-  expect(result.template.name).toBe('new_inquiry_alert');
+  expect(result.template.name).toBe('prodeal_new_inquiry');
 });
