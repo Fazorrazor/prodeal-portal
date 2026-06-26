@@ -3,23 +3,29 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Video, Image as ImageIcon, Grid } from 'lucide-react';
+import { SHOWREEL_MEDIA } from '../../lib/config/media';
 
-// The full media roster
-const SHOWREEL_MEDIA = [
-  { type: 'video', src: '/media/VID-20260507-WA0006.mp4' }, // 5MB high quality
-  { type: 'video', src: '/media/VID-20250625-WA0002.mp4' },
-  { type: 'image', src: '/media/20260218_174905.jpg' },
-  { type: 'image', src: '/media/IMG-20250219-WA0000.jpeg' },
-];
+type Category = 'all' | 'video' | 'image';
 
 export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [activeCategory, setActiveCategory] = useState<Category>('all');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
+
+  // Filter media based on category
+  const filteredMedia = SHOWREEL_MEDIA.filter(
+    (m) => activeCategory === 'all' || m.type === activeCategory
+  );
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // Reset index when category changes so we don't go out of bounds
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [activeCategory]);
 
   // Lock body scroll when open
   useEffect(() => {
@@ -43,20 +49,20 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, currentIndex]);
+  }, [isOpen, currentIndex, filteredMedia.length]);
 
-  const handleNext = () => setCurrentIndex((prev) => (prev + 1) % SHOWREEL_MEDIA.length);
-  const handlePrev = () => setCurrentIndex((prev) => (prev - 1 + SHOWREEL_MEDIA.length) % SHOWREEL_MEDIA.length);
+  const handleNext = () => setCurrentIndex((prev) => (prev + 1) % filteredMedia.length);
+  const handlePrev = () => setCurrentIndex((prev) => (prev - 1 + filteredMedia.length) % filteredMedia.length);
 
-  if (!isOpen || !isMounted) return null;
+  if (!isOpen || !isMounted || filteredMedia.length === 0) return null;
 
-  const currentMedia = SHOWREEL_MEDIA[currentIndex];
+  const currentMedia = filteredMedia[currentIndex];
 
   const modalContent = (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 z-[99999] flex items-center justify-center bg-brand-surface/90 backdrop-blur-md"
+      className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-brand-surface/90 backdrop-blur-md"
       onClick={onClose}
     >
       {/* Top Header */}
@@ -69,9 +75,38 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
             // SYS.ARCHIVE.VIEWER
           </span>
           <span className="font-mono text-sm font-bold text-brand-deep-blue">
-            FILE {currentIndex + 1} OF {SHOWREEL_MEDIA.length}
+            FILE {currentIndex + 1} OF {filteredMedia.length}
           </span>
         </div>
+
+        {/* Category Filters */}
+        <div className="hidden sm:flex items-center gap-2 border-2 border-brand-deep-blue p-1 bg-black/5">
+          <button
+            onClick={() => setActiveCategory('all')}
+            className={`flex items-center gap-2 px-4 py-1.5 text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
+              activeCategory === 'all' ? 'bg-brand-deep-blue text-white' : 'text-brand-deep-blue hover:bg-black/5'
+            }`}
+          >
+            <Grid className="w-3 h-3" /> All
+          </button>
+          <button
+            onClick={() => setActiveCategory('video')}
+            className={`flex items-center gap-2 px-4 py-1.5 text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
+              activeCategory === 'video' ? 'bg-brand-deep-blue text-white' : 'text-brand-deep-blue hover:bg-black/5'
+            }`}
+          >
+            <Video className="w-3 h-3" /> Videos
+          </button>
+          <button
+            onClick={() => setActiveCategory('image')}
+            className={`flex items-center gap-2 px-4 py-1.5 text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
+              activeCategory === 'image' ? 'bg-brand-deep-blue text-white' : 'text-brand-deep-blue hover:bg-black/5'
+            }`}
+          >
+            <ImageIcon className="w-3 h-3" /> Photos
+          </button>
+        </div>
+
         <button
           onClick={onClose}
           className="p-3 bg-brand-surface border border-brand-deep-blue hover:bg-brand-red hover:text-white hover:border-brand-red transition-colors cursor-pointer"
@@ -93,7 +128,7 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
               src={currentMedia.src}
               controls
               autoPlay
-              preload="none" // FLAW PREVENTION: Do not preload heavy videos until requested
+              preload="none"
               playsInline
               className="w-full h-full object-contain bg-black"
             />
@@ -121,6 +156,37 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
           className="absolute right-2 sm:right-4 p-3 bg-brand-surface border border-brand-deep-blue hover:bg-brand-blue hover:text-white hover:border-brand-blue transition-colors z-[100000]"
         >
           <ChevronRight className="w-6 h-6" />
+        </button>
+      </div>
+      
+      {/* Mobile Category Filters (Hidden on Desktop) */}
+      <div 
+        onClick={(e) => e.stopPropagation()}
+        className="sm:hidden flex items-center gap-1 mt-4 border-2 border-brand-deep-blue p-1 bg-black/5 z-[100000]"
+      >
+        <button
+          onClick={() => setActiveCategory('all')}
+          className={`px-3 py-2 text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
+            activeCategory === 'all' ? 'bg-brand-deep-blue text-white' : 'text-brand-deep-blue'
+          }`}
+        >
+          All
+        </button>
+        <button
+          onClick={() => setActiveCategory('video')}
+          className={`px-3 py-2 text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
+            activeCategory === 'video' ? 'bg-brand-deep-blue text-white' : 'text-brand-deep-blue'
+          }`}
+        >
+          Vids
+        </button>
+        <button
+          onClick={() => setActiveCategory('image')}
+          className={`px-3 py-2 text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
+            activeCategory === 'image' ? 'bg-brand-deep-blue text-white' : 'text-brand-deep-blue'
+          }`}
+        >
+          Pics
         </button>
       </div>
     </motion.div>
