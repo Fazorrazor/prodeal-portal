@@ -14,7 +14,7 @@ export function DivisionGrid() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.5 }}
-          className="mb-12 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 border-b-2 border-brand-deep-blue pb-6"
+          className="mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 border-b-2 border-brand-deep-blue pb-3"
         >
           <div>
             <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-2">
