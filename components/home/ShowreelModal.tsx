@@ -134,7 +134,7 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
             <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-brand-surface/80 backdrop-blur-sm">
               <div className="w-12 h-12 border-4 border-brand-deep-blue/20 border-t-brand-red animate-spin" />
               <span className="mt-4 text-[10px] font-mono font-bold uppercase tracking-[0.3em] text-brand-deep-blue animate-pulse">
-                Fetching Data
+                LOADING
               </span>
             </div>
           )}
