@@ -1,9 +1,15 @@
 'use client'; // needs framer-motion for initial load animations
+import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
+
+const ShowreelModal = dynamic(() => import('./ShowreelModal'), { ssr: false });
 
 export function Hero() {
+  const [isShowreelOpen, setIsShowreelOpen] = useState(false);
+
   return (
     <section className="relative overflow-hidden bg-brand-surface pt-8 pb-16 lg:pt-11 lg:pb-24 min-h-[92svh] flex flex-col justify-center border-b border-brand-border/40">
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
@@ -59,12 +65,12 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Right: Sub-headline + CTA */}
+          {/* Right: Sub-headline, Video Trigger + CTA */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
-            className="flex flex-col gap-8 lg:max-w-xs lg:pb-2"
+            className="flex flex-col gap-8 lg:max-w-md lg:pb-2 w-full"
           >
             <div>
               <p className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-brand-deep-blue/80 mb-2">
@@ -73,6 +79,39 @@ export function Hero() {
               <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-brand-deep-blue tracking-tighter uppercase leading-none">
                 Precision.
               </h2>
+            </div>
+
+            {/* Brutalist Video Trigger */}
+            <div 
+              onClick={() => setIsShowreelOpen(true)}
+              className="relative w-full aspect-[21/9] sm:aspect-video overflow-hidden border-l-4 border-b-4 border-brand-deep-blue group cursor-pointer bg-brand-deep-blue/5"
+              role="button"
+              aria-label="Open video showreel"
+            >
+              {/* Metadata tag */}
+              <div className="absolute top-2 left-2 z-20 px-2 py-0.5 bg-brand-surface/90 border border-brand-deep-blue">
+                <span className="text-[8px] font-mono font-bold uppercase tracking-widest text-brand-deep-blue">
+                  // ACTIVE_OPERATIONS_FEED
+                </span>
+              </div>
+              
+              <video
+                src="/media/VID-20260625-WA0003.mp4"
+                poster="/media/IMG-20260625-WA0001.jpg"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-luminosity group-hover:mix-blend-normal group-hover:opacity-100 transition-all duration-700"
+              />
+              
+              {/* Overlay Play Button */}
+              <div className="absolute inset-0 flex items-center justify-center bg-brand-deep-blue/20 group-hover:bg-transparent transition-colors z-10">
+                <div className="bg-brand-blue text-white px-4 py-2 font-mono text-xs uppercase tracking-[0.2em] font-bold shadow-lg transform group-hover:scale-105 transition-transform duration-300 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-brand-red animate-pulse" />
+                  [ View Work Archive ]
+                </div>
+              </div>
             </div>
 
             <div className="flex flex-col gap-3">
@@ -87,6 +126,8 @@ export function Hero() {
                 No login required — instant WhatsApp routing
               </p>
             </div>
+            
+            {isShowreelOpen && <ShowreelModal isOpen={isShowreelOpen} onClose={() => setIsShowreelOpen(false)} />}
           </motion.div>
         </div>
 
