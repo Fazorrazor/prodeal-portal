@@ -27,7 +27,7 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
   ];
 
   return (
-    <aside id="tour-sidebar" className="w-56 bg-transparent text-brand-deep-blue flex flex-col h-full shrink-0 relative">
+    <aside id="tour-sidebar" className="hidden lg:flex w-56 bg-transparent text-brand-deep-blue flex-col h-full shrink-0 relative">
       <AnimatedBorder direction="right" />
       <div className="h-16 flex items-center px-6 relative">
         <AnimatedBorder direction="bottom" />
