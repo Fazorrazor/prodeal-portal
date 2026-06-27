@@ -4,11 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 import { usePathname } from 'next/navigation';
-import { ConfirmModal } from './ConfirmModal';
 
 export function AdminWalkthrough() {
   const pathname = usePathname();
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const driverRef = useRef<any>(null);
   const tourKeyRef = useRef<string>('');
 
@@ -105,15 +103,9 @@ export function AdminWalkthrough() {
           }
         },
         onDestroyStarted: () => {
-          if (!driverObj.hasNextStep()) {
-            // Reached the end naturally
-            localStorage.setItem(tourKey, 'true');
-            document.body.style.overflow = '';
-            driverObj.destroy();
-          } else {
-            // User interrupted the tour
-            setIsConfirmOpen(true);
-          }
+          localStorage.setItem(tourKey, 'true');
+          document.body.style.overflow = '';
+          driverObj.destroy();
         },
         steps
       });
@@ -125,22 +117,5 @@ export function AdminWalkthrough() {
     return () => clearTimeout(timer);
   }, [pathname]);
 
-  const confirmSkip = () => {
-    localStorage.setItem(tourKeyRef.current, 'true');
-    document.body.style.overflow = '';
-    driverRef.current?.destroy();
-    setIsConfirmOpen(false);
-  };
-
-  return (
-    <ConfirmModal 
-      isOpen={isConfirmOpen}
-      title="Skip Walkthrough"
-      message="Are you sure you want to skip the rest of this walkthrough?"
-      confirmText="Skip Walkthrough"
-      cancelText="Continue Tour"
-      onConfirm={confirmSkip}
-      onCancel={() => setIsConfirmOpen(false)}
-    />
-  );
+  return null;
 }
