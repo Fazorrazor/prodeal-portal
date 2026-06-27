@@ -25,6 +25,7 @@ interface TicketTableProps {
     created_at: string;
     divisions?: { display_name: string } | null;
     inquiry_payload?: { productName?: string; [key: string]: unknown } | null;
+    staff_members?: { full_name: string } | null;
   }[];
   currentPage?: number;
   totalPages?: number;
@@ -142,6 +143,7 @@ export function TicketTable({
               <th className="py-4 pr-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest">Ticket ID</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest">Product / Service</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest">Client</th>
+              <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest">Agent</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest">Status</th>
               <th className="px-4 py-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest">Received</th>
               <th className="py-4 pl-4 text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest text-right">Action</th>
@@ -174,6 +176,11 @@ export function TicketTable({
                 <td className="px-4 py-4">
                   <p className="text-sm font-bold text-brand-deep-blue">{inquiry.contact_name}</p>
                   {inquiry.company_name && <p className="text-xs text-brand-deep-blue/80 font-mono">{inquiry.company_name}</p>}
+                </td>
+                <td className="px-4 py-4">
+                  <span className="text-xs font-bold text-brand-deep-blue uppercase tracking-widest border border-brand-border/40 px-2 py-1 bg-black/5">
+                    {inquiry.staff_members ? inquiry.staff_members.full_name : 'Unassigned'}
+                  </span>
                 </td>
                 <td className="px-4 py-4">
                   <span className={`inline-flex items-center text-xs font-bold uppercase tracking-widest

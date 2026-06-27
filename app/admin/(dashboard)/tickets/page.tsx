@@ -30,6 +30,9 @@ async function TicketsData({ searchParams }: { searchParams: { [key: string]: st
       company_name,
       divisions (
         display_name
+      ),
+      staff_members (
+        full_name
       )
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
