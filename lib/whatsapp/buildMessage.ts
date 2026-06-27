@@ -32,7 +32,7 @@ export function buildWhatsAppMessage(toPhone: string, trackingId: string, divisi
     template: {
       name: 'prodeal_new_inquiry',
       language: {
-        code: 'en_US'
+        code: 'en'
       },
       components: [
         {
