@@ -2,6 +2,8 @@
 import Link from 'next/link';
 import { DivisionHeroBackground } from './DivisionHeroBackground';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { HeroSkeleton } from '../shared/skeletons/HeroSkeleton';
 
 interface DivisionHeroProps {
   title: string;
@@ -10,6 +12,21 @@ interface DivisionHeroProps {
 }
 
 export function DivisionHero({ title, tagline, slug }: DivisionHeroProps) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Artificial delay to synchronize the hero with the rest of the skeleton UI
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800); // 800ms artificial delay
+
+    return () => clearTimeout(timer);
+  }, [slug]);
+
+  if (isLoading) {
+    return <HeroSkeleton />;
+  }
+
   return (
     <section className="bg-brand-deep-blue text-white pt-14 pb-14 lg:pt-16 lg:pb-16 relative overflow-hidden border-b border-white/10">
       <DivisionHeroBackground slug={slug} />

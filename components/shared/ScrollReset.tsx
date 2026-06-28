@@ -1,8 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 export function ScrollReset() {
+  const pathname = usePathname();
+
   useEffect(() => {
     // 1. Tell the browser NOT to remember the scroll position on reload
     if ('scrollRestoration' in history) {
@@ -19,7 +22,7 @@ export function ScrollReset() {
         history.scrollRestoration = 'auto';
       }
     };
-  }, []);
+  }, [pathname]);
 
   // This component doesn't render any visible UI
   return null;
