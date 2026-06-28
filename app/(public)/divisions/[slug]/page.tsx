@@ -19,6 +19,11 @@ import { BulkOrderNote } from '../../../../components/division/disposable-bowls/
 // Components for Chemicals
 import { ChemicalCatalog } from '../../../../components/division/chemicals/ChemicalCatalog';
 
+// Skeletons
+import { GallerySkeleton } from '../../../../components/shared/skeletons/GallerySkeleton';
+import { TableSkeleton } from '../../../../components/shared/skeletons/TableSkeleton';
+import { CardSkeleton } from '../../../../components/shared/skeletons/CardSkeleton';
+
 // Set the baseline revalidation to 300 (5 minutes). 
 // This strictly satisfies the workflow requirement for the 'bowls' division's 
 // live inventory freshness, while keeping the other routes fast and static.
@@ -49,7 +54,9 @@ export default async function DivisionPage(
       {slug === 'signages' && (
         <div className="flex flex-col gap-8">
           <DivisionErrorBoundary>
-            <SignageGallery />
+            <Suspense fallback={<GallerySkeleton />}>
+              <SignageGallery />
+            </Suspense>
           </DivisionErrorBoundary>
           <ProjectFAQ />
         </div>
@@ -58,7 +65,9 @@ export default async function DivisionPage(
       {slug === 'printing' && (
         <div className="flex flex-col gap-8">
           <DivisionErrorBoundary>
-            <ProductCatalog />
+            <Suspense fallback={<CardSkeleton />}>
+              <ProductCatalog />
+            </Suspense>
           </DivisionErrorBoundary>
         </div>
       )}
@@ -66,7 +75,9 @@ export default async function DivisionPage(
       {slug === 'bowls' && (
         <div className="flex flex-col gap-8">
           <DivisionErrorBoundary>
-            <InventoryTable />
+            <Suspense fallback={<TableSkeleton />}>
+              <InventoryTable />
+            </Suspense>
           </DivisionErrorBoundary>
           <BulkOrderNote />
         </div>
@@ -75,7 +86,9 @@ export default async function DivisionPage(
       {slug === 'chemicals' && (
         <div className="flex flex-col gap-8">
           <DivisionErrorBoundary>
-            <ChemicalCatalog />
+            <Suspense fallback={<CardSkeleton />}>
+              <ChemicalCatalog />
+            </Suspense>
           </DivisionErrorBoundary>
         </div>
       )}
