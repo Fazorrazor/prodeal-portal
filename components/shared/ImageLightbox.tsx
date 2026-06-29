@@ -89,7 +89,6 @@ export function ImageLightbox({ src, alt, children, className = '' }: ImageLight
                   fill 
                   className="object-contain drop-shadow-2xl"
                   sizes="100vw"
-                  quality={100}
                   priority
                 />
               </motion.div>

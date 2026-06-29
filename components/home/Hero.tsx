@@ -96,7 +96,7 @@ export function Hero() {
             <div className="flex flex-col gap-3">
               <Link
                 href="#divisions"
-                className="inline-flex items-center justify-between gap-4 px-6 py-4 bg-brand-blue text-white font-heading font-bold text-sm uppercase tracking-widest transition-colors active:bg-brand-deep-blue w-full sm:w-auto"
+                className="inline-flex items-center justify-between gap-4 px-6 py-4 bg-brand-blue text-white font-heading font-bold text-sm uppercase tracking-widest transition-colors active:bg-brand-deep-blue w-full sm:w-auto sm:max-w-xs"
               >
                 Request a Quote
                 <ArrowRight className="w-4 h-4 shrink-0" />
@@ -104,7 +104,7 @@ export function Hero() {
               
               <button
                 onClick={() => setIsShowreelOpen(true)}
-                className="inline-flex items-center justify-center gap-3 px-6 py-4 border-2 border-brand-deep-blue/20 text-brand-deep-blue font-heading font-bold text-sm uppercase tracking-widest transition-colors hover:border-brand-deep-blue hover:bg-brand-deep-blue/5 active:bg-brand-deep-blue/10 w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-3 px-6 py-4 border-2 border-brand-deep-blue/20 text-brand-deep-blue font-heading font-bold text-sm uppercase tracking-widest transition-colors hover:border-brand-deep-blue hover:bg-brand-deep-blue/5 active:bg-brand-deep-blue/10 w-full sm:w-auto sm:max-w-xs"
               >
                 <Play className="w-4 h-4 shrink-0 fill-current" />
                 View Work Archive
