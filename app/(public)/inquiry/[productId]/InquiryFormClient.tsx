@@ -16,7 +16,7 @@ interface InquiryFormClientProps {
 function SuccessReceipt({ divisionSlug, trackingId }: { divisionSlug: string; trackingId: string }) {
   const [copied, setCopied] = useState(false);
   const [progress, setProgress] = useState(100);
-  const DURATION = 6000; // ms
+  const DURATION = 20000; // ms
   const INTERVAL = 50;   // ms
 
   // Auto-redirect countdown
