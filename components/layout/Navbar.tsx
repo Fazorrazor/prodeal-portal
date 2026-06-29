@@ -27,7 +27,7 @@ export function Navbar() {
           : 'bg-transparent border-transparent py-4'
       )}
     >
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 md:gap-8">
+      <div className="container mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 flex items-center justify-between gap-4 md:gap-8">
         
         {/* Left: Logo */}
         <div className="flex-none">

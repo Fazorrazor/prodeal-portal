@@ -40,8 +40,10 @@
     @apply bg-brand-deep-blue/20 rounded-full;
   }
 
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-brand-deep-blue/40;
+  @media (hover: hover) {
+    ::-webkit-scrollbar-thumb:hover {
+      @apply bg-brand-deep-blue/40;
+    }
   }
 
   /* Utility for hiding scrollbar in horizontally scrolling containers */
@@ -117,9 +119,17 @@
   box-shadow: none !important;
 }
 
-.brutalist-driver-popover button:hover {
-  background-color: #09192B !important;
-  color: #F8FAFC !important;
+@media (hover: hover) {
+  .brutalist-driver-popover button:hover {
+    background-color: #09192B !important;
+    color: #F8FAFC !important;
+  }
+
+  .brutalist-driver-popover .driver-popover-close-btn:hover {
+    opacity: 1 !important;
+    background-color: transparent !important;
+    color: #DC2626 !important;
+  }
 }
 
 .brutalist-driver-popover .driver-popover-close-btn {
@@ -128,12 +138,13 @@
   color: #09192B !important;
   opacity: 0.5 !important;
 }
-.brutalist-driver-popover .driver-popover-close-btn:hover {
-  opacity: 1 !important;
-  background-color: transparent !important;
-  color: #DC2626 !important;
-}
 
 .driver-overlay { z-index: 999998 !important; }
 .driver-active-element { z-index: 999999 !important; pointer-events: none !important; }
 .brutalist-driver-popover { z-index: 1000000 !important; }
+
+@media (hover: none) and (pointer: coarse) {
+  * {
+    -webkit-tap-highlight-color: transparent !important;
+  }
+}

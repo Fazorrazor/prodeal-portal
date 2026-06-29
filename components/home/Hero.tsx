@@ -1,7 +1,7 @@
 'use client'; // needs framer-motion for initial load animations
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Play } from 'lucide-react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
@@ -12,7 +12,19 @@ export function Hero() {
 
   return (
     <section className="relative overflow-hidden bg-brand-surface pt-8 pb-16 lg:pt-11 lg:pb-24 min-h-[92svh] flex flex-col justify-center border-b border-brand-border/40">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      {/* Background Video */}
+      <video
+        src="/media/VID-20260625-WA0003.mp4"
+        poster="/media/IMG-20260625-WA0001.jpg"
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-luminosity z-0 pointer-events-none"
+      />
+
+      <div className="container mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 relative z-10">
 
         {/* Top label */}
         <motion.div
@@ -81,50 +93,6 @@ export function Hero() {
               </h2>
             </div>
 
-            {/* Premium Brutalist Video Trigger */}
-            <div 
-              onClick={() => setIsShowreelOpen(true)}
-              className="relative w-full aspect-[21/9] sm:aspect-video overflow-hidden group cursor-pointer border border-brand-border/40 bg-brand-surface"
-              role="button"
-              aria-label="Open video showreel"
-            >
-              {/* Technical Corner Accents */}
-              <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-brand-deep-blue z-20 pointer-events-none transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1" />
-              <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-brand-deep-blue z-20 pointer-events-none transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-              <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-brand-deep-blue z-20 pointer-events-none transition-transform group-hover:-translate-x-1 group-hover:translate-y-1" />
-              <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-brand-deep-blue z-20 pointer-events-none transition-transform group-hover:translate-x-1 group-hover:translate-y-1" />
-
-              {/* Glassmorphism Metadata Badge */}
-              <div className="absolute top-3 left-3 z-20 px-2 py-1 backdrop-blur-md bg-black/40 border border-white/20 rounded-sm">
-                <span className="text-[8px] font-mono font-bold uppercase tracking-[0.2em] text-white/90 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-red animate-pulse" />
-                  RECENT PROJECTS
-                </span>
-              </div>
-              
-              <video
-                src="/media/VID-20260625-WA0003.mp4"
-                poster="/media/IMG-20260625-WA0001.jpg"
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="absolute inset-0 w-full h-full object-cover opacity-70 mix-blend-luminosity group-hover:mix-blend-normal group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
-              />
-              
-              {/* Overlay Glass Play Button */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-brand-deep-blue/20 group-hover:bg-black/10 transition-colors z-10">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full backdrop-blur-xl bg-white/10 border border-white/30 flex items-center justify-center text-white transform group-hover:scale-110 group-hover:bg-brand-blue/90 group-hover:border-brand-blue transition-all duration-500 shadow-2xl mb-3">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
-                <span className="text-[9px] font-mono font-bold uppercase tracking-[0.3em] text-white/90 drop-shadow-md">
-                  View Work Archive
-                </span>
-              </div>
-            </div>
-
             <div className="flex flex-col gap-3">
               <Link
                 href="#divisions"
@@ -133,7 +101,16 @@ export function Hero() {
                 Request a Quote
                 <ArrowRight className="w-4 h-4 shrink-0" />
               </Link>
-              <p className="text-[10px] font-mono text-brand-deep-blue/80 tracking-widest uppercase">
+              
+              <button
+                onClick={() => setIsShowreelOpen(true)}
+                className="inline-flex items-center justify-center gap-3 px-6 py-4 border-2 border-brand-deep-blue/20 text-brand-deep-blue font-heading font-bold text-sm uppercase tracking-widest transition-colors hover:border-brand-deep-blue hover:bg-brand-deep-blue/5 active:bg-brand-deep-blue/10 w-full sm:w-auto"
+              >
+                <Play className="w-4 h-4 shrink-0 fill-current" />
+                View Work Archive
+              </button>
+              
+              <p className="text-[10px] font-mono text-brand-deep-blue/80 tracking-widest uppercase mt-2">
                 No login required — instant WhatsApp routing
               </p>
             </div>
@@ -141,7 +118,6 @@ export function Hero() {
             {isShowreelOpen && <ShowreelModal isOpen={isShowreelOpen} onClose={() => setIsShowreelOpen(false)} />}
           </motion.div>
         </div>
-
 
       </div>
     </section>

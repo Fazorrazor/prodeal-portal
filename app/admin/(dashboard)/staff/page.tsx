@@ -10,7 +10,7 @@ import { redirect } from 'next/navigation';
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
-export default async function StaffPage() {
+export default async function StaffPage({ searchParams }: { searchParams: { search?: string } }) {
   const supabase = await createServer() as any;
   const { data: { user } } = await supabase.auth.getUser();
   
@@ -28,6 +28,7 @@ export default async function StaffPage() {
   }
 
   const { data: divisions } = await supabase.from('divisions').select('id, display_name');
+  const search = searchParams?.search || '';
 
   return (
     <div className="space-y-6 max-w-6xl animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2">
@@ -47,7 +48,7 @@ export default async function StaffPage() {
       <DivisionErrorBoundary>
         <div id="tour-staff-table">
           <Suspense fallback={<StaffAssignmentTableSkeleton />}>
-            <StaffAssignmentTable hideManageLink={true} />
+            <StaffAssignmentTable hideManageLink={true} search={search} />
           </Suspense>
         </div>
       </DivisionErrorBoundary>

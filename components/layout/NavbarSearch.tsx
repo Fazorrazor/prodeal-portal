@@ -105,7 +105,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
             onClick={() => setIsOpen(false)}
           >
             <div 
-              className="absolute top-0 left-0 right-0 bg-brand-surface shadow-2xl flex flex-col max-h-[85vh] animate-in slide-in-from-top-4 border-b border-brand-border/50"
+              className="absolute top-0 left-0 right-0 bg-brand-surface border-b-4 border-brand-deep-blue flex flex-col max-h-[85vh] animate-in slide-in-from-top-4"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-4 border-b border-brand-border/30 flex items-center gap-4">
@@ -264,7 +264,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
       </div>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-brand-surface border border-brand-border/40 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 flex flex-col max-h-[60vh]">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-brand-surface border-2 border-brand-deep-blue overflow-hidden animate-in fade-in slide-in-from-top-2 flex flex-col max-h-[60vh]">
           <div className="flex-1 overflow-y-auto bg-brand-surface">
             {isIdle && (
               <div className="py-8 px-4 text-center bg-transparent">

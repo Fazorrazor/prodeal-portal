@@ -42,6 +42,13 @@ export async function submitInquiry(formData: any) {
 
     const { divisionSlug, contact, inquiry, fileIds } = parsedData.data;
 
+    // 2.5. Honeypot check for bots
+    if (contact.botcheck) {
+      console.warn(`[Spam Blocked] Bot honeypot triggered by IP: ${ip}`);
+      // Return a simulated success to trick the bot into thinking it worked
+      return { success: true, trackingId: crypto.randomUUID(), assignedPhone: null };
+    }
+
     // 3. Validate division-specific payload
     const DivisionSchema = DIVISION_SCHEMAS[divisionSlug as keyof typeof DIVISION_SCHEMAS];
     if (!DivisionSchema) {

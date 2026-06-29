@@ -3,7 +3,7 @@
 export function HeroSkeleton() {
   return (
     <section className="bg-brand-deep-blue pt-14 pb-14 lg:pt-16 lg:pb-16 relative overflow-hidden border-b border-white/10 min-h-[300px]">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container relative z-10 mx-auto px-2 sm:px-6 lg:px-8 max-w-7xl h-full flex flex-col justify-end pb-8 sm:pb-16 lg:pb-24">
         
         {/* Breadcrumb Skeleton */}
         <div className="flex items-center gap-2 mb-6">

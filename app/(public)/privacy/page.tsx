@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <div className="max-w-4xl mx-auto py-16 md:py-24 px-4 sm:px-6 lg:px-8">
+    <div className="container mx-auto max-w-4xl px-2 sm:px-6 lg:px-8 py-16 md:py-24">
       <div className="mb-16 relative">
         <AnimatedBorder direction="bottom" delay={0.1} />
         <h1 className="text-4xl md:text-5xl font-heading font-bold text-brand-deep-blue tracking-tighter uppercase mb-4">

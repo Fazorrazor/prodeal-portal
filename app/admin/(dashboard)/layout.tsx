@@ -33,8 +33,10 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
           <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
             <AdminTopbar />
             
-            <main className="flex-1 overflow-y-auto p-8 bg-brand-surface">
-              {children}
+            <main className="flex-1 overflow-y-auto bg-brand-surface relative">
+              <div className="p-4 sm:p-8 min-h-full">
+                {children}
+              </div>
             </main>
           </div>
           

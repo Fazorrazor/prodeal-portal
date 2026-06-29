@@ -128,7 +128,7 @@ export default function ShowreelModal({ isOpen, onClose }: { isOpen: boolean; on
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-5xl h-[80vh] px-4 sm:px-16 flex items-center justify-center mt-16"
       >
-        <div className="relative w-full h-full border-2 border-brand-deep-blue bg-black/5 overflow-hidden shadow-2xl flex items-center justify-center">
+        <div className="relative w-full h-full border-2 border-brand-deep-blue bg-black/5 overflow-hidden flex items-center justify-center">
           
           {/* Brutalist Lottie Loading Spinner */}
           {isMediaLoading && (

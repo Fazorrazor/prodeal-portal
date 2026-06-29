@@ -61,8 +61,7 @@ function MobileDrawerContent() {
                 initial={{ y: '-100%' }}
                 animate={{ y: 0 }}
                 exit={{ y: '-100%' }}
-                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="fixed top-0 left-0 right-0 h-[55vh] w-full bg-brand-surface z-[100] shadow-2xl border-b border-brand-border/50 flex flex-col"
+                className="fixed top-0 left-0 right-0 h-[55vh] w-full bg-brand-surface z-[100] border-b-4 border-brand-deep-blue flex flex-col"
               >
                 <div className="p-4 flex items-center justify-between border-b border-brand-border/30">
                   <NavLogo />

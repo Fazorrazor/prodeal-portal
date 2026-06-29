@@ -5,6 +5,7 @@ import { useScrambleText } from '../../lib/hooks/useScrambleText';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import Link from 'next/link';
 
 type TrackingStatus = 'new' | 'in_progress' | 'quoted' | 'closed' | 'cancelled';
 
@@ -61,25 +62,35 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
   const currentIndex = STEPS.findIndex(s => s.id === currentStatus);
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 py-12">
-      <div className="border-t-2 border-brand-deep-blue pt-8 pb-12 mb-12">
-        <h1 className="text-4xl md:text-5xl font-heading font-bold tracking-tighter leading-none text-brand-deep-blue mb-4">
-          INQUIRY STATUS
+    <div className="w-full max-w-3xl mx-auto px-4 py-8 md:py-12">
+      <Link 
+        href="/track" 
+        className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-deep-blue/60 hover:text-brand-blue mb-10 transition-colors group"
+      >
+        <span className="text-base leading-none mb-[2px] group-hover:-translate-x-1 transition-transform">←</span> 
+        BACK TO TRACKING
+      </Link>
+
+      <div className="border-t-4 border-brand-deep-blue pt-8 pb-12 mb-12 relative bg-brand-surface">
+        <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-brand-deep-blue -mt-1 -mr-1" />
+        
+        <h1 className="text-5xl md:text-7xl font-heading font-extrabold tracking-tighter leading-none text-brand-deep-blue mb-8 uppercase">
+          STATUS<span className="text-brand-blue">.</span>
         </h1>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 p-6 bg-black/[0.03] border border-brand-border/40">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-1">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-blue mb-2">
               Tracking ID
             </p>
-            <p className="text-xl md:text-2xl font-mono text-brand-deep-blue font-bold tracking-widest">
+            <p className="text-xl md:text-3xl font-mono text-brand-deep-blue font-bold tracking-[0.1em]">
               {displayText}
             </p>
           </div>
           <div className="text-left md:text-right">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-1">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">
               Last Updated
             </p>
-            <p className="text-sm font-mono text-brand-deep-blue">
+            <p className="text-sm md:text-base font-mono text-brand-deep-blue font-bold">
               {format(new Date(currentUpdatedAt), 'MMM dd, yyyy HH:mm')}
             </p>
           </div>
@@ -158,10 +169,16 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
         </div>
       )}
       
-      <div className="mt-16 pt-8 border-t border-brand-border/30">
-        <p className="text-xs text-brand-deep-blue/80 uppercase tracking-widest text-center font-bold">
-          Need immediate assistance? <a href="/contact" className="text-brand-blue hover:underline">Contact Support</a>
-        </p>
+      <div className="mt-16 pt-8 border-t-2 border-brand-border/60">
+        <div className="bg-brand-deep-blue text-white p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div>
+            <h4 className="font-heading font-bold text-xl uppercase tracking-widest mb-1">Need Assistance?</h4>
+            <p className="text-[10px] text-white/60 font-mono uppercase tracking-[0.2em]">Contact our support team directly</p>
+          </div>
+          <Link href="/support" className="px-6 py-3 bg-brand-blue text-white font-bold text-xs uppercase tracking-widest hover:bg-white hover:text-brand-deep-blue transition-colors whitespace-nowrap">
+            Contact Support →
+          </Link>
+        </div>
       </div>
     </div>
   );

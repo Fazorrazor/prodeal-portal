@@ -55,9 +55,8 @@ export type Database = {
           tracking_uuid: string
           updated_at: string | null
           wa_message_id: string | null
+          wa_retry_count: number | null
           wa_sent_at: string | null
-          wa_status: string
-          wa_retry_count: number
         }
         Insert: {
           assigned_staff?: string | null
@@ -75,9 +74,8 @@ export type Database = {
           tracking_uuid?: string
           updated_at?: string | null
           wa_message_id?: string | null
+          wa_retry_count?: number | null
           wa_sent_at?: string | null
-          wa_status?: string
-          wa_retry_count?: number
         }
         Update: {
           assigned_staff?: string | null
@@ -95,9 +93,8 @@ export type Database = {
           tracking_uuid?: string
           updated_at?: string | null
           wa_message_id?: string | null
+          wa_retry_count?: number | null
           wa_sent_at?: string | null
-          wa_status?: string
-          wa_retry_count?: number
         }
         Relationships: [
           {
@@ -231,6 +228,30 @@ export type Database = {
           is_active?: boolean | null
           role?: string | null
           whatsapp_phone?: string
+        }
+        Relationships: []
+      }
+      support_tickets: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          message: string
+          status: string
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          message: string
+          status?: string
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          message?: string
+          status?: string
         }
         Relationships: []
       }
