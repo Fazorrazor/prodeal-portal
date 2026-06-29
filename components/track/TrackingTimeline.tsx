@@ -62,35 +62,35 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
   const currentIndex = STEPS.findIndex(s => s.id === currentStatus);
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 py-8 md:py-12">
+    <div className="w-full max-w-3xl mx-auto px-4 pt-4 pb-8 md:pt-6 md:pb-10">
       <Link 
         href="/track" 
-        className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-deep-blue/60 hover:text-brand-blue mb-10 transition-colors group"
+        className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-deep-blue/60 hover:text-brand-blue mb-6 transition-colors group"
       >
         <span className="text-base leading-none mb-[2px] group-hover:-translate-x-1 transition-transform">←</span> 
         BACK TO TRACKING
       </Link>
 
-      <div className="border-t-4 border-brand-deep-blue pt-8 pb-12 mb-12 relative bg-brand-surface">
-        <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-brand-deep-blue -mt-1 -mr-1" />
+      <div className="border-t-2 border-brand-deep-blue pt-5 pb-6 mb-6 relative bg-brand-surface">
+        <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-brand-deep-blue -mt-px -mr-px" />
         
-        <h1 className="text-5xl md:text-7xl font-heading font-extrabold tracking-tighter leading-none text-brand-deep-blue mb-8 uppercase">
+        <h1 className="text-4xl md:text-5xl font-heading font-extrabold tracking-tighter leading-none text-brand-deep-blue mb-5 uppercase">
           STATUS<span className="text-brand-blue">.</span>
         </h1>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 p-6 bg-black/[0.03] border border-brand-border/40">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 p-4 bg-black/[0.03] border border-brand-border/40">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-blue mb-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-blue mb-1">
               Tracking ID
             </p>
-            <p className="text-xl md:text-3xl font-mono text-brand-deep-blue font-bold tracking-[0.1em]">
+            <p className="text-base md:text-xl font-mono text-brand-deep-blue font-bold tracking-[0.08em]">
               {displayText}
             </p>
           </div>
           <div className="text-left md:text-right">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">
               Last Updated
             </p>
-            <p className="text-sm md:text-base font-mono text-brand-deep-blue font-bold">
+            <p className="text-xs md:text-sm font-mono text-brand-deep-blue font-bold">
               {format(new Date(currentUpdatedAt), 'MMM dd, yyyy HH:mm')}
             </p>
           </div>
@@ -111,7 +111,7 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
           {/* Vertical line connecting steps */}
           <div className="absolute left-[11px] top-4 bottom-8 w-0.5 bg-brand-border/30 z-0 hidden md:block" />
 
-          <div className="flex flex-col gap-10 relative z-10">
+          <div className="flex flex-col gap-5 relative z-10">
             {STEPS.map((step, index) => {
               const isActive = index === currentIndex;
               const isPast = index < currentIndex;
@@ -145,14 +145,14 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
                       initial={{ x: -10, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: (index * 0.15) + 0.1 }}
-                      className={`text-xl md:text-2xl font-heading font-bold tracking-tight mb-2 uppercase
+                      className={`text-base md:text-lg font-heading font-bold tracking-tight mb-1 uppercase
                         ${isActive ? 'text-brand-blue' : 
                           isPast ? 'text-brand-deep-blue' : 
                           'text-brand-deep-blue/80'}`}
                     >
                       {step.label}
                     </motion.h3>
-                    <p className={`text-sm md:text-base font-body
+                    <p className={`text-xs md:text-sm font-body
                       ${isActive || isPast ? 'text-brand-deep-blue/80' : 'text-brand-deep-blue/80'}`}>
                       {step.desc}
                     </p>
@@ -169,13 +169,13 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
         </div>
       )}
       
-      <div className="mt-16 pt-8 border-t-2 border-brand-border/60">
-        <div className="bg-brand-deep-blue text-white p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="mt-8 pt-5 border-t border-brand-border/40">
+        <div className="bg-brand-deep-blue text-white p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h4 className="font-heading font-bold text-xl uppercase tracking-widest mb-1">Need Assistance?</h4>
-            <p className="text-[10px] text-white/60 font-mono uppercase tracking-[0.2em]">Contact our support team directly</p>
+            <h4 className="font-heading font-bold text-sm uppercase tracking-widest mb-0.5">Need Assistance?</h4>
+            <p className="text-[10px] text-white/60 font-mono uppercase tracking-[0.15em]">Contact our support team directly</p>
           </div>
-          <Link href="/support" className="px-6 py-3 bg-brand-blue text-white font-bold text-xs uppercase tracking-widest hover:bg-white hover:text-brand-deep-blue transition-colors whitespace-nowrap">
+          <Link href="/support" className="px-5 py-2.5 bg-brand-blue text-white font-bold text-xs uppercase tracking-widest hover:bg-white hover:text-brand-deep-blue transition-colors whitespace-nowrap">
             Contact Support →
           </Link>
         </div>
