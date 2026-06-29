@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { DivisionLayout } from '../../../../components/division/DivisionLayout';
 import { DIVISION_DATA } from '../../../../lib/config/divisions';
 
@@ -24,11 +25,49 @@ import { GallerySkeleton } from '../../../../components/shared/skeletons/Gallery
 import { TableSkeleton } from '../../../../components/shared/skeletons/TableSkeleton';
 import { CardSkeleton } from '../../../../components/shared/skeletons/CardSkeleton';
 
-// Set the baseline revalidation to 300 (5 minutes). 
-// This strictly satisfies the workflow requirement for the 'bowls' division's 
+// --- SEO: Per-division metadata ---
+// generateMetadata is called by Next.js at request time for each slug.
+// It MUST be a separate export from the page component — do not merge them.
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> }
+): Promise<Metadata> {
+  const { slug } = await params;
+  const data = DIVISION_DATA[slug as keyof typeof DIVISION_DATA];
+
+  // If the slug is invalid, notFound() handles the 404 inside the page.
+  // Here we just return a minimal fallback so Next.js doesn't crash.
+  if (!data) {
+    return {
+      title: 'Division Not Found',
+    };
+  }
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://prodealindustries.com';
+  const pageUrl = `${siteUrl}${data.href}`;
+
+  return {
+    title: data.title,
+    description: data.tagline,
+    alternates: {
+      canonical: pageUrl,
+    },
+    openGraph: {
+      title: `${data.title} | Prodeal Industries Ltd.`,
+      description: data.tagline,
+      url: pageUrl,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${data.title} | Prodeal Industries Ltd.`,
+      description: data.tagline,
+    },
+  };
+}
+
+// Set the baseline revalidation to 300 (5 minutes).
+// This strictly satisfies the workflow requirement for the 'bowls' division's
 // live inventory freshness, while keeping the other routes fast and static.
-
-
 export const revalidate = 300;
 
 export default async function DivisionPage(
