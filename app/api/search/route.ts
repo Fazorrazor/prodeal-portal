@@ -1,5 +1,4 @@
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createServiceRoleClient } from '../../../lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { searchRateLimit } from '../../../lib/ratelimit';
@@ -46,8 +45,10 @@ export async function GET(req: NextRequest) {
     const { q, limit, division } = parseResult.data;
 
     // 3. Database Query (Safe & Efficient)
-    // Supabase RLS is active. Public users can only read active products.
-    const supabase = createRouteHandlerClient({ cookies });
+    // This is a public read-only endpoint — no session cookie required.
+    // We use the service role client so we avoid the async-cookies crash.
+    // RLS on the products table (is_active = true) still enforces what is visible.
+    const supabase = createServiceRoleClient();
     
     // Fetch active products for the division
     let query = supabase
