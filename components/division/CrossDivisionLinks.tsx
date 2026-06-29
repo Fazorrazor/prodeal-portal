@@ -28,7 +28,7 @@ export function CrossDivisionLinks({ currentSlug }: { currentSlug: string }) {
           <Link
             key={division.href}
             href={division.href}
-            className="group flex items-center justify-between py-5 border-b border-brand-border/40 gap-4 active:bg-black/5 transition-colors"
+            className="group flex items-center justify-between py-5 pr-4 sm:pr-8 border-b border-brand-border/40 gap-4 active:bg-black/5 transition-colors"
           >
             <div className="flex items-center gap-5 sm:gap-8">
               <span className="text-[10px] font-mono font-bold text-brand-deep-blue/80 tracking-widest shrink-0 hidden sm:block">

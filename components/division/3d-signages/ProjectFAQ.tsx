@@ -51,7 +51,7 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
     <div className="border-b border-brand-border/40">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-5 flex items-start sm:items-center justify-between gap-6 text-left focus:outline-none focus-visible:bg-black/5"
+        className="w-full py-5 pr-4 sm:pr-8 flex items-start sm:items-center justify-between gap-6 text-left focus:outline-none focus-visible:bg-black/5"
         aria-expanded={isOpen}
       >
         <div className="flex items-start sm:items-center gap-4 sm:gap-6 flex-1 min-w-0">
