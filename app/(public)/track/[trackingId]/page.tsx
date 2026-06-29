@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { headers } from 'next/headers';
 import { trackRateLimit } from '../../../../lib/ratelimit';
 import { DivisionErrorBoundary } from '../../../../components/shared/DivisionErrorBoundary';
+import { logError } from '../../../../lib/logger';
 
 export const revalidate = 0; // cache = 'no-store' equivalent for this segment
 
@@ -15,6 +16,10 @@ export default async function TrackDetail(props: { params: Promise<{ trackingId:
   try {
     const { success } = await trackRateLimit.limit(ip);
     if (!success) {
+      await logError('Tracking Rate Limit Exceeded', new Error('User hit rate limit on tracking page'), { 
+        ip, 
+        trackingId 
+      });
       return (
         <div className="w-full max-w-3xl mx-auto px-4 py-20 min-h-[60vh] flex flex-col justify-center">
           <div className="border-t-2 border-brand-red pt-8">
@@ -41,15 +46,25 @@ export default async function TrackDetail(props: { params: Promise<{ trackingId:
 
 async function TrackingDataLoader({ trackingId }: { trackingId: string }) {
   const supabase = await createServer();
+  
+  // Clean the tracking ID (mobile devices often append a space when pasting)
+  const cleanTrackingId = trackingId.trim().toLowerCase();
 
   const { data: inquiry, error } = await supabase
     .from('inquiries')
     .select('id, status, division_id, tracking_uuid, created_at, updated_at')
 
-    .eq('tracking_uuid', trackingId)
+    .eq('tracking_uuid', cleanTrackingId)
     .single();
 
   if (error || !inquiry) {
+    // Log the failed lookup attempt to the system logs for admin visibility
+    await logError('Tracking Lookup Failed', new Error('Inquiry not found'), { 
+      providedId: trackingId, 
+      cleanId: cleanTrackingId, 
+      dbError: error 
+    });
+
     return (
       <div className="w-full max-w-3xl mx-auto px-4 py-20 min-h-[60vh] flex flex-col justify-center">
         <div className="border-t-2 border-brand-deep-blue pt-8">
@@ -72,7 +87,7 @@ async function TrackingDataLoader({ trackingId }: { trackingId: string }) {
 
   return (
     <TrackingTimeline 
-      trackingId={trackingId}
+      trackingId={cleanTrackingId}
       status={(inquiry as any).status as any}
       createdAt={(inquiry as any).created_at}
       updatedAt={(inquiry as any).updated_at}
