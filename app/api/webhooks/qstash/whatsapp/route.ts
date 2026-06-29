@@ -1,4 +1,3 @@
-import { verifySignatureAppRouter } from '@upstash/qstash/dist/nextjs';
 import { NextRequest, NextResponse } from 'next/server';
 import { sendWhatsAppAlert } from '../../../../../lib/whatsapp/send';
 import { createServiceRoleClient } from '../../../../../lib/supabase/server';
@@ -51,5 +50,12 @@ async function handler(req: NextRequest) {
   }
 }
 
-// Wrap the handler with Upstash's signature verification to ensure ONLY QStash can trigger this route
-export const POST = verifySignatureAppRouter(handler);
+// Remove the top-level call and do a dynamic import at runtime
+export const POST = async (req: NextRequest) => {
+  // Import verifySignatureAppRouter at runtime to avoid requiring env vars during build
+  const { verifySignatureAppRouter } = await import('@upstash/qstash/dist/nextjs');
+
+  // Wrap the handler with the verifier and call it with the incoming request
+  const wrapped = verifySignatureAppRouter(handler);
+  return wrapped(req);
+};
