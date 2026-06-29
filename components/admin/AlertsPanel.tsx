@@ -107,72 +107,82 @@ export function AlertsPanel() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full right-0 mt-4 w-80 bg-brand-surface border border-brand-border/60 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="p-4 relative">
-            <AnimatedBorder direction="bottom" delay={0.1} className="!bg-brand-deep-blue" />
-            <h3 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80">
-              System Notifications
-            </h3>
-            <div className="absolute top-4 right-4 text-xs font-mono font-bold text-brand-deep-blue">
-              {unreadCount} New
+        <>
+          {/* Mobile Overlay */}
+          <div 
+            className="fixed inset-0 bg-brand-deep-blue/40 backdrop-blur-sm z-[90] sm:hidden" 
+            onClick={() => setIsOpen(false)} 
+          />
+          
+          <div className="fixed sm:absolute bottom-0 sm:bottom-auto sm:top-full left-0 right-0 sm:left-auto sm:right-0 mt-0 sm:mt-4 w-full sm:w-80 h-[80vh] sm:h-auto max-h-[80vh] sm:max-h-96 bg-brand-surface border-t-4 sm:border-2 border-brand-deep-blue z-[100] sm:z-50 animate-in slide-in-from-bottom sm:slide-in-from-top-2 duration-200 flex flex-col">
+            <div className="p-4 relative shrink-0">
+              <AnimatedBorder direction="bottom" delay={0.1} className="!bg-brand-deep-blue" />
+              <div className="flex items-center justify-between">
+                <h3 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80">
+                  System Notifications
+                </h3>
+                <div className="text-xs font-mono font-bold text-brand-deep-blue">
+                  {unreadCount} New
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div className="max-h-96 overflow-y-auto">
-            {isLoading ? (
-              <div className="flex justify-center p-8">
-                <Loader2 className="w-5 h-5 animate-spin text-brand-deep-blue/80" />
-              </div>
-            ) : alerts.length === 0 ? (
-              <div className="p-8 text-center">
-                <p className="text-xs font-mono text-brand-deep-blue/80">No new alerts.</p>
-              </div>
-            ) : (
-              <div className="divide-y divide-brand-border/40">
-                {alerts.map((alert: Record<string, any>) => (
-                  <Link 
-                    key={alert.id}
-                    href={`/admin/tickets/${alert.id}`}
-                    onClick={() => {
-                      const dismissed = JSON.parse(localStorage.getItem('dismissedAlerts') || '[]');
-                      localStorage.setItem('dismissedAlerts', JSON.stringify([...dismissed, alert.id]));
-                      setAlerts(current => current.filter(a => a.id !== alert.id));
-                      setIsOpen(false);
-                    }}
-                    className="block p-4 hover:bg-black/5 transition-colors group"
-                  >
-                    <div className="flex justify-between items-start mb-1">
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-brand-red">
-                        New Inquiry
-                      </span>
-                      <span className="text-[10px] font-mono text-brand-deep-blue/80">
-                        {formatDistanceToNow(new Date(alert.created_at), { addSuffix: true })}
-                      </span>
-                    </div>
-                    <p className="text-sm font-bold text-brand-deep-blue leading-tight mb-1 group-hover:text-brand-blue transition-colors">
-                      {alert.contact_name}
-                    </p>
-                    <p className="text-xs font-mono text-brand-deep-blue/80 line-clamp-1">
-                      {alert.inquiry_payload?.productName || alert.divisions?.display_name} • ID: {alert.tracking_uuid.split('-')[0]}
-                    </p>
-                  </Link>
-                ))}
+            <div className="flex-1 overflow-y-auto">
+              {isLoading ? (
+                <div className="flex justify-center p-8">
+                  <Loader2 className="w-5 h-5 animate-spin text-brand-deep-blue/80" />
+                </div>
+              ) : alerts.length === 0 ? (
+                <div className="p-8 text-center">
+                  <p className="text-xs font-mono text-brand-deep-blue/80">No new alerts.</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-brand-border/40">
+                  {alerts.map((alert: Record<string, any>) => (
+                    <Link 
+                      key={alert.id}
+                      href={`/admin/tickets/${alert.id}`}
+                      onClick={() => {
+                        const dismissed = JSON.parse(localStorage.getItem('dismissedAlerts') || '[]');
+                        localStorage.setItem('dismissedAlerts', JSON.stringify([...dismissed, alert.id]));
+                        setAlerts(current => current.filter(a => a.id !== alert.id));
+                        setIsOpen(false);
+                      }}
+                      className="block p-4 hover:bg-black/5 transition-colors group"
+                    >
+                      <div className="flex justify-between items-start mb-1">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-brand-red">
+                          New Inquiry
+                        </span>
+                        <span className="text-[10px] font-mono text-brand-deep-blue/80">
+                          {formatDistanceToNow(new Date(alert.created_at), { addSuffix: true })}
+                        </span>
+                      </div>
+                      <p className="text-sm font-bold text-brand-deep-blue leading-tight mb-1 group-hover:text-brand-blue transition-colors">
+                        {alert.contact_name}
+                      </p>
+                      <p className="text-xs font-mono text-brand-deep-blue/80 line-clamp-1">
+                        {alert.inquiry_payload?.productName || alert.divisions?.display_name} • ID: {alert.tracking_uuid.split('-')[0]}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {alerts.length > 0 && (
+              <div className="p-2 border-t border-brand-border/60 text-center bg-black/5 shrink-0 pb-safe">
+                <Link 
+                  href="/admin/tickets?status=new" 
+                  onClick={() => setIsOpen(false)}
+                  className="text-[10px] font-bold uppercase tracking-widest text-brand-blue hover:text-brand-deep-blue transition-colors block p-2"
+                >
+                  View All New Tickets
+                </Link>
               </div>
             )}
           </div>
-          
-          {alerts.length > 0 && (
-            <div className="p-2 border-t border-brand-border/60 text-center bg-black/5">
-              <Link 
-                href="/admin/tickets?status=new" 
-                onClick={() => setIsOpen(false)}
-                className="text-[10px] font-bold uppercase tracking-widest text-brand-blue hover:text-brand-deep-blue transition-colors"
-              >
-                View All New Tickets
-              </Link>
-            </div>
-          )}
-        </div>
+        </>
       )}
     </div>
   );

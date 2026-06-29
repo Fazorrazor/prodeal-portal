@@ -6,7 +6,7 @@ import { DIVISIONS_LIST } from '../../lib/config/divisions';
 export function DivisionGrid() {
   return (
     <section id="divisions" className="py-16 lg:py-24 bg-brand-surface relative z-20">
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
 
         {/* Section header */}
         <motion.div

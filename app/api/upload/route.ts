@@ -41,6 +41,30 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
+    // SECURITY: File Content Verification
+    if (file.type === 'image/svg+xml') {
+      const content = buffer.toString('utf-8').toLowerCase();
+      if (content.includes('<script') || content.includes('javascript:') || content.includes('onload=')) {
+        return NextResponse.json({ error: 'Malicious content detected in SVG' }, { status: 400 });
+      }
+    } else if (file.type === 'image/jpeg') {
+      // Magic bytes: FF D8 FF
+      if (buffer.length < 3 || buffer[0] !== 0xFF || buffer[1] !== 0xD8 || buffer[2] !== 0xFF) {
+        return NextResponse.json({ error: 'Invalid JPEG file signature' }, { status: 400 });
+      }
+    } else if (file.type === 'image/png') {
+      // Magic bytes: 89 50 4E 47 0D 0A 1A 0A
+      const pngSignature = [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A];
+      if (buffer.length < 8 || !pngSignature.every((byte, i) => buffer[i] === byte)) {
+        return NextResponse.json({ error: 'Invalid PNG file signature' }, { status: 400 });
+      }
+    } else if (file.type === 'application/pdf') {
+      // Magic bytes: %PDF- (25 50 44 46 2D)
+      if (buffer.length < 5 || buffer.toString('utf-8', 0, 5) !== '%PDF-') {
+        return NextResponse.json({ error: 'Invalid PDF file signature' }, { status: 400 });
+      }
+    }
+
     // e. Generate a unique storage path: {divisionSlug}/{uuid}-{filename}
     const uuid = crypto.randomUUID();
     const filename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_'); // sanitize filename

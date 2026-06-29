@@ -1,12 +1,11 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Loader2, AlertCircle, ArrowRight, Copy, CheckCircle2 } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
 import { ContactDetailsSchema, DIVISION_SCHEMAS } from '../../../../lib/validators/inquiry';
 import { submitInquiry } from '../../../../app/actions/submitInquiry';
-import { AnimatedBorder } from '../../../../components/admin/AnimatedBorder';
 
 interface InquiryFormClientProps {
   product: any;
@@ -14,20 +13,32 @@ interface InquiryFormClientProps {
   defaultMoq: number;
 }
 
-function SuccessReceipt({ divisionSlug, phone, assignedPhone, trackingId }: { divisionSlug: string; phone: string; assignedPhone?: string | null; trackingId: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    containerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
-
-  let displayPhone = assignedPhone || '233 (0) 54 000 0000';
-  // If it's a local Ghana number, format it nicely for display
-  if (displayPhone.startsWith('0') && displayPhone.length === 10) {
-    displayPhone = `233 (0) ${displayPhone.substring(1, 3)} ${displayPhone.substring(3, 6)} ${displayPhone.substring(6)}`;
-  }
-
+function SuccessReceipt({ divisionSlug, trackingId }: { divisionSlug: string; trackingId: string }) {
   const [copied, setCopied] = useState(false);
+  const [progress, setProgress] = useState(100);
+  const DURATION = 20000; // ms
+  const INTERVAL = 50;   // ms
+
+  // Auto-redirect countdown
+  useEffect(() => {
+    const step = (INTERVAL / DURATION) * 100;
+    const timer = setInterval(() => {
+      setProgress(prev => {
+        const next = prev - step;
+        if (next <= 0) {
+          clearInterval(timer);
+          window.location.href = `/divisions/${divisionSlug}`;
+          return 0;
+        }
+        return next;
+      });
+    }, INTERVAL);
+    return () => clearInterval(timer);
+  }, [divisionSlug]);
+
+  const handleDismiss = () => {
+    window.location.href = `/divisions/${divisionSlug}`;
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(trackingId);
@@ -36,68 +47,88 @@ function SuccessReceipt({ divisionSlug, phone, assignedPhone, trackingId }: { di
   };
 
   return (
-    <div ref={containerRef} className="flex flex-col py-6 md:py-8 h-full scroll-mt-32">
-      <h3 className="font-heading font-bold text-3xl md:text-4xl text-brand-deep-blue mb-4 tracking-tighter uppercase">Inquiry Received.</h3>
-      
-      <div className="border-l-2 border-brand-deep-blue pl-4 mb-8">
-        <p className="text-sm font-medium text-brand-deep-blue/90 leading-relaxed mb-4">
-          Thank you for reaching out. We have successfully routed your request directly to our division specialists.
-        </p>
-        <p className="text-sm font-medium text-brand-deep-blue leading-relaxed">
-          One of our representatives will message you shortly on WhatsApp at <span className="text-brand-blue font-mono font-bold">{phone}</span> to discuss the details and provide your quote.
-        </p>
-      </div>
+    /* Backdrop */
+    <div
+      className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center bg-brand-deep-blue/60 backdrop-blur-sm px-0 sm:px-4 animate-in fade-in duration-300"
+      onClick={handleDismiss}
+    >
+      {/* Modal panel — bottom sheet on mobile, centred box on desktop */}
+      <div
+        className="relative w-full sm:max-w-md bg-brand-surface border-t-4 sm:border-4 border-brand-deep-blue animate-in slide-in-from-bottom sm:slide-in-from-bottom-4 duration-300"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Progress bar — drains from full width to 0 */}
+        <div className="absolute top-0 left-0 right-0 h-[3px] bg-brand-border/30 overflow-hidden">
+          <div
+            className="h-full bg-brand-blue transition-none"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
 
-      {/* Tracking ID Section */}
-      <div className="bg-brand-deep-blue p-6 md:p-8 mb-8 border border-brand-deep-blue relative overflow-hidden">
-        <AnimatedBorder direction="top" delay={0.1} />
-        <p className="text-[10px] font-bold text-white/80 uppercase tracking-[0.2em] mb-2">
-          Your Booking Reference
-        </p>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="font-mono text-2xl md:text-3xl font-bold text-white tracking-widest">
-            {trackingId}
+        {/* Header */}
+        <div className="flex items-start justify-between px-5 pt-6 pb-4 border-b border-brand-border/30">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-blue mb-1">
+              Confirmed
+            </p>
+            <h3 className="font-heading font-bold text-2xl text-brand-deep-blue tracking-tighter leading-none">
+              Inquiry Received.
+            </h3>
           </div>
           <button
-            onClick={handleCopy}
-            className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-mono text-xs font-bold uppercase tracking-widest transition-colors shrink-0"
+            onClick={handleDismiss}
+            className="text-brand-deep-blue/40 hover:text-brand-deep-blue transition-colors mt-0.5 p-1 -mr-1"
+            aria-label="Close"
           >
-            {copied ? (
-              <><CheckCircle2 className="w-4 h-4 text-brand-blue" /> Copied!</>
-            ) : (
-              <><Copy className="w-4 h-4" /> Copy ID</>
-            )}
+            <span className="text-xl leading-none font-light">✕</span>
           </button>
         </div>
-        <p className="text-xs font-medium text-white/80 mt-4 max-w-lg leading-relaxed">
-          Save this code to check your inquiry status anytime at 
-          <span className="font-bold text-white ml-1">prodealindustries.com/track</span>
-        </p>
-      </div>
 
-      <div className="border-y-2 border-brand-deep-blue/20 py-6 mb-8 relative overflow-hidden bg-black/5 px-4 md:px-6">
-        <AnimatedBorder direction="left" delay={0.2} />
-        <div className="relative z-10">
-          <p className="text-[10px] font-bold text-brand-red uppercase tracking-widest mb-2 flex items-center gap-2">
-            <AlertCircle className="w-3 h-3" /> Priority Support Escallation
+        {/* Body */}
+        <div className="px-5 py-5 space-y-4">
+          <p className="text-xs font-mono text-brand-deep-blue/60 uppercase tracking-widest leading-relaxed">
+            A representative will reach you via WhatsApp shortly.
           </p>
-          <p className="text-xs font-bold text-brand-deep-blue/80 uppercase tracking-widest leading-relaxed">
-            If you do not receive a response within 12 hours, please contact our priority line at <br/>
-            <span className="font-mono text-brand-deep-blue text-sm mt-1 block">+{displayPhone}</span>
+
+          {/* Tracking ID block */}
+          <div className="bg-brand-deep-blue px-4 py-4">
+            <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/50 mb-2">
+              Reference ID
+            </p>
+            <div className="flex items-center justify-between gap-3">
+              <span className="font-mono text-sm font-bold text-white tracking-wider truncate">
+                {trackingId}
+              </span>
+              <button
+                onClick={handleCopy}
+                className="shrink-0 text-[10px] font-bold uppercase tracking-widest text-white/60 hover:text-white transition-colors border border-white/20 hover:border-white/50 px-2 py-1"
+              >
+                {copied ? 'Copied ✓' : 'Copy'}
+              </button>
+            </div>
+          </div>
+
+          <p className="text-[10px] font-mono text-brand-deep-blue/40 leading-relaxed">
+            Track your inquiry anytime at{' '}
+            <span className="text-brand-deep-blue/60 font-bold">prodealindustries.com/track</span>
           </p>
         </div>
-      </div>
 
-      <button
-        type="button"
-        onClick={() => window.location.href = `/divisions/${divisionSlug}`}
-        className="w-full sm:w-auto px-8 py-4 bg-brand-deep-blue text-white font-heading font-bold uppercase tracking-widest text-xs border-2 border-brand-deep-blue hover:bg-transparent hover:text-brand-deep-blue transition-colors self-start flex items-center justify-center gap-2"
-      >
-        Return to Catalog <ArrowRight className="w-4 h-4" />
-      </button>
+        {/* Footer */}
+        <div className="px-5 pb-5 pb-safe">
+          <button
+            onClick={handleDismiss}
+            className="w-full py-3.5 bg-brand-deep-blue text-white font-heading font-bold uppercase tracking-[0.2em] text-xs hover:bg-brand-blue transition-colors flex items-center justify-between px-5"
+          >
+            <span>Return to Catalog</span>
+            <span className="text-white/50">→</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
+
 
 export function InquiryFormClient({ product, divisionSlug, defaultMoq }: InquiryFormClientProps) {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
@@ -152,7 +183,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   };
 
   if (status === 'success') {
-    return <SuccessReceipt divisionSlug={divisionSlug} phone={getValues('contact.phone')} assignedPhone={assignedPhone} trackingId={trackingId} />;
+    return <SuccessReceipt divisionSlug={divisionSlug} trackingId={trackingId} />;
   }
 
   if (status === 'error') {
@@ -243,6 +274,13 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} onKeyDown={handleKeyDown} className="space-y-12 pb-24">
+      
+      {/* Honeypot Field (Bot Prevention) */}
+      <div className="hidden" aria-hidden="true">
+        <label htmlFor="botcheck">Do not fill this out if you are human</label>
+        <input id="botcheck" {...register('contact.botcheck')} tabIndex={-1} autoComplete="off" />
+      </div>
+
       {/* Contact Details Section */}
       <div className="space-y-8">
         <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tight border-b-2 border-brand-deep-blue pb-2">

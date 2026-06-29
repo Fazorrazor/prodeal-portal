@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Ticket, Users, Settings, LogOut, Activity } from 'lucide-react';
+import { LayoutDashboard, Ticket, Users, Settings, LogOut, Activity, AlertCircle } from 'lucide-react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import { AnimatedBorder } from './AnimatedBorder';
@@ -21,6 +21,7 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
     { name: 'Tickets', href: '/admin/tickets', icon: Ticket },
     ...(userRole === 'admin' ? [
       { name: 'Staff', href: '/admin/staff', icon: Users },
+      { name: 'Complaints', href: '/admin/complaints', icon: AlertCircle },
       { name: 'System Logs', href: '/admin/system-logs', icon: Activity },
       { name: 'Settings', href: '/admin/settings', icon: Settings },
     ] : [])

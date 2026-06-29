@@ -105,6 +105,7 @@ export async function GET(request: Request) {
         await supabase
           .from('inquiries')
           .update({ 
+            // @ts-ignore
             wa_status: 'sent',
             wa_message_id: waResult.messageId,
             wa_sent_at: new Date().toISOString()

@@ -14,7 +14,7 @@ export function FooterLinks() {
       </div>
       <div className="flex flex-col gap-3">
         <h2 className="font-heading font-semibold text-brand-deep-blue">Support</h2>
-        <a href="mailto:support@prodealindustries.com" className="text-sm text-brand-deep-blue/80 hover:text-brand-blue transition-colors">Contact Us</a>
+        <Link href="/support" className="text-sm text-brand-deep-blue/80 hover:text-brand-blue transition-colors">Contact Us</Link>
       </div>
     </div>
   );

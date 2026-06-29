@@ -1,7 +1,7 @@
 'use client';
 import { Search, Bell, User } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { AnimatedBorder } from './AnimatedBorder';
 import { AlertsPanel } from './AlertsPanel';
@@ -11,6 +11,7 @@ export function AdminTopbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const supabase = createClientComponentClient();
   const router = useRouter();
+  const pathname = usePathname();
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -18,6 +19,21 @@ export function AdminTopbar() {
       if (user) setEmail(user.email ?? null);
     });
   }, [supabase.auth]);
+
+  // Determine placeholder and target route based on current path
+  let placeholder = "Search ticket ID, client, or phone...";
+  let targetRoute = "/admin/tickets";
+  
+  if (pathname.startsWith('/admin/staff')) {
+    placeholder = "Search staff name, email, or role...";
+    targetRoute = "/admin/staff";
+  } else if (pathname.startsWith('/admin/system-logs')) {
+    placeholder = "Search logs, errors, or context...";
+    targetRoute = "/admin/system-logs";
+  } else if (pathname.startsWith('/admin/settings')) {
+    placeholder = "Search settings variables...";
+    targetRoute = "/admin/settings"; // Setting search not implemented, but matches UX
+  }
 
   // Keyboard shortcut ( / or Cmd+K )
   useEffect(() => {
@@ -54,9 +70,9 @@ export function AdminTopbar() {
           onSubmit={(e) => {
             e.preventDefault();
             if (searchQuery.trim()) {
-              router.push(`/admin/tickets?search=${encodeURIComponent(searchQuery.trim())}`);
+              router.push(`${targetRoute}?search=${encodeURIComponent(searchQuery.trim())}`);
             } else {
-              router.push(`/admin/tickets`);
+              router.push(targetRoute);
             }
           }}
         >
@@ -71,7 +87,7 @@ export function AdminTopbar() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleInputKeyDown}
-            placeholder="Search ticket ID, client, or phone..." 
+            placeholder={placeholder}
             className="w-full pl-8 pr-16 py-1.5 bg-transparent border-0 border-b border-brand-border/60 focus:border-brand-blue outline-none transition-all font-mono text-brand-deep-blue text-sm placeholder:text-brand-deep-blue/80"
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none opacity-0 sm:opacity-100">

@@ -42,6 +42,13 @@ export async function submitInquiry(formData: any) {
 
     const { divisionSlug, contact, inquiry, fileIds } = parsedData.data;
 
+    // 2.5. Honeypot check for bots
+    if (contact.botcheck) {
+      console.warn(`[Spam Blocked] Bot honeypot triggered by IP: ${ip}`);
+      // Return a simulated success to trick the bot into thinking it worked
+      return { success: true, trackingId: crypto.randomUUID(), assignedPhone: null };
+    }
+
     // 3. Validate division-specific payload
     const DivisionSchema = DIVISION_SCHEMAS[divisionSlug as keyof typeof DIVISION_SCHEMAS];
     if (!DivisionSchema) {
@@ -160,36 +167,40 @@ export async function submitInquiry(formData: any) {
         attachmentCount: fileIds ? fileIds.length : 0
       };
 
-      // --- META WHATSAPP LOGIC (ACTIVE) ---
-      const waResult = await sendWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext);
-      // ----------------------------------------
-      
-      // --- TWILIO LOGIC (GRAYED OUT) ---
-      // const waResult = await sendTwilioWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext);
-      // -----------------------------
+      // Push to QStash Background Queue
+      try {
+        const { Client } = await import('@upstash/qstash');
+        const qstash = new Client({ token: process.env.QSTASH_TOKEN! });
+        
+        // Vercel automatically provides VERCEL_URL. If missing, fallback to localhost.
+        const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL 
+          ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` 
+          : (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
-      if (!waResult.success) {
-        // Rule 4 Override: We no longer rollback the database write if WhatsApp fails.
-        // We log the error internally so admins can see the agent was not notified, 
-        // but the customer still gets a "Success" screen.
+        await qstash.publishJSON({
+          url: `${baseUrl}/api/webhooks/qstash/whatsapp`,
+          body: {
+            phone: staffPhone,
+            trackingId: newInquiry.tracking_uuid,
+            divisionName,
+            waContext,
+            inquiryId: newInquiry.id
+          },
+        });
+        
+        // Pre-emptively update status to pending since it's now in the queue
+        await supabase
+          .from('inquiries')
+          .update({ wa_status: 'pending' })
+          .eq('id', newInquiry.id);
+          
+      } catch (qError: any) {
+        console.error('[QStash Publish Error]', qError);
         await supabase
           .from('inquiries')
           .update({ 
             wa_status: 'failed',
-            wa_retry_count: 1,
-            internal_notes: `[SYSTEM_WARNING] WhatsApp notification failed to send: ${waResult.error || 'Unknown error'}` 
-          })
-          .eq('id', newInquiry.id);
-          
-        console.warn(`[WARN] Inquiry ${newInquiry.tracking_uuid} saved, but WhatsApp failed:`, waResult.error);
-      } else {
-        // Update the inquiry with the WA message ID on success
-        await supabase
-          .from('inquiries')
-          .update({ 
-            wa_message_id: waResult.messageId, 
-            wa_sent_at: new Date().toISOString(),
-            wa_status: 'sent'
+            internal_notes: `[SYSTEM_WARNING] Failed to publish WhatsApp job to QStash: ${qError.message}` 
           })
           .eq('id', newInquiry.id);
       }

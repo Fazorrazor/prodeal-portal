@@ -67,7 +67,9 @@ async function TicketDetail({ id }: { id: string }) {
             </p>
           </div>
         </div>
-        <StatusUpdater inquiryId={inquiry.id} currentStatus={inquiry.status} />
+        <div className="self-end md:self-auto">
+          <StatusUpdater inquiryId={inquiry.id} currentStatus={inquiry.status} />
+        </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Main Content */}

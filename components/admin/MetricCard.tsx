@@ -4,27 +4,29 @@ import { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { useScrambleText } from '../../lib/hooks/useScrambleText';
 
-export function MetricCard({ title, value, icon, trend }: { title: string, value: string | number, icon: ReactNode, trend?: string }) {
+export function MetricCard({ title, value, icon, trend, accentColor = 'brand-blue' }: { title: string, value: string | number, icon: ReactNode, trend?: string, accentColor?: string }) {
   const { displayText } = useScrambleText(value, 300, 1000);
   return (
-    <div className="relative flex flex-col pl-5 py-1 group">
-      {/* Animated Left Border */}
-      <motion.div 
-        className="absolute left-0 top-0 w-px bg-brand-border/60 group-hover:bg-brand-deep-blue transition-colors"
-        initial={{ height: 0 }}
-        animate={{ height: "100%" }}
-        transition={{ duration: 0.6, ease: "circOut", delay: 0.2 }}
+    <div className="relative flex flex-col gap-2 p-4 sm:p-5 bg-black/[0.025] border-l-[3px] border-brand-deep-blue group">
+      {/* Animated top rule */}
+      <motion.div
+        className="absolute top-0 left-0 h-px bg-brand-deep-blue/20"
+        initial={{ width: 0 }}
+        animate={{ width: '100%' }}
+        transition={{ duration: 0.7, ease: 'circOut', delay: 0.15 }}
       />
-      <div className="flex items-center gap-2 mb-1 opacity-70">
-        <div className="text-brand-deep-blue">
-          {icon}
-        </div>
-        <h3 className="text-brand-deep-blue text-[10px] font-bold uppercase tracking-widest">{title}</h3>
+      <div className="flex items-center gap-2 text-brand-deep-blue/60">
+        {icon}
+        <h3 className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.2em] truncate">{title}</h3>
       </div>
-      <div className="flex items-baseline gap-3 mt-1">
-        <p className="text-3xl font-mono font-bold text-brand-deep-blue tracking-tighter leading-none">{displayText}</p>
+      <div className="flex items-baseline gap-3 flex-wrap">
+        <p className="text-2xl sm:text-4xl font-mono font-bold text-brand-deep-blue tracking-tighter leading-none">
+          {displayText}
+        </p>
         {trend && (
-          <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{trend}</p>
+          <span className="text-[9px] font-bold uppercase tracking-widest text-brand-red border border-brand-red/30 px-1.5 py-0.5">
+            {trend}
+          </span>
         )}
       </div>
     </div>

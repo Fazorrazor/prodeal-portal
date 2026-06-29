@@ -31,7 +31,7 @@ export function DivisionHero({ title, tagline, slug }: DivisionHeroProps) {
     <section className="bg-brand-deep-blue text-white pt-14 pb-14 lg:pt-16 lg:pb-16 relative overflow-hidden border-b border-white/10">
       <DivisionHeroBackground slug={slug} />
 
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="container relative z-10 mx-auto px-2 sm:px-6 lg:px-8 max-w-7xl h-full flex flex-col justify-end pb-8 sm:pb-16 lg:pb-24">
 
         {/* Breadcrumb — monospaced metadata style */}
         <motion.nav

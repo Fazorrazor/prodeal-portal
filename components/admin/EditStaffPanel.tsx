@@ -74,12 +74,12 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
       {/* Slide Over Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-50 bg-brand-surface/80 backdrop-blur-sm"
+          className="fixed inset-0 z-[100] bg-brand-surface/80 backdrop-blur-sm flex items-end sm:block"
           onClick={() => !isSubmitting && setIsOpen(false)}
         >
           {/* Panel */}
           <div 
-            className="absolute top-0 right-0 h-full w-full max-w-md bg-brand-surface border-l border-brand-border/60 shadow-2xl p-6 lg:p-8 overflow-y-auto animate-in slide-in-from-right duration-500 flex flex-col"
+            className="relative sm:absolute sm:top-0 sm:right-0 w-full sm:max-w-md h-[90vh] sm:h-full bg-brand-surface border-t-4 sm:border-t-0 sm:border-l-4 border-brand-deep-blue p-6 lg:p-8 overflow-y-auto animate-in slide-in-from-bottom sm:slide-in-from-right duration-500 flex flex-col"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-6 relative shrink-0">
@@ -165,7 +165,7 @@ export function EditStaffPanel({ staff, divisions }: { staff: StaffMember, divis
                 </div>
               </div>
 
-              <div className="mt-auto pt-8">
+              <div className="mt-auto pt-8 pb-4 sm:pb-0">
                 <button 
                   type="submit"
                   disabled={isSubmitting}
