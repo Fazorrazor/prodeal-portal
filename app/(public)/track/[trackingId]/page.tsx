@@ -1,4 +1,4 @@
-import { createServer } from '../../../../lib/supabase/server';
+import { createServiceRoleClient } from '../../../../lib/supabase/server';
 import { TrackingTimeline } from '../../../../components/track/TrackingTimeline';
 import Link from 'next/link';
 import { headers } from 'next/headers';
@@ -45,7 +45,9 @@ export default async function TrackDetail(props: { params: Promise<{ trackingId:
 }
 
 async function TrackingDataLoader({ trackingId }: { trackingId: string }) {
-  const supabase = await createServer();
+  // Must use service role because RLS completely blocks 'anon' selects on inquiries.
+  // The server acts as a trusted mediator to only fetch the exact tracking ID requested.
+  const supabase = createServiceRoleClient();
   
   // Clean the tracking ID (mobile devices often append a space when pasting)
   const cleanTrackingId = trackingId.trim().toLowerCase();
