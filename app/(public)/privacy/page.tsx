@@ -20,6 +20,13 @@ export default function PrivacyPolicyPage() {
       </div>
 
       <div className="space-y-12 text-brand-deep-blue leading-relaxed font-mono text-sm md:text-base">
+        <div className="bg-brand-deep-blue/5 p-6 border-l-2 border-brand-deep-blue">
+          <p className="font-bold uppercase tracking-widest text-xs mb-2">Corporate Identity & Jurisdiction</p>
+          <p>
+            This policy is issued on behalf of Prodeal Industries Ltd. Data processing is governed in accordance with the Data Protection Act, 2012 (Act 843) of the Republic of Ghana, alongside applicable international B2B data protection standards.
+          </p>
+        </div>
+
         <section>
           <h2 className="text-xl font-heading font-bold uppercase tracking-widest mb-4">1. Data Collection & Usage</h2>
           <p className="mb-4">
@@ -41,9 +48,9 @@ export default function PrivacyPolicyPage() {
         </section>
 
         <section>
-          <h2 className="text-xl font-heading font-bold uppercase tracking-widest mb-4">3. Data Retention</h2>
+          <h2 className="text-xl font-heading font-bold uppercase tracking-widest mb-4">3. Data Retention & User Rights</h2>
           <p>
-            Inquiry data is retained in our secure database to maintain a historical record of your quotes and facilitate future orders. If you wish to have your data expunged from our CRM systems, you may request deletion by contacting your assigned Prodeal representative.
+            Inquiry data is retained in our secure database to maintain a historical record of your quotes and facilitate future orders. To exercise your right to data access, rectification, or erasure, please submit a formal request to our compliance team at <code className="bg-brand-deep-blue/10 px-1">legal@prodealindustries.com</code>.
           </p>
         </section>
 
