@@ -152,7 +152,7 @@ function ProductCard({
         </p>
         <Link
           href={`/inquiry/${product.id}?from=${from}`}
-          className="block w-full sm:w-auto sm:self-end px-6 py-3.5 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest text-center active:bg-brand-blue transition-colors min-h-[44px] flex items-center justify-center"
+          className="block w-full sm:w-auto sm:self-center px-6 py-3.5 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest text-center active:bg-brand-blue transition-colors min-h-[44px] flex items-center justify-center"
         >
           Inquire About This
         </Link>
