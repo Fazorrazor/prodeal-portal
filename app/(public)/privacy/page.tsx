@@ -1,4 +1,5 @@
 import { AnimatedBorder } from '../../../components/admin/AnimatedBorder';
+import Link from 'next/link';
 
 export const metadata = {
   title: 'Privacy Policy | Prodeal Industries',
@@ -56,7 +57,7 @@ export default function PrivacyPolicyPage() {
         <section className="pt-8 border-t border-brand-border/60">
           <h2 className="text-xl font-heading font-bold uppercase tracking-widest mb-4">Contact Information</h2>
           <p>
-            For any questions regarding this Privacy Policy, please contact our support team at <a href="mailto:support@prodealindustries.com" className="text-brand-blue hover:underline">support@prodealindustries.com</a>.
+            For any questions regarding this Privacy Policy, please contact our support team at <Link href="/support" className="text-brand-blue hover:underline font-bold">our Support Page</Link> or email us at <code className="bg-brand-deep-blue/10 px-1">support@prodealindustries.com</code>.
           </p>
         </section>
       </div>
