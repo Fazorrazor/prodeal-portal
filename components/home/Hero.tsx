@@ -71,8 +71,7 @@ export function Hero() {
                 transition={{ duration: 0.5, delay: 0.55 }}
                 className="mt-6 text-sm sm:text-base text-brand-deep-blue/80 font-body leading-relaxed max-w-md font-normal"
               >
-                Prodeal Industries Ltd. is the trusted partner for massive-scale procurement.
-                From custom 3D Signages to Industrial Chemicals, we handle the volume you demand without compromise.
+                Prodeal Systems Ltd. is your direct line to industrial-grade procurement. We supply high-volume custom signages, commercial printing, disposable bowls, and chemicals with absolute precision and zero friction.
               </motion.p>
             </div>
           </div>
