@@ -181,8 +181,10 @@ export async function submitInquiry(formData: any) {
           ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` 
           : (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
-        if (baseUrl.includes('localhost')) {
-          console.log('[Dev Mode] Bypassing QStash loopback error. Sending WhatsApp message directly...');
+        const isProduction = process.env.VERCEL_ENV === 'production';
+
+        if (baseUrl.includes('localhost') || !isProduction) {
+          console.log('[Dev/Preview Mode] Bypassing QStash (due to Hobby preview Auth). Sending WhatsApp message directly...');
           
           // Execute asynchronously in the background so it doesn't block the UI response
           sendWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext)
@@ -196,16 +198,16 @@ export async function submitInquiry(formData: any) {
                     wa_status: 'sent' 
                   })
                   .eq('id', newInquiry.id);
-                console.log('[Dev Mode] Direct WhatsApp send successful!');
+                console.log('[Dev/Preview Mode] Direct WhatsApp send successful!');
               } else {
                 await supabase
                   .from('inquiries')
                   .update({ 
                     wa_status: 'failed', 
-                    internal_notes: `[Dev Mode Direct Send] Failed: ${waResult.error}` 
+                    internal_notes: `[Dev/Preview Mode Direct Send] Failed: ${waResult.error}` 
                   })
                   .eq('id', newInquiry.id);
-                console.error('[Dev Mode] Direct WhatsApp send failed:', waResult.error);
+                console.error('[Dev/Preview Mode] Direct WhatsApp send failed:', waResult.error);
               }
             })
             .catch(console.error);
