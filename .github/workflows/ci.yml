@@ -133,21 +133,31 @@ jobs:
       
       - name: Wait for preview to become healthy
         run: |
-          URL="${{ needs.preview-deploy.outputs.preview_url }}"
+          URL="${{ needs.preview-deploy.outputs.preview_url }}/api/health"
           echo "Checking preview URL: $URL"
-          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-          for i in {1..20}; do
-            status=$(curl -L -s -o /dev/null -A "$UA" -w "%{http_code}" "$URL")
+          if [ -z "${{ needs.preview-deploy.outputs.preview_url }}" ]; then echo "Preview URL is empty — failing early"; exit 1; fi
+
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0 Safari/537.36"
+          MAX_ATTEMPTS=30
+          SLEEP_SECS=5
+          last_status=0
+
+          for i in $(seq 1 $MAX_ATTEMPTS); do
+            status=$(curl -s -o /dev/null -w "%{http_code}" -L -A "$UA" "$URL")
             echo "Attempt $i: $status"
+            last_status=$status
             if [ "$status" -eq 200 ]; then
               echo "Preview healthy"
               exit 0
             fi
-            sleep 3
+            sleep $SLEEP_SECS
           done
-          echo "Preview not healthy after retries (last status $status)"
-          echo "Full HTTP headers for debugging:"
+
+          echo "Preview not healthy after $MAX_ATTEMPTS retries (last status $last_status)"
+          echo "Full HTTP headers (for debugging):"
           curl -I -L -A "$UA" "$URL" || true
+          echo "Full HTTP body (for debugging):"
+          curl -sS -L -A "$UA" "$URL" || true
           exit 1
           
       # Run Playwright AGAINST the live Vercel Preview URL
