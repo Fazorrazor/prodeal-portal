@@ -135,8 +135,9 @@ jobs:
         run: |
           URL="${{ needs.preview-deploy.outputs.preview_url }}"
           echo "Checking preview URL: $URL"
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
           for i in {1..20}; do
-            status=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+            status=$(curl -L -s -o /dev/null -A "$UA" -w "%{http_code}" "$URL")
             echo "Attempt $i: $status"
             if [ "$status" -eq 200 ]; then
               echo "Preview healthy"
@@ -146,7 +147,7 @@ jobs:
           done
           echo "Preview not healthy after retries (last status $status)"
           echo "Full HTTP headers for debugging:"
-          curl -I "$URL" || true
+          curl -I -L -A "$UA" "$URL" || true
           exit 1
           
       # Run Playwright AGAINST the live Vercel Preview URL
