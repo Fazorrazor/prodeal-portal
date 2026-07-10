@@ -2,7 +2,7 @@ import { AdminLoginForm } from '../../../components/admin/AdminLoginForm';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Admin Login | Prodeal Systems',
+  title: 'Admin Login | Pro Deal Industries Limited',
 };
 
 export default function AdminLoginPage() {
