@@ -24,6 +24,11 @@ export default defineConfig({
 
     /* Spoof user agent to bypass Vercel Edge WAF blocking bots on preview URLs */
     userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+
+    /* Pass Vercel Protection Bypass Token to bypass WAF */
+    extraHTTPHeaders: process.env.VERCEL_AUTOMATION_BYPASS_TOKEN ? {
+      'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_TOKEN
+    } : undefined,
   },
 
   /* Configure projects for major browsers */
