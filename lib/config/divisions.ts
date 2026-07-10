@@ -5,6 +5,7 @@ export const DIVISION_DATA = {
     slug: 'signages',
     href: '/divisions/signages',
     accent: 'blue' as const,
+    isActive: false,
   },
   printing: {
     title: 'Souvenirs & Printing',
@@ -12,6 +13,7 @@ export const DIVISION_DATA = {
     slug: 'printing',
     href: '/divisions/printing',
     accent: 'red' as const,
+    isActive: false,
   },
   bowls: {
     title: 'Disposable Bowls',
@@ -19,6 +21,7 @@ export const DIVISION_DATA = {
     slug: 'bowls',
     href: '/divisions/bowls',
     accent: 'blue' as const,
+    isActive: true,
   },
   chemicals: {
     title: 'Industrial Chemicals',
@@ -26,7 +29,8 @@ export const DIVISION_DATA = {
     slug: 'chemicals',
     href: '/divisions/chemicals',
     accent: 'red' as const,
+    isActive: true,
   }
 } as const;
 
-export const DIVISIONS_LIST = Object.values(DIVISION_DATA);
+export const DIVISIONS_LIST = Object.values(DIVISION_DATA).filter(d => d.isActive);

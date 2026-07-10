@@ -68,12 +68,16 @@ export async function submitInquiry(formData: any) {
     if (!divisionId) {
       const { data: divisionRecord, error: divisionError } = await supabase
         .from('divisions')
-        .select('id')
+        .select('id, is_active')
         .eq('slug', divisionSlug)
         .single();
 
       if (divisionError || !divisionRecord) {
         return { success: false, error: 'Division not found in database.' };
+      }
+      
+      if (!divisionRecord.is_active) {
+        return { success: false, error: 'This service is currently unavailable.' };
       }
       
       divisionId = divisionRecord.id;
@@ -177,22 +181,53 @@ export async function submitInquiry(formData: any) {
           ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` 
           : (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
 
-        await qstash.publishJSON({
-          url: `${baseUrl}/api/webhooks/qstash/whatsapp`,
-          body: {
-            phone: staffPhone,
-            trackingId: newInquiry.tracking_uuid,
-            divisionName,
-            waContext,
-            inquiryId: newInquiry.id
-          },
-        });
-        
-        // Pre-emptively update status to pending since it's now in the queue
-        await supabase
-          .from('inquiries')
-          .update({ wa_status: 'pending' })
-          .eq('id', newInquiry.id);
+        if (baseUrl.includes('localhost')) {
+          console.log('[Dev Mode] Bypassing QStash loopback error. Sending WhatsApp message directly...');
+          
+          // Execute asynchronously in the background so it doesn't block the UI response
+          sendWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext)
+            .then(async (waResult) => {
+              if (waResult.success) {
+                await supabase
+                  .from('inquiries')
+                  .update({ 
+                    wa_message_id: waResult.messageId, 
+                    wa_sent_at: new Date().toISOString(), 
+                    wa_status: 'sent' 
+                  })
+                  .eq('id', newInquiry.id);
+                console.log('[Dev Mode] Direct WhatsApp send successful!');
+              } else {
+                await supabase
+                  .from('inquiries')
+                  .update({ 
+                    wa_status: 'failed', 
+                    internal_notes: `[Dev Mode Direct Send] Failed: ${waResult.error}` 
+                  })
+                  .eq('id', newInquiry.id);
+                console.error('[Dev Mode] Direct WhatsApp send failed:', waResult.error);
+              }
+            })
+            .catch(console.error);
+
+        } else {
+          await qstash.publishJSON({
+            url: `${baseUrl}/api/webhooks/qstash/whatsapp`,
+            body: {
+              phone: staffPhone,
+              trackingId: newInquiry.tracking_uuid,
+              divisionName,
+              waContext,
+              inquiryId: newInquiry.id
+            },
+          });
+          
+          // Pre-emptively update status to pending since it's now in the queue
+          await supabase
+            .from('inquiries')
+            .update({ wa_status: 'pending' })
+            .eq('id', newInquiry.id);
+        }
           
       } catch (qError: any) {
         console.error('[QStash Publish Error]', qError);

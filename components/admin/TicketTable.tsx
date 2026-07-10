@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useOptimistic } from 'react';
+import React, { useState, useOptimistic, startTransition } from 'react';
 import Link from 'next/link';
 import { ChevronRight, Trash2, Loader2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
@@ -89,7 +89,9 @@ export function TicketTable({
     
     // Instantly hide from UI before waiting for database
     const ticketsToDelete = [...selectedTickets];
-    setOptimisticInquiries(ticketsToDelete);
+    startTransition(() => {
+      setOptimisticInquiries(ticketsToDelete);
+    });
     setSelectedTickets([]);
     
     const result = await bulkDeleteInquiriesSafely(ticketsToDelete);
