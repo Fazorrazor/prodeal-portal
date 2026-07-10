@@ -13,12 +13,11 @@ test.describe('Pro Deal Industries - Critical Smoke Tests', () => {
     await expect(page.locator('body')).toBeVisible();
   });
 
-  test('3D Signages division is accessible', async ({ page }) => {
-    // Navigate specifically to the Signages division to ensure dynamic routes work
-    const response = await page.goto('/divisions/3d-signages');
+  test('Chemicals division is accessible', async ({ page }) => {
+    // Navigate specifically to the Chemicals division to ensure dynamic routes work
+    const response = await page.goto('/divisions/chemicals');
     
     // Ensure the division didn't return a 404
-    // (If the route is exactly /divisions/3d-signages, else we accept basic network success)
     expect(response?.ok()).toBeTruthy();
   });
 
