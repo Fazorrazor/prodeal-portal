@@ -29,7 +29,7 @@ export async function generateMetadata(
     .single();
 
   if (!product) {
-    return { title: 'Product Not Found | Pro Deal Industries Limited' };
+    return { title: 'Product Not Found | Prodeal Industries Ltd' };
   }
 
   const division = Array.isArray(product.divisions) ? product.divisions[0] : product.divisions;
@@ -39,13 +39,13 @@ export async function generateMetadata(
   // We use a manual parser instead of regex to satisfy CodeQL's strict multi-character sanitization rules
   const seoDescription = product.description 
     ? stripHtml(product.description).substring(0, 155) + '...'
-    : `Request a B2B quote for ${product.name} from Pro Deal Industries Limited High-volume industrial supply delivered with precision.`;
+    : `Request a B2B quote for ${product.name} from Prodeal Industries Ltd High-volume industrial supply delivered with precision.`;
 
   return {
-    title: `Buy ${product.name} | ${divisionName} | Pro Deal Industries Limited`,
+    title: `Buy ${product.name} | ${divisionName} | Prodeal Industries Ltd`,
     description: seoDescription,
     openGraph: {
-      title: `${product.name} | Pro Deal Industries Limited`,
+      title: `${product.name} | Prodeal Industries Ltd`,
       description: seoDescription,
     }
   };

@@ -2,8 +2,8 @@ import { AnimatedBorder } from '../../../components/admin/AnimatedBorder';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Terms of Service | Pro Deal Industries Limited',
-  description: 'Terms of service and liability guidelines for Pro Deal Industries Limited.',
+  title: 'Terms of Service | Prodeal Industries Ltd',
+  description: 'Terms of service and liability guidelines for Prodeal Industries Ltd.',
 };
 
 export default function TermsOfServicePage() {
@@ -23,7 +23,7 @@ export default function TermsOfServicePage() {
         <section>
           <h2 className="text-xl font-heading font-bold uppercase tracking-widest mb-4">1. General Provisions</h2>
           <p>
-            By accessing the Pro Deal Industries Limited portal and submitting an inquiry, you agree to be bound by these Terms of Service. Pro Deal Industries Limited operates strictly as a Business-to-Business (B2B) supplier. All inquiries, quotes, and subsequent agreements are governed by these terms unless expressly modified in a formal written contract.
+            By accessing the Prodeal Industries Ltd portal and submitting an inquiry, you agree to be bound by these Terms of Service. Prodeal Industries Ltd operates strictly as a Business-to-Business (B2B) supplier. All inquiries, quotes, and subsequent agreements are governed by these terms unless expressly modified in a formal written contract.
           </p>
         </section>
 
@@ -42,7 +42,7 @@ export default function TermsOfServicePage() {
           <div className="bg-brand-red/5 border-l-2 border-brand-red p-6 space-y-4">
             <p className="font-bold text-brand-red uppercase tracking-widest text-xs">Crucial clause for Chemical & Industrial divisions</p>
             <p>
-              Pro Deal Industries Limited supplies industrial-grade materials, chemicals, and fabricated signage. It is the sole responsibility of the purchasing entity to ensure that they possess the necessary licenses, facilities, and training to safely receive, store, and utilize these products.
+              Prodeal Industries Ltd supplies industrial-grade materials, chemicals, and fabricated signage. It is the sole responsibility of the purchasing entity to ensure that they possess the necessary licenses, facilities, and training to safely receive, store, and utilize these products.
             </p>
             <p>
               For the Chemicals division, buyers must adhere to all local and international environmental regulations. Unless otherwise specified in the final commercial invoice, all shipments are executed Ex Works (EXW) or Free Carrier (FCA). Title and risk of loss transfer entirely to the buyer the moment materials are handed over to the carrier.
@@ -60,14 +60,14 @@ export default function TermsOfServicePage() {
         <section>
           <h2 className="text-xl font-heading font-bold uppercase tracking-widest mb-4 text-brand-red">5. Limitation of Liability</h2>
           <p>
-            In no event shall Pro Deal Industries Limited's total aggregate liability arising out of or related to any order exceed the total amount actually paid by the purchaser for the specific goods giving rise to the claim. We categorically disclaim liability for indirect, incidental, or consequential damages, including lost profits, arising from the use or inability to use our supplied materials.
+            In no event shall Prodeal Industries Ltd's total aggregate liability arising out of or related to any order exceed the total amount actually paid by the purchaser for the specific goods giving rise to the claim. We categorically disclaim liability for indirect, incidental, or consequential damages, including lost profits, arising from the use or inability to use our supplied materials.
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-heading font-bold uppercase tracking-widest mb-4">6. Force Majeure</h2>
           <p>
-            Pro Deal Industries Limited shall not be liable for any failure or delay in fulfillment due to circumstances beyond our reasonable control, including but not limited to natural disasters, port strikes, raw material shortages, government embargoes, or other acts of God.
+            Prodeal Industries Ltd shall not be liable for any failure or delay in fulfillment due to circumstances beyond our reasonable control, including but not limited to natural disasters, port strikes, raw material shortages, government embargoes, or other acts of God.
           </p>
         </section>
 

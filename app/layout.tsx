@@ -25,11 +25,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://prodealindustries.c
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Pro Deal Industries Limited | Industrial B2B Supplier in Ghana',
-    template: '%s | Pro Deal Industries Limited',
+    default: 'Prodeal Industries Ltd | Industrial B2B Supplier in Ghana',
+    template: '%s | Prodeal Industries Ltd',
   },
   description:
-    'Pro Deal Industries Limited is Ghana\'s premier B2B industrial supplier, offering 3D Signages, Souvenirs & Printing, Disposable Bowls, and Industrial Chemicals. Request a quote today.',
+    'Prodeal Industries Ltd is Ghana\'s premier B2B industrial supplier, offering 3D Signages, Souvenirs & Printing, Disposable Bowls, and Industrial Chemicals. Request a quote today.',
   keywords: [
     'industrial supplier Ghana',
     'B2B supplier Accra',
@@ -37,16 +37,16 @@ export const metadata: Metadata = {
     'corporate souvenirs Ghana',
     'disposable bowls bulk Ghana',
     'industrial chemicals Ghana',
-    'Pro Deal Industries Limited',
+    'Prodeal Industries Ltd',
   ],
-  authors: [{ name: 'Pro Deal Industries Limited', url: siteUrl }],
-  creator: 'Pro Deal Industries Limited',
+  authors: [{ name: 'Prodeal Industries Ltd', url: siteUrl }],
+  creator: 'Prodeal Industries Ltd',
   openGraph: {
     type: 'website',
     locale: 'en_GH',
     url: siteUrl,
-    siteName: 'Pro Deal Industries Limited',
-    title: 'Pro Deal Industries Limited | Industrial B2B Supplier in Ghana',
+    siteName: 'Prodeal Industries Ltd',
+    title: 'Prodeal Industries Ltd | Industrial B2B Supplier in Ghana',
     description:
       'Ghana\'s premier B2B industrial supplier. 3D Signages, Souvenirs, Disposable Bowls, and Industrial Chemicals. Request a quote instantly.',
     images: [
@@ -54,13 +54,13 @@ export const metadata: Metadata = {
         url: '/og-default.png',
         width: 1200,
         height: 630,
-        alt: 'Pro Deal Industries Limited — Built for Industry',
+        alt: 'Prodeal Industries Ltd — Built for Industry',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Pro Deal Industries Limited | Industrial B2B Supplier in Ghana',
+    title: 'Prodeal Industries Ltd | Industrial B2B Supplier in Ghana',
     description:
       'Ghana\'s premier B2B industrial supplier. 3D Signages, Souvenirs, Disposable Bowls, and Industrial Chemicals.',
     images: ['/og-default.png'],

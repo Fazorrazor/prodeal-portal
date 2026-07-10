@@ -52,14 +52,14 @@ export async function generateMetadata(
       canonical: pageUrl,
     },
     openGraph: {
-      title: `${data.title} | Pro Deal Industries Limited`,
+      title: `${data.title} | Prodeal Industries Ltd`,
       description: data.tagline,
       url: pageUrl,
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${data.title} | Pro Deal Industries Limited`,
+      title: `${data.title} | Prodeal Industries Ltd`,
       description: data.tagline,
     },
   };
