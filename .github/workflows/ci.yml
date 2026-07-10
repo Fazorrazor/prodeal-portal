@@ -100,7 +100,8 @@ jobs:
       - name: Deploy to Vercel Preview
         id: deploy
         run: |
-          PREVIEW_URL=$(vercel deploy --prebuilt --token=$VERCEL_TOKEN)
+          PREVIEW_RAW=$(vercel deploy --prebuilt --token=$VERCEL_TOKEN)
+          PREVIEW_URL=$(echo "$PREVIEW_RAW" | tail -n 1 | tr -d '\r')
           echo "preview_url=$PREVIEW_URL" >> "$GITHUB_OUTPUT"
       
       - name: Comment PR with Preview URL
@@ -130,6 +131,24 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps
       
+      - name: Wait for preview to become healthy
+        run: |
+          URL="${{ needs.preview-deploy.outputs.preview_url }}"
+          echo "Checking preview URL: $URL"
+          for i in {1..20}; do
+            status=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+            echo "Attempt $i: $status"
+            if [ "$status" -eq 200 ]; then
+              echo "Preview healthy"
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Preview not healthy after retries (last status $status)"
+          echo "Full HTTP headers for debugging:"
+          curl -I "$URL" || true
+          exit 1
+          
       # Run Playwright AGAINST the live Vercel Preview URL
       - name: Run Playwright Tests
         run: npx playwright test
@@ -172,7 +191,8 @@ jobs:
       - name: Deploy to Vercel Production
         id: prod_deploy
         run: |
-          PROD_URL=$(vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN)
+          PROD_RAW=$(vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN)
+          PROD_URL=$(echo "$PROD_RAW" | tail -n 1 | tr -d '\r')
           echo "prod_url=$PROD_URL" >> "$GITHUB_OUTPUT"
           
       - name: Post-Deploy Smoke Test
