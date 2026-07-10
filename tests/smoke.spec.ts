@@ -32,7 +32,7 @@ test.describe('Pro Deal Industries - Critical Smoke Tests', () => {
       throw lastError || new Error(`Failed to load homepage after ${maxRetries} retries. Last status: ${response?.status()}`);
     }
     
-    expect(response.status()).toBe(200);
+    expect(response?.status()).toBe(200);
     await expect(page.locator('body')).toBeVisible();
   });
 
@@ -64,7 +64,7 @@ test.describe('Pro Deal Industries - Critical Smoke Tests', () => {
       throw lastError || new Error(`Failed to load chemicals division after ${maxRetries} retries. Last status: ${response?.status()}`);
     }
     
-    expect(response.ok()).toBeTruthy();
+    expect(response?.ok()).toBeTruthy();
   });
 
 });
