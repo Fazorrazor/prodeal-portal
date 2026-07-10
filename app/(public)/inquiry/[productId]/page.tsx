@@ -5,6 +5,17 @@ import { InquiryPageClient } from './InquiryPageClient';
 
 export const dynamic = 'force-dynamic';
 
+const stripHtml = (html: string) => {
+  let text = '';
+  let inside = false;
+  for (let i = 0; i < html.length; i++) {
+    if (html[i] === '<') inside = true;
+    else if (html[i] === '>') inside = false;
+    else if (!inside) text += html[i];
+  }
+  return text.trim().replace(/\s+/g, ' ');
+};
+
 export async function generateMetadata(
   props: { params: Promise<{ productId: string }> }
 ): Promise<Metadata> {
@@ -23,9 +34,11 @@ export async function generateMetadata(
 
   const division = Array.isArray(product.divisions) ? product.divisions[0] : product.divisions;
   const divisionName = (division as any)?.display_name || 'Industrial Supplies';
+  
   // Ensure description is plain text and truncated for SEO optimally
+  // We use a manual parser instead of regex to satisfy CodeQL's strict multi-character sanitization rules
   const seoDescription = product.description 
-    ? product.description.replace(/<[^>]*>?/gm, '').substring(0, 155) + '...'
+    ? stripHtml(product.description).substring(0, 155) + '...'
     : `Request a B2B quote for ${product.name} from Prodeal Systems Ltd. High-volume industrial supply delivered with precision.`;
 
   return {
