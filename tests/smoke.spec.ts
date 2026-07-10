@@ -6,12 +6,20 @@ test.describe('Pro Deal Industries - Critical Smoke Tests', () => {
     const maxRetries = 5;
     let response;
     let lastError;
+    let success = false;
     
     for (let i = 0; i < maxRetries; i++) {
       try {
         response = await page.goto('/', { waitUntil: 'networkidle' });
         console.log(`[Attempt ${i + 1}] URL: ${response?.url()} - Status: ${response?.status()}`);
-        if (response?.status() === 200) break;
+        if (response?.status() === 200) {
+          success = true;
+          break;
+        } else {
+          // If it's a non-200 status (like 404 or 502), Playwright doesn't throw. 
+          // We need to manually wait and retry.
+          if (i < maxRetries - 1) await page.waitForTimeout(2000);
+        }
       } catch (e) {
         lastError = e;
         if (i < maxRetries - 1) {
@@ -20,8 +28,8 @@ test.describe('Pro Deal Industries - Critical Smoke Tests', () => {
       }
     }
     
-    if (!response) {
-      throw lastError || new Error('Failed to load homepage after retries');
+    if (!success) {
+      throw lastError || new Error(`Failed to load homepage after ${maxRetries} retries. Last status: ${response?.status()}`);
     }
     
     expect(response.status()).toBe(200);
@@ -32,12 +40,18 @@ test.describe('Pro Deal Industries - Critical Smoke Tests', () => {
     const maxRetries = 5;
     let response;
     let lastError;
+    let success = false;
     
     for (let i = 0; i < maxRetries; i++) {
       try {
         response = await page.goto('/divisions/chemicals', { waitUntil: 'networkidle' });
         console.log(`[Attempt ${i + 1}] URL: ${response?.url()} - Status: ${response?.status()}`);
-        if (response?.ok()) break;
+        if (response?.ok()) {
+          success = true;
+          break;
+        } else {
+          if (i < maxRetries - 1) await page.waitForTimeout(2000);
+        }
       } catch (e) {
         lastError = e;
         if (i < maxRetries - 1) {
@@ -46,8 +60,8 @@ test.describe('Pro Deal Industries - Critical Smoke Tests', () => {
       }
     }
     
-    if (!response) {
-      throw lastError || new Error('Failed to load chemicals division after retries');
+    if (!success) {
+      throw lastError || new Error(`Failed to load chemicals division after ${maxRetries} retries. Last status: ${response?.status()}`);
     }
     
     expect(response.ok()).toBeTruthy();
