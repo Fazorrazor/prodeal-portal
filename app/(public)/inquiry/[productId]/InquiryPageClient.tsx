@@ -13,7 +13,7 @@ const PROCESS_STEPS = [
   { index: '03', label: 'Quote delivered', detail: 'A specialist contacts you to confirm details.' },
 ];
 
-export function InquiryPageClient({ product, moq }: { product: any, moq: number }) {
+export function InquiryPageClient({ product, moq, similarProducts = [] }: { product: any, moq: number, similarProducts?: any[] }) {
   const divisionName = (product.divisions?.display_name || product.divisions?.slug || 'Division').toUpperCase();
 
   return (
@@ -126,38 +126,68 @@ export function InquiryPageClient({ product, moq }: { product: any, moq: number 
           </div>
         </div>
 
-        {/* ── What happens next — fills the void ── */}
-        <div className="hidden md:flex flex-col flex-1 px-6 pt-6 pb-8">
-          {/* Routing strip */}
-          <div className="flex items-center gap-2 mb-6 pb-4 border-b border-brand-border/30">
-            <span className="text-brand-red text-base font-mono font-bold leading-none">→</span>
-            <span className="text-[10px] font-mono font-bold text-brand-deep-blue/80 uppercase tracking-[0.18em]">
-              Routed to {divisionName} team via WhatsApp
-            </span>
-          </div>
-
-          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-brand-deep-blue/80 mb-4">
-            — What happens next
-          </p>
-
-          <div className="flex flex-col gap-0">
-            {PROCESS_STEPS.map((step, i) => (
-              <div key={step.index} className="flex gap-4 py-4 border-b border-brand-border/20 last:border-b-0">
-                <span className="text-[10px] font-mono font-bold text-brand-deep-blue/80 tracking-widest shrink-0 pt-0.5">
-                  {step.index}
+        {/* ── DESCRIPTION ACCORDION ── */}
+        {product.description && (
+          <div className="border-b border-brand-border/40 shrink-0">
+            <details className="group [&_summary::-webkit-details-marker]:hidden">
+              <summary className="flex cursor-pointer items-center justify-between px-5 md:px-6 py-4 outline-none active:bg-black/5 hover:bg-black/[0.02] transition-colors select-none">
+                <span className="text-[10px] font-mono font-bold text-brand-deep-blue uppercase tracking-[0.2em]">
+                  Description
                 </span>
-                <div>
-                  <div className="text-sm font-heading font-bold text-brand-deep-blue uppercase tracking-tight leading-snug">
-                    {step.label}
-                  </div>
-                  <div className="text-[11px] text-brand-deep-blue/80 font-body mt-0.5 leading-relaxed">
-                    {step.detail}
-                  </div>
+                {/* Brutalist animated plus/minus icon */}
+                <div className="relative w-2.5 h-2.5 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute top-1/2 left-0 w-full h-[1.5px] bg-brand-deep-blue -translate-y-1/2"></div>
+                  <div className="absolute top-0 left-1/2 w-[1.5px] h-full bg-brand-deep-blue -translate-x-1/2 transition-transform duration-300 group-open:rotate-90 origin-center"></div>
                 </div>
+              </summary>
+              <div className="px-5 md:px-6 pb-5 pt-1">
+                <p className="text-xs md:text-sm font-body leading-relaxed text-brand-deep-blue/80">
+                  {product.description}
+                </p>
               </div>
-            ))}
+            </details>
           </div>
-        </div>
+        )}
+
+        {/* ── SIMILAR PRODUCTS ── */}
+        {similarProducts.length > 0 && (
+          <div className="flex flex-col flex-1 px-5 md:px-6 pt-6 pb-8">
+            <p className="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-brand-deep-blue/80 mb-4">
+              — Similar Products
+            </p>
+            <div className="grid grid-cols-2 gap-4">
+              {similarProducts.map((p) => (
+                <Link
+                  key={p.id}
+                  href={`/inquiry/${p.id}?from=${product.divisions?.slug}`}
+                  className="group flex flex-col border border-brand-border/40 p-3 hover:bg-black/[0.02] active:bg-black/5 transition-colors"
+                >
+                  <div className="w-full aspect-square bg-black/5 mb-3 relative overflow-hidden shrink-0">
+                    {p.image_path ? (
+                      <Image
+                        src={p.image_path}
+                        alt={p.name}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        sizes="(max-width: 768px) 50vw, 250px"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[8px] font-mono font-bold text-brand-deep-blue/50 uppercase tracking-widest">
+                        No img
+                      </div>
+                    )}
+                  </div>
+                  <h4 className="font-heading font-bold text-[11px] sm:text-xs text-brand-deep-blue uppercase tracking-tight leading-snug line-clamp-2 group-hover:text-brand-blue transition-colors">
+                    {p.name}
+                  </h4>
+                  <div className="text-[9px] font-mono text-brand-deep-blue/80 mt-auto pt-2 uppercase tracking-widest">
+                    {p.id.split('-')[0]}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </motion.div>
 
       {/* ── RIGHT PANEL: Form ── */}

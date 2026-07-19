@@ -65,7 +65,15 @@ export default async function InquiryPage(props: { params: Promise<{ productId: 
     notFound();
   }
 
+  // Fetch similar products (same division, excluding current)
+  const { data: similarProducts } = await supabase
+    .from('products')
+    .select('id, name, image_path, description')
+    .eq('division_id', product.division_id)
+    .neq('id', product.id)
+    .limit(4);
+
   const moq = 1;
 
-  return <InquiryPageClient product={product} moq={moq} />;
+  return <InquiryPageClient product={product} moq={moq} similarProducts={similarProducts || []} />;
 }
