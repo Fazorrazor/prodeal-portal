@@ -14,7 +14,7 @@ export function OrganizationJsonLd({ siteUrl }: OrganizationJsonLdProps) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Prodeal Systems Ltd.',
+    name: 'Prodeal Industries Ltd',
     url: siteUrl,
     logo: `${siteUrl}/icon.png`,
     description:
@@ -65,7 +65,7 @@ export function DivisionServiceJsonLd({
     url: `${siteUrl}/divisions/${slug}`,
     provider: {
       '@type': 'Organization',
-      name: 'Prodeal Systems Ltd.',
+      name: 'Prodeal Industries Ltd',
       url: siteUrl,
     },
     areaServed: {

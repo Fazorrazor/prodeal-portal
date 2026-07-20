@@ -34,9 +34,9 @@ export async function generateMetadata(
   const { slug } = await params;
   const data = DIVISION_DATA[slug as keyof typeof DIVISION_DATA];
 
-  // If the slug is invalid, notFound() handles the 404 inside the page.
+  // If the slug is invalid or the division is inactive, notFound() handles the 404 inside the page.
   // Here we just return a minimal fallback so Next.js doesn't crash.
-  if (!data) {
+  if (!data || !data.isActive) {
     return {
       title: 'Division Not Found',
     };
@@ -52,14 +52,14 @@ export async function generateMetadata(
       canonical: pageUrl,
     },
     openGraph: {
-      title: `${data.title} | Prodeal Systems Ltd.`,
+      title: `${data.title} | Prodeal Industries Ltd`,
       description: data.tagline,
       url: pageUrl,
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${data.title} | Prodeal Systems Ltd.`,
+      title: `${data.title} | Prodeal Industries Ltd`,
       description: data.tagline,
     },
   };
@@ -82,11 +82,11 @@ export default async function DivisionPage(
   const params = await props.params;
   const { slug } = params;
 
-  if (!(slug in DIVISION_DATA)) {
+  const data = DIVISION_DATA[slug as keyof typeof DIVISION_DATA];
+
+  if (!data || !data.isActive) {
     notFound();
   }
-
-  const data = DIVISION_DATA[slug as keyof typeof DIVISION_DATA];
 
   return (
     <DivisionLayout title={data.title} tagline={data.tagline} slug={slug}>

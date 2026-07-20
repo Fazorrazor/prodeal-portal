@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { ProductImageFallback } from '../../shared/ProductImageFallback';
-import { ImageLightbox } from '../../shared/ImageLightbox';
 
 export async function InventoryTable() {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
@@ -26,10 +25,10 @@ export async function InventoryTable() {
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-0">
         <div>
           <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-1.5">
-            — Live Stock Register
+            — Division
           </p>
           <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue tracking-tighter uppercase leading-none">
-            Inventory
+            Disposable Bowls
           </h2>
         </div>
         <p className="text-[10px] font-mono text-brand-deep-blue/80 uppercase tracking-widest">
@@ -71,15 +70,11 @@ export async function InventoryTable() {
               products.map((product) => (
                 <tr
                   key={product.id}
-                  className="border-b border-brand-border/30 md:hover:bg-black/5 transition-colors group"
+                  className="border-b border-brand-border/30 md:hover:bg-black/5 transition-colors group relative"
                 >
                   {/* Thumb */}
                   <td className="py-4 pr-4">
-                    <ImageLightbox
-                      src={product.image_path || ''}
-                      alt={product.name}
-                      className="block w-12 h-12 bg-black/5 overflow-hidden shrink-0 active:opacity-80 transition-opacity"
-                    >
+                    <div className="block w-12 h-12 bg-black/5 overflow-hidden shrink-0 group-hover:opacity-90 transition-opacity">
                       {product.image_path ? (
                         <Image
                           src={product.image_path}
@@ -91,38 +86,35 @@ export async function InventoryTable() {
                       ) : (
                         <ProductImageFallback />
                       )}
-                    </ImageLightbox>
+                    </div>
                   </td>
 
                   {/* Name / SKU / desc */}
                   <td className="py-4 pr-4">
-                    <Link href={`/inquiry/${product.id}?from=bowls`} className="block w-fit">
-                      <div className="font-heading font-bold text-brand-deep-blue uppercase tracking-tight md:hover:text-brand-blue transition-colors">
+                    <Link href={`/inquiry/${product.id}?from=bowls`} className="block w-fit before:absolute before:inset-0 before:z-10 focus:outline-none">
+                      <div className="font-heading font-bold text-brand-deep-blue uppercase tracking-tight md:group-hover:text-brand-blue transition-colors">
                         {product.name}
                       </div>
                     </Link>
-                    <div className="text-[10px] text-brand-deep-blue/80 font-mono font-bold tracking-widest mt-0.5 uppercase">
+                    <div className="text-[10px] text-brand-deep-blue/80 font-mono font-bold tracking-widest mt-0.5 uppercase relative z-20 pointer-events-none">
                       {product.id.split('-')[0]}
                     </div>
-                    <div className="text-xs text-brand-deep-blue/80 mt-1 max-w-xs leading-relaxed">
+                    <div className="text-xs text-brand-deep-blue/80 mt-1 max-w-xs leading-relaxed relative z-20 pointer-events-none">
                       {product.description || 'Premium disposable catering bowl.'}
                     </div>
                   </td>
 
-                  <td className="p-4 text-sm text-brand-deep-blue font-mono font-bold">
+                  <td className="p-4 text-sm text-brand-deep-blue font-mono font-bold relative z-20 pointer-events-none">
                     {product.metadata?.size || 'Standard'}
                   </td>
-                  <td className="p-4 text-sm text-brand-deep-blue font-mono font-bold">
+                  <td className="p-4 text-sm text-brand-deep-blue font-mono font-bold relative z-20 pointer-events-none">
                     {product.metadata?.material || 'Food-grade Plastic'}
                   </td>
                   {/* CTA */}
                   <td className="py-4 pl-4 text-right">
-                    <Link
-                        href={`/inquiry/${product.id}?from=bowls`}
-                        className="inline-block px-4 py-2 bg-brand-deep-blue text-white font-bold uppercase tracking-widest text-[10px] md:hover:bg-brand-blue active:bg-brand-blue transition-colors"
-                      >
-                        Inquire
-                      </Link>
+                    <div className="inline-block px-4 py-2 bg-brand-deep-blue text-white font-bold uppercase tracking-widest text-[10px] md:group-hover:bg-brand-blue transition-colors relative z-20">
+                      Inquire
+                    </div>
                   </td>
                 </tr>
               ))
@@ -144,17 +136,14 @@ export async function InventoryTable() {
           </div>
         ) : (
           products.map((product) => (
-              <div
+              <Link
+                href={`/inquiry/${product.id}?from=bowls`}
                 key={product.id}
-                className="border-b border-brand-border/40 py-5 flex flex-col gap-3"
+                className="border-b border-brand-border/40 py-5 flex flex-col gap-3 group active:bg-black/5 hover:bg-black/[0.02] transition-colors block"
               >
                 {/* Row: fixed thumbnail + name block */}
                 <div className="flex gap-4 items-start">
-                  <ImageLightbox
-                    src={product.image_path || ''}
-                    alt={product.name}
-                    className="block w-16 h-16 bg-black/5 shrink-0 overflow-hidden active:opacity-80 transition-opacity"
-                  >
+                  <div className="block w-16 h-16 bg-black/5 shrink-0 overflow-hidden group-hover:opacity-90 transition-opacity">
                     {product.image_path ? (
                       <Image
                         src={product.image_path}
@@ -166,10 +155,10 @@ export async function InventoryTable() {
                     ) : (
                       <ProductImageFallback />
                     )}
-                  </ImageLightbox>
+                  </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="font-heading font-bold text-base text-brand-deep-blue uppercase tracking-tight leading-snug">
+                    <div className="font-heading font-bold text-base text-brand-deep-blue uppercase tracking-tight leading-snug group-hover:text-brand-blue transition-colors">
                       {product.name}
                     </div>
                     <div className="text-[10px] font-mono font-bold tracking-widest text-brand-deep-blue/80 mt-0.5 uppercase">
@@ -202,13 +191,10 @@ export async function InventoryTable() {
                 </div>
 
                 {/* CTA */}
-                <Link
-                  href={`/inquiry/${product.id}?from=bowls`}
-                  className="block w-full text-center py-4 bg-brand-deep-blue text-white font-bold uppercase tracking-widest text-[10px] active:bg-brand-blue transition-colors min-h-[44px] flex items-center justify-center"
-                >
+                <div className="w-full text-center py-4 bg-brand-deep-blue text-white font-bold uppercase tracking-widest text-[10px] group-hover:bg-brand-blue transition-colors min-h-[44px] flex items-center justify-center">
                   Inquire About This
-                </Link>
-              </div>
+                </div>
+              </Link>
           ))
         )}
       </div>

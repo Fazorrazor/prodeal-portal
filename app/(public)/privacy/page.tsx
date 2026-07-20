@@ -2,8 +2,8 @@ import { AnimatedBorder } from '../../../components/admin/AnimatedBorder';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Privacy Policy | Prodeal Systems',
-  description: 'Privacy policy and data handling practices for Prodeal Systems.',
+  title: 'Privacy Policy | Prodeal Industries Ltd',
+  description: 'Privacy policy and data handling practices for Prodeal Industries Ltd.',
 };
 
 export default function PrivacyPolicyPage() {
@@ -23,14 +23,14 @@ export default function PrivacyPolicyPage() {
         <div className="bg-brand-deep-blue/5 p-6 border-l-2 border-brand-deep-blue">
           <p className="font-bold uppercase tracking-widest text-xs mb-2">Corporate Identity & Jurisdiction</p>
           <p>
-            This policy is issued on behalf of Prodeal Systems Ltd. Data processing is governed in accordance with the Data Protection Act, 2012 (Act 843) of the Republic of Ghana, alongside applicable international B2B data protection standards.
+            This policy is issued on behalf of Prodeal Industries Ltd Data processing is governed in accordance with the Data Protection Act, 2012 (Act 843) of the Republic of Ghana, alongside applicable international B2B data protection standards.
           </p>
         </div>
 
         <section>
           <h2 className="text-xl font-heading font-bold uppercase tracking-widest mb-4">1. Data Collection & Usage</h2>
           <p className="mb-4">
-            Prodeal Systems ("we," "our," or "us") is committed to protecting your privacy. We collect minimal personal information necessary to facilitate B2B inquiries and communication. The information we collect may include your name, company name, email address, and WhatsApp-enabled phone number.
+            Prodeal Industries Ltd ("we," "our," or "us") is committed to protecting your privacy. We collect minimal personal information necessary to facilitate B2B inquiries and communication. The information we collect may include your name, company name, email address, and WhatsApp-enabled phone number.
           </p>
           <p>
             This data is used exclusively to route your inquiry to the appropriate division specialist and to communicate with you regarding your quote requests via the Meta WhatsApp Business API.

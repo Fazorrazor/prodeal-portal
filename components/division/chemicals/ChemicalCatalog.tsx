@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { ScrollReveal } from '../../shared/ScrollReveal';
 import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
 import { ProductImageFallback } from '../../shared/ProductImageFallback';
-import { ImageLightbox } from '../../shared/ImageLightbox';
 
 export async function ChemicalCatalog() {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
@@ -26,10 +25,10 @@ export async function ChemicalCatalog() {
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-8">
         <div>
           <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-1.5">
-            — Product Register
+            — Division
           </p>
           <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue tracking-tighter uppercase leading-none">
-            Available Products
+            Industrial Chemicals
           </h2>
         </div>
         {products && products.length > 0 && (
@@ -75,14 +74,12 @@ function ChemicalRow({ product }: {
   const cas = product.metadata?.cas_number;
 
   return (
-    <div className="border-b border-brand-border/40 py-6 flex flex-col sm:flex-row gap-5 group active:bg-black/5 transition-colors">
-
+    <Link 
+      href={`/inquiry/${product.id}?from=chemicals`}
+      className="border-b border-brand-border/40 py-6 flex flex-col sm:flex-row gap-5 group hover:bg-black/[0.02] active:bg-black/5 transition-colors block"
+    >
       {/* Image thumbnail */}
-      <ImageLightbox
-        src={product.image_path || ''}
-        alt={product.name}
-        className="block w-full sm:w-28 sm:h-28 aspect-video sm:aspect-square bg-black/5 overflow-hidden shrink-0 active:opacity-80 transition-opacity"
-      >
+      <div className="block w-full sm:w-28 sm:h-28 aspect-video sm:aspect-square bg-black/5 overflow-hidden shrink-0 group-hover:opacity-90 transition-opacity">
         {product.image_path ? (
           <Image
             src={product.image_path}
@@ -94,13 +91,13 @@ function ChemicalRow({ product }: {
         ) : (
           <ProductImageFallback />
         )}
-      </ImageLightbox>
+      </div>
 
       {/* Data block */}
       <div className="flex flex-col flex-1 min-w-0">
         <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
           <div>
-            <h3 className="font-heading font-bold text-lg sm:text-xl text-brand-deep-blue uppercase tracking-tight leading-snug">
+            <h3 className="font-heading font-bold text-lg sm:text-xl text-brand-deep-blue uppercase tracking-tight leading-snug group-hover:text-brand-blue transition-colors">
               {product.name}
             </h3>
             {cas && (
@@ -119,13 +116,12 @@ function ChemicalRow({ product }: {
           {product.description || 'Standard industrial chemical formulation.'}
         </p>
 
-        <Link
-          href={`/inquiry/${product.id}?from=chemicals`}
-          className="inline-flex items-center justify-center w-full sm:w-auto sm:self-end px-6 py-3.5 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest active:bg-brand-blue transition-colors min-h-[44px]"
+        <div
+          className="inline-flex items-center justify-center w-full sm:w-auto sm:self-end px-6 py-3.5 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest group-hover:bg-brand-blue transition-colors min-h-[44px]"
         >
           Inquire About This
-        </Link>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
