@@ -159,7 +159,8 @@ jobs:
                     console.log('Preview healthy!');
                     break;
                   }
-                  console.log(\`Attempt \${i}: status \${resp.status}\`);
+                  const text = await resp.text();
+                  console.log(\`Attempt \${i}: status \${resp.status}, body: \${text.substring(0, 200)}\`);
                 } catch (err) {
                   console.log(\`Attempt \${i} failed:\`, err.message);
                 }
