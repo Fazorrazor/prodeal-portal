@@ -137,36 +137,35 @@ jobs:
           VERCEL_AUTOMATION_BYPASS_TOKEN: ${{ secrets.VERCEL_AUTOMATION_BYPASS_TOKEN }}
         run: |
           node -e "
-            const { chromium } = require('playwright');
             (async () => {
               const url = process.env.PREVIEW_URL;
-              console.log('Checking preview URL with Playwright:', url);
+              console.log('Checking preview URL with fetch:', url);
               if (!url || url === '/api/health') {
                 console.error('Preview URL is empty');
                 process.exit(1);
               }
-              const browser = await chromium.launch();
-              const context = await browser.newContext({ 
-                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                extraHTTPHeaders: { 'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_TOKEN || '' }
-              });
-              const page = await context.newPage();
+              
               let success = false;
               for (let i = 1; i <= 15; i++) {
                 try {
-                  const resp = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 10000 });
-                  if (resp && resp.status() === 200) {
+                  const resp = await fetch(url, {
+                    headers: {
+                      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                      'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_TOKEN || ''
+                    }
+                  });
+                  if (resp.status === 200) {
                     success = true;
                     console.log('Preview healthy!');
                     break;
                   }
-                  console.log(\`Attempt \${i}: status \${resp ? resp.status() : 'unknown'}\`);
+                  console.log(\`Attempt \${i}: status \${resp.status}\`);
                 } catch (err) {
                   console.log(\`Attempt \${i} failed:\`, err.message);
                 }
                 await new Promise(r => setTimeout(r, 5000));
               }
-              await browser.close();
+              
               if (!success) {
                 console.error('Preview not healthy after retries');
                 process.exit(1);
