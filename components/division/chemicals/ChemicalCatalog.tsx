@@ -31,11 +31,6 @@ export async function ChemicalCatalog() {
             Industrial Chemicals
           </h2>
         </div>
-        {products && products.length > 0 && (
-          <p className="text-[10px] font-mono text-brand-deep-blue/80 uppercase tracking-widest">
-            {products.length} compound{products.length !== 1 ? 's' : ''} listed
-          </p>
-        )}
       </div>
 
       {!products || products.length === 0 ? (
