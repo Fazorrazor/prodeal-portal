@@ -1,9 +1,11 @@
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
-// Only create ratelimiter if we have the Redis env vars
-const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
-  ? Redis.fromEnv()
+const redisUrl = process.env.UPSTASH_REDIS_REST_URL || '';
+const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || '';
+
+const redis = redisUrl.startsWith('https://') && redisToken
+  ? new Redis({ url: redisUrl, token: redisToken })
   : new Redis({ url: 'https://placeholder.upstash.io', token: 'placeholder' }); // Dummy fallback for typecheck if env vars are missing at build
 
 export const inquiryRateLimit = new Ratelimit({

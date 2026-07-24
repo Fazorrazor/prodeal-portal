@@ -152,9 +152,9 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
         {/* ── SIMILAR PRODUCTS ── */}
         {similarProducts.length > 0 && (
           <div className="flex flex-col flex-1 px-5 md:px-6 pt-6 pb-8">
-            <p className="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-brand-deep-blue/80 mb-4">
+            <h3 className="text-sm font-mono font-bold uppercase tracking-widest text-brand-deep-blue mb-4 border-b border-brand-border/40 pb-2">
               — Similar Products
-            </p>
+            </h3>
             <div className="grid grid-cols-2 gap-4">
               {similarProducts.map((p) => (
                 <Link

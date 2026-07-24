@@ -20,7 +20,9 @@ export async function generateMetadata(
   props: { params: Promise<{ productId: string }> }
 ): Promise<Metadata> {
   const params = await props.params;
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+    global: { fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }) }
+  });
 
   const { data: product } = await supabase
     .from('products')
@@ -53,7 +55,9 @@ export async function generateMetadata(
 
 export default async function InquiryPage(props: { params: Promise<{ productId: string }> }) {
   const params = await props.params;
-  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+    global: { fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }) }
+  });
 
   const { data: product, error } = await supabase
     .from('products')
