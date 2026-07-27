@@ -34,8 +34,11 @@ export async function proxy(req: NextRequest) {
     
     const metadata = {
       userAgent: headers['user-agent'] || 'Unknown',
-      ip: req.ip || headers['x-forwarded-for'] || 'Unknown',
-      geo: req.geo || { city: headers['x-vercel-ip-city'], country: headers['x-vercel-ip-country'] },
+      ip: headers['x-forwarded-for'] || headers['x-real-ip'] || 'Unknown',
+      geo: { 
+        city: headers['x-vercel-ip-city'] || 'Unknown', 
+        country: headers['x-vercel-ip-country'] || 'Unknown' 
+      },
       headers: headers,
       query: searchParams,
     };
