@@ -28,6 +28,18 @@ export async function proxy(req: NextRequest) {
       ? regionHeader.split("::")[0].toUpperCase()
       : "EDGE";
 
+    // Extract rich metadata for anomaly inspection
+    const headers = Object.fromEntries(req.headers.entries());
+    const searchParams = Object.fromEntries(req.nextUrl.searchParams.entries());
+    
+    const metadata = {
+      userAgent: headers['user-agent'] || 'Unknown',
+      ip: req.ip || headers['x-forwarded-for'] || 'Unknown',
+      geo: req.geo || { city: headers['x-vercel-ip-city'], country: headers['x-vercel-ip-country'] },
+      headers: headers,
+      query: searchParams,
+    };
+
     const trace = {
       method,
       endpoint: url,
@@ -35,6 +47,7 @@ export async function proxy(req: NextRequest) {
       latency: Math.floor(Math.random() * 60) + 10, // Simulated network overhead
       region: region,
       severity: severity,
+      metadata: metadata,
     };
 
     // Fire and forget POST to the Supabase REST API

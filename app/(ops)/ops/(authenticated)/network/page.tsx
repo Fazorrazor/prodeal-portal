@@ -10,6 +10,8 @@ import {
   Zap,
   ShieldAlert,
   WifiHigh,
+  Bug,
+  X,
 } from "lucide-react";
 
 // Initialize Supabase client
@@ -25,6 +27,8 @@ export default function NetworkTracesPage() {
     rps: 0,
     errors: 0,
   });
+  const [activeTab, setActiveTab] = useState<"GLOBAL" | "ANOMALIES">("GLOBAL");
+  const [selectedRequest, setSelectedRequest] = useState<any | null>(null);
 
   // Helper to calculate realistic metrics based on the current visible window of traces
   const calculateMetrics = (traces: any[]) => {
@@ -178,10 +182,22 @@ export default function NetworkTracesPage() {
         <div className="absolute top-0 right-0 w-32 h-32 bg-[radial-gradient(circle_at_top_right,rgba(76,166,255,0.05)_0%,transparent_70%)] pointer-events-none" />
 
         <div className="p-4 border-b border-[#141416] bg-[#0D0D0F] flex justify-between items-center shrink-0">
-          <h2 className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-[#F5F5F5] flex items-center gap-2">
-            <WifiHigh className="w-4 h-4 text-[#4CA6FF]" />
-            Interceptor Feed
-          </h2>
+          <div className="flex gap-6">
+            <button
+              onClick={() => setActiveTab("GLOBAL")}
+              className={`text-[0.7rem] font-bold uppercase tracking-[0.2em] flex items-center gap-2 transition-colors pb-1 ${activeTab === "GLOBAL" ? "text-[#F5F5F5] border-b-2 border-[#4CA6FF]" : "text-[#68686F] hover:text-[#A7A7AA] border-b-2 border-transparent"}`}
+            >
+              <WifiHigh className={`w-4 h-4 ${activeTab === "GLOBAL" ? "text-[#4CA6FF]" : ""}`} />
+              Global Stream
+            </button>
+            <button
+              onClick={() => setActiveTab("ANOMALIES")}
+              className={`text-[0.7rem] font-bold uppercase tracking-[0.2em] flex items-center gap-2 transition-colors pb-1 ${activeTab === "ANOMALIES" ? "text-[#E50914] border-b-2 border-[#E50914]" : "text-[#68686F] hover:text-[#E50914]/70 border-b-2 border-transparent"}`}
+            >
+              <Bug className={`w-4 h-4 ${activeTab === "ANOMALIES" ? "text-[#E50914]" : ""}`} />
+              Anomalies ({metrics.errors})
+            </button>
+          </div>
           <div className="text-[#A7A7AA] text-[0.6rem] uppercase tracking-widest flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-[#27D17F] animate-pulse" />
             Polling Datadog Stream...
@@ -201,10 +217,11 @@ export default function NetworkTracesPage() {
               </tr>
             </thead>
             <tbody>
-              {requests.map((req) => (
+              {(activeTab === "GLOBAL" ? requests : requests.filter(r => r.severity === "WARNING" || r.severity === "CRITICAL" || r.status >= 400)).map((req) => (
                 <tr
                   key={req.id}
-                  className="border-b border-[#141416]/50 hover:bg-[#141416] transition-colors group"
+                  onClick={() => activeTab === "ANOMALIES" ? setSelectedRequest(req) : null}
+                  className={`border-b border-[#141416]/50 transition-colors group ${activeTab === "ANOMALIES" ? "hover:bg-[#310004]/40 cursor-pointer" : "hover:bg-[#141416]"}`}
                 >
                   <td className="p-4 text-[#68686F]">
                     {req.timestamp.substring(11, 19)}
@@ -240,10 +257,79 @@ export default function NetworkTracesPage() {
                   </td>
                 </tr>
               ))}
+              {activeTab === "ANOMALIES" && requests.filter(r => r.severity === "WARNING" || r.severity === "CRITICAL" || r.status >= 400).length === 0 && (
+                <tr>
+                  <td colSpan={6} className="p-12 text-center text-[#68686F] text-[0.7rem] uppercase tracking-widest border-t border-[#141416]">
+                    All clear. No anomalies detected in current window.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* Deep Inspection Modal */}
+      {selectedRequest && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-[#090909] border border-[#E50914]/30 w-full max-w-3xl flex flex-col max-h-[85vh]">
+            <div className="p-4 border-b border-[#E50914]/30 flex justify-between items-center bg-[#310004]/20">
+              <h2 className="text-[#F5F5F5] text-[0.7rem] font-bold uppercase tracking-widest flex items-center gap-2">
+                <Bug className="w-4 h-4 text-[#E50914]" />
+                Anomaly Deep Inspection
+              </h2>
+              <button onClick={() => setSelectedRequest(null)} className="text-[#68686F] hover:text-[#F5F5F5] transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6 flex-1 overflow-y-auto space-y-8">
+              {/* Core Request Info */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Timestamp</div>
+                  <div className="text-[#F5F5F5] text-sm font-mono">{selectedRequest.timestamp}</div>
+                </div>
+                <div>
+                  <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Target</div>
+                  <div className="text-[#F5F5F5] text-sm font-mono">{selectedRequest.method} {selectedRequest.endpoint}</div>
+                </div>
+                <div>
+                  <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Status Code</div>
+                  <div className="text-[#E50914] text-sm font-bold font-mono">{selectedRequest.status}</div>
+                </div>
+                <div>
+                  <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Edge Node</div>
+                  <div className="text-[#F5F5F5] text-sm font-mono">{selectedRequest.region}</div>
+                </div>
+              </div>
+
+              {/* Raw Metadata Block */}
+              <div>
+                <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-3 border-b border-[#141416] pb-2">
+                  Extracted Headers & Metadata Payload
+                </div>
+                <div className="bg-[#050505] border border-[#141416] p-4 overflow-x-auto">
+                  <pre className="text-[#4CA6FF] text-[0.65rem] font-mono leading-relaxed">
+                    {selectedRequest.metadata 
+                      ? JSON.stringify(selectedRequest.metadata, null, 2)
+                      : "// No extended metadata captured for this legacy trace."}
+                  </pre>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-4 border-t border-[#141416] bg-[#050505] flex justify-end">
+              <button 
+                onClick={() => setSelectedRequest(null)}
+                className="px-6 py-2 border border-[#141416] text-[#A7A7AA] text-[0.7rem] uppercase tracking-widest hover:text-[#F5F5F5] hover:border-[#68686F] transition-colors"
+              >
+                Close Inspector
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
