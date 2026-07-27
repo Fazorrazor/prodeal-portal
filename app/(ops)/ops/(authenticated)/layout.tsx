@@ -17,7 +17,7 @@ export default async function AuthenticatedOpsLayout({
   return (
     <div className="flex h-screen overflow-hidden bg-[#050505] text-[#F5F5F5] font-mono selection:bg-[#E50914] selection:text-white">
       {/* Sidebar Navigation */}
-      <aside className="w-64 flex-shrink-0 flex flex-col bg-[#070708] border-r border-[#E50914]/20 relative z-20">
+      <aside className="w-64 flex-shrink-0 flex flex-col bg-[#070708] border-r border-[#E50914]/20 relative">
         {/* Grain overlay for sidebar */}
         <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
 
@@ -40,7 +40,7 @@ export default async function AuthenticatedOpsLayout({
 
         <SidebarNav />
 
-        <div className="p-4 border-t border-[#141416] z-10">
+        <div className="p-4 border-t border-[#141416] relative z-10">
           <form action={logoutOps}>
             <button className="w-full flex items-center justify-between px-3 py-3 text-[0.65rem] tracking-[0.1em] uppercase text-[#A7A7AA] hover:text-[#E50914] hover:bg-[#E50914]/10 transition-colors border border-transparent hover:border-[#E50914]/30">
               <span>Secure Sign Out</span>
@@ -51,7 +51,7 @@ export default async function AuthenticatedOpsLayout({
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto relative z-10">
+      <main className="flex-1 overflow-y-auto relative">
         <div className="p-8 max-w-7xl mx-auto">{children}</div>
       </main>
     </div>
