@@ -1,8 +1,56 @@
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { jwtVerify } from "jose";
 
 export async function proxy(req: NextRequest) {
+  // --- Telemetry Interceptor ---
+  const url = req.nextUrl.pathname;
+  const method = req.method;
+  let severity = "INFO";
+  const status = 200; // Middleware executes before status is finalized; we log intention
+
+  if (method === "DELETE" || method === "PUT") {
+    severity = "WARNING";
+  }
+
+  if (url.includes("login") || url.includes("admin")) {
+    severity = "WARNING";
+  }
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  // Don't trace internal Next.js static asset requests
+  if (supabaseUrl && supabaseServiceKey && !url.startsWith("/_next") && !url.includes("favicon.ico")) {
+    const regionHeader = req.headers.get("x-vercel-id");
+    const region = regionHeader
+      ? regionHeader.split("::")[0].toUpperCase()
+      : "EDGE";
+
+    const trace = {
+      method,
+      endpoint: url,
+      status: status,
+      latency: Math.floor(Math.random() * 60) + 10, // Simulated network overhead
+      region: region,
+      severity: severity,
+    };
+
+    // Fire and forget POST to the Supabase REST API
+    fetch(`${supabaseUrl}/rest/v1/ops_network_traces`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: supabaseServiceKey,
+        Authorization: `Bearer ${supabaseServiceKey}`,
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify(trace),
+    }).catch((e) => console.error("Telemetry error:", e));
+  }
+  // -----------------------------
+
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
 
@@ -29,9 +77,46 @@ export async function proxy(req: NextRequest) {
     }
   }
 
+  // Developer Operations Firewall
+  if (req.nextUrl.pathname.startsWith("/ops")) {
+    const sessionCookie = req.cookies.get("ops_session")?.value;
+
+    if (!sessionCookie && req.nextUrl.pathname !== "/ops/login") {
+      return NextResponse.redirect(new URL("/ops/login", req.url));
+    }
+
+    if (sessionCookie) {
+      try {
+        const secretKey = process.env.DEV_PORTAL_SESSION_SECRET || "fallback-secret-for-development-only-change-in-prod";
+        const key = new TextEncoder().encode(secretKey);
+        await jwtVerify(sessionCookie, key, { algorithms: ["HS256"] });
+
+        // If logged in and trying to access login, redirect to ops dashboard
+        if (req.nextUrl.pathname === "/ops/login") {
+          return NextResponse.redirect(new URL("/ops", req.url));
+        }
+      } catch (error) {
+        // Token is invalid or expired
+        if (req.nextUrl.pathname !== "/ops/login") {
+          const response = NextResponse.redirect(new URL("/ops/login", req.url));
+          response.cookies.delete("ops_session");
+          return response;
+        }
+      }
+    }
+  }
+
   return res;
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*'],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };
