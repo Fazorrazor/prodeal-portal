@@ -285,20 +285,20 @@ export default function NetworkTracesPage() {
             
             {/* Core Request Info - STATIC */}
             <div className="p-6 border-b border-[#141416] shrink-0">
-              <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                <div className="md:col-span-2">
+              <div className="flex flex-wrap gap-8 items-start">
+                <div className="shrink-0">
                   <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Timestamp</div>
                   <div className="text-[#F5F5F5] text-sm font-mono whitespace-nowrap">{selectedRequest.timestamp}</div>
                 </div>
-                <div className="md:col-span-2">
+                <div className="flex-1 min-w-[200px]">
                   <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Target</div>
-                  <div className="text-[#F5F5F5] text-sm font-mono break-words pr-4">{selectedRequest.method} {selectedRequest.endpoint}</div>
+                  <div className="text-[#F5F5F5] text-sm font-mono break-all">{selectedRequest.method} {selectedRequest.endpoint}</div>
                 </div>
-                <div className="md:col-span-1">
+                <div className="shrink-0">
                   <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Status Code</div>
                   <div className={`text-sm font-bold font-mono ${selectedRequest.status >= 500 ? "text-[#E50914]" : selectedRequest.status >= 400 ? "text-[#FFB020]" : "text-[#27D17F]"}`}>{selectedRequest.status}</div>
                 </div>
-                <div className="md:col-span-1">
+                <div className="shrink-0">
                   <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Edge Node</div>
                   <div className="text-[#F5F5F5] text-sm font-mono">{selectedRequest.region}</div>
                 </div>
