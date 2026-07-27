@@ -22,6 +22,15 @@ const config: Config = {
         display: ['Roghin', 'var(--font-montserrat)', 'sans-serif'],
         heading: ['Roghin', 'var(--font-montserrat)', 'sans-serif'],
         body:    ['var(--font-roboto)', 'sans-serif']
+      },
+      keyframes: {
+        blink: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0' },
+        }
+      },
+      animation: {
+        blink: 'blink 1s step-end infinite',
       }
     },
   },
