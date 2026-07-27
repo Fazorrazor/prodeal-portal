@@ -285,20 +285,20 @@ export default function NetworkTracesPage() {
             
             <div className="p-6 flex-1 overflow-y-auto space-y-8">
               {/* Core Request Info */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
+              <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+                <div className="md:col-span-2">
                   <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Timestamp</div>
-                  <div className="text-[#F5F5F5] text-sm font-mono">{selectedRequest.timestamp}</div>
+                  <div className="text-[#F5F5F5] text-sm font-mono whitespace-nowrap">{selectedRequest.timestamp}</div>
                 </div>
-                <div>
+                <div className="md:col-span-2">
                   <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Target</div>
-                  <div className="text-[#F5F5F5] text-sm font-mono">{selectedRequest.method} {selectedRequest.endpoint}</div>
+                  <div className="text-[#F5F5F5] text-sm font-mono break-words pr-4">{selectedRequest.method} {selectedRequest.endpoint}</div>
                 </div>
-                <div>
+                <div className="md:col-span-1">
                   <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Status Code</div>
-                  <div className="text-[#E50914] text-sm font-bold font-mono">{selectedRequest.status}</div>
+                  <div className={`text-sm font-bold font-mono ${selectedRequest.status >= 500 ? "text-[#E50914]" : selectedRequest.status >= 400 ? "text-[#FFB020]" : "text-[#27D17F]"}`}>{selectedRequest.status}</div>
                 </div>
-                <div>
+                <div className="md:col-span-1">
                   <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Edge Node</div>
                   <div className="text-[#F5F5F5] text-sm font-mono">{selectedRequest.region}</div>
                 </div>
@@ -310,7 +310,7 @@ export default function NetworkTracesPage() {
                   Extracted Headers & Metadata Payload
                 </div>
                 <div className="bg-[#050505] border border-[#141416] p-4 overflow-x-auto">
-                  <pre className="text-[#4CA6FF] text-[0.65rem] font-mono leading-relaxed">
+                  <pre className="text-[#4CA6FF] text-[0.65rem] font-mono leading-relaxed whitespace-pre-wrap break-all">
                     {selectedRequest.metadata 
                       ? JSON.stringify(selectedRequest.metadata, null, 2)
                       : "// No extended metadata captured for this legacy trace."}
