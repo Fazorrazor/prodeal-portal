@@ -2,7 +2,7 @@ import { createServiceRoleClient } from '../../../lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { searchRateLimit } from '../../../lib/ratelimit';
-import Fuse from 'fuse.js';
+import Fuse, { Expression } from 'fuse.js';
 export const dynamic = 'force-dynamic';
 
 // Input validation schema
@@ -85,16 +85,29 @@ export async function GET(req: NextRequest) {
         'description',
         'metadata.cas_number'
       ],
-      threshold: 0.3, // Lower threshold means stricter matching
-      distance: 100,
-      ignoreLocation: true // Helps match words regardless of position
+      threshold: 0.4, // Increased threshold slightly for better typo tolerance on long strings
+      distance: 500,  // Increased distance so matching words far apart works better
+      ignoreLocation: true, // Helps match words regardless of position
+      useExtendedSearch: true // Crucial for multi-word logical queries
     });
 
-    // If query is empty somehow, just return the first few products, 
-    // otherwise return fuzzy match results
     let finalData = products || [];
     if (q) {
-      const results = fuse.search(q);
+      const terms = q.split(/\s+/).filter(Boolean);
+      
+      // Build a logical AND query where EACH term must match at least one of the fields
+      const searchObj: Expression = {
+        $and: terms.map(term => ({
+          $or: [
+            { name: term } as Expression,
+            { sku: term } as Expression,
+            { description: term } as Expression,
+            { 'metadata.cas_number': term } as Expression
+          ]
+        }))
+      };
+      
+      const results = fuse.search(searchObj);
       finalData = results.map(r => r.item);
     }
 
