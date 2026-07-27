@@ -273,7 +273,7 @@ export default function NetworkTracesPage() {
       {selectedRequest && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
           <div className="bg-[#090909] border border-[#E50914]/30 w-full max-w-3xl flex flex-col max-h-[85vh]">
-            <div className="p-4 border-b border-[#E50914]/30 flex justify-between items-center bg-[#310004]/20">
+            <div className="p-4 border-b border-[#E50914]/30 flex justify-between items-center bg-[#310004]/20 shrink-0">
               <h2 className="text-[#F5F5F5] text-[0.7rem] font-bold uppercase tracking-widest flex items-center gap-2">
                 <Bug className="w-4 h-4 text-[#E50914]" />
                 Anomaly Deep Inspection
@@ -283,8 +283,8 @@ export default function NetworkTracesPage() {
               </button>
             </div>
             
-            <div className="p-6 flex-1 overflow-y-auto space-y-8">
-              {/* Core Request Info */}
+            {/* Core Request Info - STATIC */}
+            <div className="p-6 border-b border-[#141416] shrink-0">
               <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                 <div className="md:col-span-2">
                   <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-1">Timestamp</div>
@@ -303,8 +303,10 @@ export default function NetworkTracesPage() {
                   <div className="text-[#F5F5F5] text-sm font-mono">{selectedRequest.region}</div>
                 </div>
               </div>
+            </div>
 
-              {/* Raw Metadata Block */}
+            {/* Raw Metadata Block - SCROLLABLE */}
+            <div className="p-6 flex-1 overflow-y-auto">
               <div>
                 <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-3 border-b border-[#141416] pb-2">
                   Extracted Headers & Metadata Payload
