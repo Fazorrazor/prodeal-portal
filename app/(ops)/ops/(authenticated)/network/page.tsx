@@ -306,10 +306,73 @@ export default function NetworkTracesPage() {
             </div>
 
             {/* Raw Metadata Block - SCROLLABLE */}
-            <div className="p-6 flex-1 overflow-y-auto min-h-0">
+            <div className="p-6 flex-1 overflow-y-auto min-h-0 space-y-6">
+              
+              {/* Automated Forensic Breakdown */}
+              {selectedRequest.metadata && (
+                <div>
+                  <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-3 border-b border-[#141416] pb-2 flex items-center gap-2">
+                    <ShieldAlert className="w-3.5 h-3.5 text-[#E50914]" />
+                    Automated Forensic Breakdown
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-[#050505] border border-[#141416] p-4">
+                      <div className="text-[0.6rem] text-[#A7A7AA] uppercase tracking-widest mb-3">1. Attacker Identity & Location</div>
+                      <div className="space-y-3 text-sm">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[#68686F] text-xs">IP Address</span>
+                          <span className="text-[#F5F5F5] font-mono text-xs">{selectedRequest.metadata.ip || "Unknown"}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[#68686F] text-xs">Origin</span>
+                          <span className="text-[#F5F5F5] text-xs uppercase tracking-wider">{selectedRequest.metadata.geo?.city || "Unknown"}, {selectedRequest.metadata.geo?.country || "Unknown"}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[#68686F] text-xs">Spoofed Agent</span>
+                          <span className="text-[#E50914] font-mono text-xs truncate max-w-[120px]" title={selectedRequest.metadata.headers?.['user-agent']}>{selectedRequest.metadata.headers?.['user-agent'] || "Unknown"}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-[#050505] border border-[#141416] p-4">
+                      <div className="text-[0.6rem] text-[#A7A7AA] uppercase tracking-widest mb-3">2. Edge Routing Context</div>
+                      <div className="space-y-3 text-sm">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[#68686F] text-xs">Edge Node ID</span>
+                          <span className="text-[#F5F5F5] font-mono text-xs uppercase">{selectedRequest.metadata.headers?.['x-vercel-id']?.split('::')[0] || selectedRequest.region}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[#68686F] text-xs">Invocation</span>
+                          <span className="text-[#27D17F] font-mono text-xs uppercase">{selectedRequest.metadata.headers?.['x-vercel-invocation-type'] || "middleware"}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-[#68686F] text-xs">Proxy Signature</span>
+                          <span className="text-[#F5F5F5] font-mono text-xs truncate max-w-[120px]">{selectedRequest.metadata.headers?.['x-vercel-proxy-signature'] ? "Valid Origin" : "Spoofed"}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-[#050505] border border-[#141416] p-4 md:col-span-2">
+                      <div className="text-[0.6rem] text-[#A7A7AA] uppercase tracking-widest mb-3">3. Immutable Security Fingerprints</div>
+                      <div className="space-y-3 text-sm">
+                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+                          <span className="text-[#68686F] text-xs">JA3 Digest (TLS Profile)</span>
+                          <span className="text-[#FFB020] font-mono text-[0.65rem] break-all">{selectedRequest.metadata.headers?.['x-vercel-ja3-digest'] || "Not Captured"}</span>
+                        </div>
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
+                          <span className="text-[#68686F] text-xs">JA4 Digest (Network Profile)</span>
+                          <span className="text-[#FFB020] font-mono text-[0.65rem] break-all">{selectedRequest.metadata.headers?.['x-vercel-ja4-digest'] || "Not Captured"}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div>
-                <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-3 border-b border-[#141416] pb-2">
-                  Extracted Headers & Metadata Payload
+                <div className="text-[0.6rem] text-[#68686F] uppercase tracking-widest mb-3 border-b border-[#141416] pb-2 flex items-center gap-2">
+                  <Activity className="w-3.5 h-3.5 text-[#68686F]" />
+                  Raw Extracted Headers Payload
                 </div>
                 <div className="bg-[#050505] border border-[#141416] p-4 overflow-x-auto">
                   <pre className="text-[#4CA6FF] text-[0.65rem] font-mono leading-relaxed whitespace-pre-wrap break-all">
