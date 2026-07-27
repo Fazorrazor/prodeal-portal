@@ -1,9 +1,9 @@
 'use client';
-
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { InquiryFormClient } from './InquiryFormClient';
 import { ImageLightbox } from '../../../../components/shared/ImageLightbox';
 
@@ -15,6 +15,23 @@ const PROCESS_STEPS = [
 
 export function InquiryPageClient({ product, moq, similarProducts = [] }: { product: any, moq: number, similarProducts?: any[] }) {
   const divisionName = (product.divisions?.display_name || product.divisions?.slug || 'Division').toUpperCase();
+
+  const galleryImages = [product.image_path, ...(product.metadata?.gallery_images || [])].filter(Boolean) as string[];
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const nextImage = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (galleryImages.length > 1) {
+      setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
+    }
+  };
+
+  const prevImage = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (galleryImages.length > 1) {
+      setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+    }
+  };
 
   return (
     <div className="flex-1 flex flex-col md:flex-row min-h-[calc(100vh-64px)] bg-brand-surface relative">
@@ -50,20 +67,33 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
 
         {/* ── MOBILE: compact strip (thumb + name) — no full banner ── */}
         <div className="md:hidden flex gap-4 items-center px-5 py-4 border-b border-brand-border/40 shrink-0">
-          {product.image_path ? (
+          {galleryImages.length > 0 ? (
             <ImageLightbox
-              src={product.image_path}
-              alt={product.name}
-              className="block w-16 h-16 shrink-0 overflow-hidden bg-black/5"
+              src={galleryImages[currentImageIndex]}
+              images={galleryImages}
+              initialIndex={currentImageIndex}
+              onIndexChange={setCurrentImageIndex}
+              alt={`${product.name} - Image ${currentImageIndex + 1}`}
+              className="block w-16 h-16 shrink-0 overflow-hidden bg-black/5 relative group/mob"
             >
               <Image
-                src={product.image_path}
-                alt={product.name}
+                src={galleryImages[currentImageIndex]}
+                alt={`${product.name} - Image ${currentImageIndex + 1}`}
                 width={64}
                 height={64}
                 className="w-full h-full object-cover"
                 priority
               />
+              {galleryImages.length > 1 && (
+                <>
+                  <button onClick={prevImage} className="absolute left-0 top-0 bottom-0 px-1 bg-black/10 text-white flex items-center justify-center opacity-0 group-hover/mob:opacity-100 transition-opacity">
+                    <ChevronLeft className="w-3 h-3" />
+                  </button>
+                  <button onClick={nextImage} className="absolute right-0 top-0 bottom-0 px-1 bg-black/10 text-white flex items-center justify-center opacity-0 group-hover/mob:opacity-100 transition-opacity">
+                    <ChevronRight className="w-3 h-3" />
+                  </button>
+                </>
+              )}
             </ImageLightbox>
           ) : (
             <div className="w-16 h-16 shrink-0 bg-black/5 flex items-center justify-center">
@@ -82,22 +112,64 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
 
         {/* ── DESKTOP: full product image ── */}
         <div className="hidden md:block relative w-full aspect-[4/3] bg-black/10 overflow-hidden shrink-0 group">
-          {product.image_path ? (
+          {galleryImages.length > 0 ? (
             <ImageLightbox
-              src={product.image_path}
-              alt={product.name}
+              src={galleryImages[currentImageIndex]}
+              images={galleryImages}
+              initialIndex={currentImageIndex}
+              onIndexChange={setCurrentImageIndex}
+              alt={`${product.name} - Image ${currentImageIndex + 1}`}
               className="block w-full h-full"
             >
-              <div className="relative w-full h-full">
-                <Image
-                  src={product.image_path}
-                  alt={product.name}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="520px"
-                  priority
-                />
-                <div className="absolute bottom-0 right-0 bg-brand-deep-blue/80 text-white text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="relative w-full h-full overflow-hidden">
+                <AnimatePresence initial={false} mode="wait">
+                  <motion.div
+                    key={currentImageIndex}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0"
+                  >
+                    <Image
+                      src={galleryImages[currentImageIndex]}
+                      alt={`${product.name} - Image ${currentImageIndex + 1}`}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="520px"
+                      priority
+                    />
+                  </motion.div>
+                </AnimatePresence>
+                
+                {galleryImages.length > 1 && (
+                  <>
+                    <button 
+                      onClick={prevImage}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/20 hover:bg-black/50 text-white flex items-center justify-center rounded-none opacity-0 group-hover:opacity-100 transition-all z-10"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <button 
+                      onClick={nextImage}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/20 hover:bg-black/50 text-white flex items-center justify-center rounded-none opacity-0 group-hover:opacity-100 transition-all z-10"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                    
+                    {/* Image indicator dots */}
+                    <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {galleryImages.map((_, i) => (
+                        <div 
+                          key={i} 
+                          className={`h-1 transition-all ${i === currentImageIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/50'}`}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+                
+                <div className="absolute top-0 right-0 bg-brand-deep-blue/80 text-white text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                   Tap to expand
                 </div>
               </div>
@@ -126,35 +198,14 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
           </div>
         </div>
 
-        {/* ── DESCRIPTION ACCORDION ── */}
-        {product.description && (
-          <div className="border-b border-brand-border/40 shrink-0">
-            <details className="group [&_summary::-webkit-details-marker]:hidden">
-              <summary className="flex cursor-pointer items-center justify-between px-5 md:px-6 py-4 outline-none active:bg-black/5 hover:bg-black/[0.02] transition-colors select-none">
-                <span className="text-[10px] font-mono font-bold text-brand-deep-blue uppercase tracking-[0.2em]">
-                  Description
-                </span>
-                {/* Brutalist animated plus/minus icon */}
-                <div className="relative w-2.5 h-2.5 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
-                  <div className="absolute top-1/2 left-0 w-full h-[1.5px] bg-brand-deep-blue -translate-y-1/2"></div>
-                  <div className="absolute top-0 left-1/2 w-[1.5px] h-full bg-brand-deep-blue -translate-x-1/2 transition-transform duration-300 group-open:rotate-90 origin-center"></div>
-                </div>
-              </summary>
-              <div className="px-5 md:px-6 pb-5 pt-1">
-                <p className="text-xs md:text-sm font-body leading-relaxed text-brand-deep-blue/80">
-                  {product.description}
-                </p>
-              </div>
-            </details>
-          </div>
-        )}
+
 
         {/* ── SIMILAR PRODUCTS ── */}
         {similarProducts.length > 0 && (
           <div className="flex flex-col flex-1 px-5 md:px-6 pt-6 pb-8">
-            <p className="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-brand-deep-blue/80 mb-4">
+            <h3 className="text-sm font-mono font-bold uppercase tracking-widest text-brand-deep-blue mb-4 border-b border-brand-border/40 pb-2">
               — Similar Products
-            </p>
+            </h3>
             <div className="grid grid-cols-2 gap-4">
               {similarProducts.map((p) => (
                 <Link
@@ -180,7 +231,12 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
                   <h4 className="font-heading font-bold text-[11px] sm:text-xs text-brand-deep-blue uppercase tracking-tight leading-snug line-clamp-2 group-hover:text-brand-blue transition-colors">
                     {p.name}
                   </h4>
-                  <div className="text-[9px] font-mono text-brand-deep-blue/80 mt-auto pt-2 uppercase tracking-widest">
+                  {p.description && (
+                    <p className="text-[10px] font-body text-brand-deep-blue/70 mt-1.5 line-clamp-2 leading-relaxed">
+                      {p.description}
+                    </p>
+                  )}
+                  <div className="text-[9px] font-mono text-brand-deep-blue/80 mt-auto pt-3 uppercase tracking-widest">
                     {p.id.split('-')[0]}
                   </div>
                 </Link>
@@ -198,6 +254,18 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
         className="flex-1 overflow-y-auto"
       >
         <div className="max-w-2xl mx-auto px-5 py-8 md:px-10 md:py-10">
+          {/* DESCRIPTION ON THE RIGHT */}
+          {product.description && (
+            <div className="mb-10 pb-8 border-b-2 border-brand-border/60">
+              <h3 className="text-[10px] font-mono font-bold text-brand-deep-blue/60 uppercase tracking-[0.25em] mb-3">
+                Product Description
+              </h3>
+              <p className="text-sm md:text-base font-body leading-relaxed text-brand-deep-blue">
+                {product.description}
+              </p>
+            </div>
+          )}
+          
           <InquiryFormClient product={product} divisionSlug={product.divisions.slug} defaultMoq={moq} />
         </div>
       </motion.div>

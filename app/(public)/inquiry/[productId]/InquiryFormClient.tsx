@@ -284,7 +284,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
       {/* Contact Details Section */}
       <div className="space-y-8">
         <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tight border-b-2 border-brand-deep-blue pb-2">
-          1. Contact Credentials
+          1. Contact Details
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           <div>

@@ -20,7 +20,10 @@ const roboto = Roboto({
   display: 'swap',
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://prodealindustries.com';
+let siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://prodealindustries.com';
+if (!siteUrl.startsWith('http')) {
+  siteUrl = 'https://prodealindustries.com'; // Fallback if $VERCEL_URL or invalid URL is provided without protocol
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
