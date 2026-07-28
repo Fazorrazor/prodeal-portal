@@ -10,7 +10,13 @@ export async function proxy(req: NextRequest) {
   let severity = "INFO";
   const status = 200; // Middleware executes before status is finalized; we log intention
 
-  if (method === "DELETE" || method === "PUT") {
+  // --- 1. Dynamic Tarpitting & Active Deception ---
+  const TARPIT_PATHS = ['.env', 'wp-admin', 'phpmyadmin', '.git', 'config.json'];
+  const isVulnerabilityScanner = TARPIT_PATHS.some(path => url.toLowerCase().includes(path));
+
+  if (isVulnerabilityScanner) {
+    severity = "CRITICAL";
+  } else if (method === "DELETE" || method === "PUT") {
     severity = "WARNING";
   }
 
@@ -67,6 +73,17 @@ export async function proxy(req: NextRequest) {
   }
   // -----------------------------
 
+  // --- Execute Tarpit (Shadow Ban) ---
+  if (isVulnerabilityScanner) {
+    // Deliberately hold the connection open to exhaust botnet resources
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    // Return a fake 200 OK with garbage data to waste the attacker's time analyzing it
+    return new NextResponse(JSON.stringify({ status: "success", version: "9.4.2" }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
 
@@ -121,6 +138,24 @@ export async function proxy(req: NextRequest) {
       }
     }
   }
+
+  // --- Strict Security Headers (Zero Trust) ---
+  res.headers.set("X-Frame-Options", "DENY"); // Prevent Clickjacking
+  res.headers.set("X-Content-Type-Options", "nosniff"); // Prevent MIME-sniffing
+  res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.headers.set(
+    "Strict-Transport-Security",
+    "max-age=31536000; includeSubDomains; preload"
+  ); // Enforce HTTPS
+  res.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+  ); // Disable unnecessary browser features
+  // Strict CSP to neutralize XSS
+  res.headers.set(
+    "Content-Security-Policy",
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.supabase.co https://*.whatsapp.com; connect-src 'self' wss://*.supabase.co https://*.supabase.co; font-src 'self' data:;"
+  );
 
   return res;
 }
