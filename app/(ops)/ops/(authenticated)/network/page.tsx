@@ -124,7 +124,7 @@ export default function NetworkTracesPage() {
         .from("ops_network_traces")
         .select("*")
         .order("timestamp", { ascending: false })
-        .limit(50);
+        .limit(200);
 
       if (data) {
         setRequests(data);
@@ -143,7 +143,7 @@ export default function NetworkTracesPage() {
         (payload) => {
           setRequests((prev) => {
             const next = [payload.new, ...prev];
-            if (next.length > 50) next.pop(); // keep last 50
+            if (next.length > 200) next.pop(); // keep last 200
             calculateMetrics(next);
             return next;
           });
