@@ -100,7 +100,7 @@ export function LogEntryInteractive({ log }: { log: any }) {
             <div className="p-5 border-b border-[#141416] bg-[#0D0D0F] flex items-center gap-3">
               <BrainCircuit className="w-5 h-5 text-[#4CA6FF]" />
               <span className="text-[0.75rem] font-bold uppercase tracking-[0.2em] text-[#4CA6FF]">
-                Serotina AI Diagnostic
+                Pro Deal AI Diagnostic
               </span>
             </div>
 

@@ -10,7 +10,7 @@ import {
 } from "@simplewebauthn/server";
 import { headers, cookies } from "next/headers";
 
-const rpName = "Serotina Ops";
+const rpName = "Pro Deal Ops";
 
 async function getWebAuthnConfig() {
   const headersList = await headers();

@@ -88,8 +88,8 @@ function generateMockDeployments(): Deployment[] {
   return [
     {
       uid: "dpl_mock1a2b3c4d5e",
-      name: "serotina",
-      url: "serotina-production.vercel.app",
+      name: "prodeal-portal",
+      url: "prodeal-production.vercel.app",
       created: now - 1000 * 60 * 15, // 15 mins ago
       state: "READY",
       meta: {
@@ -102,8 +102,8 @@ function generateMockDeployments(): Deployment[] {
     },
     {
       uid: "dpl_mock9z8y7x6w5v",
-      name: "serotina",
-      url: "serotina-git-feature-ops-hardening.vercel.app",
+      name: "prodeal-portal",
+      url: "prodeal-git-feature-ops-hardening.vercel.app",
       created: now - 1000 * 60 * 60 * 2, // 2 hours ago
       state: "READY",
       meta: {
@@ -115,8 +115,8 @@ function generateMockDeployments(): Deployment[] {
     },
     {
       uid: "dpl_mock5f4e3d2c1b",
-      name: "serotina",
-      url: "serotina-git-main.vercel.app",
+      name: "prodeal-portal",
+      url: "prodeal-git-main.vercel.app",
       created: now - 1000 * 60 * 60 * 24, // 1 day ago
       state: "ERROR",
       meta: {
@@ -128,8 +128,8 @@ function generateMockDeployments(): Deployment[] {
     },
     {
       uid: "dpl_mock1q2w3e4r5t",
-      name: "serotina",
-      url: "serotina-git-main-old.vercel.app",
+      name: "prodeal-portal",
+      url: "prodeal-git-main-old.vercel.app",
       created: now - 1000 * 60 * 60 * 48, // 2 days ago
       state: "READY",
       meta: {
