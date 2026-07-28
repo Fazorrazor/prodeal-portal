@@ -10,6 +10,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.25",
     "@hookform/resolvers": "^5.4.0",
     "@simplewebauthn/browser": "^13.3.0",
     "@simplewebauthn/server": "^13.3.2",
@@ -20,6 +21,7 @@
     "@upstash/redis": "^1.38.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
+    "ai": "^7.0.38",
     "argon2": "^0.45.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
