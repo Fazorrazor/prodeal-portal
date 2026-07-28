@@ -12,6 +12,8 @@ import {
   WifiHigh,
   Bug,
   X,
+  Copy,
+  Check,
 } from "lucide-react";
 
 // Initialize Supabase client
@@ -19,6 +21,32 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
 );
+
+const CopyButton = ({ text, label }: { text: string; label?: string }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      title={`Copy ${label || "value"}`}
+      className="inline-flex items-center gap-1.5 hover:bg-[#1A1A1A] px-1.5 py-0.5 rounded transition-colors group cursor-copy"
+    >
+      <span className="truncate">{text}</span>
+      {copied ? (
+        <Check className="w-3 h-3 text-[#27D17F]" />
+      ) : (
+        <Copy className="w-3 h-3 text-[#68686F] opacity-0 group-hover:opacity-100 transition-opacity" />
+      )}
+    </button>
+  );
+};
 
 export default function NetworkTracesPage() {
   const [requests, setRequests] = useState<any[]>([]);
@@ -321,7 +349,9 @@ export default function NetworkTracesPage() {
                       <div className="space-y-3 text-sm">
                         <div className="flex justify-between items-center">
                           <span className="text-[#68686F] text-xs">IP Address</span>
-                          <span className="text-[#F5F5F5] font-mono text-xs">{selectedRequest.metadata.ip || "Unknown"}</span>
+                          <span className="text-[#F5F5F5] font-mono text-xs text-right max-w-[150px]">
+                            <CopyButton text={selectedRequest.metadata.ip || "Unknown"} label="IP Address" />
+                          </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-[#68686F] text-xs">Origin</span>
@@ -339,7 +369,9 @@ export default function NetworkTracesPage() {
                       <div className="space-y-3 text-sm">
                         <div className="flex justify-between items-center">
                           <span className="text-[#68686F] text-xs">Edge Node ID</span>
-                          <span className="text-[#F5F5F5] font-mono text-xs uppercase">{selectedRequest.metadata.headers?.['x-vercel-id']?.split('::')[0] || selectedRequest.region}</span>
+                          <span className="text-[#F5F5F5] font-mono text-xs uppercase text-right max-w-[120px]">
+                            <CopyButton text={selectedRequest.metadata.headers?.['x-vercel-id']?.split('::')[0] || selectedRequest.region} label="Edge Node ID" />
+                          </span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="text-[#68686F] text-xs">Invocation</span>
@@ -357,11 +389,15 @@ export default function NetworkTracesPage() {
                       <div className="space-y-3 text-sm">
                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
                           <span className="text-[#68686F] text-xs">JA3 Digest (TLS Profile)</span>
-                          <span className="text-[#FFB020] font-mono text-[0.65rem] break-all">{selectedRequest.metadata.headers?.['x-vercel-ja3-digest'] || "Not Captured"}</span>
+                          <span className="text-[#FFB020] font-mono text-[0.65rem] text-right">
+                            <CopyButton text={selectedRequest.metadata.headers?.['x-vercel-ja3-digest'] || "Not Captured"} label="JA3 Digest" />
+                          </span>
                         </div>
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
                           <span className="text-[#68686F] text-xs">JA4 Digest (Network Profile)</span>
-                          <span className="text-[#FFB020] font-mono text-[0.65rem] break-all">{selectedRequest.metadata.headers?.['x-vercel-ja4-digest'] || "Not Captured"}</span>
+                          <span className="text-[#FFB020] font-mono text-[0.65rem] text-right">
+                            <CopyButton text={selectedRequest.metadata.headers?.['x-vercel-ja4-digest'] || "Not Captured"} label="JA4 Digest" />
+                          </span>
                         </div>
                       </div>
                     </div>
