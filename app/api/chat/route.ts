@@ -1,6 +1,7 @@
 import { streamText, embed } from 'ai';
 import { google } from '@ai-sdk/google';
 import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -87,8 +88,46 @@ When responding:
 2. If they ask what this is, explain the attack vector (e.g., "This is a brute-force attempt" or "This is a vulnerability scanner looking for exposed environments").
 3. Point out specific red flags from the JSON.
 4. If historical matches were found, explicitly mention them and cross-reference them to prove patterns (e.g., "This exact JA3 signature matches an attack from last week").
-5. Never apologize. Speak with absolute authority on security.`,
+5. Never apologize. Speak with absolute authority on security.
+6. If the user asks you to block the IP, you MUST call the \`block_malicious_ip\` tool. DO NOT write code for them unless they specifically ask for the code. Instead, call the tool directly to protect the system.`,
     messages,
+    tools: {
+      block_malicious_ip: {
+        description: 'Blocks a malicious IP address instantly by adding it to the Upstash Redis global firewall blacklist. The Edge middleware will immediately drop all requests from this IP.',
+        parameters: z.object({
+          ipAddress: z.string().describe('The IPv4 or IPv6 address to block.'),
+          reason: z.string().describe('A brief reason for the block to record in the audit log.')
+        }),
+        execute: async ({ ipAddress, reason }) => {
+          // Add to Upstash Redis Blacklist
+          try {
+            const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
+            const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+            
+            if (!upstashUrl || !upstashToken) {
+              return { success: false, error: 'Redis configuration missing' };
+            }
+
+            // Using the REST API directly since we don't have a redis client imported
+            const res = await fetch(`${upstashUrl}/sadd/edge_firewall_blacklist/${ipAddress}`, {
+              headers: { Authorization: `Bearer ${upstashToken}` }
+            });
+            
+            if (res.ok) {
+              return { 
+                success: true, 
+                message: `IP ${ipAddress} has been successfully added to the global blacklist.`,
+                reason 
+              };
+            } else {
+              return { success: false, error: 'Failed to write to Redis' };
+            }
+          } catch (e: any) {
+            return { success: false, error: e.message };
+          }
+        },
+      }
+    }
   });
 
   return result.toDataStreamResponse();

@@ -3,7 +3,32 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from "jose";
 
+import { Redis } from '@upstash/redis';
+
 export async function proxy(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'Unknown';
+  
+  // --- Edge Firewall Execution ---
+  if (ip !== 'Unknown' && process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+    try {
+      const redis = new Redis({
+        url: process.env.UPSTASH_REDIS_REST_URL,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      });
+      const isBlacklisted = await redis.sismember('edge_firewall_blacklist', ip);
+      
+      if (isBlacklisted) {
+        return new NextResponse(
+          JSON.stringify({ error: "Access Denied: IP blocked by Edge Firewall" }), 
+          { status: 403, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    } catch (e) {
+      // Fail open if Redis is down
+      console.error("Firewall check failed:", e);
+    }
+  }
+
   // --- Telemetry Interceptor ---
   const url = req.nextUrl.pathname;
   const method = req.method;
