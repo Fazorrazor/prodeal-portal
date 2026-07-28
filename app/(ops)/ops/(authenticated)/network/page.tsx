@@ -462,7 +462,7 @@ export default function NetworkTracesPage() {
                 </div>
                 
                 <div className="flex-1 overflow-y-auto p-4 space-y-4" ref={chatScrollRef}>
-                  {messages.map((m) => (
+                  {messages.map((m: any) => (
                     <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                       <div className={`max-w-[85%] p-3 text-[0.75rem] font-mono leading-relaxed whitespace-pre-wrap ${
                         m.role === "user" 
