@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useChat } from "ai/react";
+import { useChat } from "@ai-sdk/react";
 import { createClient } from "@supabase/supabase-js";
 import {
   Network,
