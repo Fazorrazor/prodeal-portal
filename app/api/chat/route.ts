@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       const summaryText = `Endpoint: ${endpoint} | IP: ${data.anomalyContext.ip || 'Unknown'} | JA3: ${data.anomalyContext.headers?.['x-vercel-ja3-digest'] || 'None'} | JA4: ${data.anomalyContext.headers?.['x-vercel-ja4-digest'] || 'None'} | User-Agent: ${data.anomalyContext.headers?.['user-agent'] || 'None'}`;
       
       const { embedding } = await embed({
-        // @ts-expect-error version mismatch between ai and @ai-sdk/google
+
         model: google.textEmbeddingModel('gemini-embedding-2'),
         value: summaryText,
       });
@@ -66,7 +66,7 @@ export async function POST(req: Request) {
   }
 
   const result = await streamText({
-    // @ts-expect-error version mismatch between ai and @ai-sdk/google
+
     model: google('gemini-flash-latest'),
     system: `You are a highly advanced Cybersecurity and DevOps AI Assistant built directly into the Prodeal Industries secure portal.
 You speak in a professional, slightly brutalist, highly technical, and urgent tone. 
