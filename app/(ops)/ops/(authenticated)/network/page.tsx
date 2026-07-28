@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars, react-hooks/set-state-in-effect */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useChat } from "ai/react";
 import { createClient } from "@supabase/supabase-js";
 import {
   Network,
@@ -14,6 +15,8 @@ import {
   X,
   Copy,
   Check,
+  Bot,
+  Send,
 } from "lucide-react";
 
 // Initialize Supabase client
@@ -57,6 +60,34 @@ export default function NetworkTracesPage() {
   });
   const [activeTab, setActiveTab] = useState<"GLOBAL" | "ANOMALIES">("GLOBAL");
   const [selectedRequest, setSelectedRequest] = useState<any | null>(null);
+  
+  const chatScrollRef = useRef<HTMLDivElement>(null);
+
+  // Vercel AI SDK Chat Hook
+  const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat({
+    api: "/api/chat",
+    body: {
+      data: { anomalyContext: selectedRequest?.metadata || null },
+    },
+  });
+
+  // Auto-scroll chat to bottom
+  useEffect(() => {
+    if (chatScrollRef.current) {
+      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // Clear chat when opening a new anomaly
+  useEffect(() => {
+    if (selectedRequest) {
+      setMessages([{
+        id: "sys-1",
+        role: "assistant",
+        content: `I've received the forensic trace for ${selectedRequest.endpoint}. How can I assist you with this analysis?`
+      }]);
+    }
+  }, [selectedRequest, setMessages]);
 
   // Helper to calculate realistic metrics based on the current visible window of traces
   const calculateMetrics = (traces: any[]) => {
@@ -417,6 +448,44 @@ export default function NetworkTracesPage() {
                       : "// No extended metadata captured for this legacy trace."}
                   </pre>
                 </div>
+              </div>
+
+              {/* Forensic AI Chat Interface */}
+              <div className="border border-[#141416] bg-[#050505] flex flex-col h-[300px]">
+                <div className="p-3 border-b border-[#141416] flex items-center gap-2 bg-[#0A0A0A]">
+                  <Bot className="w-4 h-4 text-[#4CA6FF]" />
+                  <span className="text-[0.65rem] uppercase tracking-widest text-[#F5F5F5] font-bold">Forensic AI Assistant</span>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-4 space-y-4" ref={chatScrollRef}>
+                  {messages.map((m) => (
+                    <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                      <div className={`max-w-[85%] p-3 text-[0.75rem] font-mono leading-relaxed whitespace-pre-wrap ${
+                        m.role === "user" 
+                          ? "bg-[#1A1A1A] text-[#F5F5F5] border border-[#333333]" 
+                          : "bg-[#090909] text-[#A7A7AA] border border-[#141416]"
+                      }`}>
+                        {m.content}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <form onSubmit={handleSubmit} className="p-3 border-t border-[#141416] flex gap-2">
+                  <input
+                    value={input}
+                    onChange={handleInputChange}
+                    placeholder="Ask the AI about this anomaly..."
+                    className="flex-1 bg-[#090909] border border-[#141416] text-[#F5F5F5] text-sm px-3 py-2 outline-none focus:border-[#4CA6FF] font-mono transition-colors"
+                  />
+                  <button 
+                    type="submit" 
+                    disabled={!input.trim()}
+                    className="px-4 py-2 bg-[#1A1A1A] hover:bg-[#2A2A2A] border border-[#333333] text-[#F5F5F5] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                  >
+                    <Send className="w-4 h-4" />
+                  </button>
+                </form>
               </div>
             </div>
             
