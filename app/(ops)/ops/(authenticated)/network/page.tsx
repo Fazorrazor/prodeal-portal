@@ -67,7 +67,11 @@ export default function NetworkTracesPage() {
   const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat({
     api: "/api/chat",
     body: {
-      data: { anomalyContext: selectedRequest?.metadata || null },
+      data: { 
+        anomalyContext: selectedRequest?.metadata || null,
+        anomalyId: selectedRequest?.id || null,
+        endpoint: selectedRequest?.endpoint || "Unknown"
+      },
     },
   });
 
