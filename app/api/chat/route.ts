@@ -67,7 +67,7 @@ export async function POST(req: Request) {
 
   const result = await streamText({
     // @ts-expect-error version mismatch between ai and @ai-sdk/google
-    model: google('gemini-2.5-pro'),
+    model: google('gemini-2.5-flash'),
     system: `You are a highly advanced Cybersecurity and DevOps AI Assistant built directly into the Prodeal Industries secure portal.
 You speak in a professional, slightly brutalist, highly technical, and urgent tone. 
 
