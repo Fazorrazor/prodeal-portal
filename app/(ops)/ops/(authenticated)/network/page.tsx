@@ -309,9 +309,14 @@ export default function NetworkTracesPage() {
               </tr>
             </thead>
             <tbody>
+              <AnimatePresence>
               {(activeTab === "GLOBAL" ? requests : requests.filter(isAnomaly)).map((req) => (
-                <tr
+                <motion.tr
                   key={req.id}
+                  initial={{ opacity: 0, y: -10, backgroundColor: 'rgba(76,166,255,0.1)' }}
+                  animate={{ opacity: 1, y: 0, backgroundColor: 'transparent' }}
+                  exit={{ opacity: 0, height: 0, overflow: 'hidden' }}
+                  transition={{ duration: 0.3 }}
                   onClick={() => activeTab === "ANOMALIES" ? setSelectedRequest(req) : null}
                   className={`border-b border-[#141416]/50 transition-colors group ${activeTab === "ANOMALIES" ? "hover:bg-[#310004]/40 cursor-pointer" : "hover:bg-[#141416]"}`}
                 >
@@ -347,15 +352,19 @@ export default function NetworkTracesPage() {
                   <td className="p-4 text-right text-[#68686F]">
                     {req.region}
                   </td>
-                </tr>
+                </motion.tr>
               ))}
               {activeTab === "ANOMALIES" && requests.filter(isAnomaly).length === 0 && (
-                <tr>
+                <motion.tr
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
                   <td colSpan={6} className="p-12 text-center text-[#68686F] text-[0.7rem] uppercase tracking-widest border-t border-[#141416]">
                     All clear. No anomalies detected in current window.
                   </td>
-                </tr>
+                </motion.tr>
               )}
+              </AnimatePresence>
             </tbody>
           </table>
         </div>

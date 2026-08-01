@@ -11,6 +11,7 @@ import {
   X,
   Flame,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -166,11 +167,16 @@ export default function IncidentsPage() {
 
       {/* Incidents Feed */}
       <div className="flex flex-col gap-6 pb-12">
+        <AnimatePresence>
         {incidents.map((incident) => {
           const uiSeverity = getUILabelForSeverity(incident.severity);
           return (
-            <div
+            <motion.div
               key={incident.id}
+              initial={{ opacity: 0, y: -20, height: 0 }}
+              animate={{ opacity: 1, y: 0, height: "auto" }}
+              exit={{ opacity: 0, scale: 0.95, height: 0 }}
+              transition={{ duration: 0.3 }}
               className={`border border-[#141416] bg-[#090909] relative overflow-hidden shrink-0 ${incident.status === "resolved" ? "opacity-60 grayscale" : ""}`}
             >
               {/* Header */}
@@ -227,9 +233,10 @@ export default function IncidentsPage() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           );
         })}
+        </AnimatePresence>
         {incidents.length === 0 && (
           <div className="text-[#68686F] text-[0.7rem] uppercase tracking-widest text-center py-10">
             NO INCIDENT HISTORY

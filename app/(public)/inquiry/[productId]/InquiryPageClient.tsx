@@ -65,53 +65,8 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
           </span>
         </div>
 
-        {/* ── MOBILE: compact strip (thumb + name) — no full banner ── */}
-        <div className="md:hidden flex gap-4 items-center px-5 py-4 border-b border-brand-border/40 shrink-0">
-          {galleryImages.length > 0 ? (
-            <ImageLightbox
-              src={galleryImages[currentImageIndex]}
-              images={galleryImages}
-              initialIndex={currentImageIndex}
-              onIndexChange={setCurrentImageIndex}
-              alt={`${product.name} - Image ${currentImageIndex + 1}`}
-              className="block w-16 h-16 shrink-0 overflow-hidden bg-black/5 relative group/mob"
-            >
-              <Image
-                src={galleryImages[currentImageIndex]}
-                alt={`${product.name} - Image ${currentImageIndex + 1}`}
-                width={64}
-                height={64}
-                className="w-full h-full object-cover"
-                priority
-              />
-              {galleryImages.length > 1 && (
-                <>
-                  <button onClick={prevImage} className="absolute left-0 top-0 bottom-0 px-1 bg-black/10 text-white flex items-center justify-center opacity-0 group-hover/mob:opacity-100 transition-opacity">
-                    <ChevronLeft className="w-3 h-3" />
-                  </button>
-                  <button onClick={nextImage} className="absolute right-0 top-0 bottom-0 px-1 bg-black/10 text-white flex items-center justify-center opacity-0 group-hover/mob:opacity-100 transition-opacity">
-                    <ChevronRight className="w-3 h-3" />
-                  </button>
-                </>
-              )}
-            </ImageLightbox>
-          ) : (
-            <div className="w-16 h-16 shrink-0 bg-black/5 flex items-center justify-center">
-              <span className="text-[8px] font-mono text-brand-deep-blue/80 uppercase">No img</span>
-            </div>
-          )}
-          <div className="min-w-0">
-            <h1 className="font-heading font-bold text-base text-brand-deep-blue uppercase tracking-tight leading-snug line-clamp-2">
-              {product.name}
-            </h1>
-            <div className="text-[10px] font-mono text-brand-deep-blue/80 mt-0.5 uppercase tracking-widest">
-              SKU: {product.id.split('-')[0]}
-            </div>
-          </div>
-        </div>
-
-        {/* ── DESKTOP: full product image ── */}
-        <div className="hidden md:block relative w-full aspect-[4/3] bg-black/10 overflow-hidden shrink-0 group">
+        {/* ── PRODUCT IMAGE (Mobile & Desktop) ── */}
+        <div className="relative w-full aspect-square md:aspect-[4/3] bg-black/10 overflow-hidden shrink-0 group">
           {galleryImages.length > 0 ? (
             <ImageLightbox
               src={galleryImages[currentImageIndex]}
@@ -121,7 +76,7 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
               alt={`${product.name} - Image ${currentImageIndex + 1}`}
               className="block w-full h-full"
             >
-              <div className="relative w-full h-full overflow-hidden">
+              <div className="relative w-full h-full overflow-hidden bg-white/5">
                 <AnimatePresence initial={false} mode="wait">
                   <motion.div
                     key={currentImageIndex}
@@ -136,7 +91,7 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
                       alt={`${product.name} - Image ${currentImageIndex + 1}`}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      sizes="520px"
+                      sizes="(max-width: 768px) 100vw, 520px"
                       priority
                     />
                   </motion.div>
@@ -146,30 +101,30 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
                   <>
                     <button 
                       onClick={prevImage}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/20 hover:bg-black/50 text-white flex items-center justify-center rounded-none opacity-0 group-hover:opacity-100 transition-all z-10"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 md:w-8 md:h-8 bg-black/20 hover:bg-black/50 text-white flex items-center justify-center rounded-none opacity-100 md:opacity-0 group-hover:opacity-100 transition-all z-10"
                     >
-                      <ChevronLeft className="w-5 h-5" />
+                      <ChevronLeft className="w-6 h-6 md:w-5 md:h-5" />
                     </button>
                     <button 
                       onClick={nextImage}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/20 hover:bg-black/50 text-white flex items-center justify-center rounded-none opacity-0 group-hover:opacity-100 transition-all z-10"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 md:w-8 md:h-8 bg-black/20 hover:bg-black/50 text-white flex items-center justify-center rounded-none opacity-100 md:opacity-0 group-hover:opacity-100 transition-all z-10"
                     >
-                      <ChevronRight className="w-5 h-5" />
+                      <ChevronRight className="w-6 h-6 md:w-5 md:h-5" />
                     </button>
                     
                     {/* Image indicator dots */}
-                    <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-1.5 z-10 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                       {galleryImages.map((_, i) => (
                         <div 
                           key={i} 
-                          className={`h-1 transition-all ${i === currentImageIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/50'}`}
+                          className={`h-1.5 md:h-1 transition-all ${i === currentImageIndex ? 'w-5 md:w-4 bg-white' : 'w-2 md:w-1.5 bg-white/50'}`}
                         />
                       ))}
                     </div>
                   </>
                 )}
                 
-                <div className="absolute top-0 right-0 bg-brand-deep-blue/80 text-white text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                <div className="absolute top-0 right-0 bg-brand-deep-blue/80 text-white text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1.5 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity z-10">
                   Tap to expand
                 </div>
               </div>
@@ -181,21 +136,25 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
           )}
         </div>
 
-        {/* Product name + SKU — desktop */}
-        <div className="hidden md:block px-6 pt-5 pb-4 border-b border-brand-border/40 shrink-0">
-          <h1 className="font-display font-extrabold text-2xl lg:text-3xl text-brand-deep-blue uppercase tracking-tighter leading-tight mb-3">
-            {product.name}
-          </h1>
-          <div className="flex items-center gap-4">
-            <div>
-              <span className="block text-[9px] font-mono font-bold text-brand-deep-blue/80 uppercase tracking-[0.2em] mb-0.5">
-                Product SKU
-              </span>
-              <span className="text-sm font-mono font-bold text-brand-deep-blue uppercase tracking-widest">
-                {product.id.split('-')[0]}
-              </span>
+        {/* ── PRODUCT INFO (Mobile & Desktop) ── */}
+        <div className="px-5 md:px-6 pt-6 pb-6 border-b border-brand-border/40 shrink-0 flex flex-col gap-4">
+          <div>
+            <h1 className="font-display font-extrabold text-2xl lg:text-3xl text-brand-deep-blue uppercase tracking-tighter leading-tight mb-2">
+              {product.name}
+            </h1>
+            <div className="text-[10px] font-mono font-bold text-brand-deep-blue/80 uppercase tracking-[0.2em]">
+              SKU: {product.id.split('-')[0]}
             </div>
           </div>
+          
+          {/* Description shown under title on mobile, remains on right panel for desktop */}
+          {product.description && (
+            <div className="md:hidden mt-2">
+              <p className="text-sm font-body leading-relaxed text-brand-deep-blue">
+                {product.description}
+              </p>
+            </div>
+          )}
         </div>
 
 
@@ -254,13 +213,13 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
         className="flex-1 overflow-y-auto"
       >
         <div className="max-w-2xl mx-auto px-5 py-8 md:px-10 md:py-10">
-          {/* DESCRIPTION ON THE RIGHT */}
+          {/* DESCRIPTION ON THE RIGHT (Desktop Only) */}
           {product.description && (
-            <div className="mb-10 pb-8 border-b-2 border-brand-border/60">
+            <div className="hidden md:block mb-10 pb-8 border-b-2 border-brand-border/60">
               <h3 className="text-[10px] font-mono font-bold text-brand-deep-blue/60 uppercase tracking-[0.25em] mb-3">
                 Product Description
               </h3>
-              <p className="text-sm md:text-base font-body leading-relaxed text-brand-deep-blue">
+              <p className="text-base font-body leading-relaxed text-brand-deep-blue">
                 {product.description}
               </p>
             </div>
