@@ -9,6 +9,7 @@ import {
   ServerCrash,
 } from "lucide-react";
 import { format } from "date-fns";
+import { motion } from "framer-motion";
 
 // Syntax highlighting helpers
 const highlightJSON = (jsonObj: any) => {
@@ -173,7 +174,10 @@ export function SystemLogErrorInteractive({ log }: { log: any }) {
 
   return (
     <>
-      <div 
+      <motion.div 
+        initial={{ opacity: 0, y: -10, backgroundColor: 'rgba(229,9,20,0.1)' }}
+        animate={{ opacity: 1, y: 0, backgroundColor: 'transparent' }}
+        transition={{ duration: 0.3 }}
         onClick={() => setExpanded(true)}
         className="border border-[#141416] bg-[#0D0D0F] p-4 flex flex-col gap-3 relative cursor-pointer hover:bg-[#141416] transition-colors group"
       >
@@ -189,7 +193,7 @@ export function SystemLogErrorInteractive({ log }: { log: any }) {
         <div className="text-[#F5F5F5] font-semibold text-[0.75rem] leading-relaxed break-words line-clamp-2">
           {log.error_message}
         </div>
-      </div>
+      </motion.div>
 
       {mounted && createPortal(modalContent, document.body)}
     </>
