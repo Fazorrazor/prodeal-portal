@@ -35,13 +35,29 @@ export function ProductImageCarousel({ images, alt, priority = false }: ProductI
     );
   }
 
-  // Auto-play continuously
+  // Auto-play continuously with a random stagger offset
   useEffect(() => {
-    const timer = setInterval(() => {
+    let interval: NodeJS.Timeout;
+    
+    // Random delay between 0 and 2000ms so they don't all slide in unison
+    const startDelay = Math.random() * 2000;
+    
+    const timeout = setTimeout(() => {
+      // First slide
       setDirection(1);
       setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 3000); // swipe every 3s
-    return () => clearInterval(timer);
+      
+      // Then start interval
+      interval = setInterval(() => {
+        setDirection(1);
+        setCurrentIndex((prev) => (prev + 1) % images.length);
+      }, 3000);
+    }, startDelay);
+
+    return () => {
+      clearTimeout(timeout);
+      if (interval) clearInterval(interval);
+    };
   }, [images.length]);
 
   const variants = {
