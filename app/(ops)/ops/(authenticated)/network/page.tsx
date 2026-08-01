@@ -2,8 +2,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useChat } from "@ai-sdk/react";
+import { useChat } from "ai/react";
 import { createClient } from "@supabase/supabase-js";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Network,
   Activity,
@@ -64,7 +65,7 @@ export default function NetworkTracesPage() {
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
   // Vercel AI SDK Chat Hook
-  const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, setMessages, isLoading } = useChat({
     api: "/api/chat",
     body: {
       data: { 
@@ -124,7 +125,7 @@ export default function NetworkTracesPage() {
         .from("ops_network_traces")
         .select("*")
         .order("timestamp", { ascending: false })
-        .limit(50);
+        .limit(200);
 
       if (data) {
         setRequests(data);
@@ -143,7 +144,7 @@ export default function NetworkTracesPage() {
         (payload) => {
           setRequests((prev) => {
             const next = [payload.new, ...prev];
-            if (next.length > 50) next.pop(); // keep last 50
+            if (next.length > 200) next.pop(); // keep last 200
             calculateMetrics(next);
             return next;
           });
@@ -335,7 +336,7 @@ export default function NetworkTracesPage() {
       {/* Deep Inspection Modal */}
       {selectedRequest && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="bg-[#090909] border border-[#E50914]/30 w-full max-w-3xl flex flex-col max-h-[85vh]">
+          <div className="bg-[#090909] border border-[#E50914]/30 w-full max-w-6xl flex flex-col max-h-[85vh]">
             <div className="p-4 border-b border-[#E50914]/30 flex justify-between items-center bg-[#310004]/20 shrink-0">
               <h2 className="text-[#F5F5F5] text-[0.7rem] font-bold uppercase tracking-widest flex items-center gap-2">
                 <Bug className="w-4 h-4 text-[#E50914]" />
@@ -368,8 +369,11 @@ export default function NetworkTracesPage() {
               </div>
             </div>
 
-            {/* Raw Metadata Block - SCROLLABLE */}
-            <div className="p-6 flex-1 overflow-y-auto min-h-0 space-y-6">
+            {/* Main Content Area */}
+            <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden">
+              
+              {/* Left Column: Forensic Breakdown & Headers - SCROLLABLE */}
+              <div className="lg:w-3/5 p-6 overflow-y-auto border-b lg:border-b-0 lg:border-r border-[#141416] space-y-6">
               
               {/* Automated Forensic Breakdown */}
               {selectedRequest.metadata && (
@@ -454,28 +458,57 @@ export default function NetworkTracesPage() {
                 </div>
               </div>
 
-              {/* Forensic AI Chat Interface */}
-              <div className="border border-[#141416] bg-[#050505] flex flex-col h-[300px]">
-                <div className="p-3 border-b border-[#141416] flex items-center gap-2 bg-[#0A0A0A]">
+              </div>
+
+              {/* Right Column: Forensic AI Chat Interface */}
+              <div className="lg:w-2/5 flex flex-col bg-[#050505] min-h-[300px]">
+                <div className="p-3 border-b border-[#141416] flex items-center gap-2 bg-[#0A0A0A] shrink-0">
                   <Bot className="w-4 h-4 text-[#4CA6FF]" />
                   <span className="text-[0.65rem] uppercase tracking-widest text-[#F5F5F5] font-bold">Forensic AI Assistant</span>
                 </div>
                 
-                <div className="flex-1 overflow-y-auto p-4 space-y-4" ref={chatScrollRef}>
-                  {messages.map((m: any) => (
-                    <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                      <div className={`max-w-[85%] p-3 text-[0.75rem] font-mono leading-relaxed whitespace-pre-wrap ${
-                        m.role === "user" 
-                          ? "bg-[#1A1A1A] text-[#F5F5F5] border border-[#333333]" 
-                          : "bg-[#090909] text-[#A7A7AA] border border-[#141416]"
-                      }`}>
-                        {m.content}
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0" ref={chatScrollRef}>
+                  <AnimatePresence>
+                    {messages.map((m: any) => (
+                      <motion.div 
+                        key={m.id} 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                      >
+                        <div className={`max-w-[85%] p-3 text-[0.75rem] font-mono leading-relaxed whitespace-pre-wrap ${
+                          m.role === "user" 
+                            ? "bg-[#1A1A1A] text-[#F5F5F5] border border-[#333333]" 
+                            : "bg-[#090909] text-[#A7A7AA] border border-[#141416]"
+                        }`}>
+                          {m.content}
+                        </div>
+                      </motion.div>
+                    ))}
+                    
+                    {isLoading && (
+                      <motion.div
+                        key="loading-indicator"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="flex justify-start"
+                      >
+                        <div className="max-w-[85%] p-3 text-[0.75rem] font-mono leading-relaxed bg-[#090909] text-[#4CA6FF] border border-[#141416] flex items-center gap-3">
+                          <div className="flex gap-1">
+                            <span className="w-1.5 h-1.5 bg-[#4CA6FF] animate-pulse"></span>
+                            <span className="w-1.5 h-1.5 bg-[#4CA6FF] animate-pulse delay-75"></span>
+                            <span className="w-1.5 h-1.5 bg-[#4CA6FF] animate-pulse delay-150"></span>
+                          </div>
+                          <span className="uppercase tracking-widest text-[0.65rem] opacity-80">PROCESSING FORENSICS...</span>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-3 border-t border-[#141416] flex gap-2">
+                <form onSubmit={handleSubmit} className="p-3 border-t border-[#141416] flex gap-2 shrink-0">
                   <input
                     value={input}
                     onChange={handleInputChange}

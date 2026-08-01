@@ -10,7 +10,7 @@ import {
 } from "@simplewebauthn/server";
 import { headers, cookies } from "next/headers";
 
-const rpName = "Serotina Ops";
+const rpName = "Pro Deal Ops";
 
 async function getWebAuthnConfig() {
   const headersList = await headers();
@@ -114,7 +114,7 @@ export async function getAuthenticationOptions() {
     allowCredentials: [
       {
         id: cred.id,
-        transports: cred.transports,
+        transports: cred.transports ? cred.transports.filter((t: string) => t === "internal") : ["internal"],
       },
     ],
     userVerification: "preferred",
@@ -199,7 +199,7 @@ export async function getCalibrationAuthOptions(credentialStr: string) {
     allowCredentials: [
       {
         id: cred.id,
-        transports: cred.transports,
+        transports: cred.transports ? cred.transports.filter((t: string) => t === "internal") : ["internal"],
       },
     ],
     userVerification: "preferred",

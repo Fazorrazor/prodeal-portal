@@ -117,7 +117,7 @@ export class OpsLogger {
       message,
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV || "development",
-      service: "serotina-core",
+      service: "prodeal-core",
       metadata: redact(metadata),
     };
 
