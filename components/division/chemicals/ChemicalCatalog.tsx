@@ -57,7 +57,7 @@ function ChemicalCard({ product, priority = false }: {
     name: string;
     description?: string | null;
     image_path?: string | null;
-    metadata?: { cas_number?: string; grade?: string } | null;
+    metadata?: { cas_number?: string; grade?: string; gallery_images?: string[] } | null;
     [key: string]: unknown;
   };
   priority?: boolean;
