@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { ScrollReveal } from '../../shared/ScrollReveal';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -20,7 +20,7 @@ export async function InventoryTable() {
   }
 
   return (
-    <ScrollReveal className="mt-0">
+    <div className="mt-0">
       {/* Section header */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-0">
         <div>
@@ -67,7 +67,7 @@ export async function InventoryTable() {
                 </td>
               </tr>
             ) : (
-              products.map((product) => (
+              products.map((product, index) => (
                 <tr
                   key={product.id}
                   className="border-b border-brand-border/30 md:hover:bg-black/5 transition-colors group relative"
@@ -81,6 +81,7 @@ export async function InventoryTable() {
                           alt={product.name}
                           width={48}
                           height={48}
+                          priority={index < 4}
                           className="w-full h-full object-cover"
                         />
                       ) : (
@@ -135,7 +136,7 @@ export async function InventoryTable() {
             </p>
           </div>
         ) : (
-          products.map((product) => (
+          products.map((product, index) => (
               <Link
                 href={`/inquiry/${product.id}?from=bowls`}
                 key={product.id}
@@ -150,6 +151,7 @@ export async function InventoryTable() {
                         alt={product.name}
                         width={64}
                         height={64}
+                        priority={index < 4}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -198,6 +200,6 @@ export async function InventoryTable() {
           ))
         )}
       </div>
-    </ScrollReveal>
+    </div>
   );
 }

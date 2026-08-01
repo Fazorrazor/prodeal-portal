@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
+import { useScrambleText } from "@/hooks/useScrambleText";
 
 // Syntax highlighting helpers
 const highlightJSON = (jsonObj: any) => {
@@ -74,6 +75,9 @@ export function SystemLogErrorInteractive({ log }: { log: any }) {
   }, [expanded]);
 
   const formattedDate = format(new Date(log.created_at), 'MMM d, yyyy HH:mm:ss');
+  
+  const scrambledContext = useScrambleText(log.context, true, 800, 30);
+  const scrambledDate = useScrambleText(formattedDate, true, 1000, 40);
 
   const modalContent = expanded ? (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#050505]">
@@ -109,14 +113,14 @@ export function SystemLogErrorInteractive({ log }: { log: any }) {
             <div className="flex-1">
               <div className="text-[0.8rem] font-bold uppercase tracking-[0.3em] mb-4 text-[#E50914] flex items-center gap-2">
                 <span className="w-2 h-2 bg-[#E50914] animate-pulse"></span>
-                CONTEXT: {log.context}
+                CONTEXT: {scrambledContext}
               </div>
               <div className="text-2xl md:text-3xl font-bold tracking-wider text-[#F5F5F5] leading-relaxed break-words border-l-4 border-[#E50914] pl-4">
                 {log.error_message}
               </div>
             </div>
             <div className="text-right text-[#68686F] text-[0.75rem] font-mono tracking-widest uppercase shrink-0">
-              <div>{formattedDate}</div>
+              <div>{scrambledDate}</div>
             </div>
           </div>
 
@@ -174,26 +178,28 @@ export function SystemLogErrorInteractive({ log }: { log: any }) {
 
   return (
     <>
-      <motion.div 
-        initial={{ opacity: 0, y: -10, backgroundColor: 'rgba(229,9,20,0.1)' }}
-        animate={{ opacity: 1, y: 0, backgroundColor: 'transparent' }}
-        transition={{ duration: 0.3 }}
+      <div 
         onClick={() => setExpanded(true)}
-        className="border border-[#141416] bg-[#0D0D0F] p-4 flex flex-col gap-3 relative cursor-pointer hover:bg-[#141416] transition-colors group"
+        className="border border-[#141416] bg-[#0D0D0F] p-4 flex flex-col gap-3 relative cursor-pointer hover:bg-[#141416] transition-colors group overflow-hidden"
       >
-        <div className="absolute top-0 left-0 bottom-0 w-[2px] bg-[#E50914]" />
+        <motion.div 
+          initial={{ height: 0 }}
+          animate={{ height: "100%" }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="absolute top-0 left-0 w-[2px] bg-[#E50914]" 
+        />
         <div className="flex items-center justify-between">
           <span className="text-[#E50914] font-bold uppercase tracking-[0.1em] text-[0.6rem] bg-[#310004]/30 px-2 py-0.5 border border-[#E50914]/20 group-hover:bg-[#E50914]/10 transition-colors">
-            {log.context}
+            {scrambledContext}
           </span>
           <span className="text-[#68686F] tracking-widest text-[0.65rem]">
-            {formattedDate}
+            {scrambledDate}
           </span>
         </div>
         <div className="text-[#F5F5F5] font-semibold text-[0.75rem] leading-relaxed break-words line-clamp-2">
           {log.error_message}
         </div>
-      </motion.div>
+      </div>
 
       {mounted && createPortal(modalContent, document.body)}
     </>

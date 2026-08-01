@@ -1,8 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ScrollReveal } from '../../shared/ScrollReveal';
-import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
 import { ProductImageFallback } from '../../shared/ProductImageFallback';
 import { ImageLightbox } from '../../shared/ImageLightbox';
 
@@ -54,13 +52,13 @@ export async function ProductCatalog() {
             </p>
           </div>
         ) : (
-          <ScrollReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
             {souvenirs.map((product, index) => (
-              <ScrollRevealItem key={product.id} className="h-full">
+              <div key={product.id} className="h-full">
                 <ProductCard product={product} isPriority={index < 4} from="printing" />
-              </ScrollRevealItem>
+              </div>
             ))}
-          </ScrollReveal>
+          </div>
         )}
       </section>
 
@@ -92,13 +90,13 @@ export async function ProductCatalog() {
             </p>
           </div>
         ) : (
-          <ScrollReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
             {printing.map((product, index) => (
-              <ScrollRevealItem key={product.id} className="h-full">
+              <div key={product.id} className="h-full">
                 <ProductCard product={product} isPriority={index < 4} from="printing" />
-              </ScrollRevealItem>
+              </div>
             ))}
-          </ScrollReveal>
+          </div>
         )}
       </section>
     </div>
