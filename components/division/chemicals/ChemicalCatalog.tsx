@@ -1,8 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ScrollReveal } from '../../shared/ScrollReveal';
-import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
+
 import { ProductImageFallback } from '../../shared/ProductImageFallback';
 
 export async function ChemicalCatalog() {
@@ -43,19 +42,17 @@ export async function ChemicalCatalog() {
           </p>
         </div>
       ) : (
-        <ScrollReveal className="flex flex-col">
-          {products.map((product) => (
-            <ScrollRevealItem key={product.id}>
-              <ChemicalRow product={product} />
-            </ScrollRevealItem>
+        <div className="flex flex-col">
+          {products.map((product, index) => (
+            <ChemicalRow key={product.id} product={product} priority={index < 4} />
           ))}
-        </ScrollReveal>
+        </div>
       )}
     </div>
   );
 }
 
-function ChemicalRow({ product }: {
+function ChemicalRow({ product, priority = false }: {
   product: {
     id: string;
     name: string;
@@ -63,7 +60,8 @@ function ChemicalRow({ product }: {
     image_path?: string | null;
     metadata?: { cas_number?: string; grade?: string } | null;
     [key: string]: unknown;
-  }
+  };
+  priority?: boolean;
 }) {
   const grade = product.metadata?.grade || 'Industrial';
   const cas = product.metadata?.cas_number;
@@ -76,13 +74,14 @@ function ChemicalRow({ product }: {
       {/* Image thumbnail */}
       <div className="block w-full sm:w-28 sm:h-28 aspect-video sm:aspect-square bg-black/5 overflow-hidden shrink-0 group-hover:opacity-90 transition-opacity">
         {product.image_path ? (
-          <Image
-            src={product.image_path}
-            alt={product.name}
-            width={112}
-            height={112}
-            className="w-full h-full object-cover"
-          />
+            <Image
+              src={product.image_path}
+              alt={product.name}
+              width={112}
+              height={112}
+              priority={priority}
+              className="w-full h-full object-cover"
+            />
         ) : (
           <ProductImageFallback />
         )}

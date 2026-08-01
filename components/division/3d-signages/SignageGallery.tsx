@@ -1,8 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ScrollReveal } from '../../shared/ScrollReveal';
-import { ScrollRevealItem } from '../../shared/ScrollRevealItem';
 import { ImageLightbox } from '../../shared/ImageLightbox';
 
 export async function SignageGallery() {
@@ -42,24 +40,24 @@ export async function SignageGallery() {
         </div>
       ) : (
         <>
-          <ScrollReveal className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-            {products.map((product) => (
-                <ScrollRevealItem key={product.id}>
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+            {products.map((product, index) => (
+                <div key={product.id}>
                   {product.image_path ? (
-                    <GalleryImage product={product} />
+                    <GalleryImage product={product} priority={index < 4} />
                   ) : (
                     <div className="w-full aspect-[4/3] bg-black/5 flex items-center justify-center font-bold text-brand-deep-blue/80 uppercase text-xs">No Image Available</div>
                   )}
-                </ScrollRevealItem>
+                </div>
             ))}
-          </ScrollReveal>
+          </div>
         </>
       )}
     </div>
   );
 }
 
-function GalleryImage({ product }: { product: { id: string; name: string; description?: string | null; image_path: string } }) {
+function GalleryImage({ product, priority = false }: { product: { id: string; name: string; description?: string | null; image_path: string }, priority?: boolean }) {
   return (
     <div className="break-inside-avoid relative overflow-hidden group border-2 border-brand-border/60 md:hover:border-brand-blue transition-colors flex flex-col">
       <div className="relative group/image">
@@ -69,6 +67,7 @@ function GalleryImage({ product }: { product: { id: string; name: string; descri
             alt={product.name}
             width={600}
             height={800}
+            priority={priority}
             className="w-full object-cover grayscale-0 opacity-100 md:grayscale md:opacity-80 md:group-hover/image:grayscale-0 md:group-hover/image:opacity-100 md:group-hover:grayscale-0 md:group-hover:opacity-100 transition-all duration-700"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
