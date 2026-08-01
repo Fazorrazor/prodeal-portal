@@ -111,7 +111,17 @@ function ProductCard({
   from: string;
 }) {
   const priceRange = product.metadata?.price_range || 'Quote Only';
-  const images = product.image_path ? [product.image_path, product.image_path] : [];
+  // Use additional images from the public/media folder to show variety instead of duplicates
+  const fallbackMedia = [
+    '/media/IMG-20250207-WA0000.jpg',
+    '/media/IMG-20250308-WA0000.jpg',
+    '/media/IMG-20251007-WA0000.jpg'
+  ];
+  
+  const pIndex = product.name.length;
+  const images = product.image_path 
+    ? [product.image_path, fallbackMedia[pIndex % fallbackMedia.length], fallbackMedia[(pIndex + 1) % fallbackMedia.length]] 
+    : [];
 
   return (
     <Link href={`/inquiry/${product.id}?from=${from}`} className="group flex flex-col h-full bg-white border border-brand-border/20 hover:border-brand-blue transition-colors cursor-pointer">
