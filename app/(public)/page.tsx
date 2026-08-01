@@ -15,28 +15,20 @@ export default function HomePage() {
     <div className="flex flex-col w-full min-h-screen bg-[#F8FAFC]">
       <OrganizationJsonLd siteUrl={siteUrl} />
 
-      {/* MODERN E-COMMERCE HERO */}
-      <section className="relative w-full bg-brand-deep-blue text-white overflow-hidden">
-        {/* Background Decorative Graphic */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-blue to-transparent" />
-        </div>
-        
-        <div className="relative max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-20 lg:py-32 flex flex-col items-start">
-          <div className="inline-block px-4 py-1.5 rounded-full bg-white/10 backdrop-blur border border-white/20 text-xs font-bold uppercase tracking-widest text-brand-blue mb-6">
-            Pro Deal Industries Ltd
-          </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-display font-bold leading-[1.1] tracking-tight mb-6 max-w-3xl">
-            Premium Industrial <br className="hidden md:block"/> & Commercial Supplies
+      {/* AUTHORITATIVE INDUSTRIAL HERO */}
+      <section className="w-full bg-brand-deep-blue text-white border-b-4 border-brand-blue">
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-20 lg:py-28 flex flex-col items-start">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold leading-[1.1] tracking-tight mb-6 max-w-4xl">
+            Wholesale Industrial Supplies & Custom Fabrication
           </h1>
-          <p className="text-lg sm:text-xl text-white/80 max-w-2xl font-body leading-relaxed mb-10">
-            Your trusted B2B partner for industrial chemicals, catering disposables, custom merchandise, and large-scale signage. Wholesale pricing with uncompromising quality.
+          <p className="text-lg text-white/70 max-w-2xl font-body leading-relaxed mb-10">
+            Direct access to commercial-grade chemicals, catering disposables, merchandising, and structural signage. Built for scale, priced for wholesale.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Link href="#chemicals" className="px-8 py-4 bg-brand-blue text-white font-bold rounded-full text-center hover:bg-white hover:text-brand-deep-blue transition-all shadow-lg active:scale-95">
+            <Link href="#chemicals" className="px-8 py-3.5 bg-brand-blue text-white font-bold rounded text-center hover:bg-blue-600 transition-colors shadow-sm">
               Browse Chemicals
             </Link>
-            <Link href="#bowls" className="px-8 py-4 bg-white/10 backdrop-blur border border-white/30 text-white font-bold rounded-full text-center hover:bg-white/20 transition-all active:scale-95">
+            <Link href="#bowls" className="px-8 py-3.5 bg-transparent border border-white/20 text-white font-bold rounded text-center hover:bg-white/5 transition-colors">
               View Disposables
             </Link>
           </div>

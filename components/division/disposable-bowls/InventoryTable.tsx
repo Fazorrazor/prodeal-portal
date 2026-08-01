@@ -53,17 +53,17 @@ export async function InventoryTable() {
             return (
               <div 
                 key={product.id} 
-                className="group flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-brand-border/10"
+                className="group flex flex-col bg-white border border-brand-border/20 hover:border-brand-blue transition-colors"
               >
                 {/* Image Section */}
-                <div className="relative aspect-[4/3] w-full bg-brand-surface overflow-hidden">
+                <div className="relative aspect-[4/3] w-full bg-brand-surface border-b border-brand-border/10 overflow-hidden">
                   <ProductImageCarousel 
                     images={images} 
                     alt={product.name} 
                     priority={index < 4} 
                   />
                   {product.metadata?.size && (
-                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur text-brand-deep-blue px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm z-20">
+                    <div className="absolute top-3 right-3 bg-brand-deep-blue text-white px-2 py-1 text-[10px] font-bold uppercase tracking-widest z-20">
                       {product.metadata.size}
                     </div>
                   )}
@@ -91,7 +91,7 @@ export async function InventoryTable() {
                     </span>
                     <Link
                       href={`/inquiry/${product.id}?from=bowls`}
-                      className="px-5 py-2.5 bg-brand-deep-blue hover:bg-brand-blue text-white text-xs font-bold rounded-full transition-all active:scale-95 shadow-sm"
+                      className="px-5 py-2.5 bg-brand-deep-blue hover:bg-brand-blue text-white text-xs font-bold rounded transition-colors"
                     >
                       Request Quote
                     </Link>
