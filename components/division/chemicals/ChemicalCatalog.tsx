@@ -64,8 +64,20 @@ function ChemicalCard({ product, priority = false }: {
 }) {
   const grade = product.metadata?.grade || 'Industrial';
   const cas = product.metadata?.cas_number;
-  // Simulating multiple images for the carousel if only one exists in DB
-  const images = product.image_path ? [product.image_path, product.image_path] : [];
+  
+  // Use additional images from the public/media folder to show variety instead of duplicates
+  const fallbackMedia = [
+    '/media/20260218_174735.jpg',
+    '/media/20260218_174824.jpg',
+    '/media/20260218_174905.jpg'
+  ];
+  
+  // Create a pseudo-random index based on product name length so it's consistent per product
+  const pIndex = product.name.length;
+  
+  const images = product.image_path 
+    ? [product.image_path, fallbackMedia[pIndex % fallbackMedia.length], fallbackMedia[(pIndex + 1) % fallbackMedia.length]] 
+    : [];
 
   return (
     <Link href={`/inquiry/${product.id}?from=chemicals`} className="group flex flex-col bg-white border border-brand-border/20 hover:border-brand-blue transition-colors cursor-pointer">
