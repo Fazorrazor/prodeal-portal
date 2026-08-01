@@ -42,7 +42,7 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
 
       {/* ── LEFT PANEL: Product Context ── */}
       <motion.div
-        initial={{ opacity: 0, x: -16 }}
+        initial={false}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className="w-full md:w-[420px] lg:w-[520px] flex flex-col bg-brand-surface md:bg-black/[0.03] md:sticky md:top-[64px] md:max-h-[calc(100vh-64px)] overflow-y-auto scrollbar-hide z-0 border-b-2 md:border-b-0 border-brand-border/60"
