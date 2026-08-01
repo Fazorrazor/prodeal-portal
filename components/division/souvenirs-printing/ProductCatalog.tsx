@@ -114,7 +114,7 @@ function ProductCard({
   const images = product.image_path ? [product.image_path, product.image_path] : [];
 
   return (
-    <div className="group flex flex-col h-full bg-white border border-brand-border/20 hover:border-brand-blue transition-colors">
+    <Link href={`/inquiry/${product.id}?from=${from}`} className="group flex flex-col h-full bg-white border border-brand-border/20 hover:border-brand-blue transition-colors cursor-pointer">
       {/* Image */}
       <div className="relative aspect-[4/3] w-full bg-brand-surface border-b border-brand-border/10 overflow-hidden">
         <ProductImageCarousel 
@@ -139,14 +139,13 @@ function ProductCard({
         </p>
         
         <div className="mt-auto pt-4 border-t border-brand-border/10">
-          <Link
-            href={`/inquiry/${product.id}?from=${from}`}
-            className="block w-full text-center px-5 py-2.5 bg-brand-deep-blue hover:bg-brand-blue text-white text-xs font-bold rounded transition-colors"
+          <span
+            className="block w-full text-center px-5 py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-xs font-bold rounded transition-colors"
           >
             Request Quote
-          </Link>
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
