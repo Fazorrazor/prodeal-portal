@@ -7,11 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { InquiryFormClient } from './InquiryFormClient';
 import { ImageLightbox } from '../../../../components/shared/ImageLightbox';
 
-const PROCESS_STEPS = [
-  { index: '01', label: 'Submit this form', detail: 'Your specifications are encrypted and logged.' },
-  { index: '02', label: 'Rep notified instantly', detail: 'Routed to the division team via WhatsApp.' },
-  { index: '03', label: 'Quote delivered', detail: 'A specialist contacts you to confirm details.' },
-];
+
 
 export function InquiryPageClient({ product, moq, similarProducts = [] }: { product: any, moq: number, similarProducts?: any[] }) {
   const divisionName = (product.divisions?.display_name || product.divisions?.slug || 'Division').toUpperCase();

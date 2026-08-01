@@ -1,28 +1,8 @@
 'use client'; // needs framer-motion for scroll animations
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useScrambleText } from '@/hooks/useScrambleText';
-
-const STATS = [
-  {
-    value: '10+',
-    label: 'Years Experience',
-    sub: 'Trusted Manufacturing Partner',
-    accent: 'bg-brand-blue',
-  },
-  {
-    value: '4',
-    label: 'Specialized Divisions',
-    sub: 'Signs, Print, Bowls, Chemicals',
-    accent: 'bg-brand-red',
-  },
-  {
-    value: '100%',
-    label: 'Quality Assured',
-    sub: 'Strict Compliance Standards',
-    accent: 'bg-brand-blue',
-  },
-];
+import { createClient } from '@/lib/supabase/client';
 
 // Helper component to trigger scramble only when scrolled into view
 function ScramblingValue({ value }: { value: string }) {
@@ -38,6 +18,26 @@ function ScramblingValue({ value }: { value: string }) {
 }
 
 export function TrustBadges() {
+  const [stats, setStats] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function loadStats() {
+      const supabase = createClient();
+      const { data } = await supabase.from('site_metrics').select('*').order('display_order');
+      if (data) {
+        setStats(data);
+      }
+    }
+    loadStats();
+  }, []);
+
+  if (stats.length === 0) {
+    return (
+      <section className="relative z-20 bg-brand-deep-blue overflow-hidden border-b border-brand-border/40 h-[220px]">
+      </section>
+    );
+  }
+
   return (
     <section className="relative z-20 bg-brand-deep-blue overflow-hidden border-b border-brand-border/40">
       {/* Industrial Grid Pattern Background */}
@@ -59,7 +59,7 @@ export function TrustBadges() {
 
       <div className="container mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10 backdrop-blur-sm bg-brand-deep-blue/40">
-          {STATS.map((stat, i) => (
+          {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
