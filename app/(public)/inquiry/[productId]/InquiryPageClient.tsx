@@ -12,7 +12,7 @@ import { ImageLightbox } from '../../../../components/shared/ImageLightbox';
 export function InquiryPageClient({ product, moq, similarProducts = [] }: { product: any, moq: number, similarProducts?: any[] }) {
   const divisionName = (product.divisions?.display_name || product.divisions?.slug || 'Division').toUpperCase();
 
-  const galleryImages = [product.image_path, ...(product.metadata?.gallery_images || [])].filter(Boolean) as string[];
+  const galleryImages = [product.image_path, ...(product.gallery_images as string[] || [])].filter(Boolean);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const nextImage = (e?: React.MouseEvent) => {

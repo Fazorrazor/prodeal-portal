@@ -57,7 +57,8 @@ function ChemicalCard({ product, priority = false }: {
     name: string;
     description?: string | null;
     image_path?: string | null;
-    metadata?: { cas_number?: string; grade?: string; gallery_images?: string[] } | null;
+    gallery_images?: string[] | null;
+    metadata?: { cas_number?: string; grade?: string; } | null;
     [key: string]: unknown;
   };
   priority?: boolean;
@@ -65,7 +66,7 @@ function ChemicalCard({ product, priority = false }: {
   const grade = product.metadata?.grade || 'Industrial';
   const cas = product.metadata?.cas_number;
   
-  const images = [product.image_path, ...(product.metadata?.gallery_images || [])].filter(Boolean) as string[];
+  const images = [product.image_path, ...(product.gallery_images || [])].filter(Boolean) as string[];
 
   return (
     <Link href={`/inquiry/${product.id}?from=chemicals`} className="group flex flex-col bg-white border border-brand-border/20 hover:border-brand-blue transition-colors cursor-pointer">
