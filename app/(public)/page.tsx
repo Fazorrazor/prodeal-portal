@@ -4,6 +4,7 @@ import { OrganizationJsonLd } from '../../components/shared/JsonLd';
 import { ChemicalCatalog } from '../../components/division/chemicals/ChemicalCatalog';
 import { InventoryTable } from '../../components/division/disposable-bowls/InventoryTable';
 import { CardSkeleton } from '../../components/shared/skeletons/CardSkeleton';
+import { HeroVideoBackground } from '../../components/shared/HeroVideoBackground';
 
 // Revalidate every 5 minutes to ensure Bowls inventory data remains fresh
 export const revalidate = 300;
@@ -16,12 +17,14 @@ export default function HomePage() {
       <OrganizationJsonLd siteUrl={siteUrl} />
 
       {/* AUTHORITATIVE INDUSTRIAL HERO */}
-      <section className="w-full bg-brand-deep-blue text-white border-b-4 border-brand-blue">
-        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-20 lg:py-28 flex flex-col items-start">
+      <section className="relative w-full text-white border-b-4 border-brand-blue min-h-[60vh] flex items-center">
+        <HeroVideoBackground />
+        
+        <div className="relative z-20 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-20 lg:py-28 flex flex-col items-start">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold leading-[1.1] tracking-tight mb-6 max-w-4xl">
             Wholesale Industrial Supplies & Custom Fabrication
           </h1>
-          <p className="text-lg text-white/70 max-w-2xl font-body leading-relaxed mb-10">
+          <p className="text-lg text-white/90 max-w-2xl font-body leading-relaxed mb-10">
             Direct access to commercial-grade chemicals, catering disposables, merchandising, and structural signage. Built for scale, priced for wholesale.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">

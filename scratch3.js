@@ -1,0 +1,18 @@
+const fs = require('fs');
+
+const env = fs.readFileSync('.env.local', 'utf-8');
+const urlMatch = env.match(/NEXT_PUBLIC_SUPABASE_URL=(.*)/);
+const keyMatch = env.match(/NEXT_PUBLIC_SUPABASE_ANON_KEY=(.*)/);
+
+const url = urlMatch ? urlMatch[1].trim().replace(/"/g, '') : '';
+const key = keyMatch ? keyMatch[1].trim().replace(/"/g, '') : '';
+
+fetch(`${url}/rest/v1/products?select=name,image_path,metadata&limit=5`, {
+  headers: {
+    'apikey': key,
+    'Authorization': `Bearer ${key}`
+  }
+})
+.then(r => r.json())
+.then(data => console.log(JSON.stringify(data, null, 2)))
+.catch(e => console.error(e));
