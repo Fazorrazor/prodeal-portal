@@ -23,7 +23,6 @@ async function handler(req: NextRequest) {
       await supabase
         .from('inquiries')
         .update({ 
-          wa_status: 'failed',
           wa_retry_count: 1, // Assume 1 for now, a better cron can handle retries later
           internal_notes: `[SYSTEM_WARNING] WhatsApp notification failed to send via QStash: ${waResult.error || 'Unknown error'}` 
         })
@@ -38,8 +37,7 @@ async function handler(req: NextRequest) {
       .from('inquiries')
       .update({ 
         wa_message_id: waResult.messageId, 
-        wa_sent_at: new Date().toISOString(),
-        wa_status: 'sent'
+        wa_sent_at: new Date().toISOString()
       })
       .eq('id', inquiryId);
 

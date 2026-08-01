@@ -2,7 +2,7 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useEffect, useState } from 'react';
 import { useScrambleText } from '@/hooks/useScrambleText';
-import { createClient } from '@/lib/supabase/client';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 // Helper component to trigger scramble only when scrolled into view
 function ScramblingValue({ value }: { value: string }) {
@@ -22,7 +22,7 @@ export function TrustBadges() {
 
   useEffect(() => {
     async function loadStats() {
-      const supabase = createClient();
+      const supabase = createClientComponentClient();
       const { data } = await supabase.from('site_metrics').select('*').order('display_order');
       if (data) {
         setStats(data);
