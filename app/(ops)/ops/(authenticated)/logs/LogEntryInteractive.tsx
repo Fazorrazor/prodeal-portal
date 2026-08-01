@@ -11,6 +11,7 @@ import {
   ServerCrash,
   ShieldAlert,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 export function LogEntryInteractive({ log }: { log: any }) {
   const [expanded, setExpanded] = useState(false);
@@ -140,7 +141,10 @@ export function LogEntryInteractive({ log }: { log: any }) {
 
   return (
     <>
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: -10, backgroundColor: 'rgba(76,166,255,0.1)' }}
+        animate={{ opacity: 1, y: 0, backgroundColor: 'transparent' }}
+        transition={{ duration: 0.3 }}
         onClick={() => setExpanded(true)}
         className="flex flex-col gap-1 border-l-2 border-transparent hover:border-[#141416] hover:bg-[#141416]/50 pl-3 -ml-3 py-1 transition-colors group cursor-pointer"
       >
@@ -158,7 +162,7 @@ export function LogEntryInteractive({ log }: { log: any }) {
             )}
           </span>
         </div>
-      </div>
+      </motion.div>
 
       {mounted && createPortal(modalContent, document.body)}
     </>
