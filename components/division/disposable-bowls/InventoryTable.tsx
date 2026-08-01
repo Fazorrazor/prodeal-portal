@@ -44,17 +44,7 @@ export async function InventoryTable() {
           </div>
         ) : (
           products.map((product, index) => {
-            // Use additional images from the public/media folder to show variety instead of duplicates
-            const fallbackMedia = [
-              '/media/IMG-20231110-WA0010.jpg',
-              '/media/IMG-20240607-WA0005.jpg',
-              '/media/IMG-20241009-WA0002.jpg'
-            ];
-            
-            const pIndex = product.name.length;
-            const images = product.image_path 
-              ? [product.image_path, fallbackMedia[pIndex % fallbackMedia.length], fallbackMedia[(pIndex + 1) % fallbackMedia.length]] 
-              : [];
+            const images = [product.image_path, ...(product.metadata?.gallery_images || [])].filter(Boolean) as string[];
 
             return (
               <Link 
