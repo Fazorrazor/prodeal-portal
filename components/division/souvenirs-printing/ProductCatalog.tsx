@@ -106,7 +106,7 @@ function ProductCard({
   isPriority = false,
   from,
 }: {
-  product: { id: string; name: string; description?: string | null; image_path?: string | null; metadata?: { price_range?: string } | null; [key: string]: unknown };
+  product: { id: string; name: string; description?: string | null; image_path?: string | null; metadata?: { price_range?: string; gallery_images?: string[] } | null; [key: string]: unknown };
   isPriority?: boolean;
   from: string;
 }) {
