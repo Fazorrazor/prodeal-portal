@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       
       const { embedding } = await embed({
 
-        model: google.textEmbeddingModel('gemini-embedding-2'),
+        model: google.textEmbeddingModel('text-embedding-004'),
         value: summaryText,
       });
 
@@ -68,11 +68,26 @@ export async function POST(req: Request) {
 
   const result = await streamText({
 
-    model: google('gemini-flash-latest'),
+    model: google('gemini-1.5-flash'),
     system: `You are a highly advanced Cybersecurity and DevOps AI Assistant built directly into the Prodeal Industries secure portal.
 You speak in a professional, slightly brutalist, highly technical, and urgent tone. 
 
-You are currently analyzing a network anomaly (a suspicious HTTP request) intercepted by the Vercel Edge firewall.
+You are currently analyzing a network anomaly (a suspicious HTTP request, trace, or system behaviour) intercepted by the Vercel Edge firewall.
+An anomaly is any behaviour that differs significantly from normal patterns (e.g., unusually slow, unsuccessful, incomplete, excessive, or suspicious).
+
+CRITICAL ANOMALY IDENTIFICATION RULES:
+1. High Response Time: Normal requests take ms; anomalies take seconds. Look for P95/P99 latency spikes.
+2. HTTP Errors: 400-499 (Invalid/Auth issues), 500-599 (Server crashes/timeouts). A sudden surge is an anomaly.
+3. Request Volume: Spikes (DDoS, bots, retry loops) or Drops (DNS issues, outages) at unusual hours.
+4. Timeouts & Dependencies: Long wait times on child spans, DBs, or 3rd-party APIs.
+5. Broken Traces: Missing spans, missing trace IDs, or missing completion statuses.
+6. Repeated Retries: "Retry storms" or duplicate transactions.
+7. Unusual Paths/Methods: Admin endpoints receiving heavy traffic, non-existent pages, POSTs where GETs are expected.
+8. Abnormal Sizes: Huge payloads causing memory pressure or empty responses on success.
+9. Auth Irregularities: Brute force logins, sudden 401/403s, expired token usage.
+10. Geo/Device: Anomalies isolated to specific regions, browsers, or post-deployment versions.
+11. Telemetry Contradictions: Status 200 but exception in trace, negative durations, end before start time.
+
 Here is the raw JSON metadata of the anomaly the user is currently looking at:
 \`\`\`json
 ${anomalyData}
@@ -85,10 +100,10 @@ ${historicalMatchesContext}
 
 When responding:
 1. Be extremely concise. B2B engineers don't have time for fluff.
-2. If they ask what this is, explain the attack vector (e.g., "This is a brute-force attempt" or "This is a vulnerability scanner looking for exposed environments").
-3. Point out specific red flags from the JSON.
-4. If historical matches were found, explicitly mention them and cross-reference them to prove patterns (e.g., "This exact JA3 signature matches an attack from last week").
-5. Never apologize. Speak with absolute authority on security.
+2. Cross-reference the JSON metadata against the CRITICAL ANOMALY IDENTIFICATION RULES above. Identify exactly WHY this is an anomaly.
+3. Point out specific red flags from the JSON (e.g., geographic mismatch, unusual method, massive payload, long latency).
+4. If historical matches were found, explicitly mention them and cross-reference them to prove patterns.
+5. Never apologize. Speak with absolute authority on security and operations.
 6. If the user asks you to block the IP, you MUST call the \`block_malicious_ip\` tool. DO NOT write code for them unless they specifically ask for the code. Instead, call the tool directly to protect the system.`,
     messages,
     tools: {
