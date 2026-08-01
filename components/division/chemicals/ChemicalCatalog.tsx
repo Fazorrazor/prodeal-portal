@@ -68,7 +68,7 @@ function ChemicalCard({ product, priority = false }: {
   const images = product.image_path ? [product.image_path, product.image_path] : [];
 
   return (
-    <div className="group flex flex-col bg-white border border-brand-border/20 hover:border-brand-blue transition-colors">
+    <Link href={`/inquiry/${product.id}?from=chemicals`} className="group flex flex-col bg-white border border-brand-border/20 hover:border-brand-blue transition-colors cursor-pointer">
       <div className="relative aspect-[4/3] w-full bg-brand-surface border-b border-brand-border/10 overflow-hidden">
         <ProductImageCarousel 
           images={images} 
@@ -96,14 +96,13 @@ function ChemicalCard({ product, priority = false }: {
         </p>
 
         <div className="flex items-center justify-between mt-auto pt-4 border-t border-brand-border/10">
-          <Link
-            href={`/inquiry/${product.id}?from=chemicals`}
-            className="w-full text-center px-5 py-2.5 bg-brand-deep-blue hover:bg-brand-blue text-white text-xs font-bold rounded transition-colors"
+          <span
+            className="w-full text-center px-5 py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-xs font-bold rounded transition-colors"
           >
             Request Quote
-          </Link>
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

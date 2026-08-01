@@ -35,17 +35,14 @@ export function ProductImageCarousel({ images, alt, priority = false }: ProductI
     );
   }
 
-  // Auto-play when hovered
+  // Auto-play continuously
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (isHovered) {
-      timer = setInterval(() => {
-        setDirection(1);
-        setCurrentIndex((prev) => (prev + 1) % images.length);
-      }, 2500); // swipe every 2.5s on hover
-    }
+    const timer = setInterval(() => {
+      setDirection(1);
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 3000); // swipe every 3s
     return () => clearInterval(timer);
-  }, [isHovered, images.length]);
+  }, [images.length]);
 
   const variants = {
     enter: (dir: number) => ({
@@ -63,14 +60,7 @@ export function ProductImageCarousel({ images, alt, priority = false }: ProductI
   };
 
   return (
-    <div 
-      className="relative w-full h-full overflow-hidden"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        setCurrentIndex(0); // reset to first image when mouse leaves
-      }}
-    >
+    <div className="relative w-full h-full overflow-hidden">
       <AnimatePresence initial={false} custom={direction}>
         <motion.div
           key={currentIndex}

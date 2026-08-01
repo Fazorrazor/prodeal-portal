@@ -56,30 +56,27 @@ export async function SignageGallery() {
 
 function GalleryImage({ product, priority = false }: { product: { id: string; name: string; description?: string | null; image_path: string }, priority?: boolean }) {
   return (
-    <div className="break-inside-avoid relative overflow-hidden group bg-white border border-brand-border/20 hover:border-brand-blue transition-colors flex flex-col">
+    <Link href={`/inquiry/${product.id}?from=signages`} className="break-inside-avoid relative overflow-hidden group bg-white border border-brand-border/20 hover:border-brand-blue transition-colors flex flex-col cursor-pointer">
       <div className="relative group/image overflow-hidden border-b border-brand-border/10">
-        <ImageLightbox src={product.image_path} alt={product.name} className="block active:opacity-90 transition-opacity">
-          <img 
-            src={product.image_path}
-            alt={product.name}
-            width={600}
-            height={800}
-            className="w-full object-cover transition-transform duration-700 md:group-hover/image:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
-        </ImageLightbox>
+        <img 
+          src={product.image_path}
+          alt={product.name}
+          width={600}
+          height={800}
+          className="w-full object-cover transition-transform duration-700 md:group-hover/image:scale-105"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
         {/* Hover overlay for desktop */}
         <div className="hidden md:flex absolute inset-0 bg-brand-deep-blue/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex-col items-center justify-center p-6 text-center">
           <h3 className="text-white font-heading font-bold text-2xl leading-tight mb-3">{product.name}</h3>
           <p className="text-white/90 text-sm mb-6 px-4 line-clamp-3 leading-relaxed">
             {product.description || 'Custom fabricated 3D signage solution.'}
           </p>
-          <Link 
-            href={`/inquiry/${product.id}?from=signages`}
+          <span 
             className="pointer-events-auto px-8 py-3 bg-white text-brand-deep-blue font-bold rounded text-sm hover:bg-brand-blue hover:text-white transition-colors"
           >
             Request Quote
-          </Link>
+          </span>
         </div>
       </div>
       
@@ -89,13 +86,12 @@ function GalleryImage({ product, priority = false }: { product: { id: string; na
         <p className="text-sm text-brand-deep-blue/70 mb-5 text-center leading-relaxed">
           {product.description || 'Custom fabricated 3D signage solution.'}
         </p>
-        <Link 
-          href={`/inquiry/${product.id}?from=signages`}
+        <span 
           className="w-full text-center px-6 py-3.5 bg-brand-deep-blue text-white font-bold rounded text-sm hover:bg-brand-blue transition-colors"
         >
           Request Quote
-        </Link>
+        </span>
       </div>
-    </div>
+    </Link>
   );
 }

@@ -51,9 +51,11 @@ export async function InventoryTable() {
               : [];
 
             return (
-              <div 
+            return (
+              <Link 
+                href={`/inquiry/${product.id}?from=bowls`}
                 key={product.id} 
-                className="group flex flex-col bg-white border border-brand-border/20 hover:border-brand-blue transition-colors"
+                className="group flex flex-col bg-white border border-brand-border/20 hover:border-brand-blue transition-colors cursor-pointer"
               >
                 {/* Image Section */}
                 <div className="relative aspect-[4/3] w-full bg-brand-surface border-b border-brand-border/10 overflow-hidden">
@@ -89,15 +91,14 @@ export async function InventoryTable() {
                     <span className="text-xs font-medium text-brand-deep-blue/60">
                       {product.metadata?.material || 'Food-grade Plastic'}
                     </span>
-                    <Link
-                      href={`/inquiry/${product.id}?from=bowls`}
-                      className="px-5 py-2.5 bg-brand-deep-blue hover:bg-brand-blue text-white text-xs font-bold rounded transition-colors"
+                    <span
+                      className="px-5 py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-xs font-bold rounded transition-colors"
                     >
                       Request Quote
-                    </Link>
+                    </span>
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })
         )}
