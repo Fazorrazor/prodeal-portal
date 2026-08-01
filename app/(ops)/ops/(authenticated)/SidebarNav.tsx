@@ -30,6 +30,12 @@ export function SidebarNav() {
         active={pathname.startsWith("/ops/incidents")}
       />
       <NavItem
+        href="/ops/system-logs"
+        icon={<ServerCrash className="w-4 h-4" />}
+        label="System Errors"
+        active={pathname.startsWith("/ops/system-logs")}
+      />
+      <NavItem
         href="/ops/logs"
         icon={<ServerCrash className="w-4 h-4" />}
         label="Telemetry & Errors"
