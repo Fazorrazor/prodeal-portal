@@ -51,7 +51,6 @@ export async function InventoryTable() {
               : [];
 
             return (
-            return (
               <Link 
                 href={`/inquiry/${product.id}?from=bowls`}
                 key={product.id} 
