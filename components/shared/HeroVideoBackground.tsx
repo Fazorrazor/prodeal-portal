@@ -2,11 +2,20 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Local videos uploaded by user in public/media
+// Local videos uploaded by user in public/media, paired with a poster image for fast LCP
 const videos = [
-  '/media/VID-20250625-WA0002.mp4',
-  '/media/VID-20260507-WA0006.mp4',
-  '/media/VID-20260625-WA0005.mp4'
+  {
+    src: '/media/VID-20250625-WA0002.mp4',
+    poster: '/media/IMG-20250625-WA0000.jpg'
+  },
+  {
+    src: '/media/VID-20260507-WA0006.mp4',
+    poster: '/media/IMG-20260507-WA0000.jpg'
+  },
+  {
+    src: '/media/VID-20260625-WA0005.mp4',
+    poster: '/media/IMG-20260625-WA0000.jpg'
+  }
 ];
 
 export function HeroVideoBackground() {
@@ -28,7 +37,8 @@ export function HeroVideoBackground() {
       <AnimatePresence initial={false}>
         <motion.video
           key={index}
-          src={videos[index]}
+          src={videos[index].src}
+          poster={videos[index].poster}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
