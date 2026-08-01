@@ -1,8 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
-import Image from 'next/image';
 import Link from 'next/link';
 
-import { ProductImageFallback } from '../../shared/ProductImageFallback';
+import { ProductImageCarousel } from '../../shared/ProductImageCarousel';
 
 export async function ChemicalCatalog() {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
@@ -21,30 +20,30 @@ export async function ChemicalCatalog() {
   return (
     <div>
       {/* Section header */}
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b border-brand-border/20 pb-5 mb-8">
         <div>
-          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-1.5">
-            — Division
+          <p className="text-xs font-medium text-brand-blue mb-1.5">
+            Specialized Formulations
           </p>
-          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue tracking-tighter uppercase leading-none">
+          <h2 className="font-display font-bold text-3xl sm:text-4xl text-brand-deep-blue leading-none">
             Industrial Chemicals
           </h2>
         </div>
       </div>
 
       {!products || products.length === 0 ? (
-        <div className="border-t border-brand-border/30 pt-8">
-          <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tighter">
+        <div className="col-span-full py-16 text-center bg-white rounded-2xl shadow-sm border border-brand-border/10">
+          <h3 className="font-heading font-bold text-2xl text-brand-deep-blue mb-2">
             No products registered.
           </h3>
-          <p className="text-[10px] uppercase tracking-widest font-bold text-brand-deep-blue/80 mt-1">
+          <p className="text-brand-deep-blue/70">
             Contact us directly for chemical inquiries.
           </p>
         </div>
       ) : (
-        <div className="flex flex-col">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
           {products.map((product, index) => (
-            <ChemicalRow key={product.id} product={product} priority={index < 4} />
+            <ChemicalCard key={product.id} product={product} priority={index < 4} />
           ))}
         </div>
       )}
@@ -52,7 +51,7 @@ export async function ChemicalCatalog() {
   );
 }
 
-function ChemicalRow({ product, priority = false }: {
+function ChemicalCard({ product, priority = false }: {
   product: {
     id: string;
     name: string;
@@ -65,57 +64,46 @@ function ChemicalRow({ product, priority = false }: {
 }) {
   const grade = product.metadata?.grade || 'Industrial';
   const cas = product.metadata?.cas_number;
+  // Simulating multiple images for the carousel if only one exists in DB
+  const images = product.image_path ? [product.image_path, product.image_path] : [];
 
   return (
-    <Link 
-      href={`/inquiry/${product.id}?from=chemicals`}
-      className="border-b border-brand-border/40 py-6 flex flex-col sm:flex-row gap-5 group hover:bg-black/[0.02] active:bg-black/5 transition-colors block"
-    >
-      {/* Image thumbnail */}
-      <div className="block w-full sm:w-28 sm:h-28 aspect-video sm:aspect-square bg-black/5 overflow-hidden shrink-0 group-hover:opacity-90 transition-opacity">
-        {product.image_path ? (
-            <Image
-              src={product.image_path}
-              alt={product.name}
-              width={112}
-              height={112}
-              priority={priority}
-              className="w-full h-full object-cover"
-            />
-        ) : (
-          <ProductImageFallback />
-        )}
+    <div className="group flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-brand-border/10">
+      <div className="relative aspect-[4/3] w-full bg-brand-surface overflow-hidden">
+        <ProductImageCarousel 
+          images={images} 
+          alt={product.name} 
+          priority={priority} 
+        />
+        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur text-brand-deep-blue px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm z-20">
+          {grade}
+        </div>
       </div>
 
-      {/* Data block */}
-      <div className="flex flex-col flex-1 min-w-0">
-        <div className="flex flex-wrap items-start justify-between gap-3 mb-2">
-          <div>
-            <h3 className="font-heading font-bold text-lg sm:text-xl text-brand-deep-blue uppercase tracking-tight leading-snug group-hover:text-brand-blue transition-colors">
-              {product.name}
-            </h3>
-            {cas && (
-              <div className="text-[10px] font-mono font-bold text-brand-deep-blue/80 mt-0.5 uppercase tracking-widest">
-                CAS: {cas}
-              </div>
-            )}
-          </div>
-          {/* Grade badge — bordered outline */}
-          <span className="shrink-0 px-3 py-1.5 border border-brand-deep-blue text-brand-deep-blue text-[9px] font-mono font-bold uppercase tracking-widest">
-            {grade}
+      <div className="flex flex-col flex-1 p-5">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-mono font-medium text-brand-deep-blue/50 uppercase tracking-widest">
+            {cas ? `CAS: ${cas}` : 'No CAS'}
           </span>
         </div>
-
-        <p className="text-xs sm:text-sm text-brand-deep-blue/80 font-body leading-relaxed mb-4 flex-1">
+        
+        <h3 className="font-heading font-bold text-lg text-brand-deep-blue leading-tight mb-2 group-hover:text-brand-blue transition-colors line-clamp-2">
+          {product.name}
+        </h3>
+        
+        <p className="text-sm text-brand-deep-blue/70 leading-relaxed mb-6 flex-1 line-clamp-3">
           {product.description || 'Standard industrial chemical formulation.'}
         </p>
 
-        <div
-          className="inline-flex items-center justify-center w-full sm:w-auto sm:self-end px-6 py-3.5 bg-brand-deep-blue text-white text-[10px] font-bold uppercase tracking-widest group-hover:bg-brand-blue transition-colors min-h-[44px]"
-        >
-          Inquire About This
+        <div className="flex items-center justify-between mt-auto pt-4 border-t border-brand-border/10">
+          <Link
+            href={`/inquiry/${product.id}?from=chemicals`}
+            className="w-full text-center px-5 py-2.5 bg-brand-deep-blue hover:bg-brand-blue text-white text-xs font-bold rounded-full transition-all active:scale-95 shadow-sm"
+          >
+            Request Quote
+          </Link>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
