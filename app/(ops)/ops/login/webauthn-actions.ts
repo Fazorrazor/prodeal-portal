@@ -114,7 +114,7 @@ export async function getAuthenticationOptions() {
     allowCredentials: [
       {
         id: cred.id,
-        transports: cred.transports,
+        transports: cred.transports ? cred.transports.filter((t: string) => t === "internal") : ["internal"],
       },
     ],
     userVerification: "preferred",
@@ -199,7 +199,7 @@ export async function getCalibrationAuthOptions(credentialStr: string) {
     allowCredentials: [
       {
         id: cred.id,
-        transports: cred.transports,
+        transports: cred.transports ? cred.transports.filter((t: string) => t === "internal") : ["internal"],
       },
     ],
     userVerification: "preferred",

@@ -24,7 +24,7 @@ export function BiometricSetup() {
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(true);
 
-  const TOTAL_STEPS = 1;
+  const TOTAL_STEPS = 5;
 
   const handleFingerprint = async () => {
     try {

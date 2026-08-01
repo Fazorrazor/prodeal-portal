@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useChat } from "ai/react";
 import { createClient } from "@supabase/supabase-js";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Network,
   Activity,
@@ -64,7 +65,7 @@ export default function NetworkTracesPage() {
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
   // Vercel AI SDK Chat Hook
-  const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, setMessages, isLoading } = useChat({
     api: "/api/chat",
     body: {
       data: { 
@@ -467,17 +468,44 @@ export default function NetworkTracesPage() {
                 </div>
                 
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0" ref={chatScrollRef}>
-                  {messages.map((m: any) => (
-                    <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                      <div className={`max-w-[85%] p-3 text-[0.75rem] font-mono leading-relaxed whitespace-pre-wrap ${
-                        m.role === "user" 
-                          ? "bg-[#1A1A1A] text-[#F5F5F5] border border-[#333333]" 
-                          : "bg-[#090909] text-[#A7A7AA] border border-[#141416]"
-                      }`}>
-                        {m.content}
-                      </div>
-                    </div>
-                  ))}
+                  <AnimatePresence>
+                    {messages.map((m: any) => (
+                      <motion.div 
+                        key={m.id} 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                      >
+                        <div className={`max-w-[85%] p-3 text-[0.75rem] font-mono leading-relaxed whitespace-pre-wrap ${
+                          m.role === "user" 
+                            ? "bg-[#1A1A1A] text-[#F5F5F5] border border-[#333333]" 
+                            : "bg-[#090909] text-[#A7A7AA] border border-[#141416]"
+                        }`}>
+                          {m.content}
+                        </div>
+                      </motion.div>
+                    ))}
+                    
+                    {isLoading && (
+                      <motion.div
+                        key="loading-indicator"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="flex justify-start"
+                      >
+                        <div className="max-w-[85%] p-3 text-[0.75rem] font-mono leading-relaxed bg-[#090909] text-[#4CA6FF] border border-[#141416] flex items-center gap-3">
+                          <div className="flex gap-1">
+                            <span className="w-1.5 h-1.5 bg-[#4CA6FF] animate-pulse"></span>
+                            <span className="w-1.5 h-1.5 bg-[#4CA6FF] animate-pulse delay-75"></span>
+                            <span className="w-1.5 h-1.5 bg-[#4CA6FF] animate-pulse delay-150"></span>
+                          </div>
+                          <span className="uppercase tracking-widest text-[0.65rem] opacity-80">PROCESSING FORENSICS...</span>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-3 border-t border-[#141416] flex gap-2 shrink-0">
