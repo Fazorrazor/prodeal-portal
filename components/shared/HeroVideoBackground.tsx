@@ -2,11 +2,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Videos matching construction, painting, and chemicals concepts
+// Local videos uploaded by user in public/media
 const videos = [
-  'https://assets.mixkit.co/videos/preview/mixkit-construction-worker-working-at-a-site-with-heavy-equipment-32860-large.mp4',
-  'https://assets.mixkit.co/videos/preview/mixkit-painter-painting-a-wall-with-a-roller-38933-large.mp4',
-  'https://assets.mixkit.co/videos/preview/mixkit-liquid-chemical-in-a-laboratory-tube-40291-large.mp4'
+  '/media/VID-20250625-WA0002.mp4',
+  '/media/VID-20260507-WA0006.mp4',
+  '/media/VID-20260625-WA0005.mp4'
 ];
 
 export function HeroVideoBackground() {
@@ -21,16 +21,16 @@ export function HeroVideoBackground() {
   }, []);
 
   return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden z-0 bg-brand-deep-blue">
+    <div className="absolute inset-0 w-full h-full overflow-hidden z-0 bg-black">
       {/* Dark overlay to ensure text remains readable */}
-      <div className="absolute inset-0 bg-brand-deep-blue/80 z-10" />
+      <div className="absolute inset-0 bg-brand-deep-blue/60 z-10" />
       
       <AnimatePresence initial={false}>
         <motion.video
           key={index}
           src={videos[index]}
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.5 }}
+          animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 1.5 }}
           autoPlay
