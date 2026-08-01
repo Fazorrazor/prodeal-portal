@@ -14,7 +14,6 @@ export function AdminMobileNav({ userRole = 'agent' }: { userRole?: string }) {
     ...(userRole === 'admin' ? [
       { name: 'Staff', href: '/admin/staff', icon: Users },
       { name: 'Issues', href: '/admin/complaints', icon: AlertCircle },
-      { name: 'Logs', href: '/admin/system-logs', icon: Activity },
       { name: 'Settings', href: '/admin/settings', icon: Settings },
     ] : [])
   ];

@@ -91,8 +91,38 @@ export default function NetworkTracesPage() {
         role: "assistant",
         content: `I've received the forensic trace for ${selectedRequest.endpoint}. How can I assist you with this analysis?`
       }]);
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
     }
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [selectedRequest, setMessages]);
+
+  // Helper function to identify true anomalies based on the comprehensive domain knowledge
+  const isAnomaly = (req: any) => {
+    // 1. High Response Time (arbitrary threshold for demonstration, e.g., > 1000ms)
+    if (req.latency > 1000) return true;
+    
+    // 2. HTTP Errors (Client or Server errors)
+    if (req.status >= 400) return true;
+    
+    // 3. Broken Traces (Negative latency, missing data)
+    if (req.latency < 0) return true;
+    
+    // 4. Unusual Methods (DELETE is often restricted)
+    if (req.method === "DELETE") return true;
+    
+    // 5. Unusual Paths (Accessing hidden or administrative endpoints)
+    const suspiciousPaths = ["/wp-admin", "/.env", "/config", "/etc/passwd"];
+    if (suspiciousPaths.some(path => req.endpoint?.toLowerCase().includes(path))) return true;
+    
+    // 6. Upstream / Firewall Severity Override
+    if (req.severity === "WARNING" || req.severity === "CRITICAL") return true;
+
+    return false;
+  };
 
   // Helper to calculate realistic metrics based on the current visible window of traces
   const calculateMetrics = (traces: any[]) => {
@@ -103,10 +133,8 @@ export default function NetworkTracesPage() {
     const p99Index = Math.floor(latencies.length * 0.99);
     const p99 = latencies[p99Index] || 0;
 
-    // Count anomalies (CRITICAL or WARNING severities)
-    const errors = traces.filter(
-      (t) => t.severity === "CRITICAL" || t.severity === "WARNING",
-    ).length;
+    // Count true anomalies based on our heuristic rules
+    const errors = traces.filter(isAnomaly).length;
 
     // Naive RPS calculation based on timestamps of the current window (in a real system, you'd calculate this server-side)
     const rps =
@@ -281,7 +309,7 @@ export default function NetworkTracesPage() {
               </tr>
             </thead>
             <tbody>
-              {(activeTab === "GLOBAL" ? requests : requests.filter(r => r.severity === "WARNING" || r.severity === "CRITICAL" || r.status >= 400)).map((req) => (
+              {(activeTab === "GLOBAL" ? requests : requests.filter(isAnomaly)).map((req) => (
                 <tr
                   key={req.id}
                   onClick={() => activeTab === "ANOMALIES" ? setSelectedRequest(req) : null}
@@ -321,7 +349,7 @@ export default function NetworkTracesPage() {
                   </td>
                 </tr>
               ))}
-              {activeTab === "ANOMALIES" && requests.filter(r => r.severity === "WARNING" || r.severity === "CRITICAL" || r.status >= 400).length === 0 && (
+              {activeTab === "ANOMALIES" && requests.filter(isAnomaly).length === 0 && (
                 <tr>
                   <td colSpan={6} className="p-12 text-center text-[#68686F] text-[0.7rem] uppercase tracking-widest border-t border-[#141416]">
                     All clear. No anomalies detected in current window.
