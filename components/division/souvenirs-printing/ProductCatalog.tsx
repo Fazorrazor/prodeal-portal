@@ -106,12 +106,12 @@ function ProductCard({
   isPriority = false,
   from,
 }: {
-  product: { id: string; name: string; description?: string | null; image_path?: string | null; metadata?: { price_range?: string; gallery_images?: string[] } | null; [key: string]: unknown };
+  product: { id: string; name: string; description?: string | null; image_path?: string | null; gallery_images?: string[] | null; metadata?: { price_range?: string; } | null; [key: string]: unknown };
   isPriority?: boolean;
   from: string;
 }) {
   const priceRange = product.metadata?.price_range || 'Quote Only';
-  const images = [product.image_path, ...(product.metadata?.gallery_images || [])].filter(Boolean) as string[];
+  const images = [product.image_path, ...(product.gallery_images || [])].filter(Boolean) as string[];
 
   return (
     <Link href={`/inquiry/${product.id}?from=${from}`} className="group flex flex-col h-full bg-white border border-brand-border/20 hover:border-brand-blue transition-colors cursor-pointer">

@@ -44,7 +44,7 @@ export async function InventoryTable() {
           </div>
         ) : (
           products.map((product, index) => {
-            const images = [product.image_path, ...(product.metadata?.gallery_images || [])].filter(Boolean) as string[];
+            const images = [product.image_path, ...(product.gallery_images as string[] || [])].filter(Boolean);
 
             return (
               <Link 
