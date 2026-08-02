@@ -38,7 +38,7 @@ export async function SignageGallery() {
           <p className="text-brand-deep-blue/70">No gallery images uploaded yet.</p>
         </div>
       ) : (
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+        <div className="columns-2 lg:columns-3 gap-4 sm:gap-6 space-y-4 sm:space-y-6">
           {products.map((product, index) => (
             <div key={product.id}>
               {product.image_path ? (
@@ -81,13 +81,13 @@ function GalleryImage({ product, priority = false }: { product: { id: string; na
       </div>
       
       {/* Mobile visible text block */}
-      <div className="flex md:hidden flex-col items-center justify-center p-6 bg-white">
-        <h3 className="text-brand-deep-blue font-heading font-bold text-xl leading-tight text-center mb-2">{product.name}</h3>
-        <p className="text-sm text-brand-deep-blue/70 mb-5 text-center leading-relaxed">
+      <div className="flex md:hidden flex-col items-center justify-center p-3 sm:p-6 bg-white">
+        <h3 className="text-brand-deep-blue font-heading font-bold text-base sm:text-xl leading-tight text-center mb-1 sm:mb-2 line-clamp-2">{product.name}</h3>
+        <p className="text-xs sm:text-sm text-brand-deep-blue/70 mb-3 sm:mb-5 text-center leading-relaxed line-clamp-3">
           {product.description || 'Custom fabricated 3D signage solution.'}
         </p>
         <span 
-          className="w-full text-center px-6 py-3.5 bg-brand-deep-blue text-white font-bold rounded text-sm hover:bg-brand-blue transition-colors"
+          className="w-full text-center px-3 py-2 sm:px-6 sm:py-3.5 bg-brand-deep-blue text-white font-bold rounded text-[10px] sm:text-sm hover:bg-brand-blue transition-colors"
         >
           Request Quote
         </span>
