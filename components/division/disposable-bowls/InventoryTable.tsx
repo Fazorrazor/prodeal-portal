@@ -32,7 +32,7 @@ export async function InventoryTable() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-10">
         {!products || products.length === 0 ? (
           <div className="col-span-full py-16 text-center bg-white rounded-2xl shadow-sm border border-brand-border/10">
             <h3 className="font-heading font-bold text-2xl text-brand-deep-blue mb-2">
@@ -67,27 +67,27 @@ export async function InventoryTable() {
                 </div>
 
                 {/* Content Section */}
-                <div className="flex flex-col flex-1 p-5">
+                <div className="flex flex-col flex-1 p-3 sm:p-5">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] font-mono font-medium text-brand-deep-blue/50 uppercase tracking-widest">
+                    <span className="text-[9px] sm:text-[10px] font-mono font-medium text-brand-deep-blue/50 uppercase tracking-widest">
                       {product.id.split('-')[0]}
                     </span>
                   </div>
                   
-                  <h3 className="font-heading font-bold text-lg text-brand-deep-blue leading-tight mb-2 group-hover:text-brand-blue transition-colors">
+                  <h3 className="font-heading font-bold text-sm sm:text-lg text-brand-deep-blue leading-tight mb-2 group-hover:text-brand-blue transition-colors">
                     {product.name}
                   </h3>
                   
-                  <p className="text-sm text-brand-deep-blue/70 leading-relaxed mb-6 flex-1">
+                  <p className="text-xs sm:text-sm text-brand-deep-blue/70 leading-relaxed mb-4 sm:mb-6 flex-1">
                     {product.description || 'Premium disposable catering bowl.'}
                   </p>
 
-                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-brand-border/10">
-                    <span className="text-xs font-medium text-brand-deep-blue/60">
+                  <div className="flex flex-col xl:flex-row xl:items-center justify-between mt-auto pt-3 sm:pt-4 border-t border-brand-border/10 gap-2 xl:gap-0">
+                    <span className="text-[10px] sm:text-xs font-medium text-brand-deep-blue/60 line-clamp-1">
                       {product.metadata?.material || 'Food-grade Plastic'}
                     </span>
                     <span
-                      className="px-5 py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-xs font-bold rounded transition-colors"
+                      className="w-full xl:w-auto text-center px-3 py-2 sm:px-5 sm:py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-[10px] sm:text-xs font-bold rounded transition-colors"
                     >
                       Request Quote
                     </span>

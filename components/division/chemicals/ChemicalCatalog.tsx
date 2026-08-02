@@ -41,7 +41,7 @@ export async function ChemicalCatalog() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-10">
           {products.map((product, index) => (
             <ChemicalCard key={product.id} product={product} priority={index < 4} />
           ))}
@@ -81,24 +81,24 @@ function ChemicalCard({ product, priority = false }: {
         </div>
       </div>
 
-      <div className="flex flex-col flex-1 p-5">
+      <div className="flex flex-col flex-1 p-3 sm:p-5">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[10px] font-mono font-medium text-brand-deep-blue/50 uppercase tracking-widest">
+          <span className="text-[9px] sm:text-[10px] font-mono font-medium text-brand-deep-blue/50 uppercase tracking-widest">
             {cas ? `CAS: ${cas}` : 'No CAS'}
           </span>
         </div>
         
-        <h3 className="font-heading font-bold text-lg text-brand-deep-blue leading-tight mb-2 group-hover:text-brand-blue transition-colors line-clamp-2">
+        <h3 className="font-heading font-bold text-sm sm:text-lg text-brand-deep-blue leading-tight mb-2 group-hover:text-brand-blue transition-colors line-clamp-2">
           {product.name}
         </h3>
         
-        <p className="text-sm text-brand-deep-blue/70 leading-relaxed mb-6 flex-1 line-clamp-3">
+        <p className="text-xs sm:text-sm text-brand-deep-blue/70 leading-relaxed mb-4 sm:mb-6 flex-1 line-clamp-3">
           {product.description || 'Standard industrial chemical formulation.'}
         </p>
 
-        <div className="flex items-center justify-between mt-auto pt-4 border-t border-brand-border/10">
+        <div className="flex items-center justify-between mt-auto pt-3 sm:pt-4 border-t border-brand-border/10">
           <span
-            className="w-full text-center px-5 py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-xs font-bold rounded transition-colors"
+            className="w-full text-center px-3 py-2 sm:px-5 sm:py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-[10px] sm:text-xs font-bold rounded transition-colors"
           >
             Request Quote
           </span>
