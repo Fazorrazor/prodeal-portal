@@ -107,37 +107,29 @@ export function StaffActions({ member, divisions, currentUserId }: { member: Sta
         {isDeleting ? <Loader2 className="w-4 h-4 animate-spin text-brand-red" /> : <Trash2 className="w-4 h-4" />}
       </button>
 
-      {/* iOS-Style Toggle Switch */}
+      {/* Premium Toggle Switch */}
       <button
         onClick={toggleStatus}
         disabled={isUpdating || isDeleting}
         className={`
-          relative inline-flex items-center w-14 h-8 rounded-full 
+          relative inline-flex items-center w-11 h-6 rounded-full 
           transition-colors duration-300 ease-in-out cursor-pointer disabled:opacity-50 
-          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500
-          ${optimisticActive ? 'bg-emerald-500' : 'bg-slate-300'}
+          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue/50
+          ${optimisticActive ? 'bg-emerald-500' : 'bg-slate-200'}
         `}
         title={optimisticActive ? 'Deactivate Account' : 'Activate Account'}
       >
         <span className="sr-only">Toggle staff status</span>
-        
-        {/* Sliding Circular Thumb */}
         <span
           className={`
-            inline-flex items-center justify-center w-6 h-6 bg-white rounded-full shadow-md 
-            transform transition-transform duration-300 ease-[cubic-bezier(0.87,0,0.13,1)]
-            ${optimisticActive ? 'translate-x-7' : 'translate-x-1'}
+            inline-flex items-center justify-center w-5 h-5 bg-white rounded-full shadow-sm 
+            transform transition-transform duration-300 ease-out
+            ${optimisticActive ? 'translate-x-5' : 'translate-x-0.5'}
           `}
         >
           {isUpdating ? (
             <Loader2 className="w-3 h-3 text-slate-400 animate-spin" />
-          ) : (
-            <Power 
-              className={`w-3 h-3 transition-colors duration-300 ${
-                optimisticActive ? 'text-emerald-500' : 'text-slate-400'
-              }`} 
-            />
-          )}
+          ) : null}
         </span>
       </button>
 

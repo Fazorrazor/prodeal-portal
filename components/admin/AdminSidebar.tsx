@@ -27,11 +27,9 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
   ];
 
   return (
-    <aside id="tour-sidebar" className="hidden lg:flex w-56 bg-transparent text-brand-deep-blue flex-col h-full shrink-0 relative">
-      <AnimatedBorder direction="right" />
-      <div className="h-16 flex items-center px-6 relative">
-        <AnimatedBorder direction="bottom" />
-        <h1 className="font-display text-xl tracking-tighter flex items-baseline">
+    <aside id="tour-sidebar" className="hidden lg:flex w-56 bg-brand-surface/50 text-brand-deep-blue flex-col h-full shrink-0 relative border-r border-slate-200/60">
+      <div className="h-20 flex items-center px-6 relative">
+        <h1 className="font-display text-xl tracking-tight flex items-baseline">
           <strong className="font-extrabold text-brand-deep-blue mr-1.5">Prodeal</strong>
           <span className="text-xs text-brand-blue/80 font-body uppercase tracking-widest ml-2">Admin</span>
         </h1>
@@ -44,10 +42,10 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
             <Link
               key={link.name}
               href={link.href}
-              className={`flex items-center gap-3 px-3 py-2 text-sm font-semibold transition-all duration-300 rounded-md animate-in fade-in slide-in-from-left-4 fill-mode-both ${
+              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all duration-300 rounded-xl animate-in fade-in slide-in-from-left-4 fill-mode-both ${
                 isActive 
-                  ? 'bg-brand-blue/10 text-brand-blue' 
-                  : 'text-brand-deep-blue/80 hover:bg-black/5 hover:text-brand-deep-blue'
+                  ? 'bg-brand-blue/10 text-brand-blue shadow-sm' 
+                  : 'text-slate-500 hover:bg-white hover:shadow-sm hover:text-brand-deep-blue'
               }`}
               style={{ animationDelay: `${100 + i * 50}ms` }}
             >
@@ -58,10 +56,9 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
       </nav>
 
       <div className="p-4 relative">
-        <AnimatedBorder direction="top" />
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2 text-sm font-semibold text-brand-deep-blue/80 hover:bg-brand-red/10 hover:text-brand-red transition-colors w-full rounded-md"
+          className="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-slate-500 hover:bg-red-50 hover:text-brand-red transition-all w-full rounded-xl"
         >
           Logout
         </button>

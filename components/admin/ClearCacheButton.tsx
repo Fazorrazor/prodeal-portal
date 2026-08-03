@@ -28,7 +28,7 @@ export function ClearCacheButton() {
     <button 
       onClick={handleClearCache}
       disabled={isClearing}
-      className="flex items-center gap-2 bg-brand-deep-blue text-brand-surface py-3 px-6 text-xs font-bold uppercase tracking-widest hover:bg-brand-blue transition-colors disabled:opacity-50"
+      className="flex items-center justify-center w-full sm:w-auto gap-2 bg-brand-deep-blue text-white py-2.5 px-5 text-sm font-semibold rounded-lg hover:bg-brand-blue transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:hover:shadow-sm"
     >
       {isClearing ? (
         <><Loader2 className="w-4 h-4 animate-spin" /> Purging...</>

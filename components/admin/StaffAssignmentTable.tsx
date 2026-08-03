@@ -31,14 +31,12 @@ export async function StaffAssignmentTable({ hideManageLink = false, search = ''
   const { data: divisions } = await supabase.from('divisions').select('id, display_name');
 
   const header = (
-    <div className="pb-4 relative flex items-center justify-between bg-brand-surface z-20">
-      <AnimatedBorder direction="bottom" delay={0.4} className="!bg-brand-deep-blue" />
+    <div className="p-6 relative flex items-center justify-between border-b border-slate-100">
       <div className="flex items-center gap-3">
-        <div className="w-1 h-6 bg-brand-blue shrink-0" />
-        <h2 className="font-heading font-bold text-xl text-brand-deep-blue leading-none tracking-tighter">Active Staff Load</h2>
+        <h2 className="font-display font-semibold text-lg text-brand-deep-blue leading-none">Active Staff Load</h2>
       </div>
       {!hideManageLink && (
-        <Link href="/admin/staff" className="text-[10px] font-bold text-brand-blue uppercase tracking-widest hover:text-brand-deep-blue transition-colors">
+        <Link href="/admin/staff" className="text-sm font-medium text-brand-blue hover:text-brand-deep-blue transition-colors">
           Manage
         </Link>
       )}
@@ -47,11 +45,14 @@ export async function StaffAssignmentTable({ hideManageLink = false, search = ''
 
   if (!staff || staff.length === 0) {
     return (
-      <div className="mt-8">
+      <div className="mt-8 bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
         {header}
-        <div className="border-t border-brand-border/40 py-14 flex flex-col items-start">
-          <h3 className="text-3xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-2">No Staff Found.</h3>
-          <p className="text-sm text-brand-deep-blue/60 font-mono uppercase tracking-widest mt-2">
+        <div className="py-16 flex flex-col items-center justify-center text-center">
+          <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3">
+            <span className="text-slate-400">👥</span>
+          </div>
+          <h3 className="text-lg font-semibold text-brand-deep-blue mb-1">No Staff Found</h3>
+          <p className="text-sm text-slate-500">
             No members assigned to your accessible divisions.
           </p>
         </div>
@@ -60,8 +61,8 @@ export async function StaffAssignmentTable({ hideManageLink = false, search = ''
   }
 
   return (
-    <div className="mt-8 relative">
-      <div className="sticky top-0 z-30 bg-brand-surface/90 backdrop-blur-md pt-2 -mx-2 px-2 sm:mx-0 sm:px-0">
+    <div className="mt-8 bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+      <div className="sticky top-0 z-30 bg-white/90 backdrop-blur-md">
         {header}
       </div>
 
@@ -124,14 +125,14 @@ export async function StaffAssignmentTable({ hideManageLink = false, search = ''
       <div className="hidden md:block overflow-x-auto mt-4">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b-2 border-brand-deep-blue/20">
-              <th className="py-3 pr-4 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em]">Name</th>
-              <th className="px-4 py-3 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em]">Role</th>
-              <th className="px-4 py-3 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em]">Service</th>
-              <th className="px-4 py-3 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em]">WhatsApp</th>
-              <th className="px-4 py-3 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em]">Status</th>
-              <th className="py-3 pl-4 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em] text-right">Joined</th>
-              <th className="py-3 pl-4 pr-2 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em] text-right">Actions</th>
+            <tr className="border-b border-slate-100 bg-slate-50/50">
+              <th className="py-3 pl-6 pr-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
+              <th className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Role</th>
+              <th className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Service</th>
+              <th className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">WhatsApp</th>
+              <th className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+              <th className="py-3 pl-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Joined</th>
+              <th className="py-3 pl-4 pr-6 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-brand-border/30">
@@ -150,37 +151,36 @@ export async function StaffAssignmentTable({ hideManageLink = false, search = ''
                 return (
                   <tr
                     key={member.id}
-                    className={`group transition-colors animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both ${isCurrentUser ? 'bg-brand-blue/[0.04] hover:bg-brand-blue/[0.07]' : 'hover:bg-black/[0.025]'}`}
+                    className={`group transition-colors animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both border-b border-slate-50 last:border-0 ${isCurrentUser ? 'bg-brand-blue/[0.04]' : 'hover:bg-slate-50/50'}`}
                     style={{ animationDelay: `${i * 30}ms` } as React.CSSProperties}
                   >
-                    <td className="py-4 pr-4 align-middle">
-                      <div className="flex items-center gap-2">
-                        {/* Status dot */}
-                        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${member.is_active ? 'bg-emerald-500' : 'bg-brand-border/60'}`} />
-                        <span className="font-bold text-brand-deep-blue text-sm">{member.full_name}</span>
+                    <td className="py-4 pl-6 pr-4 align-middle">
+                      <div className="flex items-center gap-3">
+                        <span className={`w-2 h-2 rounded-full shrink-0 ${member.is_active ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'bg-slate-300'}`} />
+                        <span className="font-semibold text-brand-deep-blue text-sm">{member.full_name}</span>
                         {isCurrentUser && (
-                          <span className="text-[9px] font-bold text-brand-blue uppercase tracking-widest border border-brand-blue/30 px-1">You</span>
+                          <span className="text-[10px] font-medium text-brand-blue bg-brand-blue/10 rounded-md px-1.5 py-0.5">You</span>
                         )}
                       </div>
                     </td>
                     <td className="px-4 py-4 align-middle">
-                      <span className={`text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 border ${member.role === USER_ROLES.ADMIN ? 'text-brand-red border-brand-red/30 bg-brand-red/5' : 'text-brand-blue border-brand-blue/30 bg-brand-blue/5'}`}>
+                      <span className={`inline-flex items-center text-xs font-semibold px-2 py-1 rounded-md border ${member.role === USER_ROLES.ADMIN ? 'text-brand-red border-brand-red/20 bg-brand-red/5' : 'text-brand-blue border-brand-blue/20 bg-brand-blue/5'}`}>
                         {member.role}
                       </span>
                     </td>
-                    <td className="px-4 py-4 text-sm font-semibold text-brand-deep-blue/80 align-middle max-w-[200px]">
+                    <td className="px-4 py-4 text-sm text-slate-500 align-middle max-w-[200px]">
                       {divisionsList}
                     </td>
-                    <td className="px-4 py-4 text-brand-deep-blue/60 font-mono text-xs align-middle">{member.whatsapp_phone}</td>
+                    <td className="px-4 py-4 text-slate-500 text-sm align-middle">{member.whatsapp_phone}</td>
                     <td className="px-4 py-4 align-middle">
-                      <span className={`text-[10px] font-bold uppercase tracking-widest ${member.is_active ? 'text-emerald-600' : 'text-brand-deep-blue/40'}`}>
+                      <span className={`inline-flex items-center text-xs font-semibold px-2 py-1 rounded-md ${member.is_active ? 'text-emerald-700 bg-emerald-50' : 'text-slate-500 bg-slate-50'}`}>
                         {member.is_active ? 'Active' : 'Inactive'}
                       </span>
                     </td>
-                    <td className="py-4 pl-4 text-brand-deep-blue/60 text-xs font-mono text-right align-middle whitespace-nowrap">
+                    <td className="py-4 pl-4 text-slate-500 text-sm text-right align-middle whitespace-nowrap">
                       {format(new Date(member.created_at), 'MMM d, yyyy')}
                     </td>
-                    <td className="py-4 pl-4 pr-2 align-middle text-right">
+                    <td className="py-4 pl-4 pr-6 align-middle text-right">
                       <StaffActions member={member} divisions={divisions || []} currentUserId={user?.id} />
                     </td>
                   </tr>
