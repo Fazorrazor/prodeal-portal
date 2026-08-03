@@ -1,13 +1,24 @@
-import { Smartphone, HardDrive, ShieldCheck } from 'lucide-react';
+import { Smartphone, HardDrive, CheckCircle2, AlertCircle } from 'lucide-react';
 import { createServer } from '../../../../lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { AnimatedBorder } from '../../../../components/admin/AnimatedBorder';
 import { ClearCacheButton } from '../../../../components/admin/ClearCacheButton';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
-
+function SectionHeader({ icon, title, description }: { icon: React.ReactNode; title: string; description?: string }) {
+  return (
+    <div className="flex items-center gap-4 mb-6">
+      <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-brand-blue shrink-0">
+        {icon}
+      </div>
+      <div>
+        <h2 className="text-lg font-semibold text-brand-deep-blue">{title}</h2>
+        {description && <p className="text-sm text-slate-500 mt-0.5">{description}</p>}
+      </div>
+    </div>
+  );
+}
 
 export default async function SettingsPage() {
   const supabase = await createServer() as any;
@@ -26,73 +37,68 @@ export default async function SettingsPage() {
     redirect('/admin');
   }
 
+  const isWhatsAppConfigured = !!(process.env.META_WA_PHONE_NUMBER_ID || process.env.WHATSAPP_PHONE_ID) && !!process.env.META_WA_ACCESS_TOKEN;
+
   return (
-    <div className="space-y-8 max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2">
+    <div className="space-y-6 max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2 pb-12">
       {/* Page header */}
-      <div className="pb-6 border-b border-slate-200">
-        <h1 className="text-3xl font-display font-bold text-brand-deep-blue tracking-tight leading-none mb-2">System Settings</h1>
+      <div className="pb-6 border-b border-slate-100">
+        <h1 className="text-2xl font-display font-semibold text-brand-deep-blue leading-none mb-2">System Settings</h1>
         <p className="text-slate-500 text-sm">
           Platform integrations and division configuration
         </p>
       </div>
 
       {/* WhatsApp Business API */}
-      <section className="animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both" style={{ animationDelay: '100ms' }}>
-        <div className="bg-white rounded-2xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
-              <Smartphone className="w-6 h-6 text-emerald-600" />
-            </div>
-            <div className="flex-1">
-              <h2 className="text-lg font-semibold text-brand-deep-blue leading-tight">WhatsApp Integration</h2>
-              <p className="text-sm text-slate-500">Business API Connection Status</p>
-            </div>
-            <div>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                Connected
-              </span>
-            </div>
+      <section className="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 p-6 md:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both" style={{ animationDelay: '100ms' }}>
+        <SectionHeader
+          icon={<Smartphone className="w-6 h-6" />}
+          title="WhatsApp Integration"
+          description="Manage the Meta Business API connection used for agent notifications."
+        />
+
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-xl border border-slate-100 bg-slate-50/50">
+          <div>
+            <h3 className="text-sm font-semibold text-brand-deep-blue mb-1">API Connection Status</h3>
+            <p className="text-xs text-slate-500 max-w-md leading-relaxed">
+              Credentials are securely managed in the Vercel environment variables to prevent exposure.
+            </p>
           </div>
           
-          <div className="flex gap-3 bg-slate-50 rounded-xl p-4 border border-slate-100">
-            <ShieldCheck className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm font-semibold text-brand-deep-blue mb-1">Security Lock Enabled</p>
-              <p className="text-sm text-slate-600 leading-relaxed">
-                API credentials are securely stored in Vercel environment variables and cannot be accessed or modified from this dashboard. To update integration keys, please use the Vercel project settings.
-              </p>
-            </div>
+          <div className="shrink-0 w-full sm:w-auto">
+            {isWhatsAppConfigured ? (
+              <div className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200/50 rounded-lg text-emerald-700 w-full sm:w-auto">
+                <CheckCircle2 className="w-4 h-4" />
+                <span className="text-sm font-semibold">Connected</span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200/50 rounded-lg text-amber-700 w-full sm:w-auto">
+                <AlertCircle className="w-4 h-4" />
+                <span className="text-sm font-semibold">Not Configured</span>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
       {/* Edge Cache Management */}
-      <section className="animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both" style={{ animationDelay: '200ms' }}>
-        <div className="bg-white rounded-2xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded-full bg-brand-blue/10 flex items-center justify-center shrink-0">
-              <HardDrive className="w-6 h-6 text-brand-blue" />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-brand-deep-blue leading-tight">Edge Cache Management</h2>
-              <p className="text-sm text-slate-500">Global CDN and ISR invalidation</p>
-            </div>
-          </div>
+      <section className="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 p-6 md:p-8 animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both" style={{ animationDelay: '200ms' }}>
+        <SectionHeader
+          icon={<HardDrive className="w-6 h-6" />}
+          title="Edge Cache Management"
+          description="Manage global caching for product catalogs and dynamic pages."
+        />
 
-          <div className="space-y-6">
-            <p className="text-sm text-slate-600 leading-relaxed">
-              Prodeal portal utilizes heavy edge caching to ensure maximum performance for clients. 
-              If product catalogs or chemical documentation links are not updating on the live site after database changes, 
-              trigger a global cache purge below.
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 p-5 rounded-xl border border-slate-100 bg-slate-50/50">
+          <div className="max-w-lg">
+            <h3 className="text-sm font-semibold text-brand-deep-blue mb-1">Purge Global Cache</h3>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Force an immediate revalidation of all ISR caches globally. Clients may experience a brief delay on the next page load while caches warm. Only use this if live data is out of sync.
             </p>
-
-            <div className="flex items-center justify-between flex-wrap gap-4 bg-slate-50 rounded-xl p-4 border border-slate-100">
-              <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
-                This will invalidate all ISR caches globally. Clients may experience a brief delay on the next page load while caches warm.
-              </p>
-              <ClearCacheButton />
-            </div>
+          </div>
+          
+          <div className="shrink-0 w-full sm:w-auto">
+            <ClearCacheButton />
           </div>
         </div>
       </section>
