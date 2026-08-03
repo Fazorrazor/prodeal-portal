@@ -71,13 +71,11 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
   };
 
   const header = (
-    <div className="pb-4 relative flex items-center justify-between bg-brand-surface z-20">
-      <AnimatedBorder direction="bottom" delay={0.3} className="!bg-brand-deep-blue" />
+    <div className="p-6 relative flex items-center justify-between border-b border-slate-100">
       <div className="flex items-center gap-3">
-        <div className="w-1 h-6 bg-brand-red shrink-0" />
-        <h2 className="font-heading font-bold text-xl text-brand-deep-blue leading-none tracking-tighter">Recent Tickets</h2>
+        <h2 className="font-display font-semibold text-lg text-brand-deep-blue leading-none">Recent Tickets</h2>
       </div>
-      <Link href="/admin/tickets" className="text-[10px] font-bold text-brand-blue uppercase tracking-widest hover:text-brand-deep-blue transition-colors">
+      <Link href="/admin/tickets" className="text-sm font-medium text-brand-blue hover:text-brand-deep-blue transition-colors">
         View all
       </Link>
     </div>
@@ -85,11 +83,14 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
 
   if (!inquiries || inquiries.length === 0) {
     return (
-      <div className="mt-8">
+      <div className="mt-8 bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
         {header}
-        <div className="border-t border-brand-border/40 py-14 flex flex-col items-start">
-          <h3 className="text-3xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-2">All clear.</h3>
-          <p className="text-sm text-brand-deep-blue/60 font-mono uppercase tracking-widest mt-2">
+        <div className="py-16 flex flex-col items-center justify-center text-center">
+          <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3">
+            <span className="text-slate-400">📝</span>
+          </div>
+          <h3 className="text-lg font-semibold text-brand-deep-blue mb-1">All caught up</h3>
+          <p className="text-sm text-slate-500">
             No recent tickets assigned to your division.
           </p>
         </div>
@@ -98,19 +99,19 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
   }
 
   return (
-    <div className="mt-8 relative">
-      <div className="sticky top-0 z-30 bg-brand-surface/90 backdrop-blur-md pt-2 -mx-2 px-2 sm:mx-0 sm:px-0">
+    <div className="mt-8 bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+      <div className="sticky top-0 z-30 bg-white/90 backdrop-blur-md">
         {selectedTickets.length > 0 && (
-          <div className="mb-3 bg-brand-deep-blue/5 border border-brand-border/60 p-3 flex items-center justify-between animate-in fade-in slide-in-from-top-2">
-            <span className="text-[10px] font-bold text-brand-deep-blue uppercase tracking-widest">
+          <div className="bg-brand-blue/5 border-b border-brand-blue/10 p-4 flex items-center justify-between animate-in fade-in slide-in-from-top-2">
+            <span className="text-sm font-semibold text-brand-deep-blue">
               {selectedTickets.length} Selected
             </span>
             <button
               onClick={handleBulkDeleteClick}
               disabled={isDeleting}
-              className="flex items-center gap-2 bg-brand-red text-white px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-red-700 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 bg-red-50 text-brand-red px-4 py-2 text-sm font-medium rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
             >
-              {isDeleting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
+              {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
               Delete Selected
             </button>
           </div>
@@ -180,21 +181,21 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
       <div className="hidden md:block overflow-x-auto mt-4">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b-2 border-brand-deep-blue/20">
-              <th className="py-3 pl-4 pr-2 w-10">
+            <tr className="border-b border-slate-100 bg-slate-50/50">
+              <th className="py-3 pl-6 pr-3 w-12">
                 <input
                   type="checkbox"
                   checked={inquiries.length > 0 && selectedTickets.length === inquiries.length}
                   onChange={handleSelectAll}
-                  className="w-4 h-4 rounded-none border-2 border-brand-border/60 text-brand-deep-blue focus:ring-brand-blue cursor-pointer"
+                  className="w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
                 />
               </th>
-              <th className="py-3 pr-4 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em]">Ticket ID</th>
-              <th className="px-4 py-3 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em]">Product / Service</th>
-              <th className="px-4 py-3 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em]">Client</th>
-              <th className="px-4 py-3 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em]">Status</th>
-              <th className="px-4 py-3 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em]">Received</th>
-              <th className="py-3 pl-4 text-[10px] font-bold text-brand-deep-blue/50 uppercase tracking-[0.2em] text-right">Action</th>
+              <th className="py-3 pr-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Ticket ID</th>
+              <th className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Product / Service</th>
+              <th className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Client</th>
+              <th className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+              <th className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Received</th>
+              <th className="py-3 pl-4 pr-6 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-brand-border/30">
@@ -203,20 +204,20 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
               return (
                 <tr
                   key={inquiry.id}
-                  className={`group transition-colors animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both ${selectedTickets.includes(inquiry.id) ? 'bg-brand-blue/[0.04] hover:bg-brand-blue/[0.07]' : 'hover:bg-black/[0.025]'}`}
+                  className={`group transition-colors animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both border-b border-slate-50 last:border-0 ${selectedTickets.includes(inquiry.id) ? 'bg-brand-blue/[0.04]' : 'hover:bg-slate-50/50'}`}
                   style={{ animationDelay: `${i * 50}ms` }}
                 >
-                  <td className="py-4 pl-4 pr-2">
+                  <td className="py-4 pl-6 pr-3">
                     <input
                       type="checkbox"
                       checked={selectedTickets.includes(inquiry.id)}
                       onChange={() => handleSelectOne(inquiry.id)}
-                      className="w-4 h-4 rounded-none border-2 border-brand-border/60 text-brand-deep-blue focus:ring-brand-blue cursor-pointer"
+                      className="w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
                     />
                   </td>
                   <td className="py-4 pr-4"><ScrambledUUID uuid={inquiry.tracking_uuid} /></td>
                   <td className="px-4 py-4">
-                    <span className="block text-[10px] uppercase font-bold text-brand-deep-blue/50 tracking-[0.15em] mb-0.5">
+                    <span className="block text-xs text-slate-500 font-medium mb-0.5">
                       {inquiry.divisions?.display_name || 'Unknown'}
                     </span>
                     <span className="text-sm font-semibold text-brand-deep-blue line-clamp-1">
@@ -224,21 +225,21 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
                     </span>
                   </td>
                   <td className="px-4 py-4">
-                    <p className="text-sm font-bold text-brand-deep-blue">{inquiry.contact_name}</p>
-                    {inquiry.company_name && <p className="text-xs text-brand-deep-blue/60 font-mono">{inquiry.company_name}</p>}
+                    <p className="text-sm font-semibold text-brand-deep-blue">{inquiry.contact_name}</p>
+                    {inquiry.company_name && <p className="text-sm text-slate-500">{inquiry.company_name}</p>}
                   </td>
                   <td className="px-4 py-4">
-                    <span className={`inline-flex items-center text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 border ${s.badge}`}>
+                    <span className={`inline-flex items-center text-xs font-semibold px-2 py-1 rounded-md border ${s.badge}`}>
                       {s.label}
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-xs text-brand-deep-blue/60 font-mono whitespace-nowrap">
+                  <td className="px-4 py-4 text-sm text-slate-500 whitespace-nowrap">
                     {formatDistanceToNow(new Date(inquiry.created_at), { addSuffix: true })}
                   </td>
-                  <td className="py-4 pl-4 text-right">
+                  <td className="py-4 pl-4 pr-6 text-right">
                     <Link
                       href={`/admin/tickets/${inquiry.id}`}
-                      className="inline-flex items-center justify-center p-1.5 text-brand-deep-blue/40 group-hover:text-brand-blue transition-colors"
+                      className="inline-flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-brand-blue hover:bg-brand-blue/5 transition-colors"
                     >
                       <ChevronRight className="w-5 h-5" />
                     </Link>

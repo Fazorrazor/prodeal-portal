@@ -7,34 +7,7 @@ import { ClearCacheButton } from '../../../../components/admin/ClearCacheButton'
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
-function SettingRow({ label, value, status, statusColor }: { label: string; value: string; status?: string; statusColor?: string }) {
-  return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 py-4 border-b border-brand-border/30 last:border-b-0">
-      <p className="w-44 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-deep-blue/50 shrink-0">{label}</p>
-      <div className="flex items-center gap-3 flex-1 min-w-0">
-        <code className="text-brand-deep-blue font-mono text-sm font-bold break-all flex-1">{value}</code>
-        {status && (
-          <span className={`text-[10px] font-bold uppercase tracking-widest shrink-0 px-1.5 py-0.5 border ${statusColor}`}>
-            {status}
-          </span>
-        )}
-      </div>
-    </div>
-  );
-}
 
-function SectionHeader({ icon, title, accent = 'bg-brand-blue', delay = 0.3 }: { icon: React.ReactNode; title: string; accent?: string; delay?: number }) {
-  return (
-    <div className="flex items-center gap-3 pb-3 relative mb-4">
-      <AnimatedBorder direction="bottom" delay={delay} />
-      <div className={`w-1 h-5 ${accent} shrink-0`} />
-      <div className="flex items-center gap-2">
-        <span className="text-brand-deep-blue/50">{icon}</span>
-        <h2 className="text-sm font-heading font-bold uppercase tracking-widest text-brand-deep-blue">{title}</h2>
-      </div>
-    </div>
-  );
-}
 
 export default async function SettingsPage() {
   const supabase = await createServer() as any;
@@ -54,76 +27,72 @@ export default async function SettingsPage() {
   }
 
   return (
-    <div className="space-y-10 max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2">
+    <div className="space-y-8 max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2">
       {/* Page header */}
-      <div className="pb-6 relative">
-        <AnimatedBorder direction="bottom" delay={0.1} className="h-[2px] !bg-brand-deep-blue" />
-        <h1 className="text-3xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">System Settings</h1>
-        <p className="text-brand-deep-blue/60 text-sm font-mono uppercase tracking-widest mt-1">
+      <div className="pb-6 border-b border-slate-200">
+        <h1 className="text-3xl font-display font-bold text-brand-deep-blue tracking-tight leading-none mb-2">System Settings</h1>
+        <p className="text-slate-500 text-sm">
           Platform integrations and division configuration
         </p>
       </div>
 
       {/* WhatsApp Business API */}
       <section className="animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both" style={{ animationDelay: '100ms' }}>
-        <SectionHeader
-          icon={<Smartphone className="w-4 h-4" />}
-          title="WhatsApp Business API"
-          accent="bg-emerald-500"
-          delay={0.3}
-        />
-
-        {/* Security notice */}
-        <div className="mb-4 flex gap-3 border-l-[3px] border-brand-blue bg-brand-blue/[0.04] px-4 py-3">
-          <ShieldCheck className="w-4 h-4 text-brand-blue shrink-0 mt-0.5" />
-          <div>
-            <p className="text-[10px] font-bold text-brand-blue uppercase tracking-widest mb-1">Security Lock</p>
-            <p className="text-xs font-mono text-brand-deep-blue/70 leading-relaxed">
-              WhatsApp API credentials are hardcoded into the Vercel environment for security. To update these, modify your{' '}
-              <code className="bg-black/10 px-1 py-0.5">.env.local</code> file or Vercel Project Settings and trigger a redeploy.
-            </p>
+        <div className="bg-white rounded-2xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-12 h-12 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+              <Smartphone className="w-6 h-6 text-emerald-600" />
+            </div>
+            <div className="flex-1">
+              <h2 className="text-lg font-semibold text-brand-deep-blue leading-tight">WhatsApp Integration</h2>
+              <p className="text-sm text-slate-500">Business API Connection Status</p>
+            </div>
+            <div>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                Connected
+              </span>
+            </div>
           </div>
-        </div>
-
-        <div className="bg-black/[0.02] border-t border-b border-brand-border/30">
-          <SettingRow
-            label="Phone Number ID"
-            value={process.env.META_WA_PHONE_NUMBER_ID || process.env.WHATSAPP_PHONE_ID || 'Not Configured'}
-            status="Active"
-            statusColor="text-emerald-600 border-emerald-500/30 bg-emerald-50"
-          />
-          <SettingRow
-            label="Permanent Access Token"
-            value="••••••••••••••••••••••••••••••••"
-            status="Hidden"
-            statusColor="text-brand-deep-blue/40 border-brand-border/50"
-          />
+          
+          <div className="flex gap-3 bg-slate-50 rounded-xl p-4 border border-slate-100">
+            <ShieldCheck className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-brand-deep-blue mb-1">Security Lock Enabled</p>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                API credentials are securely stored in Vercel environment variables and cannot be accessed or modified from this dashboard. To update integration keys, please use the Vercel project settings.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Edge Cache Management */}
       <section className="animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both" style={{ animationDelay: '200ms' }}>
-        <SectionHeader
-          icon={<HardDrive className="w-4 h-4" />}
-          title="Edge Cache Management"
-          accent="bg-brand-blue"
-          delay={0.5}
-        />
-
-        <div className="space-y-4">
-          <div className="flex gap-3 border-l-[3px] border-brand-deep-blue/30 bg-black/[0.025] px-4 py-3">
-            <p className="text-sm text-brand-deep-blue/70 leading-relaxed">
-              Prodeal portal utilises heavy edge caching to ensure maximum performance for clients.
-              If product catalogs or chemical documentation links are not updating on the live site after database changes,
-              trigger a global cache purge below.
-            </p>
+        <div className="bg-white rounded-2xl p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-12 h-12 rounded-full bg-brand-blue/10 flex items-center justify-center shrink-0">
+              <HardDrive className="w-6 h-6 text-brand-blue" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-brand-deep-blue leading-tight">Edge Cache Management</h2>
+              <p className="text-sm text-slate-500">Global CDN and ISR invalidation</p>
+            </div>
           </div>
 
-          <div className="flex items-start gap-4 flex-wrap">
-            <ClearCacheButton />
-            <p className="text-[10px] font-mono text-brand-deep-blue/40 uppercase tracking-widest leading-relaxed max-w-xs mt-1">
-              This will invalidate all ISR caches globally. Clients may experience a brief delay on the next page load while caches warm.
+          <div className="space-y-6">
+            <p className="text-sm text-slate-600 leading-relaxed">
+              Prodeal portal utilizes heavy edge caching to ensure maximum performance for clients. 
+              If product catalogs or chemical documentation links are not updating on the live site after database changes, 
+              trigger a global cache purge below.
             </p>
+
+            <div className="flex items-center justify-between flex-wrap gap-4 bg-slate-50 rounded-xl p-4 border border-slate-100">
+              <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
+                This will invalidate all ISR caches globally. Clients may experience a brief delay on the next page load while caches warm.
+              </p>
+              <ClearCacheButton />
+            </div>
           </div>
         </div>
       </section>
