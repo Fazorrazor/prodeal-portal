@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { StaffAssignmentTable } from '../../../../components/admin/StaffAssignmentTable';
 import { StaffAssignmentTableSkeleton } from '../../../../components/admin/StaffAssignmentTableSkeleton';
 import { DivisionErrorBoundary } from '../../../../components/shared/DivisionErrorBoundary';
-import { AnimatedBorder } from '../../../../components/admin/AnimatedBorder';
+
 import { AddStaffPanel } from '../../../../components/admin/AddStaffPanel';
 import { createServer } from '../../../../lib/supabase/server';
 import { redirect } from 'next/navigation';
@@ -32,12 +32,11 @@ export default async function StaffPage(props: { searchParams: Promise<{ search?
   const search = searchParams?.search || '';
 
   return (
-    <div className="space-y-6 max-w-6xl animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2">
-      <div className="pb-6 relative flex items-start justify-between">
-        <AnimatedBorder direction="bottom" delay={0.1} className="h-[2px] !bg-brand-deep-blue" />
+    <div className="space-y-6 max-w-6xl animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2 pb-12">
+      <div className="pb-6 border-b border-slate-100 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">Staff Roster</h1>
-          <p className="text-brand-deep-blue/80 text-sm mt-1">
+          <h1 className="text-2xl font-display font-semibold text-brand-deep-blue leading-none mb-1.5">Staff Roster</h1>
+          <p className="text-slate-500 text-sm">
             Manage system access and division assignments.
           </p>
         </div>

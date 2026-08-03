@@ -4,7 +4,7 @@ import { TicketTableSkeleton } from '../../../../components/admin/TicketTableSke
 import { TicketFilters } from '../../../../components/admin/TicketFilters';
 import { TicketTable } from '../../../../components/admin/TicketTable';
 import { DivisionErrorBoundary } from '../../../../components/shared/DivisionErrorBoundary';
-import { AnimatedBorder } from '../../../../components/admin/AnimatedBorder';
+
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -67,12 +67,11 @@ async function TicketsData({ searchParams }: { searchParams: { [key: string]: st
 export default async function TicketListPage(props: { searchParams: Promise<{ [key: string]: string | undefined }> }) {
   const searchParams = await props.searchParams;
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 pt-2 pb-6 relative">
-        <AnimatedBorder direction="bottom" delay={0.1} className="h-[2px] !bg-brand-deep-blue" />
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 pb-6 border-b border-slate-100">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">Ticket Master List</h1>
-          <p className="text-brand-deep-blue/80 font-body text-sm">Manage all incoming division inquiries.</p>
+          <h1 className="text-2xl font-display font-semibold text-brand-deep-blue leading-none mb-1.5">Ticket Master List</h1>
+          <p className="text-slate-500 text-sm">Manage all incoming division inquiries.</p>
         </div>
         <div id="tour-ticket-filters">
           <TicketFilters currentStatus={searchParams.status || 'all'} />

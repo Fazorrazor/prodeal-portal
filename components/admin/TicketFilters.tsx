@@ -17,15 +17,15 @@ export function TicketFilters({ currentStatus }: { currentStatus: string }) {
   };
 
   return (
-    <div className="flex items-baseline gap-3">
-      <label htmlFor="status-filter" className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80">
-        Filter By Status:
+    <div className="flex items-center gap-3 bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-sm">
+      <label htmlFor="status-filter" className="text-xs font-semibold text-slate-500 whitespace-nowrap">
+        Filter:
       </label>
       <select 
         id="status-filter"
         value={currentStatus}
         onChange={handleStatusChange}
-        className="py-1 bg-transparent border-0 border-b-2 border-brand-deep-blue text-sm font-bold text-brand-deep-blue uppercase tracking-widest outline-none focus:border-brand-blue cursor-pointer"
+        className="py-0.5 bg-transparent border-0 text-sm font-semibold text-brand-deep-blue outline-none cursor-pointer focus:ring-0"
       >
         <option value="all">All Tickets</option>
         <option value="new">New</option>

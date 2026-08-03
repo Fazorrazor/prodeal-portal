@@ -59,9 +59,9 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
     <>
       <button 
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-brand-blue hover:text-brand-deep-blue transition-colors px-4 py-2 border border-brand-border/60 hover:border-brand-deep-blue"
+        className="flex items-center gap-2 bg-brand-blue text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-brand-deep-blue transition-all shadow-sm hover:shadow-md"
       >
-        <Plus className="w-3 h-3" /> Add Staff Member
+        <Plus className="w-4 h-4" /> Add Staff Member
       </button>
 
       {/* Slide Over Overlay */}
@@ -75,11 +75,10 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
             className="relative sm:absolute sm:top-0 sm:right-0 w-full sm:max-w-md h-[90vh] sm:h-full bg-brand-surface border-t-4 sm:border-t-0 sm:border-l-4 border-brand-deep-blue p-6 lg:p-8 overflow-y-auto animate-in slide-in-from-bottom sm:slide-in-from-right duration-500 flex flex-col"
             onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-6 relative shrink-0">
-              <AnimatedBorder direction="bottom" delay={0.2} className="!bg-brand-deep-blue" />
+            <div className="flex items-center justify-between pb-6 border-b border-slate-100 shrink-0">
               <div>
-                <h2 className="text-2xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">Provision Staff</h2>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80">System Access</p>
+                <h2 className="text-xl font-display font-semibold text-brand-deep-blue leading-none mb-1">Add Staff Member</h2>
+                <p className="text-sm text-slate-500">Provision a new system account</p>
               </div>
               <button 
                 onClick={() => !isSubmitting && setIsOpen(false)}
@@ -166,7 +165,7 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
                 <button 
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-brand-deep-blue text-brand-surface py-4 text-xs font-bold uppercase tracking-widest hover:bg-brand-blue transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full bg-brand-blue text-white py-3.5 text-sm font-semibold rounded-lg hover:bg-brand-deep-blue transition-all shadow-sm hover:shadow-md disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <><Loader2 className="w-4 h-4 animate-spin" /> Provisioning...</>
