@@ -53,7 +53,7 @@ export default function UpdatePasswordPage() {
             Setup <span className="text-brand-blue">Password</span>
           </h1>
           <p className="text-brand-deep-blue/80 text-[10px] uppercase font-bold tracking-widest mt-4">
-            Welcome to the Prodeal Ops Portal
+            Welcome to the Prodeal Admin Portal
           </p>
         </div>
 

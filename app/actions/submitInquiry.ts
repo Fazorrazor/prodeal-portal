@@ -189,7 +189,7 @@ export async function submitInquiry(formData: any) {
             <p style="margin: 0;"><strong>Tracking ID:</strong> <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">${newInquiry.tracking_uuid}</code></p>
           </div>
 
-          <a href="${adminLink}" style="display: inline-block; background-color: #002244; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; margin-top: 10px;">Review Inquiry in Ops Portal</a>
+          <a href="${adminLink}" style="display: inline-block; background-color: #002244; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; margin-top: 10px;">Review Inquiry in Admin Portal</a>
         </div>
       `;
 
