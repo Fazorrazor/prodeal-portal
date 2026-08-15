@@ -50,10 +50,10 @@ export async function InventoryTable() {
               <Link 
                 href={`/inquiry/${product.id}?from=bowls`}
                 key={product.id} 
-                className="group flex flex-col bg-white border border-brand-border/20 hover:border-brand-blue transition-colors cursor-pointer"
+                className="group flex flex-col bg-slate-50 border border-brand-border/30 hover:border-brand-blue transition-colors cursor-pointer"
               >
                 {/* Image Section */}
-                <div className="relative aspect-[4/3] w-full bg-brand-surface border-b border-brand-border/10 overflow-hidden">
+                <div className="relative aspect-[3/2] w-full bg-white border-b border-brand-border/10 overflow-hidden">
                   <ProductImageCarousel 
                     images={images} 
                     alt={product.name} 
@@ -67,22 +67,22 @@ export async function InventoryTable() {
                 </div>
 
                 {/* Content Section */}
-                <div className="flex flex-col flex-1 p-3 sm:p-5">
-                  <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col flex-1 p-3 sm:p-4">
+                  <div className="flex items-center justify-between mb-1.5">
                     <span className="text-[9px] sm:text-[10px] font-mono font-medium text-brand-deep-blue/50 uppercase tracking-widest">
                       {product.id.split('-')[0]}
                     </span>
                   </div>
                   
-                  <h3 className="font-heading font-bold text-sm sm:text-lg text-brand-deep-blue leading-tight mb-2 group-hover:text-brand-blue transition-colors">
+                  <h3 className="font-heading font-bold text-sm sm:text-base text-brand-deep-blue leading-tight mb-1.5 group-hover:text-brand-blue transition-colors">
                     {product.name}
                   </h3>
                   
-                  <p className="text-xs sm:text-sm text-brand-deep-blue/70 leading-relaxed mb-4 sm:mb-6 flex-1">
+                  <p className="text-xs text-brand-deep-blue/70 leading-relaxed mb-3 sm:mb-4 flex-1">
                     {product.description || 'Premium disposable catering bowl.'}
                   </p>
 
-                  <div className="flex flex-col xl:flex-row xl:items-center justify-between mt-auto pt-3 sm:pt-4 border-t border-brand-border/10 gap-2 xl:gap-0">
+                  <div className="flex flex-col xl:flex-row xl:items-center justify-between mt-auto pt-2.5 sm:pt-3 border-t border-brand-border/10 gap-2 xl:gap-0">
                     <span className="text-[10px] sm:text-xs font-medium text-brand-deep-blue/60 line-clamp-1">
                       {product.metadata?.material || 'Food-grade Plastic'}
                     </span>

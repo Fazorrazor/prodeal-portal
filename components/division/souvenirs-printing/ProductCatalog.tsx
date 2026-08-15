@@ -114,9 +114,9 @@ function ProductCard({
   const images = [product.image_path, ...(product.gallery_images || [])].filter(Boolean) as string[];
 
   return (
-    <Link href={`/inquiry/${product.id}?from=${from}`} className="group flex flex-col h-full bg-white border border-brand-border/20 hover:border-brand-blue transition-colors cursor-pointer">
+    <Link href={`/inquiry/${product.id}?from=${from}`} className="group flex flex-col h-full bg-slate-50 border border-brand-border/30 hover:border-brand-blue transition-colors cursor-pointer">
       {/* Image */}
-      <div className="relative aspect-[4/3] w-full bg-brand-surface border-b border-brand-border/10 overflow-hidden">
+      <div className="relative aspect-[3/2] w-full bg-white border-b border-brand-border/10 overflow-hidden">
         <ProductImageCarousel 
           images={images} 
           alt={product.name} 
@@ -129,16 +129,16 @@ function ProductCard({
       </div>
 
       {/* Content */}
-      <div className="flex flex-col flex-1 p-3 sm:p-5">
-        <h3 className="font-heading font-bold text-sm sm:text-lg text-brand-deep-blue leading-tight mb-2 group-hover:text-brand-blue transition-colors line-clamp-2">
+      <div className="flex flex-col flex-1 p-3 sm:p-4">
+        <h3 className="font-heading font-bold text-sm sm:text-base text-brand-deep-blue leading-tight mb-1.5 group-hover:text-brand-blue transition-colors line-clamp-2">
           {product.name}
         </h3>
         
-        <p className="text-xs sm:text-sm text-brand-deep-blue/70 leading-relaxed mb-4 sm:mb-6 flex-1 line-clamp-3">
+        <p className="text-xs text-brand-deep-blue/70 leading-relaxed mb-3 sm:mb-4 flex-1 line-clamp-3">
           {product.description || 'Customizable corporate merchandise'}
         </p>
         
-        <div className="mt-auto pt-3 sm:pt-4 border-t border-brand-border/10">
+        <div className="mt-auto pt-2.5 sm:pt-3 border-t border-brand-border/10">
           <span
             className="block w-full text-center px-3 py-2 sm:px-5 sm:py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-[10px] sm:text-xs font-bold rounded transition-colors"
           >
