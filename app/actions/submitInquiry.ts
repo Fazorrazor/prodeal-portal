@@ -176,7 +176,11 @@ export async function submitInquiry(formData: any) {
         ? newInquiry.divisions[0]?.display_name 
         : (newInquiry.divisions as any)?.display_name || divisionSlug;
 
-      const adminLink = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://prodealindustries.com'}/admin/tickets/${newInquiry.id}`;
+      let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://prodealindustries.com';
+      if (!baseUrl.startsWith('http')) {
+        baseUrl = `https://${baseUrl}`;
+      }
+      const adminLink = `${baseUrl}/admin/tickets/${newInquiry.id}`;
       
       const emailHtml = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
