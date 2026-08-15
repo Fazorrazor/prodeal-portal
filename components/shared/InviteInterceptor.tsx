@@ -11,8 +11,8 @@ export function InviteInterceptor() {
       const hash = window.location.hash;
       // If the user lands here with an invite or password recovery token
       if (hash.includes('type=invite') || hash.includes('type=recovery')) {
-        // Redirect to the update password page, carrying the hash along so the Supabase client can authenticate them
-        router.push(`/admin/update-password${hash}`);
+        // Redirect with a HARD reload so the Supabase SDK on the destination page parses the hash
+        window.location.href = `/admin/update-password${hash}`;
       }
     }
   }, [router]);
