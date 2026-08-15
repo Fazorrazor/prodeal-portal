@@ -116,8 +116,8 @@ export async function proxy(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // If trying to access /admin routes (except login) and no session exists
-  if (req.nextUrl.pathname.startsWith('/admin') && !req.nextUrl.pathname.startsWith('/admin/login')) {
+  // If trying to access /admin routes (except login and update-password) and no session exists
+  if (req.nextUrl.pathname.startsWith('/admin') && !req.nextUrl.pathname.startsWith('/admin/login') && !req.nextUrl.pathname.startsWith('/admin/update-password')) {
     if (!session) {
       const redirectUrl = req.nextUrl.clone();
       redirectUrl.pathname = '/admin/login';
