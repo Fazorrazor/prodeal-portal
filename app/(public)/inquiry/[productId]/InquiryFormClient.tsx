@@ -87,7 +87,7 @@ function SuccessReceipt({ divisionSlug, trackingId }: { divisionSlug: string; tr
         {/* Body */}
         <div className="px-5 py-5 space-y-4">
           <p className="text-xs font-mono text-brand-deep-blue/60 uppercase tracking-widest leading-relaxed">
-            A representative will reach you via WhatsApp shortly.
+            A representative will reach you via WhatsApp within 2 hours.
           </p>
 
           {/* Tracking ID block */}
@@ -268,7 +268,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
         <div className="flex items-center gap-2 py-3 border-t border-b border-brand-border/40">
           <span className="text-brand-red font-mono font-bold text-sm leading-none">→</span>
           <span className="text-[10px] font-mono font-bold text-brand-deep-blue/80 uppercase tracking-[0.18em]">
-            A representative will contact you via WhatsApp shortly
+            Guaranteed response via WhatsApp within 2 hours
           </span>
         </div>
       </div>

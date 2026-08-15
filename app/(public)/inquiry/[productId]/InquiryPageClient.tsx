@@ -144,13 +144,23 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
           </div>
           
           {/* Description shown under title on mobile, remains on right panel for desktop */}
-          {product.description && (
-            <div className="md:hidden mt-2">
+          <div className="md:hidden mt-2 flex flex-col gap-6">
+            {product.description && (
               <p className="text-sm font-body leading-relaxed text-brand-deep-blue">
                 {product.description}
               </p>
-            </div>
-          )}
+            )}
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('inquiry-form')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-brand-deep-blue text-white text-[10px] font-mono font-bold uppercase tracking-[0.2em] active:scale-[0.98] transition-all"
+            >
+              <span>Proceed to Inquiry</span>
+              <span>↓</span>
+            </button>
+          </div>
         </div>
 
 
@@ -208,7 +218,7 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
         transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
         className="flex-1 overflow-y-auto"
       >
-        <div className="max-w-2xl mx-auto px-5 py-8 md:px-10 md:py-10">
+        <div id="inquiry-form" className="max-w-2xl mx-auto px-5 py-8 md:px-10 md:py-10 scroll-mt-16">
           {/* DESCRIPTION ON THE RIGHT (Desktop Only) */}
           {product.description && (
             <div className="hidden md:block mb-10 pb-8 border-b-2 border-brand-border/60">

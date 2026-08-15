@@ -25,6 +25,7 @@ test.describe('Pro Deal Industries - Critical Smoke Tests', () => {
         if (i < maxRetries - 1) {
           await page.waitForTimeout(2000);
         }
+
       }
     }
     

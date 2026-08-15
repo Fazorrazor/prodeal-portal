@@ -2,14 +2,14 @@ import Link from 'next/link';
 
 export function FooterLegal() {
   return (
-    <div className="md:border-t md:border-brand-border/30 md:mt-12 md:pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-      <p className="text-[10px] text-brand-deep-blue/80 font-mono tracking-widest uppercase text-center md:text-left">
-        &copy; {new Date().getFullYear()} Prodeal Industries Ltd All rights reserved.
+    <div className="pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <p className="text-[10px] text-brand-deep-blue/60 font-mono tracking-widest uppercase">
+        &copy; {new Date().getFullYear()} Prodeal Industries Ltd. All rights reserved.
       </p>
-      <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
-        <Link href="/support" className="md:hidden text-[10px] font-bold text-brand-deep-blue hover:text-brand-blue transition-colors uppercase tracking-widest">Support</Link>
-        <Link href="/privacy" className="text-[10px] text-brand-deep-blue/80 hover:text-brand-blue transition-colors uppercase tracking-widest">Privacy Policy</Link>
-        <Link href="/terms" className="text-[10px] text-brand-deep-blue/80 hover:text-brand-blue transition-colors uppercase tracking-widest">Terms of Service</Link>
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <Link href="/privacy" className="text-[10px] font-bold text-brand-deep-blue hover:text-brand-blue transition-colors uppercase tracking-widest">Privacy Policy</Link>
+        <Link href="/terms" className="text-[10px] font-bold text-brand-deep-blue hover:text-brand-blue transition-colors uppercase tracking-widest">Terms of Service</Link>
+        <Link href="/accessibility" className="text-[10px] font-bold text-brand-deep-blue hover:text-brand-blue transition-colors uppercase tracking-widest">Accessibility</Link>
       </div>
     </div>
   );
