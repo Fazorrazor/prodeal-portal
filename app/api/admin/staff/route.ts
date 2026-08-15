@@ -9,14 +9,8 @@ import { adminRateLimit } from '../../../../lib/ratelimit';
 const staffSchema = z.object({
   fullName: z.string().min(2, "Full name is required"),
   whatsappPhone: z.string().min(8, "Valid phone is required"),
-  role: z.enum(ROLE_VALUES),
-  divisionIds: z.array(z.string()).optional()
-}).refine(data => {
-  if (data.role === USER_ROLES.STAFF && (!data.divisionIds || data.divisionIds.length === 0)) return false;
-  return true;
-}, {
-  message: "Agents must be assigned to at least one division",
-  path: ["divisionIds"]
+  email: z.string().email("Valid email is required"),
+  role: z.enum(ROLE_VALUES)
 });
 
 export async function POST(req: Request) {
@@ -60,33 +54,28 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    const { fullName, whatsappPhone, role, divisionIds } = validatedData.data;
+    const { fullName, whatsappPhone, email, role } = validatedData.data;
 
-    // 4. Create auth user securely via Admin API
+    // 4. Fetch all active divisions to auto-assign all of them to the agent
+    const { data: allDivisions } = await supabase.from('divisions').select('id').eq('is_active', true);
+    const allDivisionIds = allDivisions?.map((d: any) => d.id) || [];
+
+    // 5. Create auth user securely via Admin API Invite (Sends reset password email)
     const adminClient = createAdminClient();
-    
-    const firstName = fullName.trim().split(' ')[0].toLowerCase();
-    const generatedEmail = `${firstName}@prodeal.com`;
-    const generatedPassword = `${firstName}@prodeal123`;
     
     // Format phone to E.164 if not already
     const formattedPhone = whatsappPhone.startsWith('+') ? whatsappPhone : `+${whatsappPhone}`;
     
-    const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
-      email: generatedEmail,
-      password: generatedPassword,
-      email_confirm: true,
-      phone: formattedPhone,
-      phone_confirm: true,
-      user_metadata: { full_name: fullName }
+    const { data: authData, error: authError } = await adminClient.auth.admin.inviteUserByEmail(email, {
+      data: { full_name: fullName, phone: formattedPhone } // user_metadata
     });
 
     if (authError) {
-      await logError('POST /api/admin/staff (Auth)', authError, { email: generatedEmail, phone: formattedPhone, role });
-      return NextResponse.json({ error: authError.message || 'Failed to create auth user.' }, { status: 400 });
+      await logError('POST /api/admin/staff (Auth)', authError, { email, phone: formattedPhone, role });
+      return NextResponse.json({ error: authError.message || 'Failed to send invite email.' }, { status: 400 });
     }
 
-    // 5. Insert into staff_members table
+    // 6. Insert into staff_members table
     const { error: dbError } = await adminClient
       .from('staff_members')
       .insert({
@@ -94,7 +83,7 @@ export async function POST(req: Request) {
         full_name: fullName,
         whatsapp_phone: whatsappPhone,
         role: role,
-        division_ids: role === USER_ROLES.STAFF ? divisionIds || [] : [],
+        division_ids: role === USER_ROLES.STAFF ? allDivisionIds : [],
         is_active: true
       });
 

@@ -20,8 +20,8 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
   const [formData, setFormData] = useState({
     fullName: '',
     whatsappPhone: '',
-    role: USER_ROLES.STAFF as string,
-    divisionIds: [] as string[]
+    email: '',
+    role: USER_ROLES.STAFF as string
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,7 +44,7 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
       toast.success('Staff member provisioned successfully');
       setIsOpen(false);
       setFormData({
-        fullName: '', whatsappPhone: '', role: USER_ROLES.STAFF, divisionIds: []
+        fullName: '', whatsappPhone: '', email: '', role: USER_ROLES.STAFF
       });
       router.refresh();
       
@@ -120,44 +120,31 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="staff-role" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">System Role</label>
-                    <select
-                      id="staff-role"
-                      value={formData.role}
-                      onChange={e => setFormData({...formData, role: e.target.value, divisionIds: e.target.value === USER_ROLES.ADMIN ? [] : formData.divisionIds})}
-                      className="w-full bg-transparent border-b-2 border-brand-border/60 pb-2 text-sm font-bold text-brand-deep-blue focus:outline-none focus:border-brand-blue uppercase tracking-widest"
-                    >
-                      {ROLE_VALUES.map(role => (
-                        <option key={role} value={role}>{role}</option>
-                      ))}
-                    </select>
-                  </div>
+                <div>
+                  <label htmlFor="staff-email" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">Email Address</label>
+                  <input 
+                    id="staff-email"
+                    required
+                    type="email"
+                    value={formData.email}
+                    onChange={e => setFormData({...formData, email: e.target.value})}
+                    className="w-full bg-transparent border-0 border-b-2 border-brand-border/60 focus:border-brand-blue py-2 outline-none transition-colors text-sm font-bold text-brand-deep-blue placeholder:font-normal placeholder:text-brand-deep-blue/80"
+                    placeholder="agent@example.com"
+                  />
+                </div>
 
-                  <div className={formData.role === USER_ROLES.ADMIN ? 'opacity-50 pointer-events-none' : ''}>
-                    <label className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">Services</label>
-                    <div className="space-y-3 mt-2">
-                      {divisions.map(d => (
-                        <label key={d.id} className="flex items-center gap-3 cursor-pointer group">
-                          <input 
-                            type="checkbox"
-                            checked={formData.divisionIds.includes(d.id)}
-                            onChange={(e) => {
-                              const newIds = e.target.checked 
-                                ? [...formData.divisionIds, d.id] 
-                                : formData.divisionIds.filter(id => id !== d.id);
-                              setFormData({...formData, divisionIds: newIds});
-                            }}
-                            className="w-4 h-4 rounded-none border-2 border-brand-border/60 text-brand-deep-blue focus:ring-brand-blue"
-                          />
-                          <span className="text-sm font-bold text-brand-deep-blue group-hover:text-brand-blue transition-colors">
-                            {d.display_name}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
+                <div>
+                  <label htmlFor="staff-role" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">System Role</label>
+                  <select
+                    id="staff-role"
+                    value={formData.role}
+                    onChange={e => setFormData({...formData, role: e.target.value})}
+                    className="w-full bg-transparent border-b-2 border-brand-border/60 pb-2 text-sm font-bold text-brand-deep-blue focus:outline-none focus:border-brand-blue uppercase tracking-widest"
+                  >
+                    {ROLE_VALUES.map(role => (
+                      <option key={role} value={role}>{role}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

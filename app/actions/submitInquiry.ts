@@ -5,8 +5,9 @@ import { inquiryRateLimit } from '../../lib/ratelimit';
 import { InquirySubmissionSchema, DIVISION_SCHEMAS } from '../../lib/validators/inquiry';
 import { headers } from 'next/headers';
 import { logError } from '../../lib/logger';
-import { sendWhatsAppAlert } from '../../lib/whatsapp/send';
-import { sendTwilioWhatsAppAlert } from '../../lib/twilio/send';
+import { Resend } from 'resend';
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export async function submitInquiry(formData: any) {
   try {
@@ -88,7 +89,7 @@ export async function submitInquiry(formData: any) {
     // 5. Find an active staff member for assignment (Load Balancing)
     const { data: staffMembers, error: staffError } = await supabase
       .from('staff_members')
-      .select('id, whatsapp_phone')
+      .select('id, whatsapp_phone, auth_user_id')
       .contains('division_ids', [divisionId])
       .eq('is_active', true);
 
@@ -98,6 +99,7 @@ export async function submitInquiry(formData: any) {
 
     let assignedStaff = null;
     let staffPhone = null;
+    let staffEmail = 'sprodeal@gmail.com'; // Default fallback email
     
     if (staffMembers && staffMembers.length > 0) {
       const staffIds = staffMembers.map((s: any) => s.id);
@@ -135,6 +137,15 @@ export async function submitInquiry(formData: any) {
 
       assignedStaff = selectedStaff.id;
       staffPhone = selectedStaff.whatsapp_phone;
+      const staffAuthId = selectedStaff.auth_user_id;
+
+      if (staffAuthId) {
+        // Securely fetch the staff member's exact email address
+        const { data: { user: authUser } } = await supabase.auth.admin.getUserById(staffAuthId);
+        if (authUser?.email) {
+          staffEmail = authUser.email;
+        }
+      }
     }
 
     // 6. Insert into inquiries table
@@ -159,87 +170,48 @@ export async function submitInquiry(formData: any) {
       return { success: false, error: 'Failed to save inquiry to database.' };
     }
 
-    // 7. Enforce RULE 4: Trigger WhatsApp API
-    if (staffPhone) {
+    // 7. Enforce Notification: Trigger Resend Email Alert
+    if (assignedStaff && staffEmail) {
       const divisionName = Array.isArray(newInquiry.divisions) 
         ? newInquiry.divisions[0]?.display_name 
         : (newInquiry.divisions as any)?.display_name || divisionSlug;
 
-      const waContext = {
-        divisionSlug,
-        inquiryData: parsedInquiry.data,
-        attachmentCount: fileIds ? fileIds.length : 0
-      };
-
-      // Push to QStash Background Queue
-      try {
-        const { Client } = await import('@upstash/qstash');
-        const qstash = new Client({ token: process.env.QSTASH_TOKEN! });
-        
-        // Vercel automatically provides VERCEL_URL. If missing, fallback to localhost.
-        const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL 
-          ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` 
-          : (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
-
-        const isProduction = process.env.VERCEL_ENV === 'production';
-
-        if (baseUrl.includes('localhost') || !isProduction) {
-          console.log('[Dev/Preview Mode] Bypassing QStash (due to Hobby preview Auth). Sending WhatsApp message directly...');
+      const adminLink = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://prodealindustries.com'}/admin/inquiries/${newInquiry.id}`;
+      
+      const emailHtml = `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
+          <h2 style="color: #002244; margin-top: 0;">New Lead Assigned: ${divisionName}</h2>
+          <p style="color: #4b5563; font-size: 16px;">A new inquiry has just been assigned to you. Click below to review the details and respond to the client.</p>
           
-          // Execute asynchronously in the background so it doesn't block the UI response
-          sendWhatsAppAlert(staffPhone, newInquiry.tracking_uuid, divisionName, waContext)
-            .then(async (waResult) => {
-              if (waResult.success) {
-                await supabase
-                  .from('inquiries')
-                  .update({ 
-                    wa_message_id: waResult.messageId, 
-                    wa_sent_at: new Date().toISOString(), 
-                    wa_status: 'sent' 
-                  })
-                  .eq('id', newInquiry.id);
-                console.log('[Dev/Preview Mode] Direct WhatsApp send successful!');
-              } else {
-                await supabase
-                  .from('inquiries')
-                  .update({ 
-                    wa_status: 'failed', 
-                    internal_notes: `[Dev/Preview Mode Direct Send] Failed: ${waResult.error}` 
-                  })
-                  .eq('id', newInquiry.id);
-                console.error('[Dev/Preview Mode] Direct WhatsApp send failed:', waResult.error);
-              }
-            })
-            .catch(console.error);
+          <div style="background-color: #f3f4f6; padding: 16px; border-radius: 6px; margin: 20px 0;">
+            <p style="margin: 0 0 8px 0;"><strong>Client Name:</strong> ${contact.name}</p>
+            <p style="margin: 0 0 8px 0;"><strong>Phone:</strong> ${contact.phone}</p>
+            <p style="margin: 0;"><strong>Tracking ID:</strong> <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">${newInquiry.tracking_uuid}</code></p>
+          </div>
 
-        } else {
-          await qstash.publishJSON({
-            url: `${baseUrl}/api/webhooks/qstash/whatsapp`,
-            body: {
-              phone: staffPhone,
-              trackingId: newInquiry.tracking_uuid,
-              divisionName,
-              waContext,
-              inquiryId: newInquiry.id
-            },
-          });
-          
-          // Pre-emptively update status to pending since it's now in the queue
-          await supabase
-            .from('inquiries')
-            .update({ wa_status: 'pending' })
-            .eq('id', newInquiry.id);
-        }
-          
-      } catch (qError: any) {
-        console.error('[QStash Publish Error]', qError);
-        await supabase
-          .from('inquiries')
-          .update({ 
-            wa_status: 'failed',
-            internal_notes: `[SYSTEM_WARNING] Failed to publish WhatsApp job to QStash: ${qError.message}` 
-          })
-          .eq('id', newInquiry.id);
+          <a href="${adminLink}" style="display: inline-block; background-color: #002244; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; margin-top: 10px;">Review Inquiry in Ops Portal</a>
+        </div>
+      `;
+
+      // Execute asynchronously in the background so it doesn't block the UI response
+      if (resend) {
+        resend.emails.send({
+          from: 'Prodeal Alerts <alerts@prodealindustries.com>',
+          to: staffEmail,
+          subject: `🚨 New Lead: ${divisionName} - ${contact.name}`,
+          html: emailHtml,
+        }).then(async ({ error }) => {
+          if (error) {
+            console.error('[Resend Error]', error);
+            await supabase.from('inquiries').update({ 
+              internal_notes: `[Email Alert Failed]: ${error.message}` 
+            }).eq('id', newInquiry.id);
+          } else {
+            console.log(`[Email Alert Sent] to ${staffEmail}`);
+          }
+        }).catch(console.error);
+      } else {
+        console.warn('RESEND_API_KEY missing. Simulating email alert to', staffEmail);
       }
     } else {
       // If no staff is available, we log a warning but the business decides if it should fail.
