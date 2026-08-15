@@ -18,8 +18,26 @@ export default function UpdatePasswordPage() {
     // Supabase automatically extracts the hash and creates a session.
     // If the user arrived here without a hash and is not logged in, they shouldn't be here.
     const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session && !window.location.hash.includes('access_token')) {
+      let { data: { session } } = await supabase.auth.getSession();
+
+      // Fallback: If Supabase didn't automatically parse the hash, manually extract and set it
+      if (!session && typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
+        const hashStr = window.location.hash.substring(1); // remove '#'
+        const params = new URLSearchParams(hashStr);
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');
+
+        if (accessToken && refreshToken) {
+          const { data } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+          session = data.session;
+        }
+      }
+
+      if (!session) {
+        toast.error('Invite link expired or invalid. Please request a new one.');
         router.push('/admin/login');
       }
     };
