@@ -176,7 +176,7 @@ export async function submitInquiry(formData: any) {
         ? newInquiry.divisions[0]?.display_name 
         : (newInquiry.divisions as any)?.display_name || divisionSlug;
 
-      const adminLink = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://prodealindustries.com'}/admin/inquiries/${newInquiry.id}`;
+      const adminLink = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://prodealindustries.com'}/admin/tickets/${newInquiry.id}`;
       
       const emailHtml = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
@@ -189,7 +189,7 @@ export async function submitInquiry(formData: any) {
             <p style="margin: 0;"><strong>Tracking ID:</strong> <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">${newInquiry.tracking_uuid}</code></p>
           </div>
 
-          <a href="${adminLink}" style="display: inline-block; background-color: #002244; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; margin-top: 10px;">Review Inquiry in Admin Portal</a>
+          <a href="${adminLink}" target="_blank" style="display: inline-block; background-color: #002244; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; margin-top: 10px;">Review Inquiry in Admin Portal</a>
         </div>
       `;
 
