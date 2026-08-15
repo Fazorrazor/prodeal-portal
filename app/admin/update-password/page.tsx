@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
@@ -11,11 +11,8 @@ export default function UpdatePasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   
-  // Create browser client manually to avoid dependency issues
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  // Create browser client using auth-helpers-nextjs
+  const supabase = createClientComponentClient();
 
   useEffect(() => {
     // Supabase automatically extracts the hash and creates a session.
