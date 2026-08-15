@@ -4,6 +4,7 @@ import { ZustandProvider } from './providers/ZustandProvider';
 import { ToastProvider } from './providers/ToastProvider';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import NextTopLoader from 'nextjs-toploader';
 
 import { Montserrat, Roboto } from 'next/font/google';
 
@@ -89,6 +90,19 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${montserrat.variable} ${roboto.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body className="font-body bg-brand-surface text-brand-deep-blue antialiased" suppressHydrationWarning>
+        <NextTopLoader 
+          color="#1A56DB"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px #1A56DB,0 0 5px #1A56DB"
+          zIndex={1600}
+          showAtBottom={false}
+        />
         <ZustandProvider>
           <ToastProvider>
             {children}
