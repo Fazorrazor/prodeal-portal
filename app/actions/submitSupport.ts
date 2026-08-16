@@ -33,13 +33,13 @@ export async function submitSupportRequest(formData: FormData) {
     // 2. Send the email notification
     if (!resend) {
       console.warn('RESEND_API_KEY is not set. Simulating support email delivery.');
-      console.log(`[SIMULATED EMAIL TO sprodeal@gmail.com] From: ${email} | Message: ${message}`);
+      console.log(`[SIMULATED EMAIL TO prodealsystems@hotmail.com] From: ${email} | Message: ${message}`);
       return { success: true };
     }
 
     const { data, error } = await resend.emails.send({
       from: 'Prodeal Support <support@prodealindustries.com>', // Or a verified domain you own
-      to: 'sprodeal@gmail.com',
+      to: 'prodealsystems@hotmail.com',
       subject: `New Support Request from ${email}`,
       replyTo: email,
       text: `A new support request was submitted via the Prodeal Portal.\n\nFrom: ${email}\n\nMessage:\n${message}`,

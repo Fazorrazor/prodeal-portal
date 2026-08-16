@@ -99,7 +99,7 @@ export async function submitInquiry(formData: any) {
 
     let assignedStaff = null;
     let staffPhone = null;
-    let staffEmail = 'sprodeal@gmail.com'; // Default fallback email
+    let staffEmail = 'prodealsystems@hotmail.com'; // Default fallback email
     
     if (staffMembers && staffMembers.length > 0) {
       const staffIds = staffMembers.map((s: any) => s.id);
