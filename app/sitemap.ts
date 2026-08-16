@@ -5,7 +5,7 @@ import { DIVISIONS_LIST } from '../lib/config/divisions';
 export const revalidate = 3600;
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.prodealindustries.com';
+  const baseUrl = 'https://www.prodealindustries.com';
   const now = new Date();
 
   // Static routes — these are fixed pages that always exist
