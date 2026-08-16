@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: '%s | Prodeal Industries Ltd',
   },
   description:
-    'Prodeal Industries Ltd is Ghana\'s premier B2B industrial supplier, offering 3D Signages, Souvenirs & Printing, Disposable Bowls, and Industrial Chemicals. Request a quote today.',
+    'Ghana\'s premier B2B supplier for 3D Signages, Corporate Souvenirs, Disposable Bowls, and Industrial Chemicals. Request a quote today.',
   keywords: [
     'industrial supplier Ghana',
     'B2B supplier Accra',

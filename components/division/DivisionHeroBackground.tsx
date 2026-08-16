@@ -67,7 +67,7 @@ export function DivisionHeroBackground({ slug }: Props) {
           exit={{ opacity: 0 }}
           transition={{ duration: 2, ease: 'easeInOut' }}
           className="absolute inset-0 w-full h-full object-cover"
-          alt=""
+          alt={`${slug} division background image`}
           role="presentation"
         />
       </AnimatePresence>
