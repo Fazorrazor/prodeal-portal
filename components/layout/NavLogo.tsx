@@ -1,13 +1,10 @@
 import Link from 'next/link';
+import { BrandLogo } from '../shared/BrandLogo';
 
 export function NavLogo() {
   return (
-    <Link href="/" className="flex items-center py-2 sm:p-2 sm:-ml-2 group transition-opacity">
-      <span className="font-display text-base sm:text-xl md:text-3xl flex items-baseline tracking-tighter whitespace-nowrap">
-        <strong className="font-extrabold text-brand-deep-blue mr-1.5 uppercase">Prodeal</strong>
-        <span className="font-light text-brand-blue uppercase">Industries Ltd</span>
-        <span className="text-brand-red font-extrabold">.</span>
-      </span>
+    <Link href="/" className="flex items-center group transition-opacity">
+      <BrandLogo size="sm" />
     </Link>
   );
 }
