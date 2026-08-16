@@ -13,7 +13,13 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
   const divisionName = (product.divisions?.display_name || product.divisions?.slug || 'Division').toUpperCase();
 
   const metadataGallery = (product.metadata as any)?.gallery_images || [];
-  const galleryImages = Array.from(new Set([product.image_path, ...metadataGallery].filter(Boolean))) as string[];
+  const rootGallery = product.gallery_images || [];
+  
+  let galleryImages = Array.from(new Set([
+    product.image_path, 
+    ...rootGallery, 
+    ...metadataGallery
+  ].filter(Boolean))) as string[];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const nextImage = (e?: React.MouseEvent) => {

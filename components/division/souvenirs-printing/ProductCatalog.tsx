@@ -111,7 +111,13 @@ function ProductCard({
   from: string;
 }) {
   const priceRange = product.metadata?.price_range || 'Quote Only';
-  const images = [product.image_path, ...(product.gallery_images || [])].filter(Boolean) as string[];
+  const metadataGallery = (product.metadata as any)?.gallery_images || [];
+  
+  let images = Array.from(new Set([
+    product.image_path, 
+    ...(product.gallery_images || []), 
+    ...metadataGallery
+  ].filter(Boolean))) as string[];
 
   return (
     <Link href={`/inquiry/${product.id}?from=${from}`} className="group flex flex-col h-full bg-slate-50 border border-brand-border/30 hover:border-brand-blue transition-colors cursor-pointer">

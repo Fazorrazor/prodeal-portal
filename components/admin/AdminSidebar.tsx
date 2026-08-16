@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Ticket, Users, Settings, LogOut, Activity, AlertCircle } from 'lucide-react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
-import { AnimatedBorder } from './AnimatedBorder';
+import { NetworkPresence } from './NetworkPresence';
 
 export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
   const pathname = usePathname();
@@ -54,6 +54,8 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
           );
         })}
       </nav>
+
+      <NetworkPresence />
 
       <div className="p-4 relative">
         <button

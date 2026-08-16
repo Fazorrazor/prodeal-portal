@@ -68,7 +68,11 @@ function ChemicalCard({ product, priority = false }: {
   const metadataGallery = (product.metadata as any)?.gallery_images || [];
   
   // Use Set to remove duplicate image paths
-  const images = Array.from(new Set([product.image_path, ...metadataGallery].filter(Boolean))) as string[];
+  let images = Array.from(new Set([
+    product.image_path, 
+    ...(product.gallery_images || []), 
+    ...metadataGallery
+  ].filter(Boolean))) as string[];
 
   return (
     <Link href={`/inquiry/${product.id}?from=chemicals`} className="group flex flex-col bg-slate-50 border border-brand-border/30 hover:border-brand-blue transition-colors cursor-pointer">

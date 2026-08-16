@@ -180,7 +180,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                               <div className="w-12 h-12 shrink-0 bg-brand-surface border border-brand-border/30 relative flex items-center justify-center overflow-hidden">
                                 {result.image_path ? (
                                   <Image 
-                                    src={result.image_path} 
+                                    src={result.image_path}
                                     alt={result.name}
                                     fill
                                     sizes="48px"
@@ -316,7 +316,7 @@ export function NavbarSearch({ isMobile }: NavbarSearchProps) {
                           <div className="w-10 h-10 shrink-0 bg-brand-surface border border-brand-border/30 relative flex items-center justify-center overflow-hidden">
                             {result.image_path ? (
                               <Image 
-                                src={result.image_path} 
+                                src={result.image_path}
                                 alt={result.name}
                                 fill
                                 sizes="40px"
