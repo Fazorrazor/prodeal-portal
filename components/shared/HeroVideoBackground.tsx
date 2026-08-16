@@ -5,6 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 // Local videos uploaded by user in public/media, paired with a poster image for fast LCP
 const videos = [
   {
+    src: '/media/acrylic_waterproofing_vid.mp4',
+    poster: '/media/IMG-20250625-WA0000.jpg' // using existing poster temporarily
+  },
+  {
     src: '/media/VID-20250625-WA0002.mp4',
     poster: '/media/IMG-20250625-WA0000.jpg'
   },
