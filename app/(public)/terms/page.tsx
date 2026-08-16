@@ -81,7 +81,7 @@ export default function TermsOfServicePage() {
         <section className="pt-8 border-t border-brand-border/60">
           <h2 className="text-xl font-heading font-bold uppercase tracking-widest mb-4">Contact Information</h2>
           <p>
-            If you require clarification on any of these terms prior to finalizing an order, please contact our legal and compliance team at <Link href="/support" className="text-brand-blue hover:underline font-bold">our Support Page</Link> or email us at <code className="bg-brand-deep-blue/10 px-1">legal@prodealindustries.com</code>.
+            If you require clarification on any of these terms prior to finalizing an order, please contact our legal and compliance team at <Link href="/support" className="text-brand-blue hover:underline font-bold">our Support Page</Link> or email us at <code className="bg-brand-deep-blue/10 px-1">prodealsystems@hotmail.com</code>.
           </p>
         </section>
       </div>
