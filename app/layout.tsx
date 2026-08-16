@@ -87,6 +87,41 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${montserrat.variable} ${roboto.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body className="font-body bg-brand-surface text-brand-deep-blue antialiased" suppressHydrationWarning>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': ['Organization', 'B2BBusiness'],
+              name: 'Pro Deal Industries',
+              url: siteUrl,
+              logo: `${siteUrl}/prodeal-blue.png`,
+              description: "Ghana's premier B2B industrial supplier specializing in 3D Signages, Souvenirs & Printing, Disposable Bowls, and Industrial Chemicals.",
+              address: {
+                '@type': 'PostalAddress',
+                addressCountry: 'GH',
+                addressLocality: 'Accra',
+              },
+              contactPoint: {
+                '@type': 'ContactPoint',
+                contactType: 'customer service',
+                areaServed: ['GH', 'West Africa'],
+                availableLanguage: ['English'],
+              },
+              knowsAbout: [
+                'Industrial Chemicals',
+                'Laboratory Reagents',
+                'Catering Disposables',
+                'Bulk Disposable Bowls',
+                'Eco-friendly Food Packaging',
+                '3D Signages',
+                'Corporate Branding',
+                'Corporate Souvenirs',
+                'Commercial Printing',
+              ],
+            }),
+          }}
+        />
         <NextTopLoader 
           color="#1A56DB"
           initialPosition={0.08}
