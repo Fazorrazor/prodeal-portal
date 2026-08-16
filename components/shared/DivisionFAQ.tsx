@@ -1,25 +1,37 @@
 'use client'; // needs useState for accordion toggle
 import { useState } from 'react';
-import { cn } from '../../../lib/utils';
+import { cn } from '../../lib/utils';
 
-const FAQS = [
-  {
-    question: 'What is the standard turnaround time?',
-    answer: 'For standard illuminated signs, our typical turnaround is 7–10 business days after artwork approval. Large-scale installations may require 14–21 days.',
-  },
-  {
-    question: 'Do I need to provide my own artwork?',
-    answer: 'Yes, we require vector artwork (.AI, .EPS, or high-res PDF). If you only have raster images or rough sketches, our design team can recreate it for an additional fee.',
-  },
-  {
-    question: 'What materials do you use?',
-    answer: 'We use industrial-grade acrylic, aluminum composite panels (ACP), stainless steel, and high-intensity LED modules guaranteed for 50,000+ hours.',
-  },
-];
+export interface FAQ {
+  question: string;
+  answer: string;
+}
 
-export function ProjectFAQ() {
+export function DivisionFAQ({ faqs }: { faqs: FAQ[] }) {
+  if (!faqs || faqs.length === 0) return null;
+
+  // Generate the JSON-LD FAQPage schema string
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+
   return (
     <div className="mt-20 lg:mt-28">
+      {/* Invisible JSON-LD Schema for AI/SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Section header */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-0">
         <div>
@@ -31,12 +43,12 @@ export function ProjectFAQ() {
           </h2>
         </div>
         <p className="text-[10px] font-mono text-brand-deep-blue/80 uppercase tracking-widest">
-          {FAQS.length} questions
+          {faqs.length} questions
         </p>
       </div>
 
       <div className="flex flex-col">
-        {FAQS.map((faq, i) => (
+        {faqs.map((faq, i) => (
           <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
         ))}
       </div>
