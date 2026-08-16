@@ -15,8 +15,7 @@ export function Hero() {
       
       {/* Background Video */}
       <video
-        src="/media/VID-20260625-WA0003.mp4"
-        poster="/media/IMG-20260625-WA0001.jpg"
+        src="/media/acrylic_waterproofing_vid.mp4"
         autoPlay
         muted
         loop

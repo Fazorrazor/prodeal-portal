@@ -32,11 +32,11 @@ export async function ChemicalCatalog() {
       </div>
 
       {!products || products.length === 0 ? (
-        <div className="col-span-full py-16 text-center bg-white rounded-2xl shadow-sm border border-brand-border/10">
+        <div className="col-span-full py-16 text-center border-t border-brand-border/20">
           <h3 className="font-heading font-bold text-2xl text-brand-deep-blue mb-2">
             No products registered.
           </h3>
-          <p className="text-brand-deep-blue/70">
+          <p className="text-brand-deep-blue/70 font-mono text-sm uppercase tracking-widest">
             Contact us directly for chemical inquiries.
           </p>
         </div>
@@ -65,8 +65,10 @@ function ChemicalCard({ product, priority = false }: {
 }) {
   const grade = product.metadata?.grade || 'Industrial';
   const cas = product.metadata?.cas_number;
+  const metadataGallery = (product.metadata as any)?.gallery_images || [];
   
-  const images = [product.image_path, ...(product.gallery_images || [])].filter(Boolean) as string[];
+  // Use Set to remove duplicate image paths
+  const images = Array.from(new Set([product.image_path, ...metadataGallery].filter(Boolean))) as string[];
 
   return (
     <Link href={`/inquiry/${product.id}?from=chemicals`} className="group flex flex-col bg-slate-50 border border-brand-border/30 hover:border-brand-blue transition-colors cursor-pointer">
@@ -98,7 +100,7 @@ function ChemicalCard({ product, priority = false }: {
 
         <div className="flex items-center justify-between mt-auto pt-2.5 sm:pt-3 border-t border-brand-border/10">
           <span
-            className="w-full text-center px-3 py-2 sm:px-5 sm:py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-[10px] sm:text-xs font-bold rounded transition-colors"
+            className="w-full text-center px-3 py-2 sm:px-5 sm:py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-[10px] sm:text-xs font-bold transition-colors"
           >
             Request Quote
           </span>
