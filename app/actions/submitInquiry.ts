@@ -176,7 +176,7 @@ export async function submitInquiry(formData: any) {
         ? newInquiry.divisions[0]?.display_name 
         : (newInquiry.divisions as any)?.display_name || divisionSlug;
 
-      let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://prodealindustries.com';
+      let baseUrl = 'https://www.prodealindustries.com';
       if (!baseUrl.startsWith('http')) {
         baseUrl = `https://${baseUrl}`;
       }

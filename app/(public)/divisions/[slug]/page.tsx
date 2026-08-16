@@ -40,7 +40,7 @@ export async function generateMetadata(
     };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.prodealindustries.com';
+  const siteUrl = 'https://www.prodealindustries.com';
   const pageUrl = `${siteUrl}${data.href}`;
 
   return {
