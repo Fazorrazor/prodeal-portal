@@ -28,10 +28,10 @@ export default function HomePage() {
             Direct access to commercial-grade chemicals, catering disposables, merchandising, and structural signage. Built for scale, priced for wholesale.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Link href="/divisions/chemicals" className="px-8 py-3.5 bg-brand-blue text-white font-bold rounded text-center hover:bg-blue-600 transition-colors shadow-sm">
+            <Link href="/divisions/chemicals" className="px-8 py-3.5 bg-brand-blue text-white font-bold text-center hover:bg-brand-deep-blue transition-colors rounded-none">
               Browse Chemicals
             </Link>
-            <Link href="/divisions/bowls" className="px-8 py-3.5 bg-transparent border border-white/20 text-white font-bold rounded text-center hover:bg-white/5 transition-colors">
+            <Link href="/divisions/bowls" className="px-8 py-3.5 bg-transparent border-2 border-white text-white font-bold text-center hover:bg-white hover:text-brand-deep-blue transition-colors rounded-none">
               View Disposables
             </Link>
           </div>
