@@ -10,7 +10,7 @@ import { HeroVideoBackground } from '../../components/shared/HeroVideoBackground
 export const revalidate = 300;
 
 export default function HomePage() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://prodealindustries.com';
+  const siteUrl = 'https://www.prodealindustries.com';
   
   return (
     <div className="flex flex-col w-full min-h-screen bg-[#F8FAFC]">
