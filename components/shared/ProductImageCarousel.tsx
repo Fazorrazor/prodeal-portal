@@ -108,8 +108,8 @@ export function ProductImageCarousel({ images, alt, priority = false }: ProductI
           {images.map((_, i) => (
             <div
               key={i}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === currentIndex ? 'w-4 bg-white' : 'w-1.5 bg-white/50'
+              className={`h-1.5 transition-all duration-300 ${
+                i === currentIndex ? 'w-5 bg-white' : 'w-2 bg-white/50'
               }`}
             />
           ))}
