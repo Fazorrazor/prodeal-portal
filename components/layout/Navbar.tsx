@@ -21,16 +21,16 @@ export function Navbar() {
   return (
     <header
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b',
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b h-16',
         scrolled 
-          ? 'bg-brand-surface/80 backdrop-blur-md border-brand-border/50 shadow-sm py-2' 
-          : 'bg-transparent border-brand-border/40 py-4'
+          ? 'bg-brand-surface/95 backdrop-blur-md border-brand-border/50 shadow-sm' 
+          : 'bg-transparent border-brand-border/40'
       )}
     >
       <div className="container mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 flex items-center justify-between gap-4 md:gap-8">
         
-        {/* Left: Logo */}
-        <div className="flex-none">
+        {/* Left: Logo — fixed-height container so logo never stretches the navbar */}
+        <div className="flex-none h-16 flex items-center overflow-hidden">
           <NavLogo />
         </div>
         

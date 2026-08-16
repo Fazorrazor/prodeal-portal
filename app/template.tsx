@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { BrandLogo } from '../components/shared/BrandLogo';
 
 export default function Template({ children }: { children: React.ReactNode }) {
   return (
@@ -10,7 +11,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         className="fixed inset-0 z-[9999] bg-brand-deep-blue flex flex-col items-center justify-center pointer-events-none"
         initial={{ y: '0%' }}
         animate={{ y: '-100%' }}
-        transition={{ duration: 1.0, ease: [0.76, 0, 0.24, 1], delay: 1.2 }}
+        transition={{ duration: 1.0, ease: [0.76, 0, 0.24, 1], delay: 2.2 }}
       >
         <motion.div 
           className="flex flex-col items-center"
@@ -18,31 +19,31 @@ export default function Template({ children }: { children: React.ReactNode }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         >
-          {/* Logo Typography matching brutalist design */}
-          <div className="flex items-baseline font-display font-extrabold text-white tracking-tighter uppercase leading-none text-3xl sm:text-5xl lg:text-6xl text-center px-4">
-            PRODEAL INDUSTRIES<span className="text-brand-blue text-4xl sm:text-6xl lg:text-7xl leading-[0]">.</span>
+          {/* Animated Native Logo */}
+          <div className="flex justify-center px-4 py-8">
+            <BrandLogo animate={true} theme="dark" className="scale-125 sm:scale-150 lg:scale-[1.75]" />
           </div>
           
-          <div className="mt-4 flex gap-3 items-center overflow-hidden">
+          <div className="mt-6 flex gap-4 items-center overflow-hidden">
             <motion.span 
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
-              className="w-12 h-[2px] bg-brand-blue" 
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.8 }}
+              className="w-16 h-[2px] bg-brand-deep-blue/20" 
             />
             <motion.span 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.4, delay: 0.6 }}
-              className="text-[9px] sm:text-[10px] font-mono font-bold text-white/60 uppercase tracking-[0.4em]"
+              initial={{ opacity: 0, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, filter: 'blur(0px)' }}
+              transition={{ duration: 0.6, delay: 1.0 }}
+              className="text-[10px] sm:text-xs font-mono font-bold text-brand-deep-blue uppercase tracking-[0.5em]"
             >
               System Online
             </motion.span>
             <motion.span 
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
-              className="w-12 h-[2px] bg-brand-blue" 
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.8 }}
+              className="w-16 h-[2px] bg-brand-deep-blue/20" 
             />
           </div>
         </motion.div>
@@ -52,7 +53,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1], delay: 1.4 }}
+        transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1], delay: 1.8 }}
         className="w-full h-full"
       >
         {children}
