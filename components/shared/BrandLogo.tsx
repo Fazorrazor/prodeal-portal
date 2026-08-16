@@ -12,7 +12,7 @@ interface BrandLogoProps {
 export function BrandLogo({ className = '', animate = false, theme = 'light', size = 'lg' }: BrandLogoProps) {
   const stroke     = theme === 'dark' ? '#ffffff' : '#333333';
   const textColor1 = theme === 'dark' ? 'text-white' : 'text-brand-deep-blue';
-  const textColor2 = theme === 'dark' ? 'text-white/60' : 'text-brand-blue';
+  const textColor2 = theme === 'dark' ? 'text-brand-blue' : 'text-brand-blue';
 
   const isSm = size === 'sm';
 
