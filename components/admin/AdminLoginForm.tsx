@@ -38,15 +38,15 @@ export function AdminLoginForm() {
   return (
     <div className="space-y-6">
       {error && (
-        <div className="p-4 bg-transparent border-l-2 border-brand-red flex items-start gap-3 animate-in fade-in">
-          <AlertCircle className="w-5 h-5 text-brand-red shrink-0 mt-0.5" />
-          <p className="text-sm text-brand-red font-bold font-mono uppercase tracking-widest">{error}</p>
+        <div className="p-4 bg-red-50 rounded-xl border border-red-100 flex items-start gap-3 animate-in fade-in">
+          <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+          <p className="text-sm text-red-600 font-medium">{error}</p>
         </div>
       )}
 
       <form onSubmit={handleSignIn} className="space-y-8 animate-in fade-in">
         <div>
-          <label htmlFor="login-email" className="block text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest mb-2">
+          <label htmlFor="login-email" className="block text-xs font-medium text-brand-deep-blue/70 mb-1.5">
             Email Address
           </label>
           <input 
@@ -55,13 +55,13 @@ export function AdminLoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full py-3 bg-transparent border-b-2 border-brand-border/60 focus:border-brand-blue outline-none transition-colors font-mono text-brand-deep-blue"
+            className="w-full py-3 px-4 bg-white border border-brand-border/40 rounded-md shadow-sm focus:border-brand-blue focus:ring-1 focus:ring-brand-blue/20 outline-none transition-all text-sm text-brand-deep-blue"
             placeholder="admin@prodealindustries.com"
           />
         </div>
 
         <div>
-          <label htmlFor="login-password" className="block text-[10px] font-bold text-brand-deep-blue/60 uppercase tracking-widest mb-2">
+          <label htmlFor="login-password" className="block text-xs font-medium text-brand-deep-blue/70 mb-1.5">
             Password
           </label>
           <input 
@@ -70,7 +70,7 @@ export function AdminLoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full py-3 bg-transparent border-b-2 border-brand-border/60 focus:border-brand-blue outline-none transition-colors font-mono text-brand-deep-blue"
+            className="w-full py-3 px-4 bg-white border border-brand-border/40 rounded-md shadow-sm focus:border-brand-blue focus:ring-1 focus:ring-brand-blue/20 outline-none transition-all text-sm text-brand-deep-blue"
             placeholder="••••••••"
           />
         </div>
@@ -78,16 +78,16 @@ export function AdminLoginForm() {
         <button
           type="submit"
           disabled={isLoading || !email || !password}
-          className="w-full p-4 bg-brand-deep-blue text-white font-heading font-bold hover:bg-brand-blue transition-colors disabled:opacity-50 flex items-center justify-center gap-2 uppercase tracking-widest mt-4"
+          className="w-full py-3 px-4 bg-brand-blue text-white rounded-md shadow-sm font-medium hover:bg-brand-deep-blue transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mt-4 text-sm"
         >
           {isLoading ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              AUTHENTICATING...
+              Authenticating...
             </>
           ) : (
             <>
-              SIGN IN <ArrowRight className="w-4 h-4" />
+              Sign In <ArrowRight className="w-4 h-4" />
             </>
           )}
         </button>

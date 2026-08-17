@@ -26,7 +26,7 @@ export default function HomePage() {
       <OrganizationJsonLd siteUrl={siteUrl} />
 
       {/* AUTHORITATIVE INDUSTRIAL HERO */}
-      <section className="relative w-full text-white border-b-4 border-brand-blue min-h-[60vh] flex items-center">
+      <section className="relative w-full text-white border-b border-brand-border/20 min-h-[60vh] flex items-center">
         <HeroVideoBackground />
         
         <div className="relative z-20 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-20 lg:py-28 flex flex-col items-start">
@@ -37,10 +37,10 @@ export default function HomePage() {
             Direct access to commercial-grade chemicals, catering disposables, merchandising, and structural signage. Built for scale, priced for wholesale.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Link href="/divisions/chemicals" className="px-8 py-3.5 bg-brand-blue text-white font-bold text-center hover:bg-brand-deep-blue transition-colors rounded-none">
+            <Link href="/divisions/chemicals" className="px-8 py-3.5 bg-brand-blue text-white text-sm font-medium text-center hover:bg-brand-deep-blue transition-colors rounded-md shadow-sm">
               Browse Chemicals
             </Link>
-            <Link href="/divisions/bowls" className="px-8 py-3.5 bg-transparent border-2 border-white text-white font-bold text-center hover:bg-white hover:text-brand-deep-blue transition-colors rounded-none">
+            <Link href="/divisions/bowls" className="px-8 py-3.5 bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-medium text-center hover:bg-white hover:text-brand-deep-blue transition-all rounded-md">
               View Disposables
             </Link>
           </div>
@@ -57,7 +57,7 @@ export default function HomePage() {
       </section>
 
       {/* BOWLS SECTION */}
-      <section id="bowls" className="px-4 sm:px-6 lg:px-8 py-16 lg:py-24 bg-white border-t border-brand-border/10 shadow-[0_-4px_24px_-12px_rgba(0,0,0,0.05)]">
+      <section id="bowls" className="px-4 sm:px-6 lg:px-8 py-16 lg:py-24 bg-white border-t border-brand-border/20">
         <div className="max-w-7xl mx-auto w-full">
           <Suspense fallback={<CardSkeleton />}>
             <InventoryTable />

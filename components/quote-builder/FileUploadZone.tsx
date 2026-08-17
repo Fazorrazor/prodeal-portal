@@ -95,7 +95,7 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
 
   return (
     <div className="w-full mt-10">
-      <h3 className="text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest mb-6 border-b-2 border-brand-border/60 pb-2">
+      <h3 className="text-sm font-medium text-brand-deep-blue/70 mb-4 pb-2 border-b border-brand-border/20">
         Attachments (Optional)
       </h3>
       
@@ -112,17 +112,17 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
                   )}
                 </div>
                 <div className="truncate">
-                  <p className="text-xs font-bold uppercase tracking-widest text-brand-deep-blue truncate">{file.name}</p>
-                  <p className="text-[10px] font-mono font-bold text-brand-deep-blue/80 mt-1">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                  <p className="text-sm font-medium text-brand-deep-blue truncate">{file.name}</p>
+                  <p className="text-xs font-mono font-medium text-brand-deep-blue/60 mt-0.5">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => onRemoveFile(file.url)}
-                className="p-3 text-brand-deep-blue/80 hover:text-brand-surface hover:bg-brand-red border border-transparent hover:border-brand-red transition-colors"
+                className="p-2 text-brand-deep-blue/60 hover:text-red-500 hover:bg-red-50 rounded-md transition-colors"
                 title="Remove file"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
           ))}
@@ -133,8 +133,8 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
         <div 
           {...getRootProps()} 
           className={`
-            relative flex flex-col items-center justify-center p-8 sm:p-12 border-2 border-dashed cursor-pointer transition-all duration-200
-            ${isDragActive ? 'border-brand-blue bg-brand-blue/5' : 'border-brand-border/80 bg-black/5 hover:border-brand-blue hover:bg-brand-blue/5'}
+            relative flex flex-col items-center justify-center p-8 sm:p-12 border border-dashed rounded-xl cursor-pointer transition-all duration-200
+            ${isDragActive ? 'border-brand-blue bg-brand-blue/5' : 'border-brand-border/40 bg-brand-surface hover:border-brand-blue hover:bg-brand-blue/5'}
             ${isUploading ? 'pointer-events-none opacity-80' : ''}
           `}
         >
@@ -142,9 +142,9 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
           
           {isUploading ? (
             <div className="flex flex-col items-center w-full max-w-xs mx-auto">
-              <LottieSpinner size={32} className="mb-4" />
-              <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue">Transmitting Data...</p>
-              <div className="w-full h-1 bg-brand-border/60 mt-4 overflow-hidden">
+              <LottieSpinner size={32} className="mb-4 opacity-50" />
+              <p className="text-sm font-medium text-brand-deep-blue/70">Transmitting Data...</p>
+              <div className="w-full h-1 bg-brand-border/20 mt-4 overflow-hidden rounded-full">
                 <div 
                   className="h-full bg-brand-blue transition-all duration-200 ease-out" 
                   style={{ width: `${uploadProgress}%` }} 
@@ -153,12 +153,12 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
             </div>
           ) : (
             <>
-              <UploadCloud className="w-10 h-10 text-brand-deep-blue/80 mb-4" />
-              <p className="text-xs font-bold uppercase tracking-widest text-brand-red/80 text-center mb-2">
-                <span className="text-brand-red">Tap to select</span>
+              <UploadCloud className="w-10 h-10 text-brand-blue/50 mb-3" />
+              <p className="text-sm font-medium text-brand-deep-blue/70 text-center mb-1">
+                <span className="text-brand-blue">Tap to select</span>
                 <span className="hidden sm:inline"> or drop files</span>
               </p>
-              <p className="text-[10px] font-mono font-bold text-brand-red/80 text-center uppercase tracking-widest px-4">
+              <p className="text-xs text-brand-deep-blue/40 text-center px-4">
                 PDF / JPG / PNG (MAX 10MB)
               </p>
             </>

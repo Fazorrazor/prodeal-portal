@@ -61,16 +61,16 @@ function MobileDrawerContent() {
                 initial={{ y: '-100%' }}
                 animate={{ y: 0 }}
                 exit={{ y: '-100%' }}
-                className="fixed top-0 left-0 right-0 h-[55vh] w-full bg-brand-surface z-[100] border-b-4 border-brand-deep-blue flex flex-col"
+                className="fixed top-0 left-0 right-0 max-h-[85vh] overflow-y-auto w-full bg-white z-[100] border-b border-brand-border/20 rounded-b-3xl shadow-xl flex flex-col"
               >
                 <div className="p-4 flex items-center justify-between border-b border-brand-border/30">
                   <NavLogo />
                   <button 
                     onClick={() => setIsOpen(false)}
-                    className="p-2 -mr-2 text-brand-deep-blue transition-colors hover:text-brand-red"
+                    className="p-2 -mr-2 text-brand-deep-blue/60 transition-colors hover:text-brand-deep-blue bg-brand-surface rounded-full"
                     aria-label="Close menu"
                   >
-                    <X className="w-6 h-6" />
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
 
@@ -83,8 +83,8 @@ function MobileDrawerContent() {
                         key={link.href}
                         href={link.href}
                         className={cn(
-                          'text-lg font-heading transition-colors',
-                          isActive ? 'text-brand-blue font-bold' : 'text-brand-deep-blue/80 hover:text-brand-blue'
+                          'text-lg font-medium transition-colors',
+                          isActive ? 'text-brand-blue' : 'text-brand-deep-blue/70 hover:text-brand-deep-blue'
                         )}
                       >
                         {link.name}

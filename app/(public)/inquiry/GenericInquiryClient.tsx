@@ -92,8 +92,8 @@ export function GenericInquiryClient({ products = [] }: { products?: Product[] }
   if (status === 'success') {
     return (
       <div className="flex flex-col items-center justify-center py-20 h-full">
-        <Loader2 className="w-8 h-8 text-brand-blue animate-spin mb-4" />
-        <p className="text-xs font-mono font-bold text-brand-deep-blue uppercase tracking-widest">Redirecting to receipt...</p>
+        <Loader2 className="w-8 h-8 text-brand-blue animate-spin mb-4 opacity-50" />
+        <p className="text-sm font-medium text-brand-deep-blue/70">Redirecting to receipt...</p>
       </div>
     );
   }
@@ -101,17 +101,17 @@ export function GenericInquiryClient({ products = [] }: { products?: Product[] }
   if (status === 'error') {
     return (
       <div className="flex flex-col items-start justify-center py-12 h-full">
-        <div className="w-16 h-16 bg-brand-red/10 flex items-center justify-center mb-6 border border-brand-red/30">
-          <AlertCircle className="w-8 h-8 text-brand-red" />
+        <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-6">
+          <AlertCircle className="w-8 h-8 text-red-500" />
         </div>
-        <h3 className="font-heading font-bold text-3xl text-brand-deep-blue tracking-tighter uppercase mb-2">Submission Failed.</h3>
-        <p className="text-xs font-bold text-brand-red mb-8 uppercase tracking-widest max-w-sm">
+        <h3 className="font-display font-medium text-3xl text-brand-deep-blue tracking-tight mb-2">Submission Failed.</h3>
+        <p className="text-sm text-red-500 mb-8 max-w-sm">
           {errorMessage}
         </p>
         <button
           type="button"
           onClick={() => setStatus('idle')}
-          className="px-8 py-4 bg-brand-red text-white font-heading font-bold uppercase tracking-widest text-xs hover:bg-transparent hover:text-brand-red border-2 border-brand-red transition-colors"
+          className="px-6 py-3 bg-red-50 text-red-600 font-medium text-sm rounded-md hover:bg-red-100 transition-colors"
         >
           Retry Connection
         </button>
@@ -119,25 +119,25 @@ export function GenericInquiryClient({ products = [] }: { products?: Product[] }
     );
   }
 
-  const inputClass = "w-full bg-transparent border-b border-brand-border/60 rounded-none px-0 py-1.5 text-brand-deep-blue font-bold text-sm placeholder:text-brand-deep-blue/60 focus:outline-none focus:border-brand-blue transition-colors focus:ring-0";
-  const labelClass = "block text-[9px] font-bold text-brand-deep-blue/70 uppercase tracking-widest mb-0.5";
-  const errorClass = "text-[9px] text-brand-red font-bold tracking-widest uppercase mt-0.5";
+  const inputClass = "w-full bg-white border border-brand-border/40 rounded-md px-3 py-2 text-sm text-brand-deep-blue font-medium placeholder:text-brand-deep-blue/40 focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue/20 transition-all shadow-sm";
+  const labelClass = "block text-xs font-medium text-brand-deep-blue/70 mb-1.5";
+  const errorClass = "text-[10px] text-red-500 font-medium mt-1";
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-[5%] pb-6 min-h-[calc(100vh-60px)] flex flex-col justify-start transform scale-[1.02] origin-top">
-      <div className="mb-4">
-        <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-2">
+      <div className="mb-6">
+        <p className="text-[10px] font-mono font-medium tracking-widest text-brand-deep-blue/60 mb-2">
           — General Inquiry
         </p>
-        <h1 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue uppercase tracking-tighter leading-none mb-2">
+        <h1 className="font-display font-medium text-3xl sm:text-4xl text-brand-deep-blue tracking-tight leading-none mb-3">
           Request a Quote
         </h1>
-        <p className="text-brand-deep-blue/70 max-w-2xl text-xs lg:text-sm mb-2">
+        <p className="text-brand-deep-blue/70 max-w-2xl text-sm mb-4">
           Select a division and provide your details below. Our team guarantees a response via WhatsApp within 2 hours.
         </p>
-        <div className="flex items-center gap-2 py-1 border-t border-b border-brand-border/40">
-          <span className="text-brand-red font-mono font-bold text-xs leading-none">→</span>
-          <span className="text-[9px] font-mono font-bold text-brand-deep-blue/80 uppercase tracking-[0.18em]">
+        <div className="flex items-center gap-2 py-2 border-t border-b border-brand-border/20">
+          <span className="text-brand-blue font-mono font-bold text-sm leading-none">→</span>
+          <span className="text-xs font-medium text-brand-deep-blue/70">
             B2B Commercial & Industrial Supply Only
           </span>
         </div>
@@ -155,7 +155,7 @@ export function GenericInquiryClient({ products = [] }: { products?: Product[] }
           
           {/* Division Selection */}
           <div className="space-y-4">
-            <h3 className="font-heading font-bold text-sm lg:text-base text-brand-deep-blue uppercase tracking-tight border-b-2 border-brand-deep-blue pb-1">
+            <h3 className="font-display font-medium text-lg text-brand-deep-blue tracking-tight border-b border-brand-border/20 pb-2">
               1. Select Division
             </h3>
             <div className="grid grid-cols-2 gap-2">
@@ -167,17 +167,17 @@ export function GenericInquiryClient({ products = [] }: { products?: Product[] }
                     key={division.id}
                     type="button"
                     onClick={() => handleDivisionChange(division.id)}
-                    className={`flex flex-col items-start gap-2 p-2 lg:p-3 border transition-colors text-left ${
+                    className={`flex flex-col items-start gap-2 p-3 border rounded-md transition-all text-left ${
                       isSelected 
-                        ? 'border-brand-blue bg-brand-blue/5' 
-                        : 'border-brand-border/30 hover:border-brand-blue/50'
+                        ? 'border-brand-blue bg-brand-blue/5 shadow-sm' 
+                        : 'border-brand-border/30 hover:border-brand-border hover:bg-brand-surface'
                     }`}
                   >
-                    <div className={`p-2 ${isSelected ? 'bg-brand-blue text-white' : 'bg-brand-border/10 text-brand-deep-blue'}`}>
+                    <div className={`p-2 rounded-md ${isSelected ? 'bg-brand-blue text-white' : 'bg-brand-surface border border-brand-border/50 text-brand-deep-blue/70'}`}>
                       <Icon className="w-4 h-4" />
                     </div>
                     <div>
-                      <p className="font-heading font-bold text-brand-deep-blue text-xs uppercase tracking-tight leading-tight">{division.label}</p>
+                      <p className="font-medium text-brand-deep-blue text-sm leading-tight">{division.label}</p>
                     </div>
                   </button>
                 );
@@ -187,7 +187,7 @@ export function GenericInquiryClient({ products = [] }: { products?: Product[] }
 
           {/* Contact Details Section */}
           <div className="space-y-4">
-            <h3 className="font-heading font-bold text-sm lg:text-base text-brand-deep-blue uppercase tracking-tight border-b-2 border-brand-deep-blue pb-1">
+            <h3 className="font-display font-medium text-lg text-brand-deep-blue tracking-tight border-b border-brand-border/20 pb-2">
               2. Contact Details
             </h3>
             <div className="grid grid-cols-1 gap-3">
@@ -215,7 +215,7 @@ export function GenericInquiryClient({ products = [] }: { products?: Product[] }
 
           {/* Request Details Section */}
           <div className="space-y-4 flex flex-col h-full">
-            <h3 className="font-heading font-bold text-sm lg:text-base text-brand-deep-blue uppercase tracking-tight border-b-2 border-brand-deep-blue pb-1">
+            <h3 className="font-display font-medium text-lg text-brand-deep-blue tracking-tight border-b border-brand-border/20 pb-2">
               3. Request Details
             </h3>
             
@@ -256,7 +256,7 @@ export function GenericInquiryClient({ products = [] }: { products?: Product[] }
               <button
                 type="submit"
                 disabled={status === 'submitting'}
-                className="w-full h-10 bg-brand-deep-blue text-white font-heading font-bold text-sm uppercase tracking-widest hover:bg-brand-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full h-11 bg-brand-blue text-white font-medium text-sm rounded-md shadow-sm hover:bg-brand-deep-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {status === 'submitting' ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Processing</>

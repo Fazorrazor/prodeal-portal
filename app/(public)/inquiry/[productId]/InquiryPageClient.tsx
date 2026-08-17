@@ -87,13 +87,21 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="absolute inset-0"
+                    className="absolute inset-0 cursor-grab active:cursor-grabbing"
+                    drag="x"
+                    dragConstraints={{ left: 0, right: 0 }}
+                    dragElastic={0.2}
+                    onDragEnd={(e, { offset, velocity }) => {
+                      const swipe = Math.abs(offset.x) * velocity.x;
+                      if (swipe < -100) nextImage();
+                      else if (swipe > 100) prevImage();
+                    }}
                   >
                     <Image
                       src={galleryImages[currentImageIndex]}
                       alt={`${product.name} - Image ${currentImageIndex + 1}`}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
                       sizes="(max-width: 768px) 100vw, 520px"
                       priority
                     />
@@ -142,10 +150,10 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
         {/* ── PRODUCT INFO (Mobile & Desktop) ── */}
         <div className="px-5 md:px-6 pt-6 pb-6 border-b border-brand-border/40 shrink-0 flex flex-col gap-4">
           <div>
-            <h1 className="font-display font-extrabold text-2xl lg:text-3xl text-brand-deep-blue uppercase tracking-tighter leading-tight mb-2">
+            <h1 className="font-display font-medium text-3xl lg:text-4xl text-brand-deep-blue tracking-tight leading-tight mb-2">
               {product.name}
             </h1>
-            <div className="text-[10px] font-mono font-bold text-brand-deep-blue/80 uppercase tracking-[0.2em]">
+            <div className="text-xs font-semibold text-brand-deep-blue/50 uppercase tracking-wider">
               SKU: {product.id.split('-')[0]}
             </div>
           </div>
@@ -162,7 +170,7 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
                 e.preventDefault();
                 document.getElementById('inquiry-form')?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-brand-deep-blue text-white text-[10px] font-mono font-bold uppercase tracking-[0.2em] active:scale-[0.98] transition-all"
+              className="inline-flex items-center justify-center gap-2 w-full py-4 bg-brand-blue text-white text-sm font-medium rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.4)] active:scale-[0.98] transition-all"
             >
               <span>Proceed to Inquiry</span>
               <span>↓</span>
@@ -175,8 +183,8 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
         {/* ── SIMILAR PRODUCTS ── */}
         {similarProducts.length > 0 && (
           <div className="flex flex-col flex-1 px-5 md:px-6 pt-6 pb-8">
-            <h3 className="text-sm font-mono font-bold uppercase tracking-widest text-brand-deep-blue mb-4 border-b border-brand-border/40 pb-2">
-              — Similar Products
+            <h3 className="text-lg font-display font-medium text-brand-deep-blue mb-4 border-b border-brand-border/20 pb-2">
+              Similar Products
             </h3>
             <div className="grid grid-cols-2 gap-4">
               {similarProducts.map((p) => (
@@ -200,7 +208,7 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
                       </div>
                     )}
                   </div>
-                  <h4 className="font-heading font-bold text-[11px] sm:text-xs text-brand-deep-blue uppercase tracking-tight leading-snug line-clamp-2 group-hover:text-brand-blue transition-colors">
+                  <h4 className="font-medium text-sm text-brand-deep-blue leading-snug line-clamp-2 group-hover:text-brand-blue transition-colors">
                     {p.name}
                   </h4>
                   {p.description && (
