@@ -8,16 +8,16 @@ export function CardSkeleton() {
   return (
     <div>
       {/* Section header identical to ChemicalCatalog & ProductCatalog */}
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b-2 border-brand-deep-blue pb-5 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b border-brand-border/20 pb-5 mb-8">
         <div>
-          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-1.5">
-            — Product Register
+          <p className="text-[10px] font-mono font-medium uppercase tracking-widest text-brand-deep-blue/50 mb-1.5">
+            Product Register
           </p>
-          <h2 className="font-display font-extrabold text-2xl sm:text-3xl text-brand-deep-blue tracking-tighter uppercase leading-none">
+          <h2 className="font-display font-medium text-2xl sm:text-3xl text-brand-deep-blue tracking-tight leading-none">
             Available Products
           </h2>
         </div>
-        <p className="text-[10px] font-mono text-brand-deep-blue/80 uppercase tracking-widest">
+        <p className="text-xs font-semibold text-brand-deep-blue/50 uppercase tracking-wider">
           {loadingText}
         </p>
       </div>
@@ -44,7 +44,7 @@ export function CardSkeleton() {
                 <div className="h-3 w-5/6 bg-black/5 animate-pulse" />
               </div>
 
-              <div className="w-full sm:w-32 h-11 bg-black/5 animate-pulse sm:self-end mt-auto" />
+              <div className="w-full sm:w-32 h-11 bg-black/5 rounded-xl animate-pulse sm:self-end mt-auto" />
             </div>
           </div>
         ))}
