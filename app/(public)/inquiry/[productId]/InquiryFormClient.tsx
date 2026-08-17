@@ -68,8 +68,8 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   if (status === 'success') {
     return (
       <div className="flex flex-col items-center justify-center py-20 h-full">
-        <Loader2 className="w-8 h-8 text-brand-blue animate-spin mb-4" />
-        <p className="text-xs font-mono font-bold text-brand-deep-blue uppercase tracking-widest">Redirecting to receipt...</p>
+        <Loader2 className="w-8 h-8 text-brand-blue animate-spin mb-4 opacity-50" />
+        <p className="text-sm font-medium text-brand-deep-blue/70">Redirecting to receipt...</p>
       </div>
     );
   }
@@ -77,17 +77,17 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   if (status === 'error') {
     return (
       <div className="flex flex-col items-start justify-center py-12 h-full">
-        <div className="w-16 h-16 bg-brand-red/10 flex items-center justify-center mb-6 border border-brand-red/30">
-          <AlertCircle className="w-8 h-8 text-brand-red" />
+        <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-6">
+          <AlertCircle className="w-8 h-8 text-red-500" />
         </div>
-        <h3 className="font-heading font-bold text-3xl text-brand-deep-blue tracking-tighter uppercase mb-2">Submission Failed.</h3>
-        <p className="text-xs font-bold text-brand-red mb-8 uppercase tracking-widest max-w-sm">
+        <h3 className="font-display font-medium text-3xl text-brand-deep-blue tracking-tight mb-2">Submission Failed.</h3>
+        <p className="text-sm text-red-500 mb-8 max-w-sm">
           {errorMessage}
         </p>
         <button
           type="button"
           onClick={() => setStatus('idle')}
-          className="px-8 py-4 bg-brand-red text-white font-heading font-bold uppercase tracking-widest text-xs hover:bg-transparent hover:text-brand-red border-2 border-brand-red transition-colors"
+          className="px-6 py-3 bg-red-50 text-red-600 font-medium text-sm rounded-md hover:bg-red-100 transition-colors"
         >
           Retry Connection
         </button>
@@ -95,10 +95,10 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
     );
   }
 
-  // Common Brutalist Input Classes
-  const inputClass = "w-full bg-transparent border-b-2 border-brand-border/60 rounded-none px-0 py-3 text-brand-deep-blue font-bold placeholder:text-brand-deep-blue/80 focus:outline-none focus:border-brand-blue transition-colors focus:ring-0";
-  const labelClass = "block text-[10px] font-bold text-brand-deep-blue/80 uppercase tracking-widest mb-1";
-  const errorClass = "text-[10px] text-brand-red font-bold tracking-widest uppercase mt-1";
+  // Minimalist Input Classes
+  const inputClass = "w-full bg-white border border-brand-border/40 rounded-xl px-4 py-3 text-sm text-brand-deep-blue font-medium placeholder:text-brand-deep-blue/40 focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue/20 transition-all shadow-sm";
+  const labelClass = "block text-xs font-medium text-brand-deep-blue/70 mb-1.5";
+  const errorClass = "text-[10px] text-red-500 font-medium mt-1";
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
     if (e.key === 'Enter') {
@@ -147,15 +147,15 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   return (
     <>
       <div className="mb-10">
-        <p className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80 mb-2">
+        <p className="text-[10px] font-mono font-medium tracking-widest text-brand-deep-blue/60 mb-2">
           — Submit your request
         </p>
-        <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-brand-deep-blue uppercase tracking-tighter leading-none mb-4">
+        <h2 className="font-display font-medium text-3xl sm:text-4xl text-brand-deep-blue tracking-tight leading-none mb-4">
           Inquiry Details
         </h2>
-        <div className="flex items-center gap-2 py-3 border-t border-b border-brand-border/40">
-          <span className="text-brand-red font-mono font-bold text-sm leading-none">→</span>
-          <span className="text-[10px] font-mono font-bold text-brand-deep-blue/80 uppercase tracking-[0.18em]">
+        <div className="flex items-center gap-2 py-3 border-t border-b border-brand-border/20">
+          <span className="text-brand-blue font-mono font-bold text-sm leading-none">→</span>
+          <span className="text-xs font-medium text-brand-deep-blue/70">
             Guaranteed response via WhatsApp within 2 hours
           </span>
         </div>
@@ -170,8 +170,8 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
       </div>
 
       {/* Contact Details Section */}
-      <div className="space-y-8">
-        <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tight border-b-2 border-brand-deep-blue pb-2">
+      <div className="space-y-6">
+        <h3 className="font-display font-medium text-xl text-brand-deep-blue tracking-tight border-b border-brand-border/20 pb-2">
           1. Contact Details
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -198,15 +198,15 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
       </div>
 
       {/* Request Details Section */}
-      <div className="space-y-8">
-        <h3 className="font-heading font-bold text-xl text-brand-deep-blue uppercase tracking-tight border-b-2 border-brand-deep-blue pb-2">
+      <div className="space-y-6">
+        <h3 className="font-display font-medium text-xl text-brand-deep-blue tracking-tight border-b border-brand-border/20 pb-2">
           2. Request Details
         </h3>
         <div>
           <label className={labelClass}>What do you need?</label>
           <textarea 
             {...register('inquiry.message')} 
-            className={`${inputClass} min-h-[120px] resize-y leading-relaxed`} 
+            className={`${inputClass} min-h-[120px] resize-none leading-relaxed`} 
             placeholder="Please describe the specifics of your request, quantities, deadlines, or any other relevant details..." 
           />
           {/* @ts-ignore - Dynamic nested error access */}
@@ -215,11 +215,11 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
       </div>
 
       {/* Submit Button */}
-      <div className="pt-8 border-t-2 border-brand-border/60">
+      <div className="pt-8 border-t border-brand-border/20">
         <button
           type="submit"
           disabled={status === 'submitting'}
-          className="w-full h-14 bg-brand-deep-blue text-white font-heading font-bold text-lg uppercase tracking-widest hover:bg-brand-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full h-14 bg-brand-blue text-white font-medium text-sm rounded-xl shadow-md hover:shadow-lg hover:bg-brand-deep-blue transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {status === 'submitting' ? (
             <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>

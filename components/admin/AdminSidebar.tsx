@@ -21,6 +21,7 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
     { name: 'Tickets', href: '/admin/tickets', icon: Ticket },
     ...(userRole === 'admin' ? [
       { name: 'Staff', href: '/admin/staff', icon: Users },
+      { name: 'Analytics', href: '/admin/analytics', icon: Activity },
       { name: 'Complaints', href: '/admin/complaints', icon: AlertCircle },
       { name: 'Settings', href: '/admin/settings', icon: Settings },
     ] : [])

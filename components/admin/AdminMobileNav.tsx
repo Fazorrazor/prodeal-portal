@@ -43,7 +43,7 @@ export function AdminMobileNav({ userRole = 'agent' }: { userRole?: string }) {
               </div>
             )}
             <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5px]' : 'stroke-2'}`} />
-            <span className="text-[9px] font-bold tracking-widest uppercase">{link.name}</span>
+            <span className="text-[10px] font-medium tracking-wide">{link.name}</span>
           </Link>
         );
       })}

@@ -50,26 +50,25 @@ export default async function TrackPage(props: { searchParams: Promise<{ error?:
         {/* Heading block */}
         <div className="mb-10 flex gap-5">
           {/* Animated left-rail accent */}
-          <div className="w-[3px] bg-brand-blue shrink-0 self-stretch min-h-full" 
+          <div className="w-[2px] bg-brand-blue shrink-0 self-stretch min-h-full rounded-full" 
             style={{ minHeight: '100%' }}
           />
           <div>
-            <h1 className="text-5xl sm:text-6xl font-heading font-bold tracking-tighter leading-[0.9] text-brand-deep-blue mb-4">
-              TRACK<br />INQUIRY
+            <h1 className="text-5xl sm:text-6xl font-display font-medium tracking-tight leading-[1.05] text-brand-deep-blue mb-4">
+              Track<br />Inquiry
             </h1>
-            <p className="text-xs font-mono text-brand-deep-blue/50 uppercase tracking-[0.2em] leading-relaxed max-w-xs">
+            <p className="text-sm text-brand-deep-blue/70 leading-relaxed max-w-xs">
               Enter your 16-character tracking ID to view your inquiry status in real time.
             </p>
           </div>
         </div>
 
         {/* Form */}
-        <form action={searchTracking} className="flex flex-col gap-0">
-          {/* Input field zone — tinted band */}
-          <div className="bg-black/[0.03] border-t border-brand-border/40 px-4 py-5 flex flex-col gap-1">
+        <form action={searchTracking} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
             <label
               htmlFor="trackingId"
-              className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-blue mb-1 block"
+              className="text-xs font-medium text-brand-deep-blue/70 block"
             >
               Tracking ID
             </label>
@@ -80,21 +79,21 @@ export default async function TrackPage(props: { searchParams: Promise<{ error?:
               placeholder="e.g. a1b2c3d4-e5f6-7g8h..."
               required
               autoComplete="off"
-              className="w-full bg-transparent border-0 border-b-2 border-brand-border/50 px-0 pb-2 pt-1 text-lg font-mono text-brand-deep-blue placeholder:text-brand-border/60 focus:outline-none focus:border-brand-blue transition-colors rounded-none"
+              className="w-full bg-white border border-brand-border/40 rounded-md px-4 py-3 text-base font-mono text-brand-deep-blue placeholder:text-brand-deep-blue/30 focus:outline-none focus:border-brand-blue focus:ring-1 focus:ring-brand-blue/20 transition-all shadow-sm"
             />
           </div>
 
           {/* Submit */}
           <button
             type="submit"
-            className="bg-brand-deep-blue text-white font-heading font-bold uppercase tracking-[0.2em] text-sm py-5 px-6 hover:bg-brand-blue active:bg-brand-blue transition-colors flex justify-between items-center group"
+            className="w-full bg-brand-blue text-white font-medium text-sm rounded-md shadow-sm py-4 px-6 hover:bg-brand-deep-blue transition-colors flex justify-center items-center gap-2 group"
           >
             <span>Submit</span>
-            <span className="text-white/50 group-hover:text-white transition-colors text-xl leading-none">→</span>
+            <span className="text-white/70 group-hover:text-white transition-colors text-lg leading-none group-hover:translate-x-1">→</span>
           </button>
 
           {/* Helper text */}
-          <p className="mt-4 text-[10px] font-mono text-brand-deep-blue/30 uppercase tracking-widest text-center">
+          <p className="mt-2 text-xs text-brand-deep-blue/50 text-center">
             You received your tracking ID after submitting an inquiry
           </p>
         </form>

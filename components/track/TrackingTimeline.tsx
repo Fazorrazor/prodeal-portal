@@ -71,13 +71,11 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
         BACK TO TRACKING
       </Link>
 
-      <div className="border-t-2 border-brand-deep-blue pt-5 pb-6 mb-6 relative bg-brand-surface">
-        <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-brand-deep-blue -mt-px -mr-px" />
-        
-        <h1 className="text-4xl md:text-5xl font-heading font-extrabold tracking-tighter leading-none text-brand-deep-blue mb-5 uppercase">
-          STATUS<span className="text-brand-blue">.</span>
+      <div className="border-t border-brand-border/20 pt-5 pb-6 mb-6">
+        <h1 className="text-4xl md:text-5xl font-display font-medium tracking-tight leading-none text-brand-deep-blue mb-5">
+          Status<span className="text-brand-blue">.</span>
         </h1>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 p-4 bg-black/[0.03] border border-brand-border/40">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 p-5 bg-white rounded-xl shadow-sm border border-brand-border/20">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-brand-blue mb-1">
               Tracking ID
@@ -98,8 +96,8 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
       </div>
 
       {isCancelled ? (
-        <div className="border-l-4 border-brand-red pl-6 py-4">
-          <h2 className="text-2xl font-heading font-bold text-brand-red tracking-tight mb-2 uppercase">
+        <div className="border-l-[3px] border-red-500 pl-6 py-4 bg-red-50/50 rounded-r-md">
+          <h2 className="text-xl font-display font-medium text-red-600 tracking-tight mb-2">
             Inquiry Cancelled
           </h2>
           <p className="text-brand-deep-blue/80">
@@ -123,18 +121,18 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: index * 0.15 }}
-                      className={`w-6 h-6 shrink-0 flex items-center justify-center border-2 
+                      className={`w-6 h-6 shrink-0 flex items-center justify-center rounded-full border 
                         ${isActive ? 'border-brand-blue bg-brand-blue/10' : 
                           isPast ? 'border-brand-deep-blue bg-brand-deep-blue' : 
                           'border-brand-border/50 bg-transparent'}`}
                     >
                       {isPast && (
-                        <div className="w-2 h-2 bg-white" />
+                        <div className="w-2 h-2 bg-white rounded-full" />
                       )}
                       {isActive && (
                         <motion.div 
                           layoutId="active-indicator"
-                          className="w-2 h-2 bg-brand-blue" 
+                          className="w-2 h-2 bg-brand-blue rounded-full" 
                         />
                       )}
                     </motion.div>
@@ -145,10 +143,10 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
                       initial={{ x: -10, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: (index * 0.15) + 0.1 }}
-                      className={`text-base md:text-lg font-heading font-bold tracking-tight mb-1 uppercase
+                      className={`text-base md:text-lg font-medium tracking-tight mb-1
                         ${isActive ? 'text-brand-blue' : 
                           isPast ? 'text-brand-deep-blue' : 
-                          'text-brand-deep-blue/80'}`}
+                          'text-brand-deep-blue/60'}`}
                     >
                       {step.label}
                     </motion.h3>
@@ -157,7 +155,7 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
                       {step.desc}
                     </p>
                     {isActive && step.id === 'new' && (
-                      <div className="mt-4 text-xs font-mono bg-brand-blue/5 text-brand-blue p-3 border-l-2 border-brand-blue">
+                      <div className="mt-4 text-xs bg-brand-blue/5 text-brand-blue p-3 border-l-2 border-brand-blue rounded-r-md">
                         Awaiting assignment. You will receive a WhatsApp message shortly.
                       </div>
                     )}
@@ -169,13 +167,13 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
         </div>
       )}
       
-      <div className="mt-8 pt-5 border-t border-brand-border/40">
-        <div className="bg-brand-deep-blue text-white p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="mt-8 pt-5">
+        <div className="bg-brand-surface rounded-xl border border-brand-border/20 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
           <div>
-            <h4 className="font-heading font-bold text-sm uppercase tracking-widest mb-0.5">Need Assistance?</h4>
-            <p className="text-[10px] text-white/60 font-mono uppercase tracking-[0.15em]">Contact our support team directly</p>
+            <h4 className="font-display font-medium text-lg text-brand-deep-blue mb-1">Need Assistance?</h4>
+            <p className="text-xs text-brand-deep-blue/70">Contact our support team directly</p>
           </div>
-          <Link href="/support" className="px-5 py-2.5 bg-brand-blue text-white font-bold text-xs uppercase tracking-widest hover:bg-white hover:text-brand-deep-blue transition-colors whitespace-nowrap">
+          <Link href="/support" className="px-5 py-2.5 bg-brand-blue text-white font-medium text-sm rounded-md shadow-sm hover:bg-brand-deep-blue transition-colors whitespace-nowrap">
             Contact Support →
           </Link>
         </div>

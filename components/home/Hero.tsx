@@ -32,8 +32,8 @@ export function Hero() {
           transition={{ duration: 0.4 }}
           className="flex items-center gap-3 mb-8"
         >
-          <div className="w-6 h-px bg-brand-red" />
-          <span className="text-[10px] font-mono font-bold uppercase tracking-[0.25em] text-brand-deep-blue/80">
+          <div className="w-6 h-px bg-brand-blue" />
+          <span className="text-[10px] font-mono font-medium tracking-widest text-brand-deep-blue/70">
             Industrial B2B Procurement Portal
           </span>
         </motion.div>
@@ -48,7 +48,7 @@ export function Hero() {
                 animate={{ scaleY: 1 }}
                 transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
                 style={{ originY: 0 }}
-                className="w-[3px] bg-brand-red h-full min-h-[120px]"
+                className="w-px bg-brand-border h-full min-h-[120px]"
               />
             </div>
 
@@ -57,7 +57,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="font-display font-extrabold text-[3rem] leading-[0.92] sm:text-[4rem] md:text-[5.5rem] lg:text-[7rem] xl:text-[8rem] text-brand-deep-blue tracking-tighter uppercase"
+                className="font-display font-light text-[3rem] leading-[1.05] sm:text-[4rem] md:text-[5.5rem] lg:text-[7rem] xl:text-[8rem] text-brand-deep-blue tracking-tight"
               >
                 Built<br />
                 For<br />
@@ -83,10 +83,10 @@ export function Hero() {
             className="flex flex-col gap-8 lg:max-w-md lg:pb-2 w-full"
           >
             <div>
-              <p className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-brand-deep-blue/80 mb-2">
+              <p className="text-[10px] font-mono font-medium uppercase tracking-[0.2em] text-brand-deep-blue/60 mb-2">
                 Delivered With
               </p>
-              <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl text-brand-deep-blue tracking-tighter uppercase leading-none">
+              <h2 className="font-display font-medium text-3xl sm:text-4xl lg:text-5xl text-brand-deep-blue tracking-tight leading-none">
                 Precision.
               </h2>
             </div>
@@ -94,7 +94,7 @@ export function Hero() {
             <div className="flex flex-col gap-3">
               <Link
                 href="#divisions"
-                className="inline-flex items-center justify-between gap-4 px-6 py-4 bg-brand-blue text-white font-heading font-bold text-sm uppercase tracking-widest transition-colors active:bg-brand-deep-blue w-full sm:w-auto sm:max-w-xs"
+                className="inline-flex items-center justify-between gap-4 px-6 py-4 bg-brand-blue text-white font-medium text-sm transition-colors hover:bg-brand-deep-blue rounded-md shadow-sm w-full sm:w-auto sm:max-w-xs"
               >
                 Request a Quote
                 <ArrowRight className="w-4 h-4 shrink-0" />
@@ -102,9 +102,9 @@ export function Hero() {
               
               <button
                 onClick={() => setIsShowreelOpen(true)}
-                className="inline-flex items-center justify-center gap-3 px-6 py-4 border-2 border-brand-deep-blue/20 text-brand-deep-blue font-heading font-bold text-sm uppercase tracking-widest transition-colors hover:border-brand-deep-blue hover:bg-brand-deep-blue/5 active:bg-brand-deep-blue/10 w-full sm:w-auto sm:max-w-xs"
+                className="inline-flex items-center justify-center gap-3 px-6 py-4 border border-brand-border text-brand-deep-blue font-medium text-sm transition-all hover:border-brand-deep-blue/40 hover:bg-brand-surface rounded-md w-full sm:w-auto sm:max-w-xs"
               >
-                <Play className="w-4 h-4 shrink-0 fill-current" />
+                <Play className="w-4 h-4 shrink-0 fill-current opacity-70" />
                 View Work Archive
               </button>
               

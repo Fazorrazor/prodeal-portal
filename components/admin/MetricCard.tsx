@@ -17,7 +17,11 @@ export function MetricCard({ title, value, icon, trend, accentColor = 'brand-blu
           {displayText}
         </p>
         {trend && (
-          <span className="text-[9px] font-bold uppercase tracking-widest text-brand-red border border-brand-red/30 px-1.5 py-0.5">
+          <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+            trend.toLowerCase().includes('healthy') 
+              ? 'text-emerald-600 bg-emerald-50 border-emerald-100' 
+              : 'text-amber-600 bg-amber-50 border-amber-100'
+          }`}>
             {trend}
           </span>
         )}

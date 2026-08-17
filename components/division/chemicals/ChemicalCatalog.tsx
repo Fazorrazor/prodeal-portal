@@ -19,30 +19,29 @@ export async function ChemicalCatalog() {
   }
 
   return (
-    <div>
+    <div className="py-8">
       {/* Section header */}
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 border-b border-brand-border/20 pb-5 mb-8">
-        <div>
-          <p className="text-xs font-medium text-brand-blue mb-1.5">
-            Specialized Formulations
-          </p>
-          <h2 className="font-display font-bold text-3xl sm:text-4xl text-brand-deep-blue leading-none">
-            Industrial Chemicals
-          </h2>
-        </div>
+      <div className="flex flex-col items-center text-center mb-16 max-w-2xl mx-auto">
+        <p className="text-[10px] font-medium text-brand-deep-blue/50 tracking-[0.2em] uppercase mb-4">
+          Specialized Formulations
+        </p>
+        <h2 className="font-display font-medium text-4xl sm:text-5xl text-brand-deep-blue leading-tight mb-6 tracking-tight">
+          Industrial Chemicals
+        </h2>
+        <div className="w-12 h-px bg-brand-deep-blue/20"></div>
       </div>
 
       {!products || products.length === 0 ? (
-        <div className="col-span-full py-16 text-center border-t border-brand-border/20">
-          <h3 className="font-heading font-bold text-2xl text-brand-deep-blue mb-2">
-            No products registered.
+        <div className="py-24 text-center bg-[#fafafa] rounded-3xl mx-4 sm:mx-0">
+          <h3 className="font-display font-medium text-2xl text-brand-deep-blue mb-3">
+            No formulations available.
           </h3>
-          <p className="text-brand-deep-blue/70 font-mono text-sm uppercase tracking-widest">
-            Contact us directly for chemical inquiries.
+          <p className="text-brand-deep-blue/60 font-light text-sm">
+            Contact us directly for bespoke chemical inquiries.
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
           {products.map((product, index) => (
             <ChemicalCard key={product.id} product={product} priority={index < 4} />
           ))}
@@ -64,12 +63,11 @@ function ChemicalCard({ product, priority = false }: {
   };
   priority?: boolean;
 }) {
-  const grade = product.metadata?.grade || 'Industrial';
+  const grade = product.metadata?.grade || 'Industrial Grade';
   const cas = product.metadata?.cas_number;
   const metadataGallery = (product.metadata as any)?.gallery_images || [];
   const demoVideos = (product.metadata as any)?.demo_videos || [];
   
-  // Use Set to remove duplicate image paths
   let images = Array.from(new Set([
     product.image_path, 
     ...(product.gallery_images || []), 
@@ -77,46 +75,59 @@ function ChemicalCard({ product, priority = false }: {
   ].filter(Boolean))) as string[];
 
   return (
-    <Link href={`/inquiry/${product.id}?from=chemicals`} className="group flex flex-col bg-slate-50 border border-brand-border/30 hover:border-brand-blue transition-colors cursor-pointer">
-      <div className="relative aspect-[3/2] w-full bg-white border-b border-brand-border/10 overflow-hidden">
-        <ProductImageCarousel 
-          images={images} 
-          alt={product.name} 
-          priority={priority} 
-        />
-        <div className="absolute top-3 right-3 bg-brand-deep-blue text-white px-2 py-1 text-[10px] font-bold uppercase tracking-widest z-20">
+    <Link href={`/inquiry/${product.id}?from=chemicals`} className="group flex flex-col h-full cursor-pointer outline-none">
+      {/* Image Container with subtle elevation on hover */}
+      <div className="relative aspect-square w-full bg-[#f5f5f7] rounded-2xl overflow-hidden mb-6 transition-all duration-700 ease-out group-hover:shadow-2xl group-hover:-translate-y-2">
+        <div className="w-full h-full transition-transform duration-1000 ease-out group-hover:scale-105">
+          <ProductImageCarousel 
+            images={images} 
+            alt={product.name} 
+            priority={priority} 
+          />
+        </div>
+        {/* Grade badge */}
+        <div className="absolute top-4 left-4 bg-white/80 backdrop-blur-md text-brand-deep-blue px-4 py-1.5 text-[10px] font-medium tracking-wide rounded-full z-20">
           {grade}
         </div>
       </div>
 
-      <div className="flex flex-col flex-1 p-3 sm:p-4">
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[9px] sm:text-[10px] font-mono font-medium text-brand-deep-blue/50 uppercase tracking-widest">
-            {cas ? `CAS: ${cas}` : 'No CAS'}
+      {/* Content */}
+      <div className="flex flex-col flex-1 px-2">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-medium text-brand-deep-blue/40 tracking-[0.1em] uppercase">
+            {cas ? `CAS: ${cas}` : 'Proprietary Formulation'}
           </span>
         </div>
         
-        <h3 className="font-heading font-bold text-sm sm:text-base text-brand-deep-blue leading-tight mb-1.5 group-hover:text-brand-blue transition-colors line-clamp-2">
+        <h3 className="font-display font-medium text-lg sm:text-xl text-brand-deep-blue leading-tight mb-2 transition-colors">
           {product.name}
         </h3>
         
-        <p className="text-xs text-brand-deep-blue/70 leading-relaxed mb-3 sm:mb-4 flex-1 line-clamp-3">
+        <p className="text-sm font-light text-brand-deep-blue/60 leading-relaxed mb-6 flex-1 line-clamp-2">
           {product.description || 'Standard industrial chemical formulation.'}
         </p>
 
-        <div className="flex items-center mt-auto pt-2.5 sm:pt-3 border-t border-brand-border/10">
-          {demoVideos.length > 0 && (
-            <ChemicalVideoModal 
-              videoUrl={demoVideos[0]} 
-              productName={product.name} 
-              cas={cas} 
-            />
+        <div className="mt-auto flex items-center justify-between">
+          {demoVideos.length > 0 ? (
+            <div onClick={(e) => e.preventDefault()} className="z-30 relative mr-3">
+              <ChemicalVideoModal 
+                videoUrl={demoVideos[0]} 
+                productName={product.name} 
+                cas={cas} 
+              />
+            </div>
+          ) : (
+            <div></div>
           )}
-          <span
-            className="w-full text-center px-3 py-2 sm:px-5 sm:py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-[10px] sm:text-xs font-bold transition-colors uppercase tracking-widest"
-          >
-            Request Quote
-          </span>
+          
+          <div className="flex items-center text-sm font-medium text-brand-deep-blue opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="border-b border-transparent group-hover:border-brand-deep-blue/30 pb-0.5 transition-colors">
+              Request Quote
+            </span>
+            <svg className="w-4 h-4 ml-2 transition-transform duration-500 ease-out group-hover:translate-x-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </div>
         </div>
       </div>
     </Link>
