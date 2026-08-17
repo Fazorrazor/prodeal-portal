@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { OrganizationJsonLd } from '../../components/shared/JsonLd';
 import { ChemicalCatalog } from '../../components/division/chemicals/ChemicalCatalog';
 import { InventoryTable } from '../../components/division/disposable-bowls/InventoryTable';
@@ -8,6 +9,14 @@ import { HeroVideoBackground } from '../../components/shared/HeroVideoBackground
 
 // Revalidate every 5 minutes to ensure Bowls inventory data remains fresh
 export const revalidate = 300;
+
+export const metadata: Metadata = {
+  title: 'Industrial Chemical Suppliers & Wholesale Disposables in Ghana | Prodeal',
+  description: 'Prodeal Industries Ltd is a leading industrial chemical supplier and wholesale distributor of catering disposables, 3D signages, and corporate souvenirs in Ghana.',
+  alternates: {
+    canonical: 'https://www.prodealindustries.com',
+  },
+};
 
 export default function HomePage() {
   const siteUrl = 'https://www.prodealindustries.com';
@@ -22,7 +31,7 @@ export default function HomePage() {
         
         <div className="relative z-20 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-20 lg:py-28 flex flex-col items-start">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold leading-[1.1] tracking-tight mb-6 max-w-4xl">
-            Wholesale Industrial Supplies & Custom Fabrication
+            Industrial Chemical Suppliers & Wholesale B2B Disposables
           </h1>
           <p className="text-lg text-white/90 max-w-2xl font-body leading-relaxed mb-10">
             Direct access to commercial-grade chemicals, catering disposables, merchandising, and structural signage. Built for scale, priced for wholesale.

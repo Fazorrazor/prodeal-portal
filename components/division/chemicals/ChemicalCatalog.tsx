@@ -2,6 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 
 import { ProductImageCarousel } from '../../shared/ProductImageCarousel';
+import { ChemicalVideoModal } from './ChemicalVideoModal';
 
 export async function ChemicalCatalog() {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
@@ -66,6 +67,7 @@ function ChemicalCard({ product, priority = false }: {
   const grade = product.metadata?.grade || 'Industrial';
   const cas = product.metadata?.cas_number;
   const metadataGallery = (product.metadata as any)?.gallery_images || [];
+  const demoVideos = (product.metadata as any)?.demo_videos || [];
   
   // Use Set to remove duplicate image paths
   let images = Array.from(new Set([
@@ -102,9 +104,16 @@ function ChemicalCard({ product, priority = false }: {
           {product.description || 'Standard industrial chemical formulation.'}
         </p>
 
-        <div className="flex items-center justify-between mt-auto pt-2.5 sm:pt-3 border-t border-brand-border/10">
+        <div className="flex items-center mt-auto pt-2.5 sm:pt-3 border-t border-brand-border/10">
+          {demoVideos.length > 0 && (
+            <ChemicalVideoModal 
+              videoUrl={demoVideos[0]} 
+              productName={product.name} 
+              cas={cas} 
+            />
+          )}
           <span
-            className="w-full text-center px-3 py-2 sm:px-5 sm:py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-[10px] sm:text-xs font-bold transition-colors"
+            className="w-full text-center px-3 py-2 sm:px-5 sm:py-2.5 bg-brand-deep-blue group-hover:bg-brand-blue text-white text-[10px] sm:text-xs font-bold transition-colors uppercase tracking-widest"
           >
             Request Quote
           </span>

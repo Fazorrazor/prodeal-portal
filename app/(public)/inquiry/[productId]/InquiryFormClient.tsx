@@ -13,128 +13,13 @@ interface InquiryFormClientProps {
   defaultMoq: number;
 }
 
-function SuccessReceipt({ divisionSlug, trackingId }: { divisionSlug: string; trackingId: string }) {
-  const [copied, setCopied] = useState(false);
-  const [progress, setProgress] = useState(100);
-  const DURATION = 20000; // ms
-  const INTERVAL = 50;   // ms
-
-  // Auto-redirect countdown
-  useEffect(() => {
-    const step = (INTERVAL / DURATION) * 100;
-    const timer = setInterval(() => {
-      setProgress(prev => {
-        const next = prev - step;
-        if (next <= 0) {
-          clearInterval(timer);
-          window.location.href = `/divisions/${divisionSlug}`;
-          return 0;
-        }
-        return next;
-      });
-    }, INTERVAL);
-    return () => clearInterval(timer);
-  }, [divisionSlug]);
-
-  const handleDismiss = () => {
-    window.location.href = `/divisions/${divisionSlug}`;
-  };
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(trackingId);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    /* Backdrop */
-    <div
-      className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center bg-brand-deep-blue/60 backdrop-blur-sm px-0 sm:px-4 animate-in fade-in duration-300"
-      onClick={handleDismiss}
-    >
-      {/* Modal panel — bottom sheet on mobile, centred box on desktop */}
-      <div
-        className="relative w-full sm:max-w-md bg-brand-surface border-t-4 sm:border-4 border-brand-deep-blue animate-in slide-in-from-bottom sm:slide-in-from-bottom-4 duration-300"
-        onClick={e => e.stopPropagation()}
-      >
-        {/* Progress bar — drains from full width to 0 */}
-        <div className="absolute top-0 left-0 right-0 h-[3px] bg-brand-border/30 overflow-hidden">
-          <div
-            className="h-full bg-brand-blue transition-none"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-
-        {/* Header */}
-        <div className="flex items-start justify-between px-5 pt-6 pb-4 border-b border-brand-border/30">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-brand-blue mb-1">
-              Confirmed
-            </p>
-            <h3 className="font-heading font-bold text-2xl text-brand-deep-blue tracking-tighter leading-none">
-              Inquiry Received.
-            </h3>
-          </div>
-          <button
-            onClick={handleDismiss}
-            className="text-brand-deep-blue/40 hover:text-brand-deep-blue transition-colors mt-0.5 p-1 -mr-1"
-            aria-label="Close"
-          >
-            <span className="text-xl leading-none font-light">✕</span>
-          </button>
-        </div>
-
-        {/* Body */}
-        <div className="px-5 py-5 space-y-4">
-          <p className="text-xs font-mono text-brand-deep-blue/60 uppercase tracking-widest leading-relaxed">
-            A representative will reach you via WhatsApp within 2 hours.
-          </p>
-
-          {/* Tracking ID block */}
-          <div className="bg-brand-deep-blue px-4 py-4">
-            <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/50 mb-2">
-              Reference ID
-            </p>
-            <div className="flex items-center justify-between gap-3">
-              <span className="font-mono text-sm font-bold text-white tracking-wider truncate">
-                {trackingId}
-              </span>
-              <button
-                onClick={handleCopy}
-                className="shrink-0 text-[10px] font-bold uppercase tracking-widest text-white/60 hover:text-white transition-colors border border-white/20 hover:border-white/50 px-2 py-1"
-              >
-                {copied ? 'Copied ✓' : 'Copy'}
-              </button>
-            </div>
-          </div>
-
-          <p className="text-[10px] font-mono text-brand-deep-blue/40 leading-relaxed">
-            Track your inquiry anytime at{' '}
-            <span className="text-brand-deep-blue/60 font-bold">prodealindustries.com/track</span>
-          </p>
-        </div>
-
-        {/* Footer */}
-        <div className="px-5 pb-5 pb-safe">
-          <button
-            onClick={handleDismiss}
-            className="w-full py-3.5 bg-brand-deep-blue text-white font-heading font-bold uppercase tracking-[0.2em] text-xs hover:bg-brand-blue transition-colors flex items-center justify-between px-5"
-          >
-            <span>Return to Catalog</span>
-            <span className="text-white/50">→</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { useRouter } from 'next/navigation';
 
 
 export function InquiryFormClient({ product, divisionSlug, defaultMoq }: InquiryFormClientProps) {
+  const router = useRouter();
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
-  const [trackingId, setTrackingId] = useState('');
-  const [assignedPhone, setAssignedPhone] = useState<string | null>(null);
 
   const DivisionSpecificSchema = DIVISION_SCHEMAS[divisionSlug as keyof typeof DIVISION_SCHEMAS] || DIVISION_SCHEMAS.signages;
 
@@ -173,9 +58,7 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
     const result = await submitInquiry(payload);
 
     if (result.success && result.trackingId) {
-      setStatus('success');
-      setTrackingId(result.trackingId);
-      if (result.assignedPhone) setAssignedPhone(result.assignedPhone);
+      router.push(`/inquiry/success?trackingId=${result.trackingId}&divisionSlug=${divisionSlug}`);
     } else {
       setStatus('error');
       setErrorMessage(result.error || 'Something went wrong.');
@@ -183,7 +66,12 @@ export function InquiryFormClient({ product, divisionSlug, defaultMoq }: Inquiry
   };
 
   if (status === 'success') {
-    return <SuccessReceipt divisionSlug={divisionSlug} trackingId={trackingId} />;
+    return (
+      <div className="flex flex-col items-center justify-center py-20 h-full">
+        <Loader2 className="w-8 h-8 text-brand-blue animate-spin mb-4" />
+        <p className="text-xs font-mono font-bold text-brand-deep-blue uppercase tracking-widest">Redirecting to receipt...</p>
+      </div>
+    );
   }
 
   if (status === 'error') {
