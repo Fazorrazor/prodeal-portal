@@ -43,22 +43,44 @@ export async function generateMetadata(
   const siteUrl = 'https://www.prodealindustries.com';
   const pageUrl = `${siteUrl}${data.href}`;
 
+  // Tailored SEO Configuration based on keyword research
+  const seoConfig: Record<string, { title: string; description: string }> = {
+    bowls: {
+      title: 'Wholesale Disposable Bowls in Ghana',
+      description: 'Looking for wholesale disposable bowls in Ghana? We supply bulk premium catering disposables, plastic bowls with lids, and eco-friendly food packaging at wholesale prices.',
+    },
+    signages: {
+      title: '3D Signage Makers & Custom Signs in Ghana',
+      description: 'Top 3D signage makers in Ghana. Custom fabricated illuminated signs, outdoor corporate signage, and LED channel letters for maximum corporate visibility.',
+    },
+    printing: {
+      title: 'Corporate Souvenirs & Bulk Printing in Ghana',
+      description: 'Wholesale corporate souvenirs, promotional items, branded apparel, and commercial bulk printing services in Ghana.',
+    },
+    chemicals: {
+      title: 'Industrial Chemicals Supplier in Ghana',
+      description: 'Bulk industrial chemicals supplier in Ghana. Industrial-grade waterproofing, architectural paints, sealants, and structural coatings for construction and housing.',
+    }
+  };
+
+  const seoData = seoConfig[slug] || { title: data.title, description: data.tagline };
+
   return {
-    title: data.title,
-    description: data.tagline,
+    title: seoData.title,
+    description: seoData.description,
     alternates: {
       canonical: pageUrl,
     },
     openGraph: {
-      title: `${data.title} | Prodeal Industries Ltd`,
-      description: data.tagline,
+      title: `${seoData.title} | Prodeal Industries Ltd`,
+      description: seoData.description,
       url: pageUrl,
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${data.title} | Prodeal Industries Ltd`,
-      description: data.tagline,
+      title: `${seoData.title} | Prodeal Industries Ltd`,
+      description: seoData.description,
     },
   };
 }
@@ -97,16 +119,16 @@ const DIVISION_FAQS: Record<string, FAQ[]> = {
   ],
   chemicals: [
     {
-      question: 'Are your industrial chemicals EPA and FDA compliant?',
-      answer: 'Absolutely. Pro Deal Industries strictly adheres to all regulatory frameworks. Our chemicals meet Environmental Protection Agency (EPA) standards and food-grade items comply with FDA regulations.',
+      question: 'Are your industrial chemicals EPA compliant?',
+      answer: 'Absolutely. Pro Deal Industries strictly adheres to all regulatory frameworks. Our chemicals meet Environmental Protection Agency (EPA) standards and industrial compliance protocols for construction and manufacturing materials.',
     },
     {
       question: 'Do you provide Safety Data Sheets (SDS) and technical support?',
       answer: 'Yes. Every chemical batch is supplied with an official Safety Data Sheet (SDS), and our team provides technical guidance on safe storage, handling, and application.',
     },
     {
-      question: 'Can I order bulk lab-grade reagents for manufacturing?',
-      answer: 'Yes, we supply both industrial-grade bulk chemicals for manufacturing and highly refined laboratory-grade reagents for testing and research purposes.',
+      question: 'Can I order bulk chemicals for housing and construction materials?',
+      answer: 'Yes, we supply industrial-grade bulk chemicals specifically formulated for construction, housing materials, and heavy manufacturing.',
     },
   ],
   printing: [

@@ -26,18 +26,19 @@ const siteUrl = 'https://www.prodealindustries.com';
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Prodeal Industries Ltd | Industrial B2B Supplier in Ghana',
+    default: 'Prodeal Industries Ltd | Industrial Chemical Suppliers & Wholesale B2B',
     template: '%s | Prodeal Industries Ltd',
   },
   description:
-    'Ghana\'s premier B2B supplier for 3D Signages, Corporate Souvenirs, Disposable Bowls, and Industrial Chemicals. Request a quote today.',
+    'Ghana\'s premier B2B supplier for Industrial Chemicals, Wholesale Disposable Bowls, 3D Signages, and Corporate Souvenirs. Request a quote today.',
   keywords: [
-    'industrial supplier Ghana',
+    'industrial chemical suppliers Ghana',
+    'wholesale laboratory chemicals',
     'B2B supplier Accra',
-    '3D signage Ghana',
+    '3D signage makers Ghana',
     'corporate souvenirs Ghana',
-    'disposable bowls bulk Ghana',
-    'industrial chemicals Ghana',
+    'wholesale disposable bowls in Ghana',
+    'industrial chemicals Accra',
     'Prodeal Industries Ltd',
   ],
   authors: [{ name: 'Prodeal Industries Ltd', url: siteUrl }],
@@ -47,9 +48,9 @@ export const metadata: Metadata = {
     locale: 'en_GH',
     url: siteUrl,
     siteName: 'Prodeal Industries Ltd',
-    title: 'Prodeal Industries Ltd | Industrial B2B Supplier in Ghana',
+    title: 'Prodeal Industries Ltd | Industrial Chemical Suppliers & B2B Wholesale',
     description:
-      'Ghana\'s premier B2B industrial supplier. 3D Signages, Souvenirs, Disposable Bowls, and Industrial Chemicals. Request a quote instantly.',
+      'Ghana\'s premier B2B industrial supplier. Industrial Chemicals, Wholesale Disposable Bowls, 3D Signages, and Souvenirs. Request a quote instantly.',
     images: [
       {
         url: '/og-default.png',
@@ -61,9 +62,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Prodeal Industries Ltd | Industrial B2B Supplier in Ghana',
+    title: 'Prodeal Industries Ltd | Industrial Chemical Suppliers & B2B Wholesale',
     description:
-      'Ghana\'s premier B2B industrial supplier. 3D Signages, Souvenirs, Disposable Bowls, and Industrial Chemicals.',
+      'Ghana\'s premier B2B industrial supplier. Industrial Chemicals, Wholesale Disposable Bowls, 3D Signages, and Souvenirs.',
     images: ['/og-default.png'],
   },
   robots: {
@@ -92,15 +93,22 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': ['Organization', 'B2BBusiness'],
+              '@type': ['Organization', 'LocalBusiness', 'WholesaleStore'],
               name: 'Pro Deal Industries',
               url: siteUrl,
-              logo: `${siteUrl}/prodeal-blue.png`,
-              description: "Ghana's premier B2B industrial supplier specializing in 3D Signages, Souvenirs & Printing, Disposable Bowls, and Industrial Chemicals.",
+              logo: `${siteUrl}/warehouse-icon.png`,
+              image: `${siteUrl}/warehouse-icon.png`,
+              description: "Ghana's premier B2B industrial supplier specializing in Industrial Chemicals, 3D Signages, Corporate Souvenirs, and Wholesale Disposable Bowls.",
               address: {
                 '@type': 'PostalAddress',
                 addressCountry: 'GH',
                 addressLocality: 'Accra',
+                addressRegion: 'Greater Accra',
+              },
+              geo: {
+                '@type': 'GeoCoordinates',
+                latitude: '5.6037', // General Accra coordinates, update if exact is known
+                longitude: '-0.1870'
               },
               contactPoint: {
                 '@type': 'ContactPoint',
@@ -110,9 +118,10 @@ export default function RootLayout({
               },
               knowsAbout: [
                 'Industrial Chemicals',
-                'Laboratory Reagents',
+                'Laboratory Chemicals',
+                'Wholesale Laboratory Chemicals',
                 'Catering Disposables',
-                'Bulk Disposable Bowls',
+                'Wholesale Disposable Bowls in Ghana',
                 'Eco-friendly Food Packaging',
                 '3D Signages',
                 'Corporate Branding',

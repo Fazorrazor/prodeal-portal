@@ -25,7 +25,7 @@ export const DIVISION_DATA = {
   },
   chemicals: {
     title: 'Industrial Chemicals',
-    tagline: 'Regulated chemical supplies for laboratories, manufacturing, and food processing.',
+    tagline: 'Industrial-grade waterproofing, architectural paints, sealants, and structural coatings for construction and housing.',
     slug: 'chemicals',
     href: '/divisions/chemicals',
     accent: 'red' as const,
