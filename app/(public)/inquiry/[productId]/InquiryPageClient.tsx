@@ -20,20 +20,41 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
     ...rootGallery, 
     ...metadataGallery
   ].filter(Boolean))) as string[];
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [[currentImageIndex, direction], setPage] = useState([0, 0]);
+
+  const setCurrentImageIndex = (newIndex: number) => {
+    setPage([newIndex, newIndex > currentImageIndex ? 1 : -1]);
+  };
 
   const nextImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     if (galleryImages.length > 1) {
-      setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
+      setPage([(currentImageIndex + 1) % galleryImages.length, 1]);
     }
   };
 
   const prevImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     if (galleryImages.length > 1) {
-      setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+      setPage([(currentImageIndex - 1 + galleryImages.length) % galleryImages.length, -1]);
     }
+  };
+
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? '100%' : '-100%',
+      opacity: 0
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction < 0 ? '100%' : '-100%',
+      opacity: 0
+    })
   };
 
   return (
@@ -80,13 +101,18 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
               className="block w-full h-full"
             >
               <div className="relative w-full h-full overflow-hidden bg-white/5">
-                <AnimatePresence initial={false} mode="wait">
+                <AnimatePresence initial={false} custom={direction}>
                   <motion.div
                     key={currentImageIndex}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{
+                      x: { type: "spring", stiffness: 300, damping: 30 },
+                      opacity: { duration: 0.2 }
+                    }}
                     className="absolute inset-0 cursor-grab active:cursor-grabbing"
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
