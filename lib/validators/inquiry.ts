@@ -32,8 +32,8 @@ export const ContactDetailsSchema = z.object({
 });
 
 const BaseInquirySchema = z.object({
-  productId:   z.string().uuid(),
-  productName: z.string(),
+  productId:   z.string().uuid().optional(),
+  productName: z.string().optional(),
   message: z
     .string()
     .trim()
