@@ -23,8 +23,9 @@ The public-facing application (Phase 4) is fully transitioned to the new **Premi
 - **Final Brutalism Eradication (Mobile & Footer):**
   - Refactored `MobileDrawer.tsx` and `AdminMobileNav.tsx` to remove thick borders and uppercase monospace fonts.
   - Re-architected `InquiryPageClient.tsx` and `InquiryFormClient.tsx` to replace harsh edges and typography with `rounded-xl` buttons and elegant `font-display`.
-  - Added native swipe support (`framer-motion` drag capabilities) to the mobile product image carousel.
+  - Upgraded mobile swipe support in the image carousel to use direction-aware, native-feeling slide transitions (via Framer Motion), replacing the legacy crossfade.
   - Purged the entire Footer (`FooterBrand.tsx`, `FooterLinks.tsx`, `FooterLegal.tsx`) of legacy brutalist tracking and monospace fonts, unifying them under a soft dark-mode minimalist design.
+  - Implemented a luxury `Global Loading` animation (`app/(public)/loading.tsx`) and fully purged brutalist elements from `CardSkeleton.tsx` and `InquirySkeleton.tsx`.
   - **Status: Ready and pushed to `main`. SEO & GEO optimizations (JSON-LD) validated for production.**
 
 ### Current Blockers
