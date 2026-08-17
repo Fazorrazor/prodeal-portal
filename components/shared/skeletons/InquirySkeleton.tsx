@@ -17,11 +17,11 @@ export function InquirySkeleton() {
         
         {/* Top bar */}
         <div className="px-5 py-3.5 border-b border-brand-border/40 flex justify-between items-center shrink-0">
-          <div className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-brand-deep-blue/40 uppercase tracking-[0.2em]">
+          <div className="inline-flex items-center gap-1.5 text-[10px] font-mono font-medium text-brand-deep-blue/40 uppercase tracking-widest">
             <ArrowLeft className="w-3.5 h-3.5" />
             Back
           </div>
-          <span className="text-[9px] font-mono font-bold text-brand-blue/60 uppercase tracking-[0.2em]">
+          <span className="text-[10px] font-mono font-medium text-brand-blue/60 uppercase tracking-widest">
             {scrambleText}
           </span>
         </div>
@@ -51,13 +51,13 @@ export function InquirySkeleton() {
 
         {/* ── What happens next ── */}
         <div className="hidden md:flex flex-col flex-1 px-6 pt-6 pb-8">
-          <div className="flex items-center gap-2 mb-6 pb-4 border-b border-brand-border/30">
-            <span className="text-brand-red/40 text-base font-mono font-bold leading-none">→</span>
-            <div className="h-3 bg-brand-deep-blue/10 animate-pulse w-2/3" />
+          <div className="flex items-center gap-2 mb-6 pb-4 border-b border-brand-border/20">
+            <span className="text-brand-blue/40 text-base font-medium leading-none">→</span>
+            <div className="h-3 bg-brand-deep-blue/10 animate-pulse w-2/3 rounded-full" />
           </div>
 
-          <p className="text-[9px] font-mono font-bold uppercase tracking-[0.2em] text-brand-deep-blue/40 mb-4">
-            — What happens next
+          <p className="text-xs font-semibold uppercase tracking-wider text-brand-deep-blue/40 mb-4">
+            What happens next
           </p>
 
           <div className="flex flex-col gap-0">
@@ -87,13 +87,13 @@ export function InquirySkeleton() {
             {/* Form Fields Skeletons */}
             {[1, 2, 3, 4, 5].map((field) => (
               <div key={field}>
-                <div className="h-3 bg-brand-deep-blue/10 animate-pulse w-24 mb-2" />
-                <div className="h-12 bg-brand-deep-blue/5 animate-pulse border-b-2 border-brand-border/30 w-full" />
+                <div className="h-3 bg-brand-deep-blue/10 animate-pulse w-24 mb-2 rounded-full" />
+                <div className="h-12 bg-brand-deep-blue/5 animate-pulse border border-brand-border/20 rounded-xl w-full" />
               </div>
             ))}
             
             <div className="pt-6">
-              <div className="h-14 bg-brand-deep-blue/10 animate-pulse w-full" />
+              <div className="h-14 bg-brand-deep-blue/10 rounded-xl animate-pulse w-full" />
             </div>
           </div>
           
