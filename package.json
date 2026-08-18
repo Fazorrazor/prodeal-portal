@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
+    "@google/generative-ai": "^0.24.1",
     "@playwright/test": "^1.61.1",
     "@types/node": "^20",
     "@types/react": "^18",
