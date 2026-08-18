@@ -155,17 +155,18 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous"
     },
-    "image_path": "https://abfphaytysoeghuzisiw.supabase.co/storage/v1/object/public/product-images/chemicals/new/IMG-20260719-WA0009.webp",
+    "image_path": "/assets/chemicals/liquid rubber roof waterproofing/liquid-rubber-roof-waterproofing-thumb.jpg",
     "is_active": true,
     "sort_order": 0,
     "created_at": "2026-06-10T01:14:53.262879+00:00",
     "gallery_images": [
-      "/assets/chemicals/gallery/IMG-20260719-WA0013.jpg",
-      "/assets/chemicals/gallery/IMG-20260719-WA0008.jpg",
-      "/assets/chemicals/gallery/IMG-20260719-WA0009.jpg",
-      "/assets/chemicals/gallery/IMG-20260719-WA0010.jpg",
-      "/assets/chemicals/gallery/IMG-20260719-WA0011.jpg",
-      "/assets/chemicals/gallery/IMG-20260719-WA0018.jpg"
+      "/assets/chemicals/liquid rubber roof waterproofing/1.jpg",
+      "/assets/chemicals/liquid rubber roof waterproofing/2.jpg",
+      "/assets/chemicals/liquid rubber roof waterproofing/3.jpg",
+      "/assets/chemicals/liquid rubber roof waterproofing/4.jpg",
+      "/assets/chemicals/liquid rubber roof waterproofing/5.jpg",
+      "/assets/chemicals/liquid rubber roof waterproofing/6.jpg",
+      "/assets/chemicals/liquid rubber roof waterproofing/7.jpg"
     ]
   },
   {
@@ -180,13 +181,17 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous"
     },
-    "image_path": "https://abfphaytysoeghuzisiw.supabase.co/storage/v1/object/public/product-images/chemicals/new/IMG-20260719-WA0007.webp",
+    "image_path": "/assets/chemicals/transparent waterproof coating/transparent-waterproof-coating-thumb.jpeg",
     "is_active": true,
     "sort_order": 0,
     "created_at": "2026-06-10T01:14:53.262879+00:00",
     "gallery_images": [
-      "/assets/chemicals/gallery/IMG-20260719-WA0007.jpg",
-      "/assets/chemicals/gallery/IMG-20260719-WA0015.jpg"
+      "/assets/chemicals/transparent waterproof coating/1.jpg",
+      "/assets/chemicals/transparent waterproof coating/2.jpg",
+      "/assets/chemicals/transparent waterproof coating/3.jpg",
+      "/assets/chemicals/transparent waterproof coating/4.jpg",
+      "/assets/chemicals/transparent waterproof coating/5.jpg",
+      "/assets/chemicals/transparent waterproof coating/6.jpg"
     ]
   },
   {
@@ -201,11 +206,16 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous"
     },
-    "image_path": "https://abfphaytysoeghuzisiw.supabase.co/storage/v1/object/public/product-images/chemicals/Epoxy-sand-floor-paint.webp",
+    "image_path": "/assets/chemicals/epoxy sand floor paint/Epoxy-sand-floor-paint-main-thumbnail.avif",
     "is_active": true,
     "sort_order": 0,
     "created_at": "2026-06-10T01:14:53.262879+00:00",
-    "gallery_images": []
+    "gallery_images": [
+      "/assets/chemicals/epoxy sand floor paint/1.jpg",
+      "/assets/chemicals/epoxy sand floor paint/2.jpg",
+      "/assets/chemicals/epoxy sand floor paint/3.jpg",
+      "/assets/chemicals/epoxy sand floor paint/thumb.jpg"
+    ]
   },
   {
     "id": "62b6b5f8-c6a8-46bf-aee6-a5969b054810",
@@ -219,13 +229,18 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous"
     },
-    "image_path": "https://abfphaytysoeghuzisiw.supabase.co/storage/v1/object/public/product-images/chemicals/new/IMG-20260719-WA0006.webp",
+    "image_path": "/assets/chemicals/sand fixing agent/sand-fixing-agent-thumb.jpeg",
     "is_active": true,
     "sort_order": 0,
     "created_at": "2026-06-10T01:14:53.262879+00:00",
     "gallery_images": [
-      "/assets/chemicals/gallery/IMG-20260719-WA0006.jpg",
-      "/assets/chemicals/gallery/IMG-20260719-WA0017.jpg"
+      "/assets/chemicals/sand fixing agent/1.jpg",
+      "/assets/chemicals/sand fixing agent/2.jpg",
+      "/assets/chemicals/sand fixing agent/3.jpg",
+      "/assets/chemicals/sand fixing agent/4.jpg",
+      "/assets/chemicals/sand fixing agent/5.jpg",
+      "/assets/chemicals/sand fixing agent/6.jpg",
+      "/assets/chemicals/sand fixing agent/7.jpeg"
     ]
   },
   {
@@ -240,11 +255,14 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous"
     },
-    "image_path": "https://abfphaytysoeghuzisiw.supabase.co/storage/v1/object/public/product-images/chemicals/Self leveling sealant.webp",
+    "image_path": "/assets/chemicals/self leveling sealant/Selflevelingsealant-thumb.avif",
     "is_active": true,
     "sort_order": 1,
     "created_at": "2026-06-12T13:23:21.179318+00:00",
-    "gallery_images": []
+    "gallery_images": [
+      "/assets/chemicals/self leveling sealant/1.jpg",
+      "/assets/chemicals/self leveling sealant/thumb.jpg"
+    ]
   },
   {
     "id": "19459721-c3c9-41ea-867b-173b13840f85",
@@ -258,14 +276,12 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous"
     },
-    "image_path": "https://abfphaytysoeghuzisiw.supabase.co/storage/v1/object/public/product-images/chemicals/new/IMG-20260719-WA0004.webp",
+    "image_path": "/assets/chemicals/k11 waterproof coating/k11-waterproof-coating-thumb.jpg",
     "is_active": true,
     "sort_order": 0,
     "created_at": "2026-07-19T23:30:06.238752+00:00",
     "gallery_images": [
-      "/assets/chemicals/gallery/IMG-20260719-WA0004.jpg",
-      "/assets/chemicals/gallery/IMG-20260719-WA0005.jpg",
-      "/assets/chemicals/gallery/IMG-20260719-WA0016.jpg"
+      "/assets/chemicals/k11 waterproof coating/1.jpg"
     ]
   },
   {
@@ -280,15 +296,13 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous"
     },
-    "image_path": "https://abfphaytysoeghuzisiw.supabase.co/storage/v1/object/public/product-images/chemicals/new/IMG-20260719-WA0001.webp",
+    "image_path": "/assets/chemicals/heat insulation waterproof coating/thumb.jpeg",
     "is_active": true,
     "sort_order": 0,
     "created_at": "2026-07-19T23:30:06.584993+00:00",
     "gallery_images": [
-      "/assets/chemicals/gallery/IMG-20260719-WA0001.jpg",
-      "/assets/chemicals/gallery/IMG-20260719-WA0002.jpg",
-      "/assets/chemicals/gallery/IMG-20260719-WA0012.jpg",
-      "/assets/chemicals/gallery/IMG-20260719-WA0014.jpg"
+      "/assets/chemicals/heat insulation waterproof coating/1.jpg",
+      "/assets/chemicals/heat insulation waterproof coating/2.jpg"
     ]
   },
   {
@@ -303,15 +317,16 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous",
       "gallery_images": [
-        "/assets/chemicals/rust-conversion-agent.jpg",
-        "/assets/chemicals/rust-conversion-agent-2.jpg"
+        "/assets/chemicals/rust convertion agent/1.jpg"
       ]
     },
-    "image_path": "/assets/chemicals/rust-conversion-agent.jpg",
+    "image_path": "/assets/chemicals/rust convertion agent/rust-convertion-agent-thumb.jpg",
     "is_active": true,
     "sort_order": 0,
     "created_at": "2026-07-19T23:30:06.914131+00:00",
-    "gallery_images": []
+    "gallery_images": [
+      "/assets/chemicals/rust convertion agent/1.jpg"
+    ]
   },
   {
     "id": "98a48db5-7d20-4d09-9fd0-06e8750bf352",
@@ -325,11 +340,13 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous"
     },
-    "image_path": "https://abfphaytysoeghuzisiw.supabase.co/storage/v1/object/public/product-images/chemicals/new/IMG-20260719-WA0016.webp",
+    "image_path": "/assets/chemicals/carbon based tile adhesive/carbon-based-tile-adhesive-thumb.jpeg",
     "is_active": true,
     "sort_order": 0,
     "created_at": "2026-07-19T23:30:07.556034+00:00",
-    "gallery_images": []
+    "gallery_images": [
+      "/assets/chemicals/carbon based tile adhesive/1.jpeg"
+    ]
   },
   {
     "id": "fd3edf0e-50d3-40b1-8cfa-24e836227922",
@@ -381,16 +398,18 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous",
       "gallery_images": [
-        "/assets/chemicals/art paint 1.jpeg",
-        "/assets/chemicals/art paint 2.jpeg",
-        "/assets/chemicals/art paint 3.jpeg"
+        "/assets/chemicals/art paint/1.jpeg",
+        "/assets/chemicals/art paint/2.jpeg"
       ]
     },
-    "image_path": "/assets/chemicals/art paint 1.jpeg",
+    "image_path": "/assets/chemicals/art paint/art-paint-thumb.jpeg",
     "is_active": true,
     "sort_order": 10,
     "created_at": "2026-08-16T07:58:42.454842+00:00",
-    "gallery_images": []
+    "gallery_images": [
+      "/assets/chemicals/art paint/1.jpeg",
+      "/assets/chemicals/art paint/2.jpeg"
+    ]
   },
   {
     "id": "dcc800f4-b431-40fc-816f-8b1349e2625e",
@@ -404,16 +423,18 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous",
       "gallery_images": [
-        "/assets/chemicals/stone paint 1.jpeg",
-        "/assets/chemicals/stone paint 2.jpeg",
-        "/assets/chemicals/stone paint 3.jpeg"
+        "/assets/chemicals/stone paint/1.jpeg",
+        "/assets/chemicals/stone paint/2.jpeg"
       ]
     },
-    "image_path": "/assets/chemicals/stone paint 1.jpeg",
+    "image_path": "/assets/chemicals/stone paint/stone-paint-thumb.jpeg",
     "is_active": true,
     "sort_order": 11,
     "created_at": "2026-08-16T07:58:42.729923+00:00",
-    "gallery_images": []
+    "gallery_images": [
+      "/assets/chemicals/stone paint/1.jpeg",
+      "/assets/chemicals/stone paint/2.jpeg"
+    ]
   },
   {
     "id": "d20f7d50-60ff-4ce4-98d8-55b8cb3fd98b",
@@ -427,19 +448,24 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous",
       "gallery_images": [
-        "/assets/chemicals/tile paint 1.jpeg",
-        "/assets/chemicals/tile paint 2.jpeg",
-        "/assets/chemicals/tile paint 3.jpeg",
-        "/assets/chemicals/tile paint 4.jpeg",
-        "/assets/chemicals/tile paint 5.jpeg",
-        "/assets/chemicals/tile paint 6.jpeg"
+        "/assets/chemicals/tile paint/1.jpeg",
+        "/assets/chemicals/tile paint/2.jpeg",
+        "/assets/chemicals/tile paint/3.jpeg",
+        "/assets/chemicals/tile paint/4.jpeg",
+        "/assets/chemicals/tile paint/5.jpeg"
       ]
     },
-    "image_path": "/assets/chemicals/tile paint 1.jpeg",
+    "image_path": "/assets/chemicals/tile paint/tile-paint-thumb.jpeg",
     "is_active": true,
     "sort_order": 12,
     "created_at": "2026-08-16T07:58:42.925733+00:00",
-    "gallery_images": []
+    "gallery_images": [
+      "/assets/chemicals/tile paint/1.jpeg",
+      "/assets/chemicals/tile paint/2.jpeg",
+      "/assets/chemicals/tile paint/3.jpeg",
+      "/assets/chemicals/tile paint/4.jpeg",
+      "/assets/chemicals/tile paint/5.jpeg"
+    ]
   },
   {
     "id": "1127ecbd-d0d2-49b6-85cb-a71af6927fe2",
@@ -453,14 +479,18 @@
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous",
       "gallery_images": [
-        "/assets/chemicals/heat insulation waterproof coating.jpeg"
+        "/assets/chemicals/heat insulation waterproof coating/1.jpg",
+        "/assets/chemicals/heat insulation waterproof coating/2.jpg"
       ]
     },
-    "image_path": "/assets/chemicals/heat insulation waterproof coating.jpeg",
+    "image_path": "/assets/chemicals/heat insulation waterproof coating/thumb.jpeg",
     "is_active": true,
     "sort_order": 13,
     "created_at": "2026-08-16T07:58:43.105323+00:00",
-    "gallery_images": []
+    "gallery_images": [
+      "/assets/chemicals/heat insulation waterproof coating/1.jpg",
+      "/assets/chemicals/heat insulation waterproof coating/2.jpg"
+    ]
   },
   {
     "id": "d3a4d670-58ad-4f37-ad2f-75e2253a0fff",
@@ -473,11 +503,9 @@
       "grade": "industrial",
       "stock_level": "in_stock",
       "hazard_class": "Non-Hazardous",
-      "gallery_images": [
-        "/assets/chemicals/acrylic water proofing paint.jpeg"
-      ]
+      "gallery_images": []
     },
-    "image_path": "/assets/chemicals/acrylic water proofing paint.jpeg",
+    "image_path": "/assets/chemicals/acrylic waterproofing paint/thumb.jpeg",
     "is_active": true,
     "sort_order": 14,
     "created_at": "2026-08-16T07:58:43.29033+00:00",
