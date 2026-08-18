@@ -65,7 +65,7 @@ export default function NetworkTracesPage() {
   const chatScrollRef = useRef<HTMLDivElement>(null);
 
   // Vercel AI SDK Chat Hook
-  const { messages, input, handleInputChange, handleSubmit, setMessages, isLoading } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, setMessages, isLoading, error } = useChat({
     api: "/api/chat",
     body: {
       data: { 
@@ -74,6 +74,9 @@ export default function NetworkTracesPage() {
         endpoint: selectedRequest?.endpoint || "Unknown"
       },
     },
+    onError: (err) => {
+      console.error("Forensic AI Chat Error:", err);
+    }
   });
 
   // Auto-scroll chat to bottom
@@ -542,10 +545,40 @@ export default function NetworkTracesPage() {
                         </div>
                       </motion.div>
                     )}
+                    {error && (
+                      <motion.div
+                        key="error-indicator"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="flex justify-start"
+                      >
+                        <div className="max-w-[85%] p-3 text-[0.75rem] font-mono leading-relaxed bg-[#310004]/60 text-[#E50914] border border-[#E50914]/50 flex flex-col gap-1">
+                          <div className="font-bold uppercase tracking-wider flex items-center gap-1.5 text-[0.65rem]">
+                            <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-[#E50914]" />
+                            <span>System / API Error</span>
+                          </div>
+                          <p className="text-[0.7rem] text-[#F5F5F5]/90">{error.message || "Failed to communicate with Forensic AI server."}</p>
+                        </div>
+                      </motion.div>
+                    )}
                   </AnimatePresence>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-3 border-t border-[#141416] flex gap-2 shrink-0">
+                <form 
+                  onSubmit={(e) => {
+                    handleSubmit(e, {
+                      body: {
+                        data: {
+                          anomalyContext: selectedRequest?.metadata || null,
+                          anomalyId: selectedRequest?.id || null,
+                          endpoint: selectedRequest?.endpoint || "Unknown"
+                        }
+                      }
+                    });
+                  }} 
+                  className="p-3 border-t border-[#141416] flex gap-2 shrink-0"
+                >
                   <input
                     value={input}
                     onChange={handleInputChange}
