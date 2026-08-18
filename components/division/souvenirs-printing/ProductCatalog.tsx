@@ -49,7 +49,7 @@ export async function ProductCatalog() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-8">
             {souvenirs.map((product, index) => (
               <ProductCard key={product.id} product={product} isPriority={index < 4} from="printing" />
             ))}
@@ -84,7 +84,7 @@ export async function ProductCatalog() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-8">
             {printing.map((product, index) => (
               <ProductCard key={product.id} product={product} isPriority={index < 4} from="printing" />
             ))}

@@ -30,7 +30,7 @@ export async function InventoryTable() {
         <div className="w-12 h-px bg-brand-deep-blue/20"></div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-8">
         {!products || products.length === 0 ? (
           <div className="col-span-full py-24 text-center bg-[#fafafa] rounded-3xl mx-4 sm:mx-0">
             <h3 className="font-display font-medium text-2xl text-brand-deep-blue mb-3">
