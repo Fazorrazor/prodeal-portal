@@ -1,5 +1,5 @@
 import { streamText, embed } from 'ai';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { google } from '@ai-sdk/google';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 
@@ -7,90 +7,69 @@ import { z } from 'zod';
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  try {
-    const apiKey = 
-      process.env.GOOGLE_GENERATIVE_AI_API_KEY || 
-      process.env.GEMINI_API_KEY || 
-      process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+  const { messages, data } = await req.json();
+  
+  const anomalyData = data?.anomalyContext ? JSON.stringify(data.anomalyContext, null, 2) : "No context provided.";
+  const anomalyId = data?.anomalyId;
+  const endpoint = data?.endpoint || "Unknown";
 
-    if (!apiKey) {
-      return new Response(
-        JSON.stringify({ 
-          error: "Missing API Key", 
-          message: "Google Generative AI / Gemini API key is missing. Please set GOOGLE_GENERATIVE_AI_API_KEY or GEMINI_API_KEY in your environment variables." 
-        }), 
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
+  let historicalMatchesContext = "No historical matching anomalies found in the database.";
 
-    const google = createGoogleGenerativeAI({ apiKey });
+  // RAG Pipeline Implementation
+  if (anomalyId && data.anomalyContext) {
+    try {
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+      const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+      const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { messages, data } = await req.json();
-    
-    const anomalyData = data?.anomalyContext ? JSON.stringify(data.anomalyContext, null, 2) : "No context provided.";
-    const anomalyId = data?.anomalyId;
-    const endpoint = data?.endpoint || "Unknown";
+      // 1. Generate Embedding for the current anomaly
+      const summaryText = `Endpoint: ${endpoint} | IP: ${data.anomalyContext.ip || 'Unknown'} | JA3: ${data.anomalyContext.headers?.['x-vercel-ja3-digest'] || 'None'} | JA4: ${data.anomalyContext.headers?.['x-vercel-ja4-digest'] || 'None'} | User-Agent: ${data.anomalyContext.headers?.['user-agent'] || 'None'}`;
+      
+      const { embedding } = await embed({
 
-    let historicalMatchesContext = "No historical matching anomalies found in the database.";
+        model: google.textEmbeddingModel('text-embedding-004'),
+        value: summaryText,
+      });
 
-    // RAG Pipeline Implementation
-    if (anomalyId && data?.anomalyContext) {
-      try {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+      // 2. Search for historical matches using pgvector RPC
+      const { data: matches, error: matchError } = await supabase.rpc('match_anomalies', {
+        query_embedding: embedding,
+        match_threshold: 0.8, // 80% similarity threshold
+        match_count: 3
+      });
 
-        if (supabaseUrl && supabaseServiceKey) {
-          const supabase = createClient(supabaseUrl, supabaseServiceKey);
+      // Filter out self-matches
+      const validMatches = matches?.filter((m: any) => m.trace_id !== anomalyId) || [];
 
-          // 1. Generate Embedding for the current anomaly
-          const summaryText = `Endpoint: ${endpoint} | IP: ${data.anomalyContext.ip || 'Unknown'} | JA3: ${data.anomalyContext.headers?.['x-vercel-ja3-digest'] || 'None'} | JA4: ${data.anomalyContext.headers?.['x-vercel-ja4-digest'] || 'None'} | User-Agent: ${data.anomalyContext.headers?.['user-agent'] || 'None'}`;
-          
-          try {
-            const { embedding } = await embed({
-              model: google.textEmbeddingModel('text-embedding-004'),
-              value: summaryText,
-            });
-
-            // 2. Search for historical matches using pgvector RPC
-            const { data: matches, error: matchError } = await supabase.rpc('match_anomalies', {
-              query_embedding: embedding,
-              match_threshold: 0.8, // 80% similarity threshold
-              match_count: 3
-            });
-
-            // Filter out self-matches
-            const validMatches = matches?.filter((m: any) => m.trace_id !== anomalyId) || [];
-
-            if (!matchError && validMatches.length > 0) {
-              historicalMatchesContext = `HISTORICAL THREAT INTELLIGENCE (PGVECTOR MATCHES):\n` + validMatches.map((m: any) => `- Past Anomaly (Similarity: ${(m.similarity * 100).toFixed(1)}%): ${m.anomaly_summary}`).join("\n");
-            }
-
-            // 3. Persist this new embedding for future memory
-            const { data: existing } = await supabase
-              .from('ops_network_embeddings')
-              .select('id')
-              .eq('trace_id', anomalyId)
-              .maybeSingle();
-              
-            if (!existing) {
-              await supabase.from('ops_network_embeddings').insert({
-                trace_id: anomalyId,
-                anomaly_summary: summaryText,
-                embedding: embedding
-              });
-            }
-          } catch (embedError) {
-            console.error("Embedding generation failed:", embedError);
-          }
-        }
-      } catch (e) {
-        console.error("Vector RAG Pipeline Error:", e);
+      if (!matchError && validMatches.length > 0) {
+        historicalMatchesContext = `HISTORICAL THREAT INTELLIGENCE (PGVECTOR MATCHES):\n` + validMatches.map((m: any) => `- Past Anomaly (Similarity: ${(m.similarity * 100).toFixed(1)}%): ${m.anomaly_summary}`).join("\n");
       }
-    }
 
-    const result = await streamText({
-      model: google('gemini-1.5-flash'),
-      system: `You are a highly advanced Cybersecurity and DevOps AI Assistant built directly into the Prodeal Industries secure portal.
+      // 3. Persist this new embedding for future memory
+      // We check if it already exists to avoid duplicates if the user re-opens the modal
+      const { data: existing } = await supabase
+        .from('ops_network_embeddings')
+        .select('id')
+        .eq('trace_id', anomalyId)
+        .single();
+        
+      if (!existing) {
+        await supabase.from('ops_network_embeddings').insert({
+          trace_id: anomalyId,
+          anomaly_summary: summaryText,
+          embedding: embedding
+        });
+      }
+    } catch (e) {
+      console.error("Vector RAG Pipeline Error:", e);
+      // Fail gracefully, we still want the chat to work even if DB search fails
+    }
+  }
+
+  const result = await streamText({
+
+    model: google('gemini-1.5-flash'),
+    system: `You are a highly advanced Cybersecurity and DevOps AI Assistant built directly into the Prodeal Industries secure portal.
 You speak in a professional, slightly brutalist, highly technical, and urgent tone. 
 
 You are currently analyzing a network anomaly (a suspicious HTTP request, trace, or system behaviour) intercepted by the Vercel Edge firewall.
@@ -126,53 +105,45 @@ When responding:
 4. If historical matches were found, explicitly mention them and cross-reference them to prove patterns.
 5. Never apologize. Speak with absolute authority on security and operations.
 6. If the user asks you to block the IP, you MUST call the \`block_malicious_ip\` tool. DO NOT write code for them unless they specifically ask for the code. Instead, call the tool directly to protect the system.`,
-      messages,
-      tools: {
-        block_malicious_ip: {
-          description: 'Blocks a malicious IP address instantly by adding it to the Upstash Redis global firewall blacklist. The Edge middleware will immediately drop all requests from this IP.',
-          parameters: z.object({
-            ipAddress: z.string().describe('The IPv4 or IPv6 address to block.'),
-            reason: z.string().describe('A brief reason for the block to record in the audit log.')
-          }),
-          execute: async ({ ipAddress, reason }) => {
-            try {
-              const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
-              const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
-              
-              if (!upstashUrl || !upstashToken) {
-                return { success: false, error: 'Redis configuration missing' };
-              }
-
-              const res = await fetch(`${upstashUrl}/sadd/edge_firewall_blacklist/${ipAddress}`, {
-                headers: { Authorization: `Bearer ${upstashToken}` }
-              });
-              
-              if (res.ok) {
-                return { 
-                  success: true, 
-                  message: `IP ${ipAddress} has been successfully added to the global blacklist.`,
-                  reason 
-                };
-              } else {
-                return { success: false, error: 'Failed to write to Redis' };
-              }
-            } catch (e: any) {
-              return { success: false, error: e.message };
+    messages,
+    tools: {
+      block_malicious_ip: {
+        description: 'Blocks a malicious IP address instantly by adding it to the Upstash Redis global firewall blacklist. The Edge middleware will immediately drop all requests from this IP.',
+        parameters: z.object({
+          ipAddress: z.string().describe('The IPv4 or IPv6 address to block.'),
+          reason: z.string().describe('A brief reason for the block to record in the audit log.')
+        }),
+        execute: async ({ ipAddress, reason }) => {
+          // Add to Upstash Redis Blacklist
+          try {
+            const upstashUrl = process.env.UPSTASH_REDIS_REST_URL;
+            const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+            
+            if (!upstashUrl || !upstashToken) {
+              return { success: false, error: 'Redis configuration missing' };
             }
-          },
-        }
-      }
-    });
 
-    return result.toDataStreamResponse();
-  } catch (error: any) {
-    console.error("Chat API Route Error:", error);
-    return new Response(
-      JSON.stringify({ 
-        error: "Agent Chat Internal Error", 
-        message: error?.message || "An unexpected error occurred in the agent chat service." 
-      }), 
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
+            // Using the REST API directly since we don't have a redis client imported
+            const res = await fetch(`${upstashUrl}/sadd/edge_firewall_blacklist/${ipAddress}`, {
+              headers: { Authorization: `Bearer ${upstashToken}` }
+            });
+            
+            if (res.ok) {
+              return { 
+                success: true, 
+                message: `IP ${ipAddress} has been successfully added to the global blacklist.`,
+                reason 
+              };
+            } else {
+              return { success: false, error: 'Failed to write to Redis' };
+            }
+          } catch (e: any) {
+            return { success: false, error: e.message };
+          }
+        },
+      }
+    }
+  });
+
+  return result.toDataStreamResponse();
 }
