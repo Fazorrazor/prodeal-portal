@@ -78,7 +78,7 @@ export async function InventoryTable() {
                     {product.name}
                   </h3>
                   
-                  <p className="text-sm font-light text-brand-deep-blue/60 leading-relaxed mb-6 flex-1 line-clamp-2">
+                  <p className="text-sm font-light text-brand-deep-blue/60 leading-relaxed mb-3.5 flex-1 line-clamp-2">
                     {product.description || 'Premium disposable catering bowl.'}
                   </p>
 
