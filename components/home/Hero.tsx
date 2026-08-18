@@ -1,27 +1,70 @@
 'use client'; // needs framer-motion for initial load animations
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Play } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
 const ShowreelModal = dynamic(() => import('./ShowreelModal'), { ssr: false });
 
+const heroMedia = [
+  { type: 'video', src: '/media/acrylic_waterproofing_vid.mp4' },
+  { type: 'image', src: '/media/hero/IMG-20260719-WA0008.jpg' },
+  { type: 'image', src: '/media/hero/IMG-20260719-WA0010.jpg' },
+  { type: 'image', src: '/media/hero/IMG-20260719-WA0012.jpg' },
+  { type: 'image', src: '/media/hero/IMG-20260719-WA0014.jpg' },
+  { type: 'image', src: '/media/hero/IMG-20260719-WA0015.jpg' },
+  { type: 'image', src: '/media/hero/IMG-20260719-WA0018.jpg' },
+  { type: 'image', src: '/media/hero/acrylic-water-proofing-paint.jpeg' },
+  { type: 'image', src: '/media/hero/carbon-based-tile-adhesive-1.jpeg' },
+  { type: 'image', src: '/media/hero/liquid-rubber-roof-waterproofing-2.jpg' },
+  { type: 'image', src: '/media/hero/stone-paint-1.jpeg' },
+];
+
 export function Hero() {
   const [isShowreelOpen, setIsShowreelOpen] = useState(false);
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentMediaIndex((prev) => (prev + 1) % heroMedia.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="relative overflow-hidden bg-brand-surface pt-8 pb-16 lg:pt-11 lg:pb-24 min-h-[92svh] flex flex-col justify-center border-b border-brand-border/40">
       
-      {/* Background Video */}
-      <video
-        src="/media/acrylic_waterproofing_vid.mp4"
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-luminosity z-0 pointer-events-none"
-      />
+      {/* Background Media Carousel */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-20 mix-blend-luminosity overflow-hidden bg-brand-surface">
+        <AnimatePresence>
+          <motion.div
+            key={currentMediaIndex}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5, ease: 'easeInOut' }}
+            className="absolute inset-0 w-full h-full"
+          >
+            {heroMedia[currentMediaIndex].type === 'video' ? (
+              <video
+                src={heroMedia[currentMediaIndex].src}
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <img
+                src={heroMedia[currentMediaIndex].src}
+                alt="Prodeal Hero Background"
+                className="w-full h-full object-cover"
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
       <div className="container mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 relative z-10">
 
