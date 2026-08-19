@@ -61,21 +61,11 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
   return (
     <div className="flex-1 flex flex-col md:flex-row min-h-[calc(100vh-64px)] bg-brand-surface relative">
       
-      {/* Animated vertical divider — desktop only */}
-      <motion.div
-        initial={{ height: 0 }}
-        animate={{ height: '100%' }}
-        transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-        className="hidden md:block absolute left-[420px] lg:left-[520px] top-0 bottom-0 w-[2px] bg-brand-border/60 z-10"
-      />
+      {/* Vertical divider — desktop only */}
+      <div className="hidden md:block absolute left-[420px] lg:left-[520px] top-0 bottom-0 w-[2px] bg-brand-border/60 z-10" />
 
       {/* ── LEFT PANEL: Product Context ── */}
-      <motion.div
-        initial={false}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="w-full md:w-[420px] lg:w-[520px] flex flex-col bg-brand-surface md:bg-black/[0.03] md:sticky md:top-[64px] md:max-h-[calc(100vh-64px)] overflow-y-auto scrollbar-hide z-0 border-b-2 md:border-b-0 border-brand-border/60"
-      >
+      <div className="w-full md:w-[420px] lg:w-[520px] flex flex-col bg-brand-surface md:bg-black/[0.03] md:sticky md:top-[64px] md:max-h-[calc(100vh-64px)] overflow-y-auto scrollbar-hide z-0 border-b-2 md:border-b-0 border-brand-border/60">
         {/* Top bar: back + division label */}
         <div className="px-5 py-3.5 border-b border-brand-border/40 flex justify-between items-center shrink-0">
           <Link
@@ -107,7 +97,7 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
                     key={currentImageIndex}
                     custom={direction}
                     variants={slideVariants}
-                    initial="enter"
+                    initial={false}
                     animate="center"
                     exit="exit"
                     transition={{
@@ -263,15 +253,10 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
             </div>
           </div>
         )}
-      </motion.div>
+      </div>
 
       {/* ── RIGHT PANEL: Form ── */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-        className="flex-1 overflow-y-auto"
-      >
+      <div className="flex-1 overflow-y-auto">
         <div id="inquiry-form" className="max-w-2xl mx-auto px-5 py-8 md:px-10 md:py-10 scroll-mt-16">
           {/* DESCRIPTION ON THE RIGHT (Desktop Only) */}
           {product.description && (
@@ -287,7 +272,7 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
           
           <InquiryFormClient product={product} divisionSlug={product.divisions.slug} defaultMoq={moq} />
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
