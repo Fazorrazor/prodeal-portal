@@ -71,6 +71,16 @@ export const metadata: Metadata = {
       'Ghana\'s premier B2B industrial supplier. Industrial Chemicals, Wholesale Disposable Bowls, 3D Signages, and Souvenirs.',
     images: ['/og-default.png'],
   },
+  icons: {
+    icon: [
+      { url: '/icon.png', sizes: '192x192', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
   robots: {
     index: true,
     follow: true,
