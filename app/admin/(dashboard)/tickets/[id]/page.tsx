@@ -9,6 +9,9 @@ import { DivisionErrorBoundary } from '../../../../../components/shared/Division
 import { AnimatedBorder } from '../../../../../components/admin/AnimatedBorder';
 import { DeleteInquiryButton } from '../../../../../components/admin/DeleteInquiryButton';
 
+import { QuotationBuilder } from '../../../../../components/admin/QuotationBuilder';
+import { WhatsAppCommandCenter } from '../../../../../components/admin/WhatsAppCommandCenter';
+
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
@@ -21,7 +24,8 @@ async function TicketDetail({ id }: { id: string }) {
       *,
       divisions (
         display_name,
-        type
+        type,
+        slug
       ),
       inquiry_events (
         event_type,
@@ -41,8 +45,10 @@ async function TicketDetail({ id }: { id: string }) {
     new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
   ) || [];
 
+  const latestQuotation = events.find((e: any) => e.event_type === 'quotation_generated');
+
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl pt-2">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl pt-2 pb-16">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 relative">
         <AnimatedBorder direction="bottom" delay={0.1} className="h-[2px] !bg-brand-deep-blue" />
@@ -73,7 +79,7 @@ async function TicketDetail({ id }: { id: string }) {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-12">
+        <div className="lg:col-span-2 space-y-10">
           {/* Client Details */}
           <section>
             <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-4 pb-2 relative">
@@ -102,7 +108,7 @@ async function TicketDetail({ id }: { id: string }) {
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-bold text-brand-deep-blue font-mono">{inquiry.contact_phone}</p>
                   <a 
-                    href={`https://wa.me/${inquiry.contact_phone.replace(/\D/g, '')}?text=Hi ${encodeURIComponent(inquiry.contact_name)}, regarding your Prodeal inquiry (${inquiry.tracking_uuid.substring(0,8)}):`}
+                    href={`https://wa.me/${inquiry.contact_phone?.replace(/\D/g, '')}?text=Hi ${encodeURIComponent(inquiry.contact_name)}, regarding your Prodeal inquiry (${inquiry.tracking_uuid.substring(0,8)}):`}
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="p-1 hover:bg-black/5 text-brand-deep-blue/80 hover:text-brand-blue transition-colors"
@@ -116,6 +122,22 @@ async function TicketDetail({ id }: { id: string }) {
 
           {/* Payload Viewer */}
           <InquiryPayloadViewer payload={inquiry.inquiry_payload} />
+
+          {/* B2B Quotation Builder */}
+          <QuotationBuilder
+            inquiry={{
+              id: inquiry.id,
+              tracking_uuid: inquiry.tracking_uuid,
+              contact_name: inquiry.contact_name,
+              company_name: inquiry.company_name,
+              phone: inquiry.contact_phone,
+              email: inquiry.contact_email,
+              inquiry_payload: inquiry.inquiry_payload,
+              divisions: inquiry.divisions,
+              created_at: inquiry.created_at
+            }}
+            existingQuotation={latestQuotation}
+          />
 
           {/* Attachments */}
           {inquiry.attachments && Array.isArray(inquiry.attachments) && inquiry.attachments.length > 0 && (
@@ -144,9 +166,23 @@ async function TicketDetail({ id }: { id: string }) {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-12 pt-8 lg:pt-0 lg:pl-12 relative">
+        <div className="space-y-8 pt-8 lg:pt-0 lg:pl-12 relative">
           <AnimatedBorder direction="top" className="block lg:hidden" delay={0.4} />
           <AnimatedBorder direction="left" className="hidden lg:block" delay={0.4} />
+
+          {/* WhatsApp Command Center */}
+          <WhatsAppCommandCenter
+            inquiry={{
+              tracking_uuid: inquiry.tracking_uuid,
+              contact_name: inquiry.contact_name,
+              company_name: inquiry.company_name,
+              phone: inquiry.contact_phone,
+              divisions: inquiry.divisions
+            }}
+            latestQuotation={latestQuotation}
+          />
+
+          {/* Activity Timeline */}
           <section>
             <h2 className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-6 flex items-center gap-2">
               <Clock className="w-3 h-3" /> Activity Timeline
@@ -164,6 +200,8 @@ async function TicketDetail({ id }: { id: string }) {
                     <p className="text-xs font-bold text-brand-deep-blue capitalize leading-none mb-1">
                       {event.event_type === 'status_changed' && event.payload?.new_status
                         ? `Status Changed To ${event.payload.new_status.replace('_', ' ')}`
+                        : event.event_type === 'quotation_generated'
+                        ? `Pro-Forma Quote Issued (${event.payload?.quoteNumber || '₵' + event.payload?.totalAmount})`
                         : event.event_type.replace(/_/g, ' ')}
                     </p>
                     <p className="text-[10px] font-mono text-brand-deep-blue/80">

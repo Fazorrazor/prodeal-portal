@@ -81,6 +81,15 @@ async function TrackingDataLoader({ trackingId }: { trackingId: string }) {
     );
   }
 
+  const { data: quoteEvent } = await supabase
+    .from('inquiry_events')
+    .select('payload, created_at')
+    .eq('inquiry_id', inquiry.id)
+    .eq('event_type', 'quotation_generated')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
   const divisionName = Array.isArray(inquiry.divisions)
     ? inquiry.divisions[0]?.display_name
     : (inquiry.divisions as any)?.display_name || 'Industrial Supplies';
@@ -103,6 +112,7 @@ async function TrackingDataLoader({ trackingId }: { trackingId: string }) {
         divisionName,
         divisionSlug,
         payload: inquiry.inquiry_payload,
+        quotationData: quoteEvent?.payload
       }}
     />
   );

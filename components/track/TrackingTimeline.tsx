@@ -18,6 +18,7 @@ interface InquiryMeta {
   divisionName?: string;
   divisionSlug?: string;
   payload?: any;
+  quotationData?: any;
 }
 
 interface TrackingTimelineProps {
@@ -203,6 +204,103 @@ export function TrackingTimeline({
             )}
           </div>
         ) : null}
+
+        {/* Official Pro-Forma Invoice (If Issued) */}
+        {inquiryData?.quotationData && (
+          <div className="py-6 border-b-2 border-brand-deep-blue my-2 bg-brand-surface/60 p-5 -mx-6 md:-mx-8 border-x-0">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-brand-border/40">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-mono font-bold uppercase tracking-widest bg-brand-blue text-white px-2 py-0.5">
+                    Official Pro-Forma Invoice
+                  </span>
+                  <span className="text-xs font-mono font-bold text-brand-deep-blue">
+                    #{inquiryData.quotationData.quoteNumber}
+                  </span>
+                </div>
+                <p className="text-[11px] font-body text-brand-deep-blue/70 mt-1">
+                  Issued by Prodeal Industries Ltd • Valid for {inquiryData.quotationData.validityDays || 14} days
+                </p>
+              </div>
+              <button
+                onClick={() => window.print()}
+                type="button"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-brand-deep-blue/40 text-[10px] font-mono font-bold uppercase text-brand-deep-blue hover:bg-black/5 transition-colors print:hidden shadow-xs"
+              >
+                <Printer className="w-3 h-3" />
+                Print Pro-Forma
+              </button>
+            </div>
+
+            {/* Price Breakdown Table */}
+            <div className="overflow-x-auto mb-4">
+              <table className="w-full text-left text-xs font-mono border-collapse">
+                <thead>
+                  <tr className="border-b border-brand-border/60 text-[10px] uppercase tracking-wider text-brand-deep-blue/70">
+                    <th className="py-2 px-2">Item</th>
+                    <th className="py-2 px-2 text-center">Qty</th>
+                    <th className="py-2 px-2 text-right">Unit Price</th>
+                    <th className="py-2 px-2 text-right">Total (GHS)</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-brand-border/30">
+                  {(inquiryData.quotationData.items || []).map((it: any, idx: number) => (
+                    <tr key={idx}>
+                      <td className="py-2 px-2 font-medium text-brand-deep-blue">{it.description}</td>
+                      <td className="py-2 px-2 text-center text-brand-blue font-bold">{it.quantity} {it.unit || ''}</td>
+                      <td className="py-2 px-2 text-right text-brand-deep-blue/80">₵{Number(it.unitPrice || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                      <td className="py-2 px-2 text-right font-bold text-brand-deep-blue">₵{Number(it.total || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Subtotals & Grand Total */}
+            <div className="flex flex-col items-end gap-1 font-mono text-xs pt-3 border-t border-brand-border/40">
+              <div className="flex justify-between w-64 text-brand-deep-blue/70">
+                <span>Subtotal:</span>
+                <span>₵{Number(inquiryData.quotationData.subtotal || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+              </div>
+              {Number(inquiryData.quotationData.discountAmount || 0) > 0 && (
+                <div className="flex justify-between w-64 text-brand-red">
+                  <span>Discount:</span>
+                  <span>-₵{Number(inquiryData.quotationData.discountAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                </div>
+              )}
+              {Number(inquiryData.quotationData.taxAmount || 0) > 0 && (
+                <div className="flex justify-between w-64 text-brand-deep-blue/70 text-[11px]">
+                  <span>VAT & Statutory Levies:</span>
+                  <span>₵{Number(inquiryData.quotationData.taxAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                </div>
+              )}
+              {Number(inquiryData.quotationData.freightAmount || 0) > 0 && (
+                <div className="flex justify-between w-64 text-brand-deep-blue/70 text-[11px]">
+                  <span>Haulage / Logistics:</span>
+                  <span>₵{Number(inquiryData.quotationData.freightAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                </div>
+              )}
+              <div className="flex justify-between w-64 pt-2 border-t-2 border-brand-deep-blue text-sm font-bold text-brand-deep-blue">
+                <span>Grand Total:</span>
+                <span className="text-brand-blue">₵{Number(inquiryData.quotationData.totalAmount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })} GHS</span>
+              </div>
+            </div>
+
+            {/* Official Settlement Channels */}
+            <div className="mt-5 p-3.5 bg-white border border-brand-border/60 text-[10px] font-mono grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <span className="font-bold text-brand-deep-blue uppercase tracking-widest block mb-0.5">Bank Wire Details</span>
+                <p className="text-brand-deep-blue/80">Ecobank Ghana: <strong className="text-brand-deep-blue">1441002938192</strong></p>
+                <p className="text-brand-deep-blue/80">Stanbic Bank: <strong className="text-brand-deep-blue">9040003920194</strong></p>
+              </div>
+              <div>
+                <span className="font-bold text-brand-deep-blue uppercase tracking-widest block mb-0.5">Mobile Money Settlement</span>
+                <p className="text-brand-deep-blue/80">MTN MoMo Merchant: <strong className="text-brand-deep-blue">639201</strong></p>
+                <p className="text-brand-deep-blue/60">Account Name: Prodeal Industries Ltd</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Live Timeline Component */}
         <div className="pt-6">
