@@ -6,6 +6,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { InquiryFormClient } from './InquiryFormClient';
 import { ImageLightbox } from '../../../../components/shared/ImageLightbox';
+import { QuickRfqButton } from '../../../../components/shared/QuickRfqButton';
 
 
 
@@ -179,8 +180,20 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
             <h1 className="font-display font-medium text-3xl lg:text-4xl text-brand-deep-blue tracking-tight leading-tight mb-2">
               {product.name}
             </h1>
-            <div className="text-xs font-semibold text-brand-deep-blue/50 uppercase tracking-wider">
-              SKU: {product.id.split('-')[0]}
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-xs font-semibold text-brand-deep-blue/50 uppercase tracking-wider">
+                SKU: {product.id.split('-')[0]}
+              </div>
+              <QuickRfqButton
+                item={{
+                  id: product.id,
+                  name: product.name,
+                  sku: product.sku || product.id.split('-')[0],
+                  divisionSlug: product.divisions?.slug || 'chemicals',
+                  quantity: moq || 1,
+                  image_path: galleryImages[0],
+                }}
+              />
             </div>
           </div>
           
