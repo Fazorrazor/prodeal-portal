@@ -230,6 +230,7 @@ export function InquiryPageClient({ product, moq, similarProducts = [] }: { prod
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-700"
                         sizes="(max-width: 768px) 50vw, 250px"
+                        loading="lazy"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-[8px] font-mono font-bold text-brand-deep-blue/50 uppercase tracking-widest">
