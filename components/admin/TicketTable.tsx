@@ -13,14 +13,14 @@ import { exportInquiriesToCsv } from '../../lib/utils/exportCsv';
 
 function ScrambledUUID({ uuid }: { uuid: string }) {
   const { displayText } = useScrambleText(uuid.substring(0, 8).toUpperCase(), 400, 1000);
-  return <span className="font-mono text-sm text-brand-deep-blue font-medium">{displayText}...</span>;
+  return <span className="font-mono text-xs sm:text-sm text-brand-deep-blue font-bold tracking-tight">{displayText}...</span>;
 }
 
 const STATUS_CONFIG = {
-  new:         { label: 'New',         bar: 'bg-brand-red',    badge: 'border-brand-red/30 bg-brand-red/5 text-brand-red' },
-  in_progress: { label: 'In Progress', bar: 'bg-amber-400',    badge: 'border-amber-400/30 bg-amber-50 text-amber-600' },
-  quoted:      { label: 'Quoted',      bar: 'bg-brand-blue',   badge: 'border-brand-blue/30 bg-brand-blue/5 text-brand-blue' },
-  closed:      { label: 'Closed',      bar: 'bg-brand-border', badge: 'border-brand-border/50 text-brand-deep-blue/40' },
+  new:         { label: 'New',         badge: 'border-red-200/80 bg-red-50/80 text-brand-red' },
+  in_progress: { label: 'In Progress', badge: 'border-amber-200/80 bg-amber-50/80 text-amber-700' },
+  quoted:      { label: 'Quoted',      badge: 'border-brand-blue/20 bg-brand-blue/10 text-brand-blue' },
+  closed:      { label: 'Closed',      badge: 'border-slate-200 bg-slate-100 text-slate-500' },
 } as const;
 
 function getStatus(status: string) {
@@ -88,7 +88,6 @@ export function TicketTable({
   const confirmDelete = async () => {
     setIsConfirmOpen(false);
     
-    // Instantly hide from UI before waiting for database
     const ticketsToDelete = [...selectedTickets];
     startTransition(() => {
       setOptimisticInquiries(ticketsToDelete);
@@ -131,10 +130,10 @@ export function TicketTable({
 
   if (!optimisticInquiries || optimisticInquiries.length === 0) {
     return (
-      <div className="border border-brand-border/20 rounded-xl bg-white shadow-sm py-16 flex flex-col items-center justify-center text-center mt-4">
-        <h3 className="text-2xl font-display font-medium text-brand-deep-blue mb-2">All clear.</h3>
-        <p className="text-sm text-brand-deep-blue/60">
-          No tickets match your filter criteria, or all tickets have been resolved.
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.03)] py-16 flex flex-col items-center justify-center text-center mt-4">
+        <h3 className="text-xl font-display font-semibold text-brand-deep-blue mb-1">No Inquiries Found</h3>
+        <p className="text-xs text-slate-400 max-w-sm">
+          No inquiries match your current filter criteria.
         </p>
       </div>
     );
@@ -149,51 +148,47 @@ export function TicketTable({
   };
 
   return (
-    <div className="mt-4 relative">
+    <div className="mt-4 relative space-y-4">
       {/* Table Action Bar with Export & Bulk Actions */}
-      <div className="flex justify-end mb-3">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          {selectedTickets.length > 0 && (
+            <button
+              onClick={handleBulkDeleteClick}
+              disabled={isDeleting}
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-red-50 text-red-600 border border-red-100 text-xs font-semibold hover:bg-red-100 transition-colors disabled:opacity-50"
+            >
+              {isDeleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+              Delete ({selectedTickets.length})
+            </button>
+          )}
+        </div>
+
         <button
           onClick={handleExportCsv}
           type="button"
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-bold uppercase tracking-wider text-brand-deep-blue bg-white border border-brand-border/80 hover:bg-black/5 transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200/80 text-xs font-semibold text-brand-deep-blue hover:bg-slate-50 transition-all shadow-2xs active:scale-[0.98]"
         >
           <Download className="w-3.5 h-3.5" />
-          {selectedTickets.length > 0 ? `Export (${selectedTickets.length}) to CSV` : 'Export CSV'}
+          {selectedTickets.length > 0 ? `Export (${selectedTickets.length}) CSV` : 'Export CSV'}
         </button>
       </div>
 
-      {/* Bulk-delete action bar — appears above both mobile and desktop */}
-      {selectedTickets.length > 0 && (
-        <div className="mb-4 bg-brand-surface border border-brand-border/20 rounded-lg shadow-sm px-4 py-3 flex items-center justify-between animate-in fade-in slide-in-from-top-2">
-          <span className="text-sm font-medium text-brand-deep-blue">
-            {selectedTickets.length} Selected
-          </span>
-          <button
-            onClick={handleBulkDeleteClick}
-            disabled={isDeleting}
-            className="flex items-center gap-2 bg-red-50 text-red-600 border border-red-100 rounded-md px-3 py-1.5 text-xs font-medium hover:bg-red-100 transition-colors disabled:opacity-50"
-          >
-            {isDeleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-            Delete Selected
-          </button>
-        </div>
-      )}
-
-      {/* ── MOBILE: stacked card list ── */}
+      {/* ── MOBILE: Luxury Stacked Cards ── */}
       <div className="md:hidden flex flex-col gap-3">
         {/* Mobile select-all bar */}
-        <div className="flex items-center justify-between px-4 py-3 bg-white rounded-xl border border-brand-border/20 shadow-sm">
+        <div className="flex items-center justify-between px-4 py-3 bg-white rounded-xl border border-slate-100 shadow-2xs">
           <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
               checked={optimisticInquiries.length > 0 && selectedTickets.length === optimisticInquiries.length}
               onChange={handleSelectAll}
-              className="w-4 h-4 rounded text-brand-blue border-brand-border/40 focus:ring-brand-blue focus:ring-offset-1 cursor-pointer transition-all"
+              className="w-4 h-4 rounded text-brand-blue border-slate-300 focus:ring-brand-blue cursor-pointer"
             />
-            <span className="text-xs font-medium text-brand-deep-blue/70">Select All</span>
+            <span className="text-xs font-medium text-slate-600">Select All</span>
           </label>
-          <span className="text-xs font-medium text-brand-deep-blue/40">
-            {optimisticInquiries.length} ticket{optimisticInquiries.length !== 1 ? 's' : ''}
+          <span className="text-xs font-mono text-slate-400">
+            {optimisticInquiries.length} item{optimisticInquiries.length !== 1 ? 's' : ''}
           </span>
         </div>
 
@@ -203,67 +198,59 @@ export function TicketTable({
           return (
             <div
               key={inquiry.id}
-              className={`relative flex flex-col gap-3 p-4 bg-white rounded-xl border border-brand-border/20 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both ${isSelected ? 'ring-1 ring-brand-blue bg-brand-blue/5 border-transparent' : ''}`}
+              onClick={() => router.push(`/admin/tickets/${inquiry.id}`)}
+              className={`relative flex flex-col gap-3 p-4 bg-white rounded-2xl border border-slate-100 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.03)] cursor-pointer hover:shadow-md transition-all active:scale-[0.99] ${
+                isSelected ? 'ring-2 ring-brand-blue/30 bg-brand-blue/[0.02]' : ''
+              }`}
               style={{ animationDelay: `${i * 30}ms` }}
             >
-              {/* Left status bar */}
-              <div className={`absolute left-0 top-0 bottom-0 w-[4px] ${s.bar}`} />
-
               {/* Top row: UUID + status badge + checkbox */}
-              <div className="flex items-start justify-between gap-2 pl-2">
+              <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
                   <ScrambledUUID uuid={inquiry.tracking_uuid} />
                   <span className={`shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${s.badge}`}>
                     {s.label}
                   </span>
                 </div>
-                <div onClick={e => e.stopPropagation()} className="shrink-0 pt-0.5">
+                <div onClick={e => e.stopPropagation()} className="shrink-0 pt-0.5 p-1">
                   <input
                     type="checkbox"
                     checked={isSelected}
                     onChange={() => handleSelectOne(inquiry.id)}
-                    className="w-4 h-4 rounded text-brand-blue border-brand-border/40 focus:ring-brand-blue focus:ring-offset-1 cursor-pointer transition-all"
+                    className="w-4 h-4 rounded text-brand-blue border-slate-300 focus:ring-brand-blue cursor-pointer"
                   />
                 </div>
               </div>
 
               {/* Client + company */}
-              <div className="pl-2">
-                <p className="text-base font-medium text-brand-deep-blue leading-tight">{inquiry.contact_name}</p>
+              <div>
+                <p className="text-base font-semibold text-brand-deep-blue leading-tight">{inquiry.contact_name}</p>
                 {inquiry.company_name && (
-                  <p className="text-xs text-brand-deep-blue/60 mt-0.5">{inquiry.company_name}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">{inquiry.company_name}</p>
                 )}
               </div>
 
               {/* Division + product */}
-              <div className="pl-2">
-                <span className="block text-xs font-medium text-brand-deep-blue/50 mb-0.5">
-                  {inquiry.divisions?.display_name || 'Unknown Division'}
+              <div>
+                <span className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">
+                  {inquiry.divisions?.display_name || 'Industrial'}
                 </span>
-                <span className="text-sm font-medium text-brand-deep-blue/80 line-clamp-1">
+                <span 
+                  className="text-xs font-semibold text-brand-deep-blue line-clamp-1 cursor-help"
+                  title={inquiry.inquiry_payload?.productName || 'General Inquiry'}
+                >
                   {inquiry.inquiry_payload?.productName || 'General Inquiry'}
                 </span>
               </div>
 
-              {/* Bottom row: agent + time + open link */}
-              <div className="flex items-end justify-between gap-2 pt-2 border-t border-brand-border/10 mt-2 pl-2">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[10px] font-medium text-brand-deep-blue/50">Agent</span>
-                  <span className="text-xs font-medium text-brand-deep-blue/70">
-                    {inquiry.staff_members?.full_name || 'Unassigned'}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-brand-deep-blue/40 whitespace-nowrap">
-                    {formatDistanceToNow(new Date(inquiry.created_at), { addSuffix: true })}
-                  </span>
-                  <Link
-                    href={`/admin/tickets/${inquiry.id}`}
-                    className="flex items-center justify-center w-8 h-8 rounded-full bg-brand-surface text-brand-deep-blue/40 hover:bg-brand-blue/10 hover:text-brand-blue transition-colors shrink-0"
-                    aria-label="Open ticket"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </Link>
+              {/* Bottom row: time + chevron */}
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-400">
+                <span className="font-mono text-[11px]">
+                  {formatDistanceToNow(new Date(inquiry.created_at), { addSuffix: true })}
+                </span>
+                <div className="flex items-center gap-1 text-brand-blue font-semibold text-xs">
+                  <span>View Details</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
                 </div>
               </div>
             </div>
@@ -271,75 +258,82 @@ export function TicketTable({
         })}
       </div>
 
-      {/* ── DESKTOP: full table ── */}
-      <div className="hidden md:block overflow-x-auto bg-white rounded-xl shadow-sm border border-brand-border/20">
+      {/* ── DESKTOP: Borderless Luxury Table ── */}
+      <div className="hidden md:block overflow-x-auto bg-white rounded-2xl border border-slate-100 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.03)]">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-brand-border/20 bg-brand-surface/50">
-              <th className="py-4 pl-6 pr-2 w-12">
+            <tr className="border-b border-slate-100 bg-slate-50/50 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              <th className="py-3.5 pl-6 pr-2 w-12">
                 <input
                   type="checkbox"
                   checked={optimisticInquiries.length > 0 && selectedTickets.length === optimisticInquiries.length}
                   onChange={handleSelectAll}
-                  className="w-4 h-4 rounded text-brand-blue border-brand-border/40 focus:ring-brand-blue focus:ring-offset-1 cursor-pointer transition-all"
+                  className="w-4 h-4 rounded text-brand-blue border-slate-300 focus:ring-brand-blue cursor-pointer"
                 />
               </th>
-              <th className="py-4 pr-4 text-xs font-semibold text-brand-deep-blue/60 tracking-wide">Ticket ID</th>
-              <th className="px-4 py-4 text-xs font-semibold text-brand-deep-blue/60 tracking-wide">Product / Service</th>
-              <th className="px-4 py-4 text-xs font-semibold text-brand-deep-blue/60 tracking-wide">Client</th>
-              <th className="px-4 py-4 text-xs font-semibold text-brand-deep-blue/60 tracking-wide">Agent</th>
-              <th className="px-4 py-4 text-xs font-semibold text-brand-deep-blue/60 tracking-wide">Status</th>
-              <th className="px-4 py-4 text-xs font-semibold text-brand-deep-blue/60 tracking-wide">Received</th>
-              <th className="py-4 pr-6 pl-4 text-xs font-semibold text-brand-deep-blue/60 tracking-wide text-right">Action</th>
+              <th className="py-3.5 pr-4">Ticket ID</th>
+              <th className="px-4 py-3.5">Product / RFQ</th>
+              <th className="px-4 py-3.5">Client</th>
+              <th className="px-4 py-3.5">Status</th>
+              <th className="px-4 py-3.5">Received</th>
+              <th className="py-3.5 pr-6 pl-4 text-right">Action</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-brand-border/10">
+          <tbody className="divide-y divide-slate-100 text-sm">
             {optimisticInquiries.map((inquiry, i) => {
               const s = getStatus(inquiry.status);
+              const isSelected = selectedTickets.includes(inquiry.id);
               return (
                 <tr
                   key={inquiry.id}
-                  className={`group transition-colors animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both ${selectedTickets.includes(inquiry.id) ? 'bg-brand-blue/5 hover:bg-brand-blue/10' : 'hover:bg-brand-surface'}`}
+                  className={`group transition-colors hover:bg-slate-50/50 ${
+                    isSelected ? 'bg-brand-blue/[0.03]' : ''
+                  }`}
                   style={{ animationDelay: `${i * 30}ms` }}
                 >
                   <td className="py-4 pl-6 pr-2">
                     <input
                       type="checkbox"
-                      checked={selectedTickets.includes(inquiry.id)}
+                      checked={isSelected}
                       onChange={() => handleSelectOne(inquiry.id)}
-                      className="w-4 h-4 rounded text-brand-blue border-brand-border/40 focus:ring-brand-blue focus:ring-offset-1 cursor-pointer transition-all"
+                      className="w-4 h-4 rounded text-brand-blue border-slate-300 focus:ring-brand-blue cursor-pointer"
                     />
                   </td>
                   <td className="py-4 pr-4"><ScrambledUUID uuid={inquiry.tracking_uuid} /></td>
                   <td className="px-4 py-4">
-                    <span className="block text-xs font-medium text-brand-deep-blue/50 mb-0.5">
-                      {inquiry.divisions?.display_name || 'Unknown'}
+                    <span className="block text-xs font-medium text-slate-400 mb-0.5">
+                      {inquiry.divisions?.display_name || 'Industrial'}
                     </span>
-                    <span className="text-sm font-medium text-brand-deep-blue line-clamp-1">
+                    <span 
+                      className="text-sm font-semibold text-brand-deep-blue line-clamp-1 cursor-help"
+                      title={inquiry.inquiry_payload?.productName || 'General Inquiry'}
+                    >
                       {inquiry.inquiry_payload?.productName || 'General Inquiry'}
                     </span>
                   </td>
                   <td className="px-4 py-4">
-                    <p className="text-sm font-medium text-brand-deep-blue">{inquiry.contact_name}</p>
-                    {inquiry.company_name && <p className="text-xs text-brand-deep-blue/60">{inquiry.company_name}</p>}
+                    <p className="font-semibold text-brand-deep-blue">{inquiry.contact_name}</p>
+                    {inquiry.company_name && (
+                      <p 
+                        className="text-xs text-slate-400 truncate max-w-[180px] cursor-help"
+                        title={inquiry.company_name}
+                      >
+                        {inquiry.company_name}
+                      </p>
+                    )}
                   </td>
                   <td className="px-4 py-4">
-                    <span className="text-xs font-medium text-brand-deep-blue/70">
-                      {inquiry.staff_members ? inquiry.staff_members.full_name : 'Unassigned'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4">
-                    <span className={`inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${s.badge}`}>
+                    <span className={`inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${s.badge}`}>
                       {s.label}
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-xs text-brand-deep-blue/60 whitespace-nowrap">
+                  <td className="px-4 py-4 text-xs font-mono text-slate-500 whitespace-nowrap">
                     {formatDistanceToNow(new Date(inquiry.created_at), { addSuffix: true })}
                   </td>
                   <td className="py-4 pr-6 pl-4 text-right">
                     <Link
                       href={`/admin/tickets/${inquiry.id}`}
-                      className="inline-flex items-center justify-center p-2 rounded-full bg-brand-surface text-brand-deep-blue/40 group-hover:bg-brand-blue/10 group-hover:text-brand-blue transition-colors"
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-50 hover:bg-brand-blue hover:text-white text-slate-400 transition-colors shadow-2xs"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </Link>
@@ -351,34 +345,34 @@ export function TicketTable({
         </table>
       </div>
 
-      {/* Pagination — shared */}
+      {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-brand-border/20 py-4 mt-4 px-1">
-          <p className="text-xs font-medium text-brand-deep-blue/60">
+        <div className="flex items-center justify-between py-4 px-1">
+          <p className="text-xs text-slate-400 font-mono">
             Page {currentPage} of {totalPages}
           </p>
           <div className="flex items-center gap-2">
             {currentPage > 1 ? (
               <Link
                 href={buildPageUrl(currentPage - 1)}
-                className="px-4 py-2 rounded-md border border-brand-border/20 text-sm font-medium text-brand-deep-blue bg-white shadow-sm hover:bg-brand-surface transition-colors"
+                className="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-brand-deep-blue bg-white hover:bg-slate-50 transition-colors shadow-2xs"
               >
                 ← Prev
               </Link>
             ) : (
-              <span className="px-4 py-2 rounded-md border border-brand-border/10 text-sm font-medium text-brand-deep-blue/30 bg-transparent cursor-not-allowed">
+              <span className="px-3.5 py-1.5 rounded-xl border border-slate-100 text-xs font-semibold text-slate-300 bg-transparent cursor-not-allowed">
                 ← Prev
               </span>
             )}
             {currentPage < totalPages ? (
               <Link
                 href={buildPageUrl(currentPage + 1)}
-                className="px-4 py-2 rounded-md border border-brand-border/20 text-sm font-medium text-brand-deep-blue bg-white shadow-sm hover:bg-brand-surface transition-colors"
+                className="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-brand-deep-blue bg-white hover:bg-slate-50 transition-colors shadow-2xs"
               >
                 Next →
               </Link>
             ) : (
-              <span className="px-4 py-2 rounded-md border border-brand-border/10 text-sm font-medium text-brand-deep-blue/30 bg-transparent cursor-not-allowed">
+              <span className="px-3.5 py-1.5 rounded-xl border border-slate-100 text-xs font-semibold text-slate-300 bg-transparent cursor-not-allowed">
                 Next →
               </span>
             )}
@@ -388,13 +382,11 @@ export function TicketTable({
 
       <ConfirmModal
         isOpen={isConfirmOpen}
-        title="Delete Tickets"
-        message={`Are you sure you want to permanently delete ${selectedTickets.length} tickets? This cannot be undone.`}
+        title="Delete Inquiries"
+        message={`Are you sure you want to permanently delete ${selectedTickets.length} inquiry tickets?`}
         onConfirm={confirmDelete}
         onCancel={() => setIsConfirmOpen(false)}
       />
     </div>
   );
 }
-
-

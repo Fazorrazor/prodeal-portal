@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, X, Plus } from 'lucide-react';
+import { Loader2, X, Plus, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
 import { USER_ROLES, ROLE_VALUES } from '../../lib/config/roles';
-import { AnimatedBorder } from './AnimatedBorder';
 
 interface Division {
   id: string;
@@ -59,90 +58,102 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
     <>
       <button 
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 bg-brand-blue text-white text-sm font-semibold px-4 py-2.5 rounded-lg hover:bg-brand-deep-blue transition-all shadow-sm hover:shadow-md"
+        className="inline-flex items-center justify-center gap-2 h-10 px-4 bg-brand-deep-blue hover:bg-brand-blue text-white text-xs font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98]"
       >
-        <Plus className="w-4 h-4" /> Add Staff Member
+        <Plus className="w-4 h-4" />
+        <span>Add Staff Member</span>
       </button>
 
       {/* Slide Over Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-[100] bg-brand-surface/80 backdrop-blur-sm flex items-end sm:block"
+          className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm flex items-end sm:block animate-in fade-in duration-200"
           onClick={() => !isSubmitting && setIsOpen(false)}
         >
           {/* Panel */}
           <div 
-            className="relative sm:absolute sm:top-0 sm:right-0 w-full sm:max-w-md h-[90vh] sm:h-full bg-brand-surface border-t-4 sm:border-t-0 sm:border-l-4 border-brand-deep-blue p-6 lg:p-8 overflow-y-auto animate-in slide-in-from-bottom sm:slide-in-from-right duration-500 flex flex-col"
+            className="relative sm:absolute sm:top-0 sm:right-0 w-full sm:max-w-md h-[90vh] sm:h-full bg-white rounded-t-3xl sm:rounded-none sm:rounded-l-3xl shadow-[0_10px_40px_rgba(0,0,0,0.12)] border-l border-slate-100 p-6 sm:p-8 overflow-y-auto animate-in slide-in-from-bottom sm:slide-in-from-right duration-300 flex flex-col"
             onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between pb-6 border-b border-slate-100 shrink-0">
-              <div>
-                <h2 className="text-xl font-display font-semibold text-brand-deep-blue leading-none mb-1">Add Staff Member</h2>
-                <p className="text-sm text-slate-500">Provision a new system account</p>
+            <div className="flex items-center justify-between pb-5 border-b border-slate-100 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-brand-blue/10 flex items-center justify-center text-brand-blue shrink-0">
+                  <UserPlus className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-display font-bold text-brand-deep-blue leading-tight">Add Staff Member</h2>
+                  <p className="text-xs text-slate-400">Provision a new division account</p>
+                </div>
               </div>
               <button 
                 onClick={() => !isSubmitting && setIsOpen(false)}
-                className="p-2 text-brand-deep-blue/80 hover:text-brand-red transition-colors"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-brand-deep-blue hover:bg-slate-50 transition-colors"
                 aria-label="Close panel"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="flex-1 flex flex-col pt-6 gap-6">
+            <form onSubmit={handleSubmit} className="flex-1 flex flex-col pt-6 gap-5">
               
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="staff-name" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">Full Name</label>
+                  <label htmlFor="staff-name" className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                    Full Name
+                  </label>
                   <input 
                     id="staff-name"
                     required
                     type="text"
                     value={formData.fullName}
                     onChange={e => setFormData({...formData, fullName: e.target.value})}
-                    className="w-full bg-transparent border-0 border-b-2 border-brand-border/60 focus:border-brand-blue py-2 outline-none transition-colors text-sm font-bold text-brand-deep-blue placeholder:font-normal placeholder:text-brand-deep-blue/80"
-                    placeholder="e.g. Arnold D"
+                    className="w-full h-11 px-3.5 bg-slate-50/70 focus:bg-white rounded-xl border border-slate-200/80 text-sm font-semibold text-brand-deep-blue focus:border-brand-blue/50 outline-none transition-all placeholder:text-slate-400"
+                    placeholder="e.g. Arnold Djanie"
                   />
                 </div>
 
-
-
                 <div>
-                  <label htmlFor="staff-phone" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">WhatsApp Phone</label>
+                  <label htmlFor="staff-phone" className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                    WhatsApp Phone Number
+                  </label>
                   <input 
                     id="staff-phone"
                     required
                     type="tel"
                     value={formData.whatsappPhone}
                     onChange={e => setFormData({...formData, whatsappPhone: e.target.value})}
-                    className="w-full bg-transparent border-0 border-b-2 border-brand-border/60 focus:border-brand-blue py-2 outline-none transition-colors text-sm font-bold font-mono text-brand-deep-blue placeholder:font-normal placeholder:font-sans placeholder:text-brand-deep-blue/80"
-                    placeholder="+233..."
+                    className="w-full h-11 px-3.5 bg-slate-50/70 focus:bg-white rounded-xl border border-slate-200/80 text-sm font-mono font-semibold text-brand-deep-blue focus:border-brand-blue/50 outline-none transition-all placeholder:text-slate-400"
+                    placeholder="+233209067556"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="staff-email" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">Email Address</label>
+                  <label htmlFor="staff-email" className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                    Corporate Email Address
+                  </label>
                   <input 
                     id="staff-email"
                     required
                     type="email"
                     value={formData.email}
                     onChange={e => setFormData({...formData, email: e.target.value})}
-                    className="w-full bg-transparent border-0 border-b-2 border-brand-border/60 focus:border-brand-blue py-2 outline-none transition-colors text-sm font-bold text-brand-deep-blue placeholder:font-normal placeholder:text-brand-deep-blue/80"
-                    placeholder="agent@example.com"
+                    className="w-full h-11 px-3.5 bg-slate-50/70 focus:bg-white rounded-xl border border-slate-200/80 text-sm font-medium text-brand-deep-blue focus:border-brand-blue/50 outline-none transition-all placeholder:text-slate-400"
+                    placeholder="agent@prodealindustries.com"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="staff-role" className="block text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-2">System Role</label>
+                  <label htmlFor="staff-role" className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                    System Authorization Role
+                  </label>
                   <select
                     id="staff-role"
                     value={formData.role}
                     onChange={e => setFormData({...formData, role: e.target.value})}
-                    className="w-full bg-transparent border-b-2 border-brand-border/60 pb-2 text-sm font-bold text-brand-deep-blue focus:outline-none focus:border-brand-blue uppercase tracking-widest"
+                    className="w-full h-11 px-3.5 bg-slate-50/70 focus:bg-white rounded-xl border border-slate-200/80 text-sm font-semibold text-brand-deep-blue focus:border-brand-blue/50 outline-none transition-all cursor-pointer"
                   >
                     {ROLE_VALUES.map(role => (
-                      <option key={role} value={role}>{role}</option>
+                      <option key={role} value={role}>{role.toUpperCase()}</option>
                     ))}
                   </select>
                 </div>
@@ -152,12 +163,12 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
                 <button 
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-brand-blue text-white py-3.5 text-sm font-semibold rounded-lg hover:bg-brand-deep-blue transition-all shadow-sm hover:shadow-md disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full h-12 bg-brand-deep-blue hover:bg-brand-blue text-white text-sm font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
-                    <><Loader2 className="w-4 h-4 animate-spin" /> Provisioning...</>
+                    <><Loader2 className="w-4 h-4 animate-spin" /> Provisioning Account...</>
                   ) : (
-                    'Provision Account'
+                    'Provision Staff Account'
                   )}
                 </button>
               </div>

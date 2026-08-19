@@ -1,53 +1,85 @@
-# DESIGN SYSTEM
+# DESIGN SYSTEM: High-End Luxury Minimalism
 
-**Purpose:** Serves as the source of truth for the visual language and UI constraints of the Pro Deal Industries platform.
-
----
-
-## 1. High-End Minimalism (Luxury Aesthetic)
-
-The platform prioritizes clarity, whitespace, and premium visual elegance. We draw inspiration from luxury fashion, high-end skincare, and curated boutique brands (e.g., Apple, Aesop).
-
-### CORE TENET: Effortless Elegance & Whitespace
-- **Whitespace is structural:** Use generous padding and margins to let content breathe. Do not cram data together.
-- **Subtle Elevation:** Use borderless product cards or extremely subtle, soft shadows to create depth without visual noise.
-- **Neutral Palettes:** Rely on a curated, harmonious color palette (e.g., #fafafa backgrounds, stark charcoal/black text, muted low-contrast secondary elements).
+**Purpose:** Serves as the immutable source of truth for the visual language, interaction design, and UI constraints of the Pro Deal Industries platform. Inspired by the refined, restrained aesthetics of luxury industrial design, high-end skincare, and curated boutique interfaces (Apple, Aesop, Dieter Rams).
 
 ---
 
-## 2. Structural & Visual Hierarchy
+## 1. Core Architectural Aesthetics
 
-### Layout & Spacing
-Structure and grouping are defined primarily by whitespace, rather than heavy borders or distinct boxes.
-- Use negative space to separate concerns. When borders are necessary, they should be whisper-thin and low-contrast.
+The platform rejects noisy, consumer-grade fluff and brutalist clutter in favor of effortless clarity, quiet confidence, and pristine whitespace.
 
-### Typography
-Hierarchy is established through scale, font weight, and pristine, modern geometric or neo-grotesque fonts.
-- **Top-level Headers:** Clean, balanced, and perfectly weighted.
-- **Metadata:** Subtle, legible, and un-intrusive.
-- **Data Values:** Refined typography that prioritizes readability without feeling like a raw data terminal.
+### 🏛️ The 5 Pillars of Minimalist Design
+
+1. **Whitespace as Structure (Negative Space):**
+   - Layouts breathe through generous margins and internal padding (`p-5`, `p-6`, `gap-4`, `gap-6`).
+   - Grouping is defined by spatial proximity rather than heavy dividing lines or dense boxes.
+
+2. **Whisper-Thin Borders & Subtle Elevation:**
+   - Eliminate heavy borders (`border-2`, stark black outlines).
+   - Use whisper-thin, low-contrast borders (`border-slate-100` or `border-slate-200/60`).
+   - Employ soft ambient shadows (`shadow-[0_4px_30px_rgba(0,0,0,0.03)]`) that add organic depth without visual noise.
+
+3. **Zero Visual Redundancy (Noise Elimination):**
+   - **No Status Spam:** Never display redundant status badges or explanatory tags (e.g. no "Live Sync", "Matches Status", or duplicate phone pills).
+   - **Self-Evident Actions:** If a button or state transition is intuitive, omit the label or relegate it to an unobtrusive micro-hint.
+   - **Max 3 Visual Levels:** Every card or list item must contain at most 3 distinct visual tiers:
+     1. *Identity / Title* (Bold, high-contrast, clean icon).
+     2. *Context / Metadata* (Muted, readable, line-clamped with hover tooltip).
+     3. *Action* (Crisp, tactile buttons with clear affordances).
+
+4. **Hover Inspectability Doctrine:**
+   - Any text field that is clamped or truncated (`truncate`, `line-clamp-1`, ellipsis) **MUST provide an unabridged `title={...}` attribute** and cursor affordance (`cursor-help`).
+   - Users must never be left guessing what a clipped string or truncated reference code says.
+
+5. **Mobile-First Ergonomics & Viewport Anchoring:**
+   - **44px–48px Minimum Touch Targets:** All buttons, pills, toggles, and dropdown triggers must meet or exceed 44×44px interactive areas.
+   - **Zero iOS Zooming:** All text inputs must use `text-base` (16px) or `text-sm` with proper viewport meta to prevent browser zoom jumps.
+   - **Universal Viewport Insets:** Mobile modals and dropdown popovers must anchor cleanly to the viewport (`fixed top-16 left-3 right-3`) with zero horizontal clipping on narrow phone screens.
 
 ---
 
-## 3. UI Constraints
+## 2. Typography & Color Palette
 
-### Decorative Elements
-- **Curated Imagery & Assets:** Do not use cheap or generic icons. Use sharp, well-aligned, minimalist iconography.
-- **Empty States:** Empty states should be elegant, perhaps featuring a soft, subtle graphic or perfectly set typography that maintains the premium feel.
+### 🎨 Curated Color Palette
+| Token | Hex / Class | Semantic Usage |
+| :--- | :--- | :--- |
+| **Canvas Background** | `#fafbfd` (`bg-slate-50/50`) | Soft ambient canvas |
+| **Surface Card** | `#ffffff` (`bg-white`) | Clean elevated surfaces |
+| **Primary Charcoal** | `#0f172a` (`text-brand-deep-blue`) | High-contrast headings and primary values |
+| **Secondary Slate** | `#64748b` (`text-slate-500`) | Subtitles, labels, and secondary context |
+| **Muted Slate** | `#94a3b8` (`text-slate-400`) | Timestamps, metadata, and placeholder text |
+| **Brand Accent Blue** | `#0651ed` (`text-brand-blue`) | Primary interactive accents and active pills |
+| **Emerald Success** | `#059669` (`bg-emerald-50 text-emerald-700`) | Completed milestones, dispatched states |
+| **Amber Caution** | `#d97706` (`bg-amber-50 text-amber-700`) | Pending reviews and production batches |
 
-### Form Elements
-- Dropdowns, filters, and inputs should feel premium and tactile.
-- Avoid heavy boxed borders for inputs. Prefer soft backgrounds (`bg-gray-50`) or minimalist underline styles that feel sophisticated.
-
-### Mobile-First Without Exception
-- Minimum tap target: 44×44px.
-- Form fields: minimum 48px height, 16px font size (prevents iOS zoom).
-- Modal bottom sheets on mobile, centered dialogs on desktop.
-- Interfaces should feel as fluid and native as a high-end mobile app.
+### ✍️ Typography Tokens
+- **Display Headings:** `font-display font-bold tracking-tight text-brand-deep-blue`
+- **Section Headers:** `text-xs font-semibold uppercase tracking-wider text-slate-400`
+- **Numerical Metrics:** `font-display font-bold text-3xl sm:text-4xl text-brand-deep-blue tracking-tight leading-none`
+- **Body & Captions:** `font-sans text-xs sm:text-sm text-slate-600 leading-relaxed`
 
 ---
 
-## 4. Fluid Micro-Interactions
-Animations should feel organic, smooth, and expensive.
-- **Transitions:** Use smooth opacity fades, gentle y-axis reveals, and ease-in-out transitions.
-- **Hover States:** Elements should respond with soft, subtle scaling or gentle shadow increases, inviting interaction without harsh jumps.
+## 3. UI Component Constraints
+
+### Buttons & Actions
+- **Primary:** `bg-brand-deep-blue hover:bg-brand-blue text-white rounded-xl font-semibold shadow-xs active:scale-[0.98]`
+- **Secondary / Ghost:** `border border-slate-200/80 bg-white hover:bg-slate-50 text-slate-600 rounded-xl active:scale-[0.98]`
+- **Success Dispatch:** `bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold shadow-xs active:scale-[0.98]`
+- **Always `whitespace-nowrap shrink-0`** on action buttons to prevent vertical text wrapping bugs.
+
+### Forms & Floating Inputs
+- Minimum height: `48px` on mobile, `40px` on desktop.
+- Style: `bg-slate-50/70 focus:bg-white rounded-xl border border-slate-200/80 focus:border-brand-blue/50 focus:ring-2 focus:ring-brand-blue/5 text-sm font-medium text-brand-deep-blue outline-none transition-all`.
+- No raw square boxes or brutalist underline borders.
+
+### Modals & Drawers
+- **Mobile (< 640px):** Smooth slide-over / bottom sheet (`rounded-t-3xl border-t border-slate-100 shadow-[0_10px_40px_rgba(0,0,0,0.15)] pb-safe`).
+- **Desktop (≥ 640px):** Floating drawer / popover (`rounded-2xl border border-slate-100 shadow-[0_10px_40px_rgba(0,0,0,0.12)]`).
+
+---
+
+## 4. Micro-Interactions & Transitions
+- **Spring Transitions:** Use gentle spring transitions for layout animations (`framer-motion` layout ID pills).
+- **Subtle Scaling:** Hover states respond with gentle `hover:shadow-xs` or `active:scale-[0.98]`.
+- **Zero Layout Jitter:** Content dimensions remain stable during state transitions.

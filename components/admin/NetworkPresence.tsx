@@ -20,7 +20,6 @@ export function NetworkPresence() {
     let channel: ReturnType<typeof supabase.channel>;
 
     async function initPresence() {
-      // Fetch staff members
       const { data: staffData } = await supabase
         .from('staff_members')
         .select('id, full_name, auth_user_id, is_active')
@@ -34,7 +33,6 @@ export function NetworkPresence() {
       if (!user) return;
       setCurrentUser(user.id);
       
-      // Setup Presence
       channel = supabase.channel('admin_presence');
 
       channel
@@ -70,25 +68,35 @@ export function NetworkPresence() {
   if (staff.length === 0) return null;
 
   return (
-    <div className="px-6 py-5 border-t border-brand-border/60 bg-brand-surface/30">
-      <h3 className="text-[10px] font-bold text-brand-deep-blue uppercase tracking-widest mb-4 flex items-center justify-between">
-        Network Status
-        <span className="text-[8px] bg-brand-blue/10 text-brand-blue px-1.5 py-0.5 border border-brand-blue/20">LIVE</span>
-      </h3>
-      <div className="space-y-3">
+    <div className="px-5 py-4 border-t border-slate-100 bg-slate-50/50">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+          Network Status
+        </span>
+        <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/50">
+          Live
+        </span>
+      </div>
+      <div className="space-y-2.5">
         {staff.map((member) => {
           const isOnline = onlineUsers.includes(member.auth_user_id);
           const isMe = member.auth_user_id === currentUser;
           return (
-            <div key={member.id} className="flex items-center justify-between group">
-              <span className="text-xs font-semibold text-brand-deep-blue/80 group-hover:text-brand-deep-blue transition-colors truncate pr-2 flex items-center gap-1.5">
+            <div key={member.id} className="flex items-center justify-between text-xs">
+              <span className="font-medium text-slate-600 truncate pr-2 flex items-center gap-1.5">
                 {member.full_name}
-                {isMe && <span className="text-[9px] font-bold text-brand-blue uppercase tracking-widest border border-brand-blue/30 px-1">(You)</span>}
+                {isMe && (
+                  <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-brand-blue/10 text-brand-blue">
+                    You
+                  </span>
+                )}
               </span>
               <div className="flex items-center gap-1.5 shrink-0">
-                <span className={`w-1.5 h-1.5 rounded-none ${isOnline ? 'bg-emerald-500 shadow-[0_0_4px_rgba(16,185,129,0.5)]' : 'bg-brand-border'} transition-colors duration-500`} />
-                <span className={`text-[9px] font-mono font-bold tracking-wider ${isOnline ? 'text-emerald-600' : 'text-brand-deep-blue/40'}`}>
-                  {isOnline ? 'ON' : 'OFF'}
+                <span className={`w-2 h-2 rounded-full ${
+                  isOnline ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]' : 'bg-slate-300'
+                }`} />
+                <span className={`text-[10px] font-medium ${isOnline ? 'text-emerald-700' : 'text-slate-400'}`}>
+                  {isOnline ? 'Active' : 'Offline'}
                 </span>
               </div>
             </div>

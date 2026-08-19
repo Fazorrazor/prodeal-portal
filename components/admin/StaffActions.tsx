@@ -95,16 +95,16 @@ export function StaffActions({ member, divisions, currentUserId }: { member: Sta
   }
 
   return (
-    <div className="flex items-center justify-end gap-6">
+    <div className="flex items-center justify-end gap-2 sm:gap-3">
       <EditStaffPanel staff={member} divisions={divisions} />
       
       <button
         onClick={handleDeleteClick}
         disabled={isUpdating || isDeleting}
-        className="p-2 text-brand-deep-blue/80 hover:text-brand-red transition-colors disabled:opacity-50"
+        className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50"
         title="Delete Account"
       >
-        {isDeleting ? <Loader2 className="w-4 h-4 animate-spin text-brand-red" /> : <Trash2 className="w-4 h-4" />}
+        {isDeleting ? <Loader2 className="w-3.5 h-3.5 animate-spin text-brand-red" /> : <Trash2 className="w-3.5 h-3.5" />}
       </button>
 
       {/* Premium Toggle Switch */}

@@ -1,6 +1,6 @@
 import { createServer } from '../../../../lib/supabase/server';
 import { format } from 'date-fns';
-import { AlertCircle, Mail, Clock } from 'lucide-react';
+import { AlertCircle, Mail, Clock, MessageSquareWarning } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { DeleteComplaintButton } from './DeleteComplaintButton';
 
@@ -14,7 +14,6 @@ export default async function ComplaintsPage() {
     redirect('/admin/login');
   }
 
-  // Check admin role
   const { data: staff } = await supabase
     .from('staff_members')
     .select('role')
@@ -23,9 +22,9 @@ export default async function ComplaintsPage() {
 
   if (staff?.role !== 'admin') {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-8 text-center">
-        <h2 className="text-2xl font-bold font-heading text-brand-red mb-2 uppercase">Access Denied</h2>
-        <p className="text-brand-deep-blue/70">Only administrators can view the complaints log.</p>
+      <div className="flex flex-col items-center justify-center min-h-[50vh] p-8 text-center">
+        <h2 className="text-xl font-bold font-display text-brand-red mb-1">Access Restricted</h2>
+        <p className="text-slate-500 text-sm">Only system administrators can access the support complaints log.</p>
       </div>
     );
   }
@@ -37,84 +36,79 @@ export default async function ComplaintsPage() {
 
   if (error) {
     return (
-      <div className="p-6 text-brand-red bg-red-50 border border-red-200 rounded-xl">
-        <p className="font-semibold">Error loading complaints: {error.message}</p>
+      <div className="p-6 text-brand-red bg-red-50 border border-red-200 rounded-2xl">
+        <p className="font-semibold text-sm">Error loading complaints: {error.message}</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-12">
+    <div className="space-y-6 pb-16">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100">
         <div>
-          <h1 className="text-2xl font-display font-semibold text-brand-deep-blue leading-none mb-1.5">
-            Complaints Log
+          <h1 className="text-2xl sm:text-3xl font-display font-bold text-brand-deep-blue tracking-tight leading-tight mb-1">
+            Complaints & Support Tickets
           </h1>
-          <p className="text-slate-500 text-sm">
-            {complaints?.length || 0} total record{(complaints?.length || 0) !== 1 ? 's' : ''}
+          <p className="text-slate-500 text-xs sm:text-sm">
+            {complaints?.length || 0} total support record{(complaints?.length || 0) !== 1 ? 's' : ''} logged
           </p>
         </div>
       </div>
 
       <div className="space-y-4">
         {!complaints || complaints.length === 0 ? (
-          <div className="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 py-20 flex flex-col items-center justify-center text-center">
-            <div className="w-14 h-14 bg-slate-50 rounded-full border border-slate-100 flex items-center justify-center mb-4">
-              <AlertCircle className="w-6 h-6 text-slate-400" />
+          <div className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.03)] py-20 flex flex-col items-center justify-center text-center p-6">
+            <div className="w-14 h-14 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-center mb-3 text-slate-400">
+              <AlertCircle className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-semibold text-brand-deep-blue mb-1">No Complaints</h3>
-            <p className="text-sm text-slate-500">All clear — no complaints have been submitted.</p>
+            <h3 className="text-base font-semibold text-brand-deep-blue mb-1">All Clear</h3>
+            <p className="text-xs text-slate-400">No unresolved customer complaints or support escalations.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
             {complaints.map((ticket: any) => (
               <div
                 key={ticket.id}
-                className="bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 p-6 relative group hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300"
+                className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.03)] p-5 sm:p-6 space-y-4 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all"
               >
-                {ticket.status === 'new' && (
-                  <span className="absolute top-4 right-4 px-2.5 py-1 bg-brand-red text-white text-xs font-semibold rounded-full">
-                    New
+                {/* Header Row: Sender, Timestamp, Delete */}
+                <div className="flex items-start justify-between gap-3 pb-3 border-b border-slate-100/80">
+                  <div className="flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <MessageSquareWarning className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm font-semibold text-brand-deep-blue break-all">
+                          {ticket.email}
+                        </span>
+                        {ticket.status === 'new' && (
+                          <span className="px-2 py-0.5 bg-red-50 border border-red-100 text-brand-red text-[10px] font-semibold uppercase tracking-wider rounded-full">
+                            New Escalation
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-400 mt-0.5">
+                        <Clock className="w-3 h-3" />
+                        <span>{format(new Date(ticket.created_at), 'MMM dd, yyyy • HH:mm')}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0">
+                    <DeleteComplaintButton ticketId={ticket.id} />
+                  </div>
+                </div>
+
+                {/* Message Body */}
+                <div className="p-4 bg-slate-50/60 rounded-2xl border border-slate-100/70">
+                  <span className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                    Customer Message & Feedback
                   </span>
-                )}
-                <div className="flex flex-col md:flex-row gap-6 md:gap-10">
-                  
-                  {/* Meta Column */}
-                  <div className="w-full md:w-56 shrink-0 space-y-4 relative">
-                    <div className="absolute top-0 right-0 md:-right-4">
-                      <DeleteComplaintButton ticketId={ticket.id} />
-                    </div>
-                    
-                    <div>
-                      <div className="flex items-center gap-1.5 mb-1.5">
-                        <Mail className="w-3.5 h-3.5 text-slate-400" />
-                        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Sender</span>
-                      </div>
-                      <p className="text-sm font-semibold text-brand-deep-blue break-all pr-8">
-                        {ticket.email}
-                      </p>
-                    </div>
-                    
-                    <div>
-                      <div className="flex items-center gap-1.5 mb-1.5">
-                        <Clock className="w-3.5 h-3.5 text-slate-400" />
-                        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Received</span>
-                      </div>
-                      <p className="text-sm text-slate-600">
-                        {format(new Date(ticket.created_at), 'MMM dd, yyyy HH:mm')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Message Column */}
-                  <div className="flex-1 border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-8">
-                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Message</p>
-                    <p className="text-sm text-brand-deep-blue leading-relaxed whitespace-pre-wrap">
-                      {ticket.message}
-                    </p>
-                  </div>
-
+                  <p className="text-xs sm:text-sm text-brand-deep-blue leading-relaxed whitespace-pre-wrap font-medium">
+                    {ticket.message}
+                  </p>
                 </div>
               </div>
             ))}

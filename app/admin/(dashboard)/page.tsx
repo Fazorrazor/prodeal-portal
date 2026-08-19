@@ -58,10 +58,13 @@ export default async function AdminDashboardOverview() {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2">
-      <div className="relative pb-4">
-        <AnimatedBorder direction="bottom" delay={0.1} className="!bg-brand-deep-blue" />
-        <h1 className="text-3xl font-heading font-bold text-brand-deep-blue tracking-tighter leading-none mb-1">Dashboard</h1>
-        <p className="text-brand-deep-blue/80 font-body text-sm max-w-xl">Welcome back. Here is the latest status of your division's inquiries.</p>
+      <div className="pb-5 border-b border-slate-100">
+        <h1 className="text-2xl sm:text-3xl font-display font-bold text-brand-deep-blue tracking-tight leading-tight mb-1">
+          Operations Dashboard
+        </h1>
+        <p className="text-slate-500 text-xs sm:text-sm">
+          Welcome back. Here is the latest status of your division's inquiries and assignments.
+        </p>
       </div>
 
       <div id="tour-metrics">
