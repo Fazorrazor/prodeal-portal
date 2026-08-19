@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Link from 'next/link';
-import { Printer, MessageSquare, ExternalLink, PackageCheck, FileText, CheckCircle2 } from 'lucide-react';
+import { Printer, MessageSquare, ExternalLink, PackageCheck, FileText, CheckCircle2, ShieldCheck, Wrench } from 'lucide-react';
 
 type TrackingStatus = 'new' | 'in_progress' | 'quoted' | 'closed' | 'cancelled';
 
@@ -298,6 +298,30 @@ export function TrackingTimeline({
                 <p className="text-brand-deep-blue/80">MTN MoMo Merchant: <strong className="text-brand-deep-blue">639201</strong></p>
                 <p className="text-brand-deep-blue/60">Account Name: Prodeal Industries Ltd</p>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Turnkey Installation & Warranty Guarantee Banner (If Included) */}
+        {(JSON.stringify(payload).toLowerCase().includes('installation') ||
+          JSON.stringify(inquiryData?.quotationData || {}).toLowerCase().includes('application') ||
+          JSON.stringify(inquiryData?.quotationData || {}).toLowerCase().includes('labor')) && (
+          <div className="my-6 p-4 sm:p-5 rounded-2xl bg-emerald-50/60 border border-emerald-200/80 flex items-start gap-3.5 shadow-2xs">
+            <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h4 className="text-sm font-bold text-emerald-950">
+                  Certified Prodeal Turnkey Installation & Workmanship Warranty
+                </h4>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-600 text-white">
+                  5-Year Guaranteed
+                </span>
+              </div>
+              <p className="text-xs text-emerald-800/90 mt-1 leading-relaxed">
+                This project includes certified on-site surface preparation, precision chemical application, and comprehensive post-curing moisture/leak inspection by Prodeal factory engineers.
+              </p>
             </div>
           </div>
         )}

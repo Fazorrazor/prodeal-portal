@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Plus, Trash2, Printer, Check, Calculator, FileText, Loader2, Sparkles } from 'lucide-react';
+import { Plus, Trash2, Printer, Check, Calculator, Loader2, Sparkles, CreditCard, Layers, Wrench } from 'lucide-react';
 import { toast } from 'sonner';
 import { saveQuotation } from '../../app/actions/saveQuotation';
 
@@ -35,12 +35,17 @@ const TAX_PRESETS = [
   { id: 'exempt', label: 'Tax Exempt / Export (0%)', rate: 0.0 }
 ] as const;
 
+const PAYMENT_PRESETS = [
+  '50% advance upon order confirmation, 50% prior to dispatch from Tema warehouse.',
+  '100% advance payment prior to batch manufacturing.',
+  '30 days net settlement for approved corporate B2B accounts.',
+  'Payment on delivery (Accra / Tema Metro only).'
+];
+
 export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilderProps) {
   const [isPending, startTransition] = useTransition();
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(!!existingQuotation);
 
-  // Extract initial items from RFQ inquiry payload or existing quote
   const quoteSeed = existingQuotation?.payload || {};
   
   const getInitialItems = (): QuotationItem[] => {
@@ -49,7 +54,7 @@ export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilde
         id: `item-${idx}`,
         description: it.description || it.productName || 'Industrial Supply Item',
         quantity: Number(it.quantity) || 1,
-        unit: it.unit || 'units',
+        unit: it.unit || 'Units',
         unitPrice: Number(it.unitPrice) || 0,
         total: (Number(it.quantity) || 1) * (Number(it.unitPrice) || 0)
       }));
@@ -57,19 +62,17 @@ export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilde
 
     const payload = inquiry.inquiry_payload || {};
     
-    // Check if multi-item tray exists
     if (payload.items && Array.isArray(payload.items) && payload.items.length > 0) {
       return payload.items.map((it: any, idx: number) => ({
         id: `seed-${idx}`,
         description: it.name || it.productName || 'B2B Item',
         quantity: Number(it.quantity) || 1,
-        unit: it.unit || 'units',
+        unit: it.unit || 'Units',
         unitPrice: 0,
         total: 0
       }));
     }
 
-    // Single item fallback
     const singleName = payload.productName || (payload.inquiry && payload.inquiry.productName) || 'Industrial Supply Item';
     const singleQty = Number(payload.quantity || payload.inquiry?.quantity || payload.inquiry?.boxCount || payload.inquiry?.litersNeeded || 1);
     const unitName = payload.inquiry?.boxCount ? 'Cartons' : (payload.inquiry?.litersNeeded ? 'Liters' : 'Units');
@@ -92,7 +95,7 @@ export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilde
   const [discountAmount, setDiscountAmount] = useState<number>(Number(quoteSeed.discountAmount) || 0);
   const [validityDays, setValidityDays] = useState<number>(Number(quoteSeed.validityDays) || 14);
   const [paymentTerms, setPaymentTerms] = useState<string>(
-    quoteSeed.paymentTerms || '50% advance upon order confirmation, 50% prior to dispatch from Tema warehouse.'
+    quoteSeed.paymentTerms || PAYMENT_PRESETS[0]
   );
   const [notes, setNotes] = useState<string>(
     quoteSeed.notes || 'Goods delivered with official manufacturer certificate of analysis (COA) / warranty.'
@@ -100,7 +103,6 @@ export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilde
 
   const selectedTax = TAX_PRESETS.find((t) => t.id === taxType) || TAX_PRESETS[0];
 
-  // Calculations
   const subtotal = items.reduce((acc, it) => acc + (it.total || 0), 0);
   const taxableBase = Math.max(0, subtotal - discountAmount);
   const taxAmount = Number((taxableBase * selectedTax.rate).toFixed(2));
@@ -130,11 +132,26 @@ export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilde
         id: `item-${Date.now()}`,
         description: '',
         quantity: 1,
-        unit: 'units',
+        unit: 'Units',
         unitPrice: 0,
         total: 0
       }
     ]);
+  };
+
+  const addLaborItem = () => {
+    setItems((prev) => [
+      ...prev,
+      {
+        id: `labor-${Date.now()}`,
+        description: 'Turnkey On-Site Surface Preparation & Chemical Application (Certified 5-Year Workmanship Warranty)',
+        quantity: 1,
+        unit: 'm² / Lot',
+        unitPrice: 0,
+        total: 0
+      }
+    ]);
+    toast.info('Added turnkey application labor item');
   };
 
   const removeItem = (id: string) => {
@@ -177,7 +194,7 @@ export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilde
 
       if (res.success) {
         setIsSaved(true);
-        toast.success(`Quotation ${quoteNumber} generated & ticket set to Quoted!`);
+        toast.success(`Quotation ${quoteNumber} issued & saved successfully!`);
       } else {
         toast.error(res.error || 'Failed to save quotation');
       }
@@ -185,38 +202,51 @@ export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilde
   };
 
   return (
-    <section className="bg-white border-2 border-brand-deep-blue p-6 md:p-8 shadow-[4px_4px_0px_rgba(0,0,0,0.06)] relative">
-      {/* ── Quotation Header Bar ── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b-2 border-brand-border/60">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="p-1.5 bg-brand-blue/10 text-brand-blue">
-              <Calculator className="w-4 h-4" />
-            </span>
-            <h3 className="text-xl font-heading font-bold text-brand-deep-blue tracking-tight">
-              B2B Pro-Forma Quotation Builder
-            </h3>
+    <section className="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_30px_rgba(0,0,0,0.03)] p-5 sm:p-6 transition-all space-y-4">
+      
+      {/* ── Luxury Header Bar with Zero-Wrap Button Protections ── */}
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3.5 pb-4 border-b border-slate-100/80 shrink-0">
+        <div className="flex items-start sm:items-center gap-3">
+          <div className="w-9 h-9 rounded-2xl bg-brand-blue/10 flex items-center justify-center text-brand-blue shrink-0 mt-0.5 sm:mt-0">
+            <Calculator className="w-4 h-4" />
           </div>
-          <p className="text-xs font-mono text-brand-deep-blue/70 mt-1">
-            Quote Reference: <span className="font-bold text-brand-blue">{quoteNumber}</span>
-          </p>
+          <div>
+            <h3 className="text-base sm:text-lg font-display font-bold text-brand-deep-blue tracking-tight leading-tight">
+              B2B Pro-Forma Quotation
+            </h3>
+            <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+              <span className="text-[11px] text-slate-400 font-medium">Ref:</span>
+              <span className="text-[11px] font-mono font-semibold px-2 py-0.2 rounded-full bg-slate-100 text-brand-blue">
+                {quoteNumber}
+              </span>
+              <span className="text-slate-300">•</span>
+              <span className="text-[11px] text-slate-500 font-medium">
+                {inquiry.divisions?.display_name || 'Industrial Supplies'}
+              </span>
+              <span className="text-slate-300">•</span>
+              <span className="text-[11px] text-slate-500 font-medium">
+                {validityDays}d Validity
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* Action Buttons (Fixed nowrap with shrink-0) */}
+        <div className="flex items-center gap-2 shrink-0 pt-1 xl:pt-0">
           <button
             onClick={() => window.print()}
             type="button"
-            className="inline-flex items-center gap-2 px-4 py-2 border border-brand-deep-blue/40 text-xs font-mono font-bold uppercase tracking-wider text-brand-deep-blue hover:bg-black/5 transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-xl border border-slate-200/80 text-xs font-semibold text-brand-deep-blue hover:bg-slate-50 transition-all shadow-2xs whitespace-nowrap shrink-0"
           >
-            <Printer className="w-3.5 h-3.5" />
-            Print Spec PDF
+            <Printer className="w-3.5 h-3.5 text-slate-400" />
+            <span>Print Spec PDF</span>
           </button>
 
           <button
             onClick={handleSave}
             disabled={isPending}
             type="button"
-            className="inline-flex items-center gap-2 px-5 py-2 bg-brand-deep-blue text-white text-xs font-mono font-bold uppercase tracking-wider hover:bg-brand-blue active:scale-95 transition-all shadow-[2px_2px_0px_rgba(0,0,0,0.2)] disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-1.5 h-9 px-4 rounded-xl bg-brand-deep-blue hover:bg-brand-blue text-white text-xs font-semibold active:scale-[0.98] transition-all shadow-xs disabled:opacity-50 whitespace-nowrap shrink-0"
           >
             {isPending ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -225,85 +255,85 @@ export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilde
             ) : (
               <Sparkles className="w-3.5 h-3.5 text-amber-300" />
             )}
-            {isPending ? 'Saving...' : isSaved ? 'Update Quotation' : 'Save & Issue Quote'}
+            <span>{isPending ? 'Saving...' : isSaved ? 'Update Quote' : 'Save & Issue Quote'}</span>
           </button>
         </div>
       </div>
 
-      {/* ── Client & Date Context ── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6 border-b border-brand-border/40 bg-black/[0.02] px-4 my-6">
-        <div>
-          <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-brand-deep-blue/60 block mb-1">
-            Recipient / Buyer
-          </span>
-          <p className="text-sm font-bold text-brand-deep-blue">{inquiry.contact_name}</p>
-          <p className="text-xs font-body text-brand-deep-blue/80">{inquiry.company_name || 'Individual B2B Account'}</p>
-          <p className="text-xs font-mono text-brand-deep-blue/60">{inquiry.phone || inquiry.email || 'Direct Contact'}</p>
+      {/* ── Compact Line Items Section with Scrollbar (45% Height Reduction) ── */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Layers className="w-3.5 h-3.5 text-slate-400" />
+            <h4 className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+              Quotation Line Items ({items.length})
+            </h4>
+          </div>
         </div>
 
-        <div>
-          <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-brand-deep-blue/60 block mb-1">
-            Issuing Supplier
-          </span>
-          <p className="text-sm font-bold text-brand-deep-blue">Prodeal Industries Ltd</p>
-          <p className="text-xs font-body text-brand-deep-blue/80">Tema Heavy Industrial Area, Greater Accra, Ghana</p>
-          <p className="text-xs font-mono text-brand-deep-blue/60">TIN: C0003892189 / VAT Registered</p>
-        </div>
-
-        <div>
-          <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-brand-deep-blue/60 block mb-1">
-            Quote Details
-          </span>
-          <p className="text-xs font-mono text-brand-deep-blue">Date: {new Date().toLocaleDateString('en-GB')}</p>
-          <p className="text-xs font-mono text-brand-deep-blue">Division: {inquiry.divisions?.display_name || 'Industrial'}</p>
-          <p className="text-xs font-mono text-brand-deep-blue">Validity: {validityDays} Days</p>
-        </div>
-      </div>
-
-      {/* ── Line Items Interactive Table ── */}
-      <div className="overflow-x-auto mb-6">
-        <table className="w-full text-left border-collapse">
-          <thead>
-            <tr className="border-b-2 border-brand-deep-blue text-[10px] font-mono font-bold uppercase tracking-widest text-brand-deep-blue/80 bg-brand-surface">
-              <th className="py-3 px-3 w-[45%]">Item Description</th>
-              <th className="py-3 px-3 w-[15%]">Qty</th>
-              <th className="py-3 px-3 w-[15%]">Unit</th>
-              <th className="py-3 px-3 w-[15%]">Unit Price (GHS)</th>
-              <th className="py-3 px-3 w-[10%] text-right">Total (GHS)</th>
-              <th className="py-3 px-2 w-[5%]"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-brand-border/40 font-mono text-xs">
-            {items.map((it) => (
-              <tr key={it.id} className="hover:bg-black/[0.01]">
-                <td className="py-2.5 px-3">
+        {/* Scrollable Items Container */}
+        <div className="max-h-[220px] overflow-y-auto pr-1 space-y-2.5 scrollbar-thin">
+          {items.map((it, idx) => (
+            <div
+              key={it.id}
+              className="p-3 bg-slate-50/50 hover:bg-slate-50/80 rounded-xl border border-slate-100/90 transition-all space-y-2.5"
+            >
+              {/* Row 1: Item Description + Delete Button */}
+              <div className="flex items-center gap-2.5">
+                <div className="w-5 h-5 rounded-md bg-slate-200/60 flex items-center justify-center text-[10px] font-mono font-bold text-slate-500 shrink-0">
+                  {idx + 1}
+                </div>
+                <div className="flex-1 min-w-0">
                   <input
                     type="text"
                     value={it.description}
                     onChange={(e) => handleItemChange(it.id, 'description', e.target.value)}
-                    placeholder="Enter item description..."
-                    className="w-full px-2.5 py-1.5 border border-brand-border/60 text-xs font-medium text-brand-deep-blue focus:border-brand-blue outline-none"
+                    placeholder="Product name, grade, or custom formulation specification..."
+                    className="w-full h-9 px-3 bg-white rounded-lg border border-slate-200/80 text-xs font-medium text-brand-deep-blue focus:border-brand-blue/50 focus:ring-2 focus:ring-brand-blue/5 outline-none transition-all placeholder:text-slate-400"
                   />
-                </td>
-                <td className="py-2.5 px-3">
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeItem(it.id)}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all shrink-0"
+                  title="Remove item"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {/* Row 2: Qty, Unit, Unit Price, Line Total */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 items-end">
+                <div>
+                  <label className="block text-[9px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">
+                    Quantity
+                  </label>
                   <input
                     type="number"
                     min="1"
                     value={it.quantity}
                     onChange={(e) => handleItemChange(it.id, 'quantity', e.target.value)}
-                    className="w-full px-2.5 py-1.5 border border-brand-border/60 text-xs font-medium text-brand-deep-blue focus:border-brand-blue outline-none"
+                    className="w-full h-8 px-2.5 bg-white rounded-lg border border-slate-200/80 text-xs font-semibold text-brand-deep-blue focus:border-brand-blue/50 outline-none"
                   />
-                </td>
-                <td className="py-2.5 px-3">
+                </div>
+
+                <div>
+                  <label className="block text-[9px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">
+                    Packaging Unit
+                  </label>
                   <input
                     type="text"
                     value={it.unit}
                     onChange={(e) => handleItemChange(it.id, 'unit', e.target.value)}
-                    placeholder="e.g. Drums"
-                    className="w-full px-2.5 py-1.5 border border-brand-border/60 text-xs font-medium text-brand-deep-blue focus:border-brand-blue outline-none"
+                    placeholder="e.g. Drums, Cartons"
+                    className="w-full h-8 px-2.5 bg-white rounded-lg border border-slate-200/80 text-xs font-medium text-brand-deep-blue focus:border-brand-blue/50 outline-none"
                   />
-                </td>
-                <td className="py-2.5 px-3">
+                </div>
+
+                <div>
+                  <label className="block text-[9px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">
+                    Unit Price (GHS)
+                  </label>
                   <input
                     type="number"
                     min="0"
@@ -311,122 +341,130 @@ export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilde
                     value={it.unitPrice}
                     onChange={(e) => handleItemChange(it.id, 'unitPrice', e.target.value)}
                     placeholder="0.00"
-                    className="w-full px-2.5 py-1.5 border border-brand-border/60 text-xs font-bold text-brand-blue focus:border-brand-blue outline-none"
+                    className="w-full h-8 px-2.5 bg-white rounded-lg border border-slate-200/80 text-xs font-bold text-brand-blue focus:border-brand-blue/50 outline-none"
                   />
-                </td>
-                <td className="py-2.5 px-3 text-right font-bold text-brand-deep-blue">
-                  ₵{it.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                </td>
-                <td className="py-2.5 px-2 text-right">
-                  <button
-                    type="button"
-                    onClick={() => removeItem(it.id)}
-                    className="p-1.5 text-brand-deep-blue/40 hover:text-brand-red transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </div>
+
+                <div className="h-8 px-2.5 bg-brand-blue/5 rounded-lg border border-brand-blue/10 flex items-center justify-between">
+                  <span className="text-[9px] uppercase font-semibold text-brand-blue/70">Total</span>
+                  <span className="text-xs font-bold font-mono text-brand-deep-blue">
+                    ₵{it.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Action Button Row */}
+        <div className="flex items-center gap-2 flex-wrap pt-1">
+          <button
+            type="button"
+            onClick={addItem}
+            className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-lg border border-dashed border-slate-300 hover:border-brand-blue/40 bg-slate-50/50 hover:bg-brand-blue/5 text-[11px] font-semibold text-brand-blue active:scale-[0.98] transition-all whitespace-nowrap"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Add Item</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={addLaborItem}
+            className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-lg border border-dashed border-emerald-300 hover:border-emerald-500 bg-emerald-50/50 hover:bg-emerald-100/50 text-[11px] font-semibold text-emerald-700 active:scale-[0.98] transition-all whitespace-nowrap"
+          >
+            <Wrench className="w-3.5 h-3.5 text-emerald-600" />
+            <span>+ Add Turnkey Application Labor</span>
+          </button>
+        </div>
       </div>
 
-      <button
-        type="button"
-        onClick={addItem}
-        className="inline-flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-brand-blue hover:text-brand-deep-blue mb-8 transition-colors"
-      >
-        <Plus className="w-3.5 h-3.5" />
-        Add Line Item
-      </button>
-
-      {/* ── Tax, Freight & Totals Summary ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6 border-t-2 border-brand-border/60">
-        {/* Payment & Terms */}
-        <div className="space-y-4">
+      {/* ── Commercial Terms & Calculations Grid ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-3 border-t border-slate-100/80">
+        
+        {/* Left Column (7 cols): Terms, Logistics, Bank settlement */}
+        <div className="lg:col-span-7 space-y-3">
+          
+          {/* Payment Terms with Preset Chips */}
           <div>
-            <label className="block text-[9px] font-mono font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-1.5">
-              Payment Terms
+            <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-1">
+              Payment Terms & Conditions
             </label>
-            <input
-              type="text"
-              value={paymentTerms}
-              onChange={(e) => setPaymentTerms(e.target.value)}
-              className="w-full px-3 py-2 border border-brand-border/60 text-xs font-body text-brand-deep-blue focus:border-brand-blue outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-[9px] font-mono font-bold uppercase tracking-widest text-brand-deep-blue/80 mb-1.5">
-              Special Notes / Logistics Clauses
-            </label>
+            <div className="flex flex-wrap gap-1 mb-1.5">
+              {PAYMENT_PRESETS.map((preset, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setPaymentTerms(preset)}
+                  className={`text-[9px] font-medium px-2 py-0.5 rounded-md border transition-all ${
+                    paymentTerms === preset
+                      ? 'bg-brand-blue text-white border-brand-blue shadow-2xs'
+                      : 'bg-slate-50 text-slate-600 border-slate-200/60 hover:bg-white'
+                  }`}
+                >
+                  Preset {idx + 1}
+                </button>
+              ))}
+            </div>
             <textarea
               rows={2}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="w-full px-3 py-2 border border-brand-border/60 text-xs font-body text-brand-deep-blue focus:border-brand-blue outline-none resize-none"
+              value={paymentTerms}
+              onChange={(e) => setPaymentTerms(e.target.value)}
+              className="w-full p-2.5 bg-slate-50/60 focus:bg-white rounded-xl border border-slate-200/80 text-xs font-medium text-brand-deep-blue focus:border-brand-blue/50 outline-none resize-none transition-all leading-snug"
             />
           </div>
 
-          {/* Official Bank Settlement Info */}
-          <div className="p-4 bg-black/[0.02] border border-brand-border/60 text-[11px] font-mono space-y-1">
-            <span className="font-bold text-brand-deep-blue uppercase tracking-widest block text-[9px]">
-              Official Settlement Channels
-            </span>
-            <p className="text-brand-deep-blue/80">
-              <strong className="text-brand-deep-blue">Ecobank Ghana:</strong> 1441002938192 (Tema Main Branch)
-            </p>
-            <p className="text-brand-deep-blue/80">
-              <strong className="text-brand-deep-blue">Stanbic Bank:</strong> 9040003920194 (Accra High Street)
-            </p>
-            <p className="text-brand-deep-blue/80">
-              <strong className="text-brand-deep-blue">MTN MoMo Merchant:</strong> 639201 (Prodeal Industries)
+          {/* Corporate Settlement Credentials */}
+          <div className="p-3 bg-slate-50/60 rounded-xl border border-slate-100 text-[11px] space-y-1">
+            <div className="flex items-center gap-1.5 text-slate-400 font-semibold uppercase tracking-wider text-[9px] mb-0.5">
+              <CreditCard className="w-3 h-3" />
+              <span>Settlement Credentials</span>
+            </div>
+            <p className="text-slate-600">
+              <strong className="text-brand-deep-blue">Ecobank:</strong> 1441002938192 • <strong className="text-brand-deep-blue">Stanbic:</strong> 9040003920194 • <strong className="text-brand-deep-blue">MTN MoMo:</strong> 639201
             </p>
           </div>
         </div>
 
-        {/* Totals Computation Box */}
-        <div className="bg-brand-surface p-5 border border-brand-border/80 flex flex-col justify-between space-y-3 font-mono">
+        {/* Right Column (5 cols): Compact Totals & Tax Calculation Card */}
+        <div className="lg:col-span-5 bg-slate-50/80 rounded-2xl border border-slate-100 p-4 flex flex-col justify-between space-y-3">
           <div className="space-y-2.5 text-xs">
-            <div className="flex justify-between text-brand-deep-blue/80">
+            <div className="flex justify-between items-center text-slate-600 font-medium">
               <span>Items Subtotal:</span>
-              <span className="font-bold text-brand-deep-blue">
+              <span className="font-bold font-mono text-brand-deep-blue text-xs sm:text-sm">
                 ₵{subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </span>
             </div>
 
             {/* Discount */}
-            <div className="flex items-center justify-between text-brand-deep-blue/80">
+            <div className="flex items-center justify-between text-slate-600">
               <span>Discount (GHS):</span>
               <input
                 type="number"
                 min="0"
                 value={discountAmount}
                 onChange={(e) => setDiscountAmount(Number(e.target.value))}
-                className="w-28 px-2 py-1 text-right border border-brand-border/60 text-xs font-bold text-brand-deep-blue outline-none"
+                className="w-24 h-8 px-2 text-right bg-white rounded-lg border border-slate-200 text-xs font-bold text-brand-deep-blue outline-none"
               />
             </div>
 
             {/* Freight / Haulage */}
-            <div className="flex items-center justify-between text-brand-deep-blue/80">
-              <span>Haulage / Logistics (GHS):</span>
+            <div className="flex items-center justify-between text-slate-600">
+              <span>Haulage (GHS):</span>
               <input
                 type="number"
                 min="0"
                 value={freightAmount}
                 onChange={(e) => setFreightAmount(Number(e.target.value))}
-                className="w-28 px-2 py-1 text-right border border-brand-border/60 text-xs font-bold text-brand-deep-blue outline-none"
+                className="w-24 h-8 px-2 text-right bg-white rounded-lg border border-slate-200 text-xs font-bold text-brand-deep-blue outline-none"
               />
             </div>
 
-            {/* Tax Tier */}
-            <div className="flex items-center justify-between text-brand-deep-blue/80 pt-1">
-              <span>Tax Category:</span>
+            {/* Tax Category */}
+            <div className="space-y-1 pt-0.5">
               <select
                 value={taxType}
                 onChange={(e) => setTaxType(e.target.value)}
-                className="px-2 py-1 border border-brand-border/60 text-xs font-mono font-medium text-brand-deep-blue outline-none bg-white"
+                className="w-full h-8 px-2.5 bg-white rounded-lg border border-slate-200 text-xs font-semibold text-brand-deep-blue outline-none shadow-2xs cursor-pointer"
               >
                 {TAX_PRESETS.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -435,26 +473,21 @@ export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilde
                 ))}
               </select>
             </div>
-
-            <div className="flex justify-between text-brand-deep-blue/80 text-[11px]">
-              <span>Computed Tax ({selectedTax.label}):</span>
-              <span>₵{taxAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
-            </div>
           </div>
 
           {/* Grand Total */}
-          <div className="pt-3 border-t-2 border-brand-deep-blue flex justify-between items-baseline">
+          <div className="pt-2.5 border-t border-slate-200/80 flex justify-between items-baseline">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue block">
+              <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block">
                 Grand Total (GHS)
               </span>
-              <span className="text-[9px] text-brand-deep-blue/60">Inclusive of taxes & haulage</span>
             </div>
-            <span className="text-2xl font-bold font-heading text-brand-blue tracking-tight">
+            <span className="text-xl sm:text-2xl font-bold font-display text-brand-blue tracking-tight">
               ₵{totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
             </span>
           </div>
         </div>
+
       </div>
     </section>
   );

@@ -1,7 +1,6 @@
 import { createServer } from '../../../../lib/supabase/server';
-import { AnimatedBorder } from '../../../../components/admin/AnimatedBorder';
 import { MetricCard } from '../../../../components/admin/MetricCard';
-import { BarChart3, TrendingUp, Zap, ArrowUpRight, Target } from 'lucide-react';
+import { BarChart3, TrendingUp, Zap, ArrowUpRight, Target, ShieldCheck } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { USER_ROLES } from '../../../../lib/config/roles';
 
@@ -16,7 +15,6 @@ export default async function AnalyticsPage() {
     redirect('/admin/login');
   }
 
-  // Ensure caller is admin
   const { data: staff } = await supabase
     .from('staff_members')
     .select('role')
@@ -27,9 +25,6 @@ export default async function AnalyticsPage() {
     redirect('/admin');
   }
 
-  // 1. Fetch raw operational data to calculate BI metrics
-  // In a massive scale environment, this would be an RPC call or materialized view. 
-  // For standard B2B volume, aggregating the latest 10,000 records in-memory is well within Vercel's edge compute limits.
   const { data: inquiries, error } = await supabase
     .from('inquiries')
     .select('id, status, division_id, created_at, divisions(display_name)')
@@ -40,7 +35,6 @@ export default async function AnalyticsPage() {
     throw new Error(`Analytics DB Error: ${error.message}`);
   }
 
-  // 2. Compute Metrics safely
   const total = inquiries?.length || 0;
   
   const statusCounts = (inquiries || []).reduce((acc: any, curr: any) => {
@@ -52,10 +46,8 @@ export default async function AnalyticsPage() {
   const closed = statusCounts['closed'] || 0;
   const inProgress = statusCounts['in_progress'] || 0;
   
-  // Inquiry-to-Quote Ratio
   const quoteRatio = total > 0 ? Math.round((quoted / total) * 100) : 0;
   
-  // Division Breakdown
   const divisionCounts = (inquiries || []).reduce((acc: any, curr: any) => {
     const divName = curr.divisions?.display_name || 'Unknown';
     if (acc[divName] !== undefined) {
@@ -71,31 +63,34 @@ export default async function AnalyticsPage() {
     'Souvenirs & Printing': 0
   });
 
-  // System Health (Simulated Rate Limits based on recent surge volume)
-  // We calculate how many inquiries came in the last 24h vs previous 24h
   const now = new Date();
   const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
   const recentVolume = (inquiries || []).filter((i: any) => new Date(i.created_at) >= yesterday).length;
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2 pb-12">
-      <div className="relative pb-4">
-        <AnimatedBorder direction="bottom" delay={0.1} className="!bg-brand-deep-blue" />
-        <h1 className="text-3xl font-display font-medium text-brand-deep-blue tracking-tighter leading-none mb-2">Business Intelligence</h1>
-        <p className="text-brand-deep-blue/60 text-sm max-w-2xl">
-          High-level operational metrics and pipeline attribution. Architected for fast, read-only analytical workloads.
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2 pb-16">
+      
+      {/* Header */}
+      <div className="pb-5 border-b border-slate-100">
+        <h1 className="text-2xl sm:text-3xl font-display font-bold text-brand-deep-blue tracking-tight leading-tight mb-1">
+          Business Intelligence
+        </h1>
+        <p className="text-slate-500 text-xs sm:text-sm">
+          Division attribution, inquiry conversion velocity, and real-time operational telemetry.
         </p>
       </div>
 
       {/* Primary Pipeline Metrics */}
-      <div>
-        <h2 className="text-xs font-bold text-brand-deep-blue/40 uppercase tracking-widest mb-4">Pipeline Velocity</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="space-y-3">
+        <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          Pipeline Conversion & Velocity
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <MetricCard 
             title="Inquiry-to-Quote Ratio" 
             value={`${quoteRatio}%`} 
             icon={<Target className="w-4 h-4" />} 
-            trend={quoteRatio > 30 ? 'Healthy' : 'Needs Optimization'} 
+            trend={quoteRatio > 30 ? 'Healthy conversion' : 'Needs optimization'} 
           />
           <MetricCard 
             title="Total Pipeline Volume" 
@@ -110,45 +105,78 @@ export default async function AnalyticsPage() {
         </div>
       </div>
 
-      {/* Division Attribution */}
-      <div>
-        <h2 className="text-xs font-bold text-brand-deep-blue/40 uppercase tracking-widest mb-4">Division Attribution</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {Object.entries(divisionCounts).map(([name, count]: [string, any]) => (
-            <div 
-              key={name} 
-              className="p-6 bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex flex-col gap-3 relative overflow-hidden group hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300"
-            >
-              <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                <ArrowUpRight className="w-12 h-12 text-brand-blue" />
+      {/* Division Attribution Cards with Progress Bars */}
+      <div className="space-y-3">
+        <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          Division Volume Attribution
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {Object.entries(divisionCounts).map(([name, count]: [string, any]) => {
+            const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+            return (
+              <div 
+                key={name} 
+                className="p-5 bg-white rounded-3xl border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.03)] flex flex-col justify-between gap-4 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)]"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{name}</span>
+                    <ArrowUpRight className="w-4 h-4 text-slate-300" />
+                  </div>
+                  <span className="text-3xl font-display font-bold text-brand-deep-blue tracking-tight leading-none block mt-2">
+                    {count}
+                  </span>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-xs text-slate-500 font-medium mb-1.5">
+                    <span>Share</span>
+                    <span className="font-semibold text-brand-deep-blue">{percentage}%</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-brand-blue rounded-full transition-all duration-500" 
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                </div>
               </div>
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{name}</span>
-              <span className="text-3xl sm:text-4xl font-display font-bold text-brand-deep-blue tracking-tight leading-none">{count}</span>
-              <span className="text-[10px] font-semibold text-brand-deep-blue/50 uppercase tracking-widest mt-1">
-                {total > 0 ? Math.round((count / total) * 100) : 0}% of Volume
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       {/* System Telemetry */}
-      <div>
-        <h2 className="text-xs font-bold text-brand-deep-blue/40 uppercase tracking-widest mb-4">System Telemetry (24h)</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="p-6 bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex items-center justify-between group hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300">
-            <div className="flex flex-col gap-3">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">New Inquiries (24h)</span>
-              <span className="text-3xl sm:text-4xl font-display font-bold text-brand-deep-blue tracking-tight leading-none">{recentVolume}</span>
+      <div className="space-y-3">
+        <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          System Health & Rate Limits (24h)
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="p-5 bg-white rounded-3xl border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.03)] flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">New Inquiries (24h)</span>
+              <span className="text-3xl font-display font-bold text-brand-deep-blue tracking-tight block">
+                {recentVolume}
+              </span>
             </div>
-            <Zap className="w-8 h-8 text-amber-500 opacity-80" />
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-600">
+              <Zap className="w-6 h-6" />
+            </div>
           </div>
-          <div className="p-6 bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 flex items-center justify-between group hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300">
-            <div className="flex flex-col gap-3">
-              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Rate Limit Defense</span>
-              <span className="text-3xl sm:text-4xl font-display font-bold text-brand-deep-blue tracking-tight leading-none">Active</span>
+
+          <div className="p-5 bg-white rounded-3xl border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.03)] flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Rate Limit Defense</span>
+              <div className="flex items-center gap-2">
+                <span className="text-3xl font-display font-bold text-brand-deep-blue tracking-tight">Active</span>
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Protected
+                </span>
+              </div>
             </div>
-            <div className="w-4 h-4 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
           </div>
         </div>
       </div>

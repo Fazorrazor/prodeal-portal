@@ -39,18 +39,19 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
       <nav className="flex-1 py-6 px-4 space-y-1 overflow-y-auto">
         {links.map((link, i) => {
           const isActive = pathname === link.href || (link.href !== '/admin' && pathname.startsWith(link.href));
+          const Icon = link.icon;
           return (
             <Link
               key={link.name}
               href={link.href}
-              className={`flex items-center gap-3 px-4 py-2.5 text-sm font-semibold transition-all duration-300 rounded-xl animate-in fade-in slide-in-from-left-4 fill-mode-both ${
+              className={`flex items-center gap-3 px-3.5 py-2.5 text-sm font-semibold transition-all duration-200 rounded-xl ${
                 isActive 
-                  ? 'bg-brand-blue/10 text-brand-blue shadow-sm' 
-                  : 'text-slate-500 hover:bg-white hover:shadow-sm hover:text-brand-deep-blue'
+                  ? 'bg-brand-blue/10 text-brand-blue font-bold shadow-2xs' 
+                  : 'text-slate-500 hover:bg-white hover:shadow-2xs hover:text-brand-deep-blue'
               }`}
-              style={{ animationDelay: `${100 + i * 50}ms` }}
             >
-              {link.name}
+              <Icon className="w-4 h-4 shrink-0" />
+              <span>{link.name}</span>
             </Link>
           );
         })}
@@ -61,9 +62,10 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
       <div className="p-4 relative">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-slate-500 hover:bg-red-50 hover:text-brand-red transition-all w-full rounded-xl"
+          className="flex items-center gap-3 px-3.5 py-2.5 text-sm font-semibold text-slate-500 hover:bg-red-50 hover:text-brand-red transition-all w-full rounded-xl"
         >
-          Logout
+          <LogOut className="w-4 h-4 shrink-0" />
+          <span>Logout</span>
         </button>
       </div>
     </aside>
