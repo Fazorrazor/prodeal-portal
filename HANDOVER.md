@@ -19,7 +19,12 @@
   - **Total Blocking Time (130ms -> 19ms):** Near-zero main thread execution block during load.
   - **Speed Index Optimization:** Eliminated the 3.2-second full-screen animated blocking curtain in `template.tsx` and removed initial hidden opacity states on `InquiryPageClient.tsx` to enable instantaneous visual rendering on first paint.
   - **Query Deduplication:** Wrapped product fetching in React `cache()` to eliminate duplicate database calls between `generateMetadata` and `InquiryPage`.
-  - **Font Payload Pruning:** Constrained Google font weight subsets, eliminating ~60% of redundant font file downloads.
+  - **Enterprise Admin Operations & Pro-Forma Quotation Builder:**
+  - `QuotationBuilder.tsx`: Built an interactive line-item quotation generator inside `/admin/tickets/[id]`. Auto-populates RFQ specs, computes Ghanaian statutory taxes (VAT, NHIL, GETFund, or Tax Exempt), freight/haulage, volume discounts, and payment terms in GHS.
+  - `saveQuotation.ts`: Implemented a Server Action recording quotation events in `inquiry_events` and automatically transitioning tickets to `quoted`.
+  - `TrackingTimeline.tsx`: Connected customer tracking (`/track/[trackingId]`) to automatically display the official itemized Pro-Forma Invoice with bank wire and MTN MoMo payment instructions.
+  - `WhatsAppCommandCenter.tsx`: Integrated 1-click templated dispatch buttons for *Quote Ready*, *In Production*, *Waybill Dispatched*, and *Technical Clarification*.
+  - `exportCsv.ts` & `TicketTable.tsx`: Added 1-click CSV data export for management sales reporting.
 
 ### Current Blockers
 - None.
