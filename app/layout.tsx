@@ -10,16 +10,19 @@ import { RfqTray } from '../components/shared/RfqTray';
 import { Montserrat, Roboto } from 'next/font/google';
 
 const montserrat = Montserrat({
+  weight: ['400', '600', '700'],
   subsets: ['latin'],
   variable: '--font-montserrat',
   display: 'swap',
+  preload: true,
 });
 
 const roboto = Roboto({
-  weight: ['400', '500', '700'],
+  weight: ['400', '500'],
   subsets: ['latin'],
   variable: '--font-roboto',
   display: 'swap',
+  preload: true,
 });
 
 const siteUrl = 'https://www.prodealindustries.com';
