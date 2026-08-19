@@ -2,13 +2,14 @@
 
 import React, { useState, useOptimistic, startTransition } from 'react';
 import Link from 'next/link';
-import { ChevronRight, Trash2, Loader2 } from 'lucide-react';
+import { ChevronRight, Trash2, Loader2, Download } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
 import { useScrambleText } from '../../lib/hooks/useScrambleText';
 import { bulkDeleteInquiriesSafely } from '../../app/actions/deleteInquiry';
 import { useRouter } from 'next/navigation';
 import { ConfirmModal } from './ConfirmModal';
+import { exportInquiriesToCsv } from '../../lib/utils/exportCsv';
 
 function ScrambledUUID({ uuid }: { uuid: string }) {
   const { displayText } = useScrambleText(uuid.substring(0, 8).toUpperCase(), 400, 1000);
@@ -104,6 +105,30 @@ export function TicketTable({
     }
   };
 
+  const handleExportCsv = () => {
+    const listToExport = selectedTickets.length > 0 
+      ? optimisticInquiries.filter(inq => selectedTickets.includes(inq.id))
+      : optimisticInquiries;
+
+    const exportRows = listToExport.map(inq => ({
+      id: inq.id,
+      tracking_uuid: inq.tracking_uuid,
+      contact_name: inq.contact_name,
+      company_name: inq.company_name,
+      status: inq.status,
+      division_name: inq.divisions?.display_name || 'General',
+      created_at: inq.created_at,
+      item_summary: (inq.inquiry_payload as any)?.productName || 'Quote Request'
+    }));
+
+    const ok = exportInquiriesToCsv(exportRows, `prodeal-inquiries-${new Date().toISOString().split('T')[0]}.csv`);
+    if (ok) {
+      toast.success(`Exported ${exportRows.length} inquiries to CSV`);
+    } else {
+      toast.error('No inquiries available to export');
+    }
+  };
+
   if (!optimisticInquiries || optimisticInquiries.length === 0) {
     return (
       <div className="border border-brand-border/20 rounded-xl bg-white shadow-sm py-16 flex flex-col items-center justify-center text-center mt-4">
@@ -125,6 +150,17 @@ export function TicketTable({
 
   return (
     <div className="mt-4 relative">
+      {/* Table Action Bar with Export & Bulk Actions */}
+      <div className="flex justify-end mb-3">
+        <button
+          onClick={handleExportCsv}
+          type="button"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono font-bold uppercase tracking-wider text-brand-deep-blue bg-white border border-brand-border/80 hover:bg-black/5 transition-colors shadow-sm"
+        >
+          <Download className="w-3.5 h-3.5" />
+          {selectedTickets.length > 0 ? `Export (${selectedTickets.length}) to CSV` : 'Export CSV'}
+        </button>
+      </div>
 
       {/* Bulk-delete action bar — appears above both mobile and desktop */}
       {selectedTickets.length > 0 && (
