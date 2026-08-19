@@ -31,14 +31,31 @@ export const ContactDetailsSchema = z.object({
   botcheck: z.string().optional(), // Honeypot field
 });
 
+const RfqItemSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1),
+  sku: z.string().optional(),
+  quantity: z.number().min(1),
+  unit: z.string().optional(),
+  notes: z.string().optional(),
+});
+
 const BaseInquirySchema = z.object({
-  productId:   z.string().uuid().optional(),
+  productId:   z.string().optional(),
   productName: z.string().optional(),
+  items:       z.array(RfqItemSchema).optional(),
   message: z
     .string()
     .trim()
-    .min(10, 'Please give us a bit more detail — at least a sentence about what you need.')
-    .max(1000, 'Your message is too long. Please keep it under 1000 characters.'),
+    .max(1000, 'Your message is too long. Please keep it under 1000 characters.')
+    .optional(),
+}).refine(data => {
+  // Must have either a descriptive message (at least 10 chars) OR at least one item
+  if (data.items && data.items.length > 0) return true;
+  return typeof data.message === 'string' && data.message.trim().length >= 10;
+}, {
+  message: 'Please provide either specific product items or at least a sentence explaining what you need.',
+  path: ['message'],
 });
 
 export const DIVISION_SCHEMAS = {

@@ -45,22 +45,16 @@ export default async function TrackDetail(props: { params: Promise<{ trackingId:
 }
 
 async function TrackingDataLoader({ trackingId }: { trackingId: string }) {
-  // Must use service role because RLS completely blocks 'anon' selects on inquiries.
-  // The server acts as a trusted mediator to only fetch the exact tracking ID requested.
   const supabase = createServiceRoleClient();
-  
-  // Clean the tracking ID (mobile devices often append a space when pasting)
   const cleanTrackingId = trackingId.trim().toLowerCase();
 
   const { data: inquiry, error } = await supabase
     .from('inquiries')
-    .select('id, status, division_id, tracking_uuid, created_at, updated_at')
-
+    .select('id, status, division_id, tracking_uuid, created_at, updated_at, contact_name, contact_email, contact_phone, company_name, inquiry_payload, divisions(display_name, slug)')
     .eq('tracking_uuid', cleanTrackingId)
     .single();
 
   if (error || !inquiry) {
-    // Log the failed lookup attempt to the system logs for admin visibility
     await logError('Tracking Lookup Failed', new Error('Inquiry not found'), { 
       providedId: trackingId, 
       cleanId: cleanTrackingId, 
@@ -78,7 +72,7 @@ async function TrackingDataLoader({ trackingId }: { trackingId: string }) {
           </p>
           <Link 
             href="/track"
-            className="inline-block bg-brand-deep-blue text-white font-heading font-bold uppercase tracking-widest text-sm py-4 px-8 hover:bg-brand-blue transition-colors"
+            className="inline-block bg-brand-deep-blue text-white font-heading font-bold uppercase tracking-widest text-sm py-4 px-8 hover:bg-brand-blue transition-colors rounded-xl shadow-xs"
           >
             TRY ANOTHER ID
           </Link>
@@ -87,12 +81,29 @@ async function TrackingDataLoader({ trackingId }: { trackingId: string }) {
     );
   }
 
+  const divisionName = Array.isArray(inquiry.divisions)
+    ? inquiry.divisions[0]?.display_name
+    : (inquiry.divisions as any)?.display_name || 'Industrial Supplies';
+
+  const divisionSlug = Array.isArray(inquiry.divisions)
+    ? inquiry.divisions[0]?.slug
+    : (inquiry.divisions as any)?.slug || 'chemicals';
+
   return (
     <TrackingTimeline 
       trackingId={cleanTrackingId}
       status={(inquiry as any).status as any}
       createdAt={(inquiry as any).created_at}
       updatedAt={(inquiry as any).updated_at}
+      inquiryData={{
+        contactName: inquiry.contact_name,
+        contactEmail: inquiry.contact_email,
+        contactPhone: inquiry.contact_phone,
+        companyName: inquiry.company_name,
+        divisionName,
+        divisionSlug,
+        payload: inquiry.inquiry_payload,
+      }}
     />
   );
 }

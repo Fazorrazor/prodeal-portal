@@ -6,24 +6,42 @@ import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Link from 'next/link';
+import { Printer, MessageSquare, ExternalLink, PackageCheck, FileText, CheckCircle2 } from 'lucide-react';
 
 type TrackingStatus = 'new' | 'in_progress' | 'quoted' | 'closed' | 'cancelled';
+
+interface InquiryMeta {
+  contactName?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  companyName?: string | null;
+  divisionName?: string;
+  divisionSlug?: string;
+  payload?: any;
+}
 
 interface TrackingTimelineProps {
   trackingId: string;
   status: TrackingStatus;
   createdAt: string;
   updatedAt: string;
+  inquiryData?: InquiryMeta;
 }
 
 const STEPS: { id: TrackingStatus; label: string; desc: string }[] = [
-  { id: 'new', label: 'RECEIVED', desc: 'Inquiry registered' },
-  { id: 'in_progress', label: 'REVIEWING', desc: 'Agent assigned & processing' },
-  { id: 'quoted', label: 'QUOTED', desc: 'Proposal ready for review' },
-  { id: 'closed', label: 'CLOSED', desc: 'Inquiry finalized' },
+  { id: 'new', label: 'RECEIVED', desc: 'Inquiry registered & logged' },
+  { id: 'in_progress', label: 'UNDER REVIEW', desc: 'Assigned agent verifying inventory & rates' },
+  { id: 'quoted', label: 'QUOTE DISPATCHED', desc: 'Official quotation prepared' },
+  { id: 'closed', label: 'FINALIZED', desc: 'Fulfillment & dispatch confirmed' },
 ];
 
-export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt: initialUpdatedAt }: TrackingTimelineProps) {
+export function TrackingTimeline({ 
+  trackingId, 
+  status: initialStatus, 
+  updatedAt: initialUpdatedAt,
+  createdAt,
+  inquiryData 
+}: TrackingTimelineProps) {
   const [currentStatus, setCurrentStatus] = useState<TrackingStatus>(initialStatus);
   const [currentUpdatedAt, setCurrentUpdatedAt] = useState<string>(initialUpdatedAt);
   const supabase = createClientComponentClient();
@@ -57,127 +75,230 @@ export function TrackingTimeline({ trackingId, status: initialStatus, updatedAt:
     };
   }, [supabase, trackingId]);
 
-  // Find current active index (ignore cancelled from standard flow)
   const isCancelled = currentStatus === 'cancelled';
   const currentIndex = STEPS.findIndex(s => s.id === currentStatus);
 
-  return (
-    <div className="w-full max-w-3xl mx-auto px-4 pt-4 pb-8 md:pt-6 md:pb-10">
-      <Link 
-        href="/track" 
-        className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-deep-blue/60 hover:text-brand-blue mb-6 transition-colors group"
-      >
-        <span className="text-base leading-none mb-[2px] group-hover:-translate-x-1 transition-transform">←</span> 
-        BACK TO TRACKING
-      </Link>
+  const whatsappMessage = encodeURIComponent(
+    `Hello Prodeal Sales Desk,\n\nFollowing up on my active quote.\nTracking ID: ${trackingId}\nCurrent Status: ${currentStatus.toUpperCase()}\n\nPlease provide an update on availability and delivery timeline.`
+  );
+  const whatsappUrl = `https://wa.me/233551908713?text=${whatsappMessage}`;
 
-      <div className="border-t border-brand-border/20 pt-5 pb-6 mb-6">
-        <h1 className="text-4xl md:text-5xl font-display font-medium tracking-tight leading-none text-brand-deep-blue mb-5">
-          Status<span className="text-brand-blue">.</span>
-        </h1>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 p-5 bg-white rounded-xl shadow-sm border border-brand-border/20">
+  const payload = inquiryData?.payload || {};
+  const items: any[] = Array.isArray(payload.items) ? payload.items : [];
+
+  return (
+    <div className="w-full max-w-4xl mx-auto px-4 pt-4 pb-12">
+      
+      {/* Top Bar Navigation & Actions */}
+      <div className="flex items-center justify-between mb-6 pb-4 border-b border-brand-border/20 print:hidden">
+        <Link 
+          href="/track" 
+          className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-deep-blue/60 hover:text-brand-blue transition-colors group"
+        >
+          <span className="text-base leading-none mb-[2px] group-hover:-translate-x-1 transition-transform">←</span> 
+          BACK TO SEARCH
+        </Link>
+
+        <button
+          onClick={() => window.print()}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-brand-border/40 text-brand-deep-blue hover:bg-brand-surface rounded-lg text-xs font-semibold shadow-xs transition-colors"
+        >
+          <Printer className="w-3.5 h-3.5 text-brand-blue" />
+          <span>Print Spec Sheet (PDF)</span>
+        </button>
+      </div>
+
+      {/* Main Reference Card */}
+      <div className="bg-white rounded-2xl border border-brand-border/30 p-6 md:p-8 shadow-xs mb-8">
+        
+        {/* Printable Official Letterhead Header */}
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-brand-border/20">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-blue mb-1">
-              Tracking ID
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-brand-blue block mb-1">
+              PRODEAL INDUSTRIES LTD // B2B PROCUREMENT
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-display font-medium tracking-tight text-brand-deep-blue">
+              Quotation Specification Sheet
+            </h1>
+            <p className="text-xs text-brand-deep-blue/60 mt-1 font-light">
+              Service: <span className="font-semibold text-brand-deep-blue">{inquiryData?.divisionName || 'Industrial Division'}</span>
             </p>
-            <p className="text-base md:text-xl font-mono text-brand-deep-blue font-bold tracking-[0.08em]">
+          </div>
+
+          <div className="text-left sm:text-right">
+            <span className="text-[9px] font-mono font-bold uppercase tracking-widest text-brand-deep-blue/50 block mb-1">
+              Tracking UUID
+            </span>
+            <p className="font-mono text-xl sm:text-2xl font-bold text-brand-deep-blue tracking-wider">
               {displayText}
             </p>
+            <span className="text-[10px] text-brand-deep-blue/60 font-mono block mt-1">
+              Logged: {format(new Date(createdAt), 'MMM dd, yyyy HH:mm')}
+            </span>
           </div>
-          <div className="text-left md:text-right">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-brand-deep-blue/60 mb-1">
-              Last Updated
-            </p>
-            <p className="text-xs md:text-sm font-mono text-brand-deep-blue font-bold">
-              {format(new Date(currentUpdatedAt), 'MMM dd, yyyy HH:mm')}
-            </p>
+        </div>
+
+        {/* Client & Organization Context */}
+        {inquiryData && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-5 border-b border-brand-border/20 text-xs">
+            <div>
+              <span className="text-[10px] font-mono uppercase text-brand-deep-blue/50 block mb-0.5">Procurement Contact</span>
+              <p className="font-semibold text-brand-deep-blue">{inquiryData.contactName || 'Valued Client'}</p>
+              {inquiryData.companyName && (
+                <p className="text-brand-deep-blue/70 font-light">{inquiryData.companyName}</p>
+              )}
+            </div>
+            <div>
+              <span className="text-[10px] font-mono uppercase text-brand-deep-blue/50 block mb-0.5">Contact Channel</span>
+              <p className="font-mono text-brand-deep-blue">{inquiryData.contactPhone || '-'}</p>
+              <p className="text-brand-deep-blue/70 font-light truncate">{inquiryData.contactEmail || '-'}</p>
+            </div>
+            <div>
+              <span className="text-[10px] font-mono uppercase text-brand-deep-blue/50 block mb-0.5">Current Phase</span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-brand-blue/10 text-brand-blue border border-brand-blue/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-blue animate-pulse" />
+                {currentStatus.replace('_', ' ')}
+              </span>
+            </div>
           </div>
+        )}
+
+        {/* Itemized Specification Table */}
+        {items.length > 0 ? (
+          <div className="py-5 border-b border-brand-border/20">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-brand-deep-blue/70 mb-3">
+              Requested Product Specifications ({items.length} Item{items.length > 1 ? 's' : ''})
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-brand-border/30 bg-brand-surface text-brand-deep-blue/70">
+                    <th className="py-2.5 px-3 font-semibold">SKU / Item</th>
+                    <th className="py-2.5 px-3 font-semibold text-center">Quantity</th>
+                    <th className="py-2.5 px-3 font-semibold">Packaging / Specification</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-brand-border/20">
+                  {items.map((it, idx) => (
+                    <tr key={idx} className="hover:bg-brand-surface/50">
+                      <td className="py-2.5 px-3 font-medium text-brand-deep-blue">{it.name}</td>
+                      <td className="py-2.5 px-3 text-center font-mono font-bold text-brand-blue">{it.quantity}</td>
+                      <td className="py-2.5 px-3 text-brand-deep-blue/70 font-light">
+                        {it.unit || 'Standard'} {it.notes ? `— ${it.notes}` : ''}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : payload.productName ? (
+          <div className="py-5 border-b border-brand-border/20">
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-brand-deep-blue/70 mb-2">
+              Requested Formulation / Service
+            </h3>
+            <p className="text-sm font-semibold text-brand-deep-blue">{payload.productName}</p>
+            {payload.message && (
+              <p className="text-xs text-brand-deep-blue/70 mt-1 whitespace-pre-wrap font-light">{payload.message}</p>
+            )}
+          </div>
+        ) : null}
+
+        {/* Live Timeline Component */}
+        <div className="pt-6">
+          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-brand-deep-blue/70 mb-6">
+            Live Processing Pipeline
+          </h3>
+
+          {isCancelled ? (
+            <div className="border-l-[3px] border-red-500 pl-6 py-4 bg-red-50/50 rounded-r-md">
+              <h2 className="text-lg font-display font-medium text-red-600 tracking-tight mb-1">
+                Inquiry Cancelled
+              </h2>
+              <p className="text-xs text-brand-deep-blue/80 font-light">
+                This inquiry has been closed. Contact support if you need to reactivate this request.
+              </p>
+            </div>
+          ) : (
+            <div className="relative pl-2">
+              <div className="absolute left-[17px] top-4 bottom-8 w-0.5 bg-brand-border/40 z-0 hidden md:block" />
+
+              <div className="flex flex-col gap-6 relative z-10">
+                {STEPS.map((step, index) => {
+                  const isActive = index === currentIndex;
+                  const isPast = index < currentIndex;
+                  
+                  return (
+                    <div key={step.id} className="flex gap-4 md:gap-6 items-start">
+                      <div className="flex flex-col items-center mt-0.5">
+                        <motion.div 
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: index * 0.1 }}
+                          className={`w-7 h-7 shrink-0 flex items-center justify-center rounded-full border transition-all 
+                            ${isActive ? 'border-brand-blue bg-brand-blue text-white shadow-sm' : 
+                              isPast ? 'border-emerald-600 bg-emerald-600 text-white' : 
+                              'border-brand-border/60 bg-white text-brand-deep-blue/30'}`}
+                        >
+                          {isPast ? (
+                            <CheckCircle2 className="w-4 h-4" />
+                          ) : isActive ? (
+                            <span className="w-2 h-2 rounded-full bg-white animate-ping" />
+                          ) : (
+                            <span className="text-[10px] font-mono">{index + 1}</span>
+                          )}
+                        </motion.div>
+                      </div>
+                      
+                      <div className="flex-1 pb-4 border-b border-brand-border/20 last:border-0 last:pb-0">
+                        <div className="flex items-center justify-between">
+                          <h4 className={`text-sm font-semibold tracking-tight ${
+                            isActive ? 'text-brand-blue' : isPast ? 'text-brand-deep-blue' : 'text-brand-deep-blue/50'
+                          }`}>
+                            {step.label}
+                          </h4>
+                          {isActive && (
+                            <span className="text-[10px] font-mono text-brand-blue font-bold tracking-widest uppercase">
+                              Active Stage
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-brand-deep-blue/70 font-light mt-0.5">
+                          {step.desc}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {isCancelled ? (
-        <div className="border-l-[3px] border-red-500 pl-6 py-4 bg-red-50/50 rounded-r-md">
-          <h2 className="text-xl font-display font-medium text-red-600 tracking-tight mb-2">
-            Inquiry Cancelled
-          </h2>
-          <p className="text-brand-deep-blue/80">
-            This inquiry has been marked as cancelled. Please contact our support team if you believe this is an error.
+      {/* Direct WhatsApp Follow-up Bar (Hidden during print) */}
+      <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 print:hidden shadow-xs">
+        <div>
+          <h4 className="font-display font-medium text-base text-emerald-950 mb-0.5">
+            Need urgent quote confirmation?
+          </h4>
+          <p className="text-xs text-emerald-900/80 font-light">
+            Connect directly with our desk agent handling tracking ref <code className="font-bold">{trackingId}</code>.
           </p>
         </div>
-      ) : (
-        <div className="relative">
-          {/* Vertical line connecting steps */}
-          <div className="absolute left-[11px] top-4 bottom-8 w-0.5 bg-brand-border/30 z-0 hidden md:block" />
 
-          <div className="flex flex-col gap-5 relative z-10">
-            {STEPS.map((step, index) => {
-              const isActive = index === currentIndex;
-              const isPast = index < currentIndex;
-              
-              return (
-                <div key={step.id} className="flex gap-6 md:gap-8 items-start group">
-                  <div className="flex flex-col items-center mt-1">
-                    <motion.div 
-                      initial={{ scale: 0.8, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: index * 0.15 }}
-                      className={`w-6 h-6 shrink-0 flex items-center justify-center rounded-full border 
-                        ${isActive ? 'border-brand-blue bg-brand-blue/10' : 
-                          isPast ? 'border-brand-deep-blue bg-brand-deep-blue' : 
-                          'border-brand-border/50 bg-transparent'}`}
-                    >
-                      {isPast && (
-                        <div className="w-2 h-2 bg-white rounded-full" />
-                      )}
-                      {isActive && (
-                        <motion.div 
-                          layoutId="active-indicator"
-                          className="w-2 h-2 bg-brand-blue rounded-full" 
-                        />
-                      )}
-                    </motion.div>
-                  </div>
-                  
-                  <div className="flex-1 pb-6 border-b border-brand-border/30 group-last:border-0 group-last:pb-0">
-                    <motion.h3 
-                      initial={{ x: -10, opacity: 0 }}
-                      animate={{ x: 0, opacity: 1 }}
-                      transition={{ delay: (index * 0.15) + 0.1 }}
-                      className={`text-base md:text-lg font-medium tracking-tight mb-1
-                        ${isActive ? 'text-brand-blue' : 
-                          isPast ? 'text-brand-deep-blue' : 
-                          'text-brand-deep-blue/60'}`}
-                    >
-                      {step.label}
-                    </motion.h3>
-                    <p className={`text-xs md:text-sm font-body
-                      ${isActive || isPast ? 'text-brand-deep-blue/80' : 'text-brand-deep-blue/80'}`}>
-                      {step.desc}
-                    </p>
-                    {isActive && step.id === 'new' && (
-                      <div className="mt-4 text-xs bg-brand-blue/5 text-brand-blue p-3 border-l-2 border-brand-blue rounded-r-md">
-                        Awaiting assignment. You will receive a WhatsApp message shortly.
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-      
-      <div className="mt-8 pt-5">
-        <div className="bg-brand-surface rounded-xl border border-brand-border/20 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
-          <div>
-            <h4 className="font-display font-medium text-lg text-brand-deep-blue mb-1">Need Assistance?</h4>
-            <p className="text-xs text-brand-deep-blue/70">Contact our support team directly</p>
-          </div>
-          <Link href="/support" className="px-5 py-2.5 bg-brand-blue text-white font-medium text-sm rounded-md shadow-sm hover:bg-brand-deep-blue transition-colors whitespace-nowrap">
-            Contact Support →
-          </Link>
-        </div>
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] whitespace-nowrap"
+        >
+          <MessageSquare className="w-4 h-4" />
+          <span>Message Desk on WhatsApp</span>
+          <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+        </a>
       </div>
+
     </div>
   );
 }
