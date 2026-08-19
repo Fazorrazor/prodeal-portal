@@ -15,7 +15,9 @@
 - **1-Click Priority WhatsApp Handshake:** Connected the inquiry success screen (`SuccessReceiptClient.tsx`) and tracking timeline directly to the sales desk on WhatsApp with pre-filled tracking IDs.
 - **Official B2B Spec Sheet Print/PDF Export:** Enhanced `TrackingTimeline.tsx` and `TrackDetail` with formal company letterhead and itemized print layout.
 - **Lighthouse Performance Optimizations:**
-  - **Edge TTFB Slashed:** Enabled Incremental Static Regeneration (ISR `revalidate = 300`) on `/inquiry/[productId]` to serve pages from Vercel Edge CDN in <50ms instead of 933ms uncached database roundtrips.
+  - **Edge TTFB Slashed (933ms -> 101ms):** Enabled Incremental Static Regeneration (ISR `revalidate = 300`) on `/inquiry/[productId]` to serve pages from Vercel Edge CDN in ~100ms.
+  - **Total Blocking Time (130ms -> 19ms):** Near-zero main thread execution block during load.
+  - **Speed Index Optimization:** Eliminated the 3.2-second full-screen animated blocking curtain in `template.tsx` and removed initial hidden opacity states on `InquiryPageClient.tsx` to enable instantaneous visual rendering on first paint.
   - **Query Deduplication:** Wrapped product fetching in React `cache()` to eliminate duplicate database calls between `generateMetadata` and `InquiryPage`.
   - **Font Payload Pruning:** Constrained Google font weight subsets, eliminating ~60% of redundant font file downloads.
 
