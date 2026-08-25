@@ -6,9 +6,7 @@ export default function NotFound() {
     <div className="min-h-screen flex flex-col bg-brand-surface text-brand-deep-blue font-body">
       {/* Minimal Header for Navigation Context */}
       <header className="p-6 border-b border-brand-border/40">
-        <Link href="/">
-          <NavLogo />
-        </Link>
+        <NavLogo />
       </header>
       
       <main className="flex-1 flex flex-col items-center justify-center p-6 text-center">
