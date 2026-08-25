@@ -47,19 +47,19 @@ export async function generateMetadata(
   const seoConfig: Record<string, { title: string; description: string }> = {
     bowls: {
       title: 'Wholesale Disposable Bowls in Ghana',
-      description: 'Looking for wholesale disposable bowls in Ghana? We supply bulk premium catering disposables, plastic bowls with lids, and eco-friendly food packaging at wholesale prices.',
+      description: 'Wholesale disposable bowls and catering supplies in Ghana. Premium food packaging, plastic bowls with lids, and biodegradable containers in Accra.',
     },
     signages: {
       title: '3D Signage Makers & Custom Signs in Ghana',
-      description: 'Top 3D signage makers in Ghana. Custom fabricated illuminated signs, outdoor corporate signage, and LED channel letters for maximum corporate visibility.',
+      description: 'Premier 3D signage makers in Ghana. Custom fabricated illuminated signs, outdoor corporate signage, and LED channel letters for brand visibility.',
     },
     printing: {
       title: 'Corporate Souvenirs & Bulk Printing in Ghana',
-      description: 'Wholesale corporate souvenirs, promotional items, branded apparel, and commercial bulk printing services in Ghana.',
+      description: 'Wholesale corporate souvenirs, promotional gifts, branded apparel, and commercial bulk printing services across Accra and nationwide in Ghana.',
     },
     chemicals: {
       title: 'Industrial Chemicals Supplier in Ghana',
-      description: 'Bulk industrial chemicals supplier in Ghana. Industrial-grade waterproofing, architectural paints, sealants, and structural coatings for construction and housing.',
+      description: 'Bulk industrial chemicals supplier in Ghana. Industrial-grade waterproofing, architectural paints, sealants, and concrete construction coatings.',
     }
   };
 

@@ -2,8 +2,8 @@ import { AnimatedBorder } from '../../../components/admin/AnimatedBorder';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Privacy Policy | Prodeal Industries Ltd',
-  description: 'Privacy policy and data handling practices for Prodeal Industries Ltd.',
+  title: 'Privacy Policy',
+  description: 'Privacy policy and B2B data handling practices for Prodeal Industries Ltd in accordance with the Data Protection Act of Ghana.',
 };
 
 export default function PrivacyPolicyPage() {

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Accessibility Statement | Prodeal Industries Ltd',
-  description: 'Prodeal Industries Ltd is committed to digital accessibility and ADA compliance.',
+  title: 'Accessibility Statement',
+  description: 'Read the accessibility statement and digital compliance standards for Prodeal Industries Ltd, Ghana premier B2B industrial portal.',
 };
 
 export default function AccessibilityPage() {

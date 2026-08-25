@@ -5,11 +5,11 @@ import { GenericInquiryClient } from './GenericInquiryClient';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Request a Quote | Prodeal Industries Ltd',
-  description: 'Submit an inquiry for industrial chemicals, wholesale catering disposables, corporate printing, or 3D signages from Prodeal Industries Ltd.',
+  title: 'Request a Quote',
+  description: 'Submit a B2B quote request for industrial chemicals, catering disposables, 3D signages, or corporate printing from Prodeal in Ghana.',
   openGraph: {
-    title: 'Request a Quote | Prodeal Industries Ltd',
-    description: 'Submit an inquiry for industrial chemicals, wholesale catering disposables, corporate printing, or 3D signages from Prodeal Industries Ltd.',
+    title: 'Request a Quote | Prodeal Industries',
+    description: 'Submit a B2B quote request for industrial chemicals, catering disposables, 3D signages, or corporate printing from Prodeal in Ghana.',
   }
 };
 
