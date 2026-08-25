@@ -15,7 +15,8 @@ export default function SuccessReceiptClient() {
   if (!trackingId) {
     return (
       <div className="text-center pt-20">
-        <h2 className="font-display font-medium text-3xl text-brand-deep-blue tracking-tight mb-4">No Tracking ID Found</h2>
+        <h1 className="font-display font-medium text-3xl text-brand-deep-blue tracking-tight mb-4">Inquiry Received</h1>
+        <p className="text-sm text-brand-deep-blue/70 mb-6 font-light">No direct tracking ID was provided in the URL reference.</p>
         <Link href="/" className="px-6 py-3 bg-brand-blue text-white font-medium text-sm rounded-md hover:bg-brand-deep-blue transition-colors shadow-sm">Return to Home</Link>
       </div>
     );
