@@ -11,7 +11,7 @@ import { HeroVideoBackground } from '../../components/shared/HeroVideoBackground
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Industrial Chemicals & Wholesale Supply in Ghana | Prodeal',
+  title: 'Industrial Chemicals & Wholesale Supply in Ghana',
   description: 'Prodeal Industries Ltd is a leading industrial chemical supplier and wholesale distributor of catering disposables, 3D signages, and corporate souvenirs in Ghana.',
   alternates: {
     canonical: 'https://www.prodealindustries.com',

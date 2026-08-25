@@ -4,8 +4,8 @@ import SuccessReceiptClient from './SuccessReceiptClient';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Inquiry Received | Prodeal Industries',
-  robots: { index: false, follow: false },
+  title: 'Inquiry Received',
+  description: 'Your inquiry has been successfully submitted to Prodeal Industries Ltd.',
 };
 
 export default function InquirySuccessPage() {
