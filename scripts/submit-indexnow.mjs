@@ -20,10 +20,12 @@ const URL_LIST = [
   `${BASE_URL}/divisions/bowls`,
   `${BASE_URL}/divisions/signages`,
   `${BASE_URL}/divisions/printing`,
+  `${BASE_URL}/inquiry`,
   `${BASE_URL}/support`,
   `${BASE_URL}/track`,
   `${BASE_URL}/privacy`,
   `${BASE_URL}/terms`,
+  `${BASE_URL}/accessibility`,
 ];
 
 async function submitIndexNow() {
