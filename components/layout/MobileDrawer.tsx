@@ -1,21 +1,19 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { cn } from '../../lib/utils';
 import { NavLogo } from './NavLogo';
 import { ALL_MAIN_LINKS } from '../../lib/config/navigation';
 
-function MobileDrawerContent() {
+export function MobileDrawer() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const fromParam = searchParams.get('from');
 
   useEffect(() => {
     setMounted(true);
@@ -24,7 +22,7 @@ function MobileDrawerContent() {
   // Close drawer on route change
   useEffect(() => {
     setIsOpen(false);
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   // Prevent scroll when open
   useEffect(() => {
@@ -76,8 +74,7 @@ function MobileDrawerContent() {
 
                 <div className="flex flex-col p-6 gap-6">
                   {ALL_MAIN_LINKS.map((link) => {
-                    const slug = link.href.split('/').pop();
-                    const isActive = pathname.startsWith(link.href) || (pathname.startsWith('/inquiry') && fromParam === slug);
+                    const isActive = pathname.startsWith(link.href);
                     return (
                       <Link
                         key={link.href}
@@ -99,19 +96,5 @@ function MobileDrawerContent() {
         document.body
       )}
     </div>
-  );
-}
-
-export function MobileDrawer() {
-  return (
-    <Suspense fallback={
-      <div className="block">
-        <button className="p-2 -mr-2 text-brand-deep-blue" aria-label="Menu loading">
-          <Menu className="w-6 h-6" />
-        </button>
-      </div>
-    }>
-      <MobileDrawerContent />
-    </Suspense>
   );
 }
