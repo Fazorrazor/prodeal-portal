@@ -1,0 +1,43 @@
+# Prodeal Industries Ltd
+
+> Ghana's premier B2B supplier for Industrial Chemicals, Waterproofing Systems, Construction Chemicals, Wholesale Disposable Bowls, 3D Signages, and Corporate Souvenirs.
+
+## Overview
+- **Legal Entity:** Prodeal Industries Ltd
+- **Headquarters:** Accra, Greater Accra Region, Ghana
+- **Service Area:** Accra, Tema, Kumasi, Takoradi, Tamale, and Nationwide Ghana / West Africa
+- **Website:** https://www.prodealindustries.com
+- **Ordering Channels:** Instant B2B RFQ Tray, Direct WhatsApp Dispatch, Official Corporate Quotations
+
+## Core Divisions & Formulations
+
+### 1. Industrial & Construction Chemicals
+Prodeal Industries supplies industrial-grade waterproofing chemicals, concrete admixtures, architectural coatings, and damp-proofing systems designed for tropical climates in Ghana.
+- **Roof Waterproofing:** Liquid elastomeric waterproofing membranes, polyurethane roof sealants, and acrylic coatings for concrete flat roofs and metal sheets.
+- **Wall Seepage & Damp Proofing:** Crystalline damp-proof barriers, deep-penetrating silane water repellents, and anti-efflorescence wall sealants.
+- **Concrete Admixtures:** Integral waterproofing admixtures, concrete hardeners, plasticizers, and structural bonding agents.
+- **Exterior Protective Paints:** Weatherproof, UV-resistant, anti-fungal acrylic coatings for residential, commercial, and industrial facilities.
+- **Solutions Directory:** https://www.prodealindustries.com/solutions
+
+### 2. Disposable Food Packaging
+- Bulk wholesale catering disposables, microwave-safe plastic bowls with leakproof lids, biodegradable bagasse containers, and kraft paper packaging.
+- Directory: https://www.prodealindustries.com/divisions/bowls
+
+### 3. 3D Signages & Architectural Branding
+- Custom illuminated LED channel letters, 3D acrylic signs, ACP cladding, pylon signs, and municipal-permitted corporate signage.
+- Directory: https://www.prodealindustries.com/divisions/signages
+
+### 4. Corporate Souvenirs & Commercial Printing
+- High-volume promotional gifts, branded corporate apparel, precision screen printing, laser engraving, and offset publishing.
+- Directory: https://www.prodealindustries.com/divisions/printing
+
+## Key Solution Guides
+- [Roof Waterproofing in Ghana](https://www.prodealindustries.com/solutions/roof-waterproofing-ghana)
+- [Damp Wall & Water Seepage Repair](https://www.prodealindustries.com/solutions/damp-wall-water-seepage-repair)
+- [Concrete Waterproofing Admixtures](https://www.prodealindustries.com/solutions/concrete-waterproofing-admixtures)
+- [Exterior Wall Protective Coatings](https://www.prodealindustries.com/solutions/waterproof-exterior-wall-coatings)
+- [Bulk Construction Chemicals for Contractors](https://www.prodealindustries.com/solutions/construction-chemicals-contractors-ghana)
+
+## Full Context Document
+For comprehensive technical specifications, chemical dosages, application instructions, and safety data:
+- https://www.prodealindustries.com/llms-full.txt

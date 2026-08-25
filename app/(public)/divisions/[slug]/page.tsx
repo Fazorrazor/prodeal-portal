@@ -119,6 +119,18 @@ const DIVISION_FAQS: Record<string, FAQ[]> = {
   ],
   chemicals: [
     {
+      question: 'What is the best product for waterproofing a roof and stopping roof leaks in Ghana?',
+      answer: 'For concrete flat roofs and metal sheets in Ghana, the best solution is a high-build elastomeric polyurethane liquid waterproofing membrane reinforced with polyester scrim. It creates a seamless, flexible barrier resistant to tropical UV radiation and monsoon rain.',
+    },
+    {
+      question: 'How do I stop water seepage and rising damp from coming through my walls?',
+      answer: 'Water seepage is stopped by applying deep-penetrating silane-siloxane sealers or crystalline waterproofing slurries directly to bare masonry. This blocks capillary pores in sandcrete blocks and prevents peeling paint.',
+    },
+    {
+      question: 'What chemical can I add to concrete to make it waterproof?',
+      answer: 'Add an integral waterproofing admixture (such as Pro-Mix) directly into the batching water at 1% to 2% by weight of cement. It seals microscopic voids and protects steel rebar from moisture and corrosion.',
+    },
+    {
       question: 'Are your industrial chemicals EPA compliant?',
       answer: 'Absolutely. Pro Deal Industries strictly adheres to all regulatory frameworks. Our chemicals meet Environmental Protection Agency (EPA) standards and industrial compliance protocols for construction and manufacturing materials.',
     },
@@ -128,7 +140,7 @@ const DIVISION_FAQS: Record<string, FAQ[]> = {
     },
     {
       question: 'Can I order bulk chemicals for housing and construction materials?',
-      answer: 'Yes, we supply industrial-grade bulk chemicals specifically formulated for construction, housing materials, and heavy manufacturing.',
+      answer: 'Yes, we supply industrial-grade bulk chemicals in 20L jerrycans, 200L drums, and 1000L IBC totes specifically formulated for construction, housing materials, and civil engineering projects across Ghana.',
     },
   ],
   printing: [
