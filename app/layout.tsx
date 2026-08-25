@@ -30,8 +30,8 @@ const siteUrl = 'https://www.prodealindustries.com';
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Prodeal Industries Ltd | Industrial Chemical Suppliers & Wholesale B2B',
-    template: '%s | Prodeal Industries Ltd',
+    default: 'Prodeal Industries Ltd | Industrial Supplies Ghana',
+    template: '%s | Prodeal Industries',
   },
   description:
     'Ghana\'s premier B2B supplier for Industrial Chemicals, Wholesale Disposable Bowls, 3D Signages, and Corporate Souvenirs. Request a quote today.',
