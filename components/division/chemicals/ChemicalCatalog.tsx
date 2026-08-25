@@ -31,8 +31,15 @@ export async function ChemicalCatalog() {
           Industrial Chemicals
         </h2>
         <div className="w-12 h-px bg-brand-deep-blue/20 mb-6"></div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-center gap-3">
           <ChemicalCoverageCalculator />
+          <Link
+            href="/solutions"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-surface border border-brand-border/40 text-xs font-mono font-medium text-brand-deep-blue hover:text-brand-blue hover:border-brand-blue/30 transition-all shadow-2xs"
+          >
+            <span>Technical Solution Guides</span>
+            <span className="text-brand-blue font-bold">→</span>
+          </Link>
         </div>
       </div>
 

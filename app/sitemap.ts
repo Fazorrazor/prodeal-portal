@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { DIVISIONS_LIST } from '../lib/config/divisions';
+import { SOLUTIONS_LIST } from '../lib/config/solutions';
 
 // Revalidate every hour — keeps the sitemap fresh without unnecessary rebuilds
 export const revalidate = 3600;
@@ -15,6 +16,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/solutions`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.95,
     },
     {
       url: `${baseUrl}/track`,
@@ -42,8 +49,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // Dynamic division routes — generated from the config so if you add a new
-  // division to DIVISION_DATA, it automatically appears in the sitemap.
+  // Dynamic division routes
   const divisionRoutes: MetadataRoute.Sitemap = DIVISIONS_LIST.map((division) => ({
     url: `${baseUrl}${division.href}`,
     lastModified: now,
@@ -51,5 +57,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
   }));
 
-  return [...staticRoutes, ...divisionRoutes];
+  // Dynamic problem-solution guide routes (high SEO/GEO priority)
+  const solutionRoutes: MetadataRoute.Sitemap = SOLUTIONS_LIST.map((solution) => ({
+    url: `${baseUrl}/solutions/${solution.slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly' as const,
+    priority: 0.95,
+  }));
+
+  return [...staticRoutes, ...divisionRoutes, ...solutionRoutes];
 }

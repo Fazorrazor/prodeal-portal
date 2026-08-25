@@ -10,6 +10,12 @@ const KEY_LOCATION = `${BASE_URL}/${API_KEY}.txt`;
 
 const URL_LIST = [
   BASE_URL,
+  `${BASE_URL}/solutions`,
+  `${BASE_URL}/solutions/roof-waterproofing-ghana`,
+  `${BASE_URL}/solutions/damp-wall-water-seepage-repair`,
+  `${BASE_URL}/solutions/concrete-waterproofing-admixtures`,
+  `${BASE_URL}/solutions/waterproof-exterior-wall-coatings`,
+  `${BASE_URL}/solutions/construction-chemicals-contractors-ghana`,
   `${BASE_URL}/divisions/chemicals`,
   `${BASE_URL}/divisions/bowls`,
   `${BASE_URL}/divisions/signages`,

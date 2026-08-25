@@ -132,7 +132,12 @@ export default function RootLayout({
               },
               knowsAbout: [
                 'Industrial Chemicals',
-                'Laboratory Chemicals',
+                'Waterproofing Chemicals',
+                'Roof Waterproofing and Leak Repair',
+                'Damp Wall Treatment and Rising Damp Repair',
+                'Concrete Waterproofing Admixtures',
+                'Weatherproof Architectural Wall Coatings',
+                'Construction Chemicals Supplier in Ghana',
                 'Wholesale Laboratory Chemicals',
                 'Catering Disposables',
                 'Wholesale Disposable Bowls in Ghana',
