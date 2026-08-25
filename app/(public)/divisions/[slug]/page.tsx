@@ -106,7 +106,7 @@ const DIVISION_FAQS: Record<string, FAQ[]> = {
   bowls: [
     {
       question: 'What is the minimum order quantity for bulk disposable bowls?',
-      answer: 'Our wholesale minimum order quantity (MOQ) depends on the exact SKUs but generally starts at carton-level quantities to ensure you receive the most competitive B2B pricing.',
+      answer: 'Our wholesale minimum order quantity (MOQ) depends on the exact SKUs but generally starts at carton-level quantities to ensure you receive the most competitive tiered wholesale pricing.',
     },
     {
       question: 'Do you provide eco-friendly or biodegradable food packaging?',

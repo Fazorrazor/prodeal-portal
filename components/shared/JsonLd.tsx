@@ -18,7 +18,7 @@ export function OrganizationJsonLd({ siteUrl }: OrganizationJsonLdProps) {
     url: siteUrl,
     logo: `${siteUrl}/icon.png`,
     description:
-      "Ghana's premier B2B industrial supplier offering 3D Signages, Souvenirs & Printing, Disposable Bowls, and Industrial Chemicals.",
+      "Ghana's direct industrial and wholesale supplier offering 3D Signages, Souvenirs & Printing, Disposable Bowls, and Industrial Chemicals.",
     address: {
       '@type': 'PostalAddress',
       addressCountry: 'GH',

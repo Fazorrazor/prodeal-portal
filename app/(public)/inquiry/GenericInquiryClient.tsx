@@ -138,7 +138,7 @@ export function GenericInquiryClient({ products = [] }: { products?: Product[] }
         <div className="flex items-center gap-2 py-2 border-t border-b border-brand-border/20">
           <span className="text-brand-blue font-mono font-bold text-sm leading-none">→</span>
           <span className="text-xs font-medium text-brand-deep-blue/70">
-            B2B Commercial & Industrial Supply Only
+            Commercial & Wholesale Supply Only
           </span>
         </div>
       </div>

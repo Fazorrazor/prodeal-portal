@@ -52,7 +52,7 @@ export function WhatsAppCommandCenter({ inquiry, latestQuotation }: WhatsAppComm
       iconColor: 'text-brand-blue bg-blue-50/80',
       targetStatus: 'quoted',
       targetStatusLabel: 'Quoted',
-      message: `Hello ${inquiry.contact_name}${companyGreeting},\n\nThank you for reaching out to Prodeal Industries Ltd (${division}).\n\nYour official B2B Pro-Forma Quotation [${quotePayload.quoteNumber || trackingCode}] is ready for your review:\n👉 Total: ${quoteTotalStr}\n👉 Live Spec Sheet: ${trackingUrl}\n\nPlease review and let us know if you would like us to reserve the stock or issue an official tax invoice for payment.\n\nBest regards,\nProdeal Industries Sales Desk\nTema Heavy Industrial Area`
+      message: `Hello ${inquiry.contact_name}${companyGreeting},\n\nThank you for reaching out to Prodeal Industries Ltd (${division}).\n\nYour official Pro-Forma Quotation [${quotePayload.quoteNumber || trackingCode}] is ready for your review:\n👉 Total: ${quoteTotalStr}\n👉 Live Spec Sheet: ${trackingUrl}\n\nPlease review and let us know if you would like us to reserve the stock or issue an official tax invoice for payment.\n\nBest regards,\nProdeal Industries Sales Desk\nTema Heavy Industrial Area`
     },
     {
       key: 'site_survey',

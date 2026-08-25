@@ -60,8 +60,9 @@ const TAX_PRESETS = [
 const PAYMENT_PRESETS = [
   '50% advance upon order confirmation, 50% prior to dispatch from Tema warehouse.',
   '100% advance payment prior to batch manufacturing.',
-  '30 days net settlement for approved corporate B2B accounts.',
-  'Payment on delivery (Accra / Tema Metro only).'
+  '30 days net settlement for approved corporate trade accounts.',
+  'Valid for 14 calendar days from date of issue.',
+  'Includes technical data sheets & EPA compliance documentation.'
 ];
 
 export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilderProps) {
@@ -291,7 +292,7 @@ export function QuotationBuilder({ inquiry, existingQuotation }: QuotationBuilde
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base sm:text-lg font-display font-bold text-brand-deep-blue tracking-tight leading-tight">
-                  B2B Pro-Forma Quotation
+                  Commercial Pro-Forma Quotation
                 </h3>
                 {isSaved ? (
                   <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200/60">

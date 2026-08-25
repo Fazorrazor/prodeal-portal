@@ -103,7 +103,7 @@ export function RfqTray() {
           botcheck: contact.botcheck || undefined,
         },
         inquiry: {
-          productName: `Consolidated B2B RFQ (${uniqueCount} SKUs)`,
+          productName: `Consolidated Wholesale RFQ (${uniqueCount} SKUs)`,
           items: items.map((it) => ({
             id: it.id,
             name: it.name,
