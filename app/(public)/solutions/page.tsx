@@ -6,7 +6,7 @@ import { SOLUTIONS_LIST } from '../../../lib/config/solutions';
 const siteUrl = 'https://www.prodealindustries.com';
 
 export const metadata: Metadata = {
-  title: 'Waterproofing, Damp Proofing & Construction Chemical Solutions in Ghana',
+  title: 'Waterproofing & Construction Chemicals in Ghana',
   description:
     'Problem-based chemical and waterproofing solutions for roofs, damp walls, concrete structures, and architectural coatings across Accra and Ghana.',
   alternates: {
