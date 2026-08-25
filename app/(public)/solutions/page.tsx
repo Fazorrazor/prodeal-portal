@@ -75,7 +75,7 @@ export default function SolutionsIndexPage() {
           </h1>
 
           <p className="text-base sm:text-lg text-brand-deep-blue/70 font-light leading-relaxed mb-8">
-            Engineered formulations for Ghana’s tropical climate. Resolve roof leaks, rising damp, porous masonry, and structural water damage with certified B2B industrial chemicals.
+            Engineered formulations for Ghana’s tropical climate. Resolve roof leaks, rising damp, porous masonry, and structural water damage with certified commercial industrial chemicals.
           </p>
 
           <div className="flex flex-wrap gap-4 items-center text-xs font-mono text-brand-deep-blue/60">
@@ -155,7 +155,7 @@ export default function SolutionsIndexPage() {
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
             <p className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-brand-blue mb-2">
-              B2B Wholesale & Custom Formulation
+              Bulk Wholesale & Custom Formulation
             </p>
             <h2 className="font-display font-bold text-2xl sm:text-3xl text-white tracking-tight leading-tight mb-3">
               Need Bulk Supply or Specific Formulations?

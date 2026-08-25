@@ -34,11 +34,11 @@ export const metadata: Metadata = {
     template: '%s | Prodeal Industries',
   },
   description:
-    'Ghana\'s premier B2B supplier for Industrial Chemicals, Wholesale Disposable Bowls, 3D Signages, and Corporate Souvenirs. Request a quote today.',
+    'Ghana\'s direct wholesale supplier for Industrial Chemicals, Bulk Disposable Bowls, 3D Signages, and Corporate Souvenirs. Request a quote today.',
   keywords: [
     'industrial chemical suppliers Ghana',
     'wholesale laboratory chemicals',
-    'B2B supplier Accra',
+    'wholesale supplier Accra',
     '3D signage makers Ghana',
     'corporate souvenirs Ghana',
     'wholesale disposable bowls in Ghana',
@@ -52,9 +52,9 @@ export const metadata: Metadata = {
     locale: 'en_GH',
     url: siteUrl,
     siteName: 'Prodeal Industries Ltd',
-    title: 'Prodeal Industries Ltd | Industrial Chemical Suppliers & B2B Wholesale',
+    title: 'Prodeal Industries Ltd | Industrial Chemicals & Wholesale Supply',
     description:
-      'Ghana\'s premier B2B industrial supplier. Industrial Chemicals, Wholesale Disposable Bowls, 3D Signages, and Souvenirs. Request a quote instantly.',
+      'Ghana\'s direct industrial supplier. Industrial Chemicals, Wholesale Disposable Bowls, 3D Signages, and Souvenirs. Request a quote instantly.',
     images: [
       {
         url: '/og-default.png',
@@ -66,9 +66,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Prodeal Industries Ltd | Industrial Chemical Suppliers & B2B Wholesale',
+    title: 'Prodeal Industries Ltd | Industrial Chemicals & Wholesale Supply',
     description:
-      'Ghana\'s premier B2B industrial supplier. Industrial Chemicals, Wholesale Disposable Bowls, 3D Signages, and Souvenirs.',
+      'Ghana\'s direct industrial supplier. Industrial Chemicals, Wholesale Disposable Bowls, 3D Signages, and Souvenirs.',
     images: ['/og-default.png'],
   },
   icons: {
@@ -112,7 +112,7 @@ export default function RootLayout({
               url: siteUrl,
               logo: `${siteUrl}/warehouse-icon.png`,
               image: `${siteUrl}/warehouse-icon.png`,
-              description: "Ghana's premier B2B industrial supplier specializing in Industrial Chemicals, 3D Signages, Corporate Souvenirs, and Wholesale Disposable Bowls.",
+              description: "Ghana's direct industrial supplier specializing in Industrial Chemicals, 3D Signages, Corporate Souvenirs, and Wholesale Disposable Bowls.",
               address: {
                 '@type': 'PostalAddress',
                 addressCountry: 'GH',

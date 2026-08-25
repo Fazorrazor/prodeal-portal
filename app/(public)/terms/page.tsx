@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export const metadata = {
   title: 'Terms of Service',
-  description: 'Commercial terms of service, warranty, and B2B procurement policies for Prodeal Industries Ltd operations in Ghana.',
+  description: 'Commercial terms of service, warranty, and trade procurement policies for Prodeal Industries Ltd operations in Ghana.',
 };
 
 export default function TermsOfServicePage() {
@@ -23,7 +23,7 @@ export default function TermsOfServicePage() {
         <section>
           <h2 className="text-xl font-heading font-bold uppercase tracking-widest mb-4">1. General Provisions</h2>
           <p>
-            By accessing the Prodeal Industries Ltd portal and submitting an inquiry, you agree to be bound by these Terms of Service. Prodeal Industries Ltd operates strictly as a Business-to-Business (B2B) supplier. All inquiries, quotes, and subsequent agreements are governed by these terms unless expressly modified in a formal written contract.
+            By accessing the Prodeal Industries Ltd portal and submitting an inquiry, you agree to be bound by these Terms of Service. Prodeal Industries Ltd operates strictly as a commercial and wholesale trade supplier. All inquiries, quotes, and subsequent agreements are governed by these terms unless expressly modified in a formal written contract.
           </p>
         </section>
 

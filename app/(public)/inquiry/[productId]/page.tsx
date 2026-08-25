@@ -53,7 +53,7 @@ export async function generateMetadata(
   const { product } = await getProductData(params.productId);
 
   if (!product) {
-    return { title: 'Product Not Found | Prodeal Industries Ltd' };
+    return { title: 'Product Not Found' };
   }
 
   const division = Array.isArray(product.divisions) ? product.divisions[0] : product.divisions;
@@ -61,10 +61,10 @@ export async function generateMetadata(
   
   const seoDescription = product.description 
     ? stripHtml(product.description).substring(0, 155) + '...'
-    : `Request a B2B quote for ${product.name} from Prodeal Industries Ltd High-volume industrial supply delivered with precision.`;
+    : `Request a wholesale quote for ${product.name} from Prodeal Industries Ltd. High-volume industrial supply delivered with precision.`;
 
   return {
-    title: `Buy ${product.name} | ${divisionName} | Prodeal Industries Ltd`,
+    title: `Buy ${product.name} | ${divisionName}`,
     description: seoDescription,
     openGraph: {
       title: `${product.name} | Prodeal Industries Ltd`,

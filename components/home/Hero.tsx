@@ -77,7 +77,7 @@ export function Hero() {
         >
           <div className="w-6 h-px bg-brand-blue" />
           <span className="text-[10px] font-mono font-medium tracking-widest text-brand-deep-blue/70">
-            Industrial B2B Procurement Portal
+            Direct Industrial & Wholesale Supply Portal
           </span>
         </motion.div>
 

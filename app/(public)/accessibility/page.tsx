@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Accessibility Statement',
-  description: 'Read the accessibility statement and digital compliance standards for Prodeal Industries Ltd, Ghana premier B2B industrial portal.',
+  description: 'Read the accessibility statement and digital compliance standards for Prodeal Industries Ltd, Ghana direct industrial and wholesale portal.',
 };
 
 export default function AccessibilityPage() {
@@ -33,14 +33,14 @@ export default function AccessibilityPage() {
               The Web Content Accessibility Guidelines (WCAG) defines requirements for designers and developers to improve accessibility for people with disabilities. It defines three levels of conformance: Level A, Level AA, and Level AAA. 
             </p>
             <p className="text-sm font-mono leading-relaxed mb-4">
-              The Prodeal Industries Ltd portal is partially conformant with WCAG 2.1 level AA. Partially conformant means that some parts of the content may not fully conform to the accessibility standard, though we enforce strict contrast ratios, semantic HTML, and keyboard navigability across our primary B2B inquiry flows.
+              The Prodeal Industries Ltd portal is partially conformant with WCAG 2.1 level AA. Partially conformant means that some parts of the content may not fully conform to the accessibility standard, though we enforce strict contrast ratios, semantic HTML, and keyboard navigability across our primary commercial inquiry flows.
             </p>
           </section>
 
           <section className="border-l-2 border-brand-border/40 pl-6">
             <h2 className="text-xl font-heading font-bold uppercase tracking-widest mb-4">3. Assistive Technologies</h2>
             <p className="text-sm font-mono leading-relaxed mb-4">
-              Our B2B portal is designed to be compatible with standard assistive technologies. We utilize semantic markup and ARIA (Accessible Rich Internet Applications) attributes to ensure that screen readers can accurately interpret the site's architecture and form inputs.
+              Our industrial portal is designed to be compatible with standard assistive technologies. We utilize semantic markup and ARIA (Accessible Rich Internet Applications) attributes to ensure that screen readers can accurately interpret the site's architecture and form inputs.
             </p>
           </section>
 

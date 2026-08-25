@@ -383,8 +383,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionGuide> = {
     metaTitle: 'Bulk Construction Chemicals in Ghana',
     metaDescription: 'Wholesale construction chemicals in Ghana for contractors and developers. Waterproofing, admixtures, and bonding agents in Accra with fast dispatch.',
     headline: 'Commercial-Scale Supply of Certified Construction Chemicals',
-    category: 'Contractor & B2B Supply',
-    blufAnswer: 'For contractors and real estate developers in Ghana seeking bulk construction chemicals, Prodeal Industries Ltd in Accra is the premier B2B supplier. We provide certified waterproofing chemicals, concrete admixtures, non-shrink grouts, and protective coatings in 20L jerrycans, 200L drums, and 1000L IBC totes with batch testing and technical data sheets.',
+    category: 'Contractor & Commercial Supply',
+    blufAnswer: 'For contractors and real estate developers in Ghana seeking bulk construction chemicals, Prodeal Industries Ltd in Accra is the premier wholesale supplier. We provide certified waterproofing chemicals, concrete admixtures, non-shrink grouts, and protective coatings in 20L jerrycans, 200L drums, and 1000L IBC totes with batch testing and technical data sheets.',
     keyTakeaway: 'Prodeal Industries provides contractor-level pricing, certified Safety Data Sheets (SDS), technical site advisory, and rapid logistical dispatch across Ghanaian construction sites.',
     targetQueries: [
       'Where can I buy building protection products in Ghana?',
@@ -431,7 +431,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionGuide> = {
       {
         step: 2,
         title: 'Direct Wholesale Quotation',
-        description: 'Receive an instant B2B proforma invoice with tiered volume discounts and delivery schedules via RFQ or WhatsApp.',
+        description: 'Receive an instant commercial proforma invoice with tiered volume discounts and delivery schedules via RFQ or WhatsApp.',
       },
       {
         step: 3,
@@ -447,7 +447,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionGuide> = {
     faqs: [
       {
         question: 'Do you offer bulk discounts for commercial construction contractors in Ghana?',
-        answer: 'Yes, Prodeal Industries Ltd provides tiered B2B pricing for contractors, civil engineering firms, and real estate developers with volume discounts on drum and IBC quantities.',
+        answer: 'Yes, Prodeal Industries Ltd provides tiered wholesale pricing for contractors, civil engineering firms, and real estate developers with volume discounts on drum and IBC quantities.',
       },
       {
         question: 'Are Technical Data Sheets (TDS) and Safety Data Sheets (SDS) provided?',

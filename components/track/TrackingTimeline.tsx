@@ -116,7 +116,7 @@ export function TrackingTimeline({
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-brand-border/20">
           <div>
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-brand-blue block mb-1">
-              PRODEAL INDUSTRIES LTD // B2B PROCUREMENT
+              PRODEAL INDUSTRIES LTD // COMMERCIAL SUPPLY
             </span>
             <h1 className="text-2xl sm:text-3xl font-display font-medium tracking-tight text-brand-deep-blue">
               Quotation Specification Sheet
