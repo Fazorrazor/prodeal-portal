@@ -1,6 +1,12 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { trackRateLimit } from '../../../lib/ratelimit';
 import { headers } from 'next/headers';
+
+export const metadata: Metadata = {
+  title: 'Track Inquiry',
+  description: 'Track the real-time status of your quotation and order inquiry with Prodeal Industries Ltd using your 16-character tracking ID.',
+};
 
 export default async function TrackPage(props: { searchParams: Promise<{ error?: string }> }) {
   const searchParams = await props.searchParams;
