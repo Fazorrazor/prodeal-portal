@@ -29,7 +29,7 @@ export async function generateMetadata(
   const pageUrl = `${siteUrl}/solutions/${data.slug}`;
 
   return {
-    title: `${data.metaTitle} | Prodeal Industries`,
+    title: data.metaTitle,
     description: data.metaDescription,
     alternates: {
       canonical: pageUrl,
