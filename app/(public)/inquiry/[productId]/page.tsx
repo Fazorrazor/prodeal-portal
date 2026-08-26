@@ -46,6 +46,19 @@ const getProductData = cache(async (productId: string) => {
   return { product, similarProducts: similarProducts || [] };
 });
 
+function getCleanProductTitle(name: string): string {
+  const trimmed = name.trim();
+  if (trimmed.length <= 45) return trimmed;
+
+  // Remove parenthetical details if too long: e.g. "1000ml Single Compartment Bowl (Clear Lid / Black Base)" -> "1000ml Single Compartment Bowl"
+  const withoutParens = trimmed.replace(/\s*\([^)]*\)/g, '').trim();
+  if (withoutParens.length >= 5 && withoutParens.length <= 45) {
+    return withoutParens;
+  }
+
+  return trimmed.slice(0, 42).trim() + '...';
+}
+
 export async function generateMetadata(
   props: { params: Promise<{ productId: string }> }
 ): Promise<Metadata> {
@@ -56,20 +69,30 @@ export async function generateMetadata(
     return { title: 'Product Not Found' };
   }
 
-  const division = Array.isArray(product.divisions) ? product.divisions[0] : product.divisions;
-  const divisionName = (division as any)?.display_name || 'Industrial Supplies';
+  const cleanTitle = getCleanProductTitle(product.name);
+  const pageUrl = `https://www.prodealindustries.com/inquiry/${product.id}`;
   
   const seoDescription = product.description 
     ? stripHtml(product.description).substring(0, 155) + '...'
     : `Request a wholesale quote for ${product.name} from Prodeal Industries Ltd. High-volume industrial supply delivered with precision.`;
 
   return {
-    title: `Buy ${product.name} | ${divisionName}`,
+    title: cleanTitle,
     description: seoDescription,
+    alternates: {
+      canonical: pageUrl,
+    },
     openGraph: {
-      title: `${product.name} | Prodeal Industries Ltd`,
+      title: `${cleanTitle} | Prodeal Industries`,
       description: seoDescription,
-    }
+      url: pageUrl,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${cleanTitle} | Prodeal Industries`,
+      description: seoDescription,
+    },
   };
 }
 
