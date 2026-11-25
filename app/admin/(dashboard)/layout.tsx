@@ -1,27 +1,24 @@
+import type { Metadata } from 'next';
 import { AdminSidebar } from '../../../components/admin/AdminSidebar';
 import { AdminTopbar } from '../../../components/admin/AdminTopbar';
 import { AdminAuthGuard } from '../../../components/admin/AdminAuthGuard';
 import { AdminWalkthrough } from '../../../components/admin/AdminWalkthrough';
 import { AdminMobileNav } from '../../../components/admin/AdminMobileNav';
-import { createServer } from '../../../lib/supabase/server';
+import { SessionGuard } from '../../../components/admin/SessionGuard';
+import { getVerifiedActiveStaff } from '../../../lib/supabase/requireStaff';
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createServer() as any;
-  const { data: { user } } = await supabase.auth.getUser();
-  let userRole = 'agent';
-  
-  if (user) {
-    const { data: staff } = await supabase
-      .from('staff_members')
-      .select('role')
-      .eq('auth_user_id', user.id)
-      .single();
-    if (staff?.role) userRole = staff.role;
-  }
+  const auth = await getVerifiedActiveStaff();
+  const userRole = auth.ok ? auth.context.staff.role : 'agent';
 
   return (
     <AdminAuthGuard>
       <>
+        <SessionGuard />
         <AdminWalkthrough />
 
         {/* Main Dashboard Layout */}

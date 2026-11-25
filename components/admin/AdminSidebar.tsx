@@ -5,6 +5,7 @@ import { LayoutDashboard, Ticket, Users, Settings, LogOut, Activity, AlertCircle
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 import { NetworkPresence } from './NetworkPresence';
+import { STORAGE_LAST_ACTIVITY, STORAGE_LOGOUT_EVENT } from '../../hooks/useIdleTimeout';
 
 export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
   const pathname = usePathname();
@@ -12,8 +13,18 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
   const supabase = createClientComponentClient();
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    try {
+      localStorage.removeItem(STORAGE_LAST_ACTIVITY);
+      localStorage.setItem(STORAGE_LOGOUT_EVENT, Date.now().toString());
+    } catch {
+      // Ignore storage errors
+    }
+    await Promise.allSettled([
+      fetch('/api/admin/auth/logout', { method: 'POST', credentials: 'same-origin' }),
+      supabase.auth.signOut(),
+    ]);
     router.push('/admin/login');
+    router.refresh();
   };
 
   const links = [

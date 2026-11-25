@@ -1,16 +1,20 @@
 import { NextResponse } from 'next/server';
 import { createServiceRoleClient } from '../../../../lib/supabase/server';
 import { sendWhatsAppAlert } from '../../../../lib/whatsapp/send';
+import { constantTimeEqual } from '../../../../lib/security';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  // 1. Authenticate the cron request (Vercel automatic header)
+  // 1. Fail-closed, timing-safe authentication for Vercel Cron
+  const cronSecret = process.env.CRON_SECRET;
   const authHeader = request.headers.get('authorization');
-  if (
-    process.env.NODE_ENV === 'production' &&
-    authHeader !== `Bearer ${process.env.CRON_SECRET}`
-  ) {
+
+  if (process.env.NODE_ENV === 'production') {
+    if (!cronSecret || !constantTimeEqual(authHeader, `Bearer ${cronSecret}`)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+  } else if (cronSecret && !constantTimeEqual(authHeader, `Bearer ${cronSecret}`)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -129,8 +133,8 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.json({ message: 'Processed batch', results });
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('[CRON Exception]', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ error: 'Internal cron processing error' }, { status: 500 });
   }
 }

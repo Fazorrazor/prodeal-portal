@@ -1,41 +1,40 @@
 ---
-description: 
+description: Hardened security audit and pre-push verification checklist for Pro Deal Portal
 ---
 
-# Workflow: Security Audit
+# Workflow: Security Audit (Guidance Mode)
 
-## Steps
+Apply `.agents/skills/security-audit/SKILL.md` (Guidance Mode) and `.agents/skills/supabase-postgres-best-practices/SKILL.md`.
 
-1. Scan for exposed secrets:
-   grep -r "SERVICE_ROLE\|WA_ACCESS_TOKEN\|REDIS_TOKEN" src/
-   Any result in a 'use client' file or non-API route is a critical issue
+## Automated Gates (Run First)
+```bash
+npm run verify
+npm audit --omit=dev --audit-level=high
+```
 
-2. Verify file upload security — all three layers must be present:
-   a. react-dropzone accept prop in FileUploadZone.tsx
-   b. MIME + size check in /api/upload/route.ts
-   c. Supabase Storage policy on inquiry-attachments bucket
-   Flag if any layer is missing
+## Manual Trust-Boundary Checklist
 
-3. Verify rate limiting is applied to these routes:
-   - POST /api/inquiries
-   - POST /api/upload
-   - POST /api/whatsapp
-   Flag any route that is missing Upstash rate limit check
+1. **Secrets & Client Isolation:**
+   - Confirm zero server secrets (`SUPABASE_SERVICE_ROLE_KEY`, `UPSTASH_REDIS_REST_TOKEN`, `META_WA_ACCESS_TOKEN`, `CRON_SECRET`, `RESEND_API_KEY`) are referenced inside `'use client'` components.
+   - Confirm `lib/logger.ts` redacts sensitive keys via `redactSensitiveMetadata()` before writing to console or `system_error_logs`.
 
-4. Check all /admin API routes for auth verification:
-   Every /api/admin/* handler must call supabase.auth.getUser()
-   and return 401 if no valid session — the middleware is defence-in-depth,
-   not the only protection
+2. **File Upload Defense-in-Depth (All 4 Layers):**
+   - `FileUploadZone.tsx` `accept` prop excludes `image/svg+xml`.
+   - `lib/upload/validateFile.ts` enforces MIME allowlist + 10 MB cap + `verifyFileMagicBytes()`.
+   - `app/api/upload/route.ts` validates `divisionSlug` with `isValidDivisionSlug()` and strips traversal chars.
+   - Supabase Storage policy on `inquiry-attachments` excludes `image/svg+xml` and caps size at 10 MB.
 
-5. Check RLS is enabled on all tables:
-   SELECT tablename, rowsecurity FROM pg_tables
-   WHERE schemaname = 'public';
-   Any table with rowsecurity = false is a finding
+3. **Edge IP & Rate Limiting:**
+   - All rate-limited routes (`/api/upload`, `/api/inquiries/[id]`, `/api/search`, `/api/admin/*`, `submitInquiry`, `submitSupportRequest`) key limits via `extractTrustedClientIp(...).quotaKey` (never raw leftmost `x-forwarded-for`).
 
-6. Check for prompt injection surface in the WhatsApp message builder:
-   User-supplied fields (contact_name, company_name, notes) must be
-   sanitised before being embedded in the WhatsApp message body —
-   strip markdown control characters that could manipulate the message
+4. **Admin Auth & Deactivation Enforcement:**
+   - All `/api/admin/*` handlers, destructive Server Actions, and admin RSC layouts authorize via `getVerifiedActiveStaff()` (`supabase.auth.getUser()` + `staff.is_active === true`).
+   - Deactivating staff via `PATCH /api/admin/staff/[id]` also bans the user in Supabase Auth.
 
-7. Produce a findings report with severity: Critical / High / Medium / Low
-   Do not attempt to fix all findings in one task — list them first
+5. **PostgreSQL RLS & Privileges:**
+   - Verify all `public.*` tables have `rowsecurity = true`.
+   - Verify `public.get_user_role()` uses `SET search_path = ''`, `(SELECT auth.uid())`, and `is_active = true`.
+   - Verify `staff_update_own_division` enforces matching division membership in both `USING` and `WITH CHECK`.
+
+6. **Decommissioned Surfaces:**
+   - Confirm `/ops`, `lib/ops`, and `/api/chat` remain absent and `proxy.ts` fast-404s `/ops*` and `/api/chat*`.

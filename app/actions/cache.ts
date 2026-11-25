@@ -1,34 +1,28 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { createServer } from '../../lib/supabase/server';
+import { getVerifiedActiveStaff } from '../../lib/supabase/requireStaff';
 
 export async function clearPlatformCache() {
-  const supabase = await createServer() as any;
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (!user) {
-    return { success: false, error: 'Unauthorized' };
+  const auth = await getVerifiedActiveStaff();
+  if (!auth.ok) {
+    return { success: false, error: auth.error };
   }
 
-  const { data: staff } = await supabase
-    .from('staff_members')
-    .select('role')
-    .eq('auth_user_id', user.id)
-    .single();
-
-  if (staff?.role !== 'admin') {
+  if (auth.context.staff.role !== 'admin') {
     return { success: false, error: 'Forbidden' };
   }
 
   try {
-    // Revalidate all major paths
     revalidatePath('/', 'layout');
     revalidatePath('/divisions/[slug]', 'page');
     revalidatePath('/admin', 'layout');
-    
+
     return { success: true };
-  } catch (error: any) {
-    return { success: false, error: error.message };
+  } catch (error: unknown) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Failed to clear cache.',
+    };
   }
 }

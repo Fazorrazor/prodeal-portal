@@ -1,6 +1,6 @@
 'use server';
 
-import { createServer } from '../../lib/supabase/server';
+import { getVerifiedActiveStaff } from '../../lib/supabase/requireStaff';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { logError } from '../../lib/logger';
@@ -35,16 +35,12 @@ export type SaveQuotationPayload = z.infer<typeof SaveQuotationSchema>;
 export async function saveQuotation(payload: SaveQuotationPayload) {
   try {
     const validated = SaveQuotationSchema.parse(payload);
-    const supabase = (await createServer()) as any;
+    const auth = await getVerifiedActiveStaff();
 
-    const {
-      data: { user },
-      error: authError
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return { success: false, error: 'Unauthorized. Please sign in as an admin or staff member.' };
+    if (!auth.ok) {
+      return { success: false, error: 'Unauthorized. Please sign in as an active admin or staff member.' };
     }
+    const { user, supabase } = auth.context;
 
     // 1. Insert quotation event into inquiry_events
     const { error: eventError } = await supabase.from('inquiry_events').insert({
@@ -100,7 +96,7 @@ export async function saveQuotation(payload: SaveQuotationPayload) {
     };
   } catch (err: any) {
     if (err instanceof z.ZodError) {
-      return { success: false, error: err.errors.map((e) => e.message).join(', ') };
+      return { success: false, error: err.issues.map((e) => e.message).join(', ') };
     }
     await logError('saveQuotation action error', err);
     return { success: false, error: err.message || 'An unexpected error occurred while saving the quotation.' };

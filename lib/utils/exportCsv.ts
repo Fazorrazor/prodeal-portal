@@ -1,3 +1,5 @@
+import { neutralizeCsvCell } from '../security';
+
 export interface CsvInquiryRow {
   id: string;
   tracking_uuid: string;
@@ -27,7 +29,8 @@ export function exportInquiriesToCsv(inquiries: CsvInquiryRow[], filename = 'pro
 
   const escapeCsv = (str: string | null | undefined) => {
     if (str === null || str === undefined) return '""';
-    const escaped = String(str).replace(/"/g, '""');
+    const safe = neutralizeCsvCell(str);
+    const escaped = safe.replace(/"/g, '""');
     return `"${escaped}"`;
   };
 

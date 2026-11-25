@@ -1,43 +1,34 @@
 import { NextResponse } from 'next/server';
-import { createServer } from '../../../../lib/supabase/server';
 import { USER_ROLES } from '../../../../lib/config/roles';
 import { logError } from '../../../../lib/logger';
-import { adminRateLimit } from '../../../../lib/ratelimit';
+import { adminRateLimit, isRateLimitConfigured } from '../../../../lib/ratelimit';
+import { extractTrustedClientIp } from '../../../../lib/security';
+import { getVerifiedActiveStaff } from '../../../../lib/supabase/requireStaff';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
 export async function GET(req: Request) {
   try {
-    // 0. Rate limiting
-    try {
-      const ip = req.headers.get('x-forwarded-for') ?? '127.0.0.1';
-      const { success } = await adminRateLimit.limit(ip);
-      if (!success) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
-    } catch (e) {
-      console.warn('[Rate Limit Warning] Admin route rate limit check failed', e);
+    // 0. Rate limiting keyed by trusted edge IP
+    if (isRateLimitConfigured) {
+      try {
+        const { quotaKey } = extractTrustedClientIp(req.headers);
+        const { success } = await adminRateLimit.limit(quotaKey);
+        if (!success) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+      } catch (e) {
+        console.warn('[Rate Limit Warning] Admin route rate limit check failed', e);
+      }
     }
 
-    const supabase = await createServer() as any;
-    
-    // 1. Verify caller is authenticated
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (userError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // 1. Verify caller is authenticated AND active in staff_members
+    const auth = await getVerifiedActiveStaff();
+    if (!auth.ok) {
+      return NextResponse.json({ error: auth.error }, { status: auth.status });
     }
+    const { staff, supabase } = auth.context;
 
-    // 2. Get caller's role to determine what alerts they can see
-    const { data: staff } = await supabase
-      .from('staff_members')
-      .select('role, division_ids')
-      .eq('auth_user_id', user.id)
-      .single();
-
-    if (!staff) {
-       return NextResponse.json({ error: 'Staff profile not found' }, { status: 403 });
-    }
-
-    // 3. Fetch unread/new inquiries
+    // 2. Fetch unread/new inquiries scoped by role/division
     let query = supabase
       .from('inquiries')
       .select(`
@@ -51,19 +42,16 @@ export async function GET(req: Request) {
       .order('created_at', { ascending: false })
       .limit(5);
 
-    // 3. Optional: Filter by division if the caller is an agent
     if (staff.role === USER_ROLES.STAFF && staff.division_ids && staff.division_ids.length > 0) {
-      query.in('division_id', staff.division_ids);
+      query = query.in('division_id', staff.division_ids);
     }
 
     const { data: alerts, error: dbError } = await query;
-
     if (dbError) throw dbError;
 
     return NextResponse.json({ alerts: alerts || [] }, { status: 200 });
-
-  } catch (error: any) {
-    await logError('POST /api/admin/alerts', error);
-    return NextResponse.json({ error: 'Failed to create alert.' }, { status: 500 });
+  } catch (error: unknown) {
+    await logError('GET /api/admin/alerts', error);
+    return NextResponse.json({ error: 'Failed to load alerts.' }, { status: 500 });
   }
 }

@@ -1,198 +1,139 @@
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { jwtVerify } from "jose";
+import {
+  classifyAdminHostRequest,
+  constantTimeEqual,
+  sanitizeSafeRedirect,
+} from './lib/security';
 
-import { Redis } from '@upstash/redis';
+const BLOCKED_SCANNER_SEGMENTS = [
+  '/.env',
+  '/wp-admin',
+  '/wp-login.php',
+  '/phpmyadmin',
+  '/.git',
+  '/config.json',
+  '/xmlrpc.php',
+];
+
+const CONTENT_SECURITY_POLICY = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://abfphaytysoeghuzisiw.supabase.co https://*.supabase.co https://via.placeholder.com",
+  "font-src 'self' data:",
+  "connect-src 'self' https://abfphaytysoeghuzisiw.supabase.co wss://abfphaytysoeghuzisiw.supabase.co https://*.supabase.co wss://*.supabase.co https://vitals.vercel-insights.com",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join('; ');
+
+function applySecurityHeaders(response: NextResponse, noIndex = false): NextResponse {
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set(
+    'Strict-Transport-Security',
+    'max-age=63072000; includeSubDomains; preload'
+  );
+  response.headers.set(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=(), browsing-topics=()'
+  );
+  response.headers.set('Content-Security-Policy', CONTENT_SECURITY_POLICY);
+  if (noIndex) {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  }
+  return response;
+}
 
 export async function proxy(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'Unknown';
-  
-  // --- Edge Firewall Execution ---
-  if (ip !== 'Unknown' && process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
-    try {
-      const redis = new Redis({
-        url: process.env.UPSTASH_REDIS_REST_URL,
-        token: process.env.UPSTASH_REDIS_REST_TOKEN,
-      });
-      const isBlacklisted = await redis.sismember('edge_firewall_blacklist', ip);
-      
-      if (isBlacklisted) {
-        return new NextResponse(
-          JSON.stringify({ error: "Access Denied: IP blocked by Edge Firewall" }), 
-          { status: 403, headers: { 'Content-Type': 'application/json' } }
-        );
-      }
-    } catch (e) {
-      // Fail open if Redis is down
-      console.error("Firewall check failed:", e);
+  // 1. Optional Edge/Cloudflare Origin Lock (enforced when CLOUDFLARE_ORIGIN_SECRET is configured in prod)
+  const expectedOriginSecret = process.env.CLOUDFLARE_ORIGIN_SECRET;
+  if (process.env.NODE_ENV === 'production' && expectedOriginSecret) {
+    const provided = req.headers.get('x-origin-edge-secret') || '';
+    if (!constantTimeEqual(provided, expectedOriginSecret)) {
+      return applySecurityHeaders(
+        new NextResponse('Forbidden: direct origin access is disabled.', { status: 403 })
+      );
     }
   }
 
-  // --- Telemetry Interceptor ---
-  const url = req.nextUrl.pathname;
-  const method = req.method;
-  let severity = "INFO";
-  const status = 200; // Middleware executes before status is finalized; we log intention
+  const pathname = req.nextUrl.pathname;
+  const lowerPath = pathname.toLowerCase();
 
-  // --- 1. Dynamic Tarpitting & Active Deception ---
-  const TARPIT_PATHS = ['.env', 'wp-admin', 'phpmyadmin', '.git', 'config.json'];
-  const isVulnerabilityScanner = TARPIT_PATHS.some(path => url.toLowerCase().includes(path));
+  // 2. Fast fail-closed 404 for vulnerability scanners and decommissioned /ops or /api/chat routes
+  const isDecommissioned =
+    lowerPath === '/ops' ||
+    lowerPath.startsWith('/ops/') ||
+    lowerPath === '/api/chat' ||
+    lowerPath.startsWith('/api/chat/');
+  const isScannerProbe = BLOCKED_SCANNER_SEGMENTS.some((seg) => lowerPath.includes(seg));
 
-  if (isVulnerabilityScanner) {
-    severity = "CRITICAL";
-  } else if (method === "DELETE" || method === "PUT") {
-    severity = "WARNING";
+  if (isDecommissioned || isScannerProbe) {
+    return applySecurityHeaders(new NextResponse('Not Found', { status: 404 }));
   }
 
-  if (url.includes("login") || url.includes("admin")) {
-    severity = "WARNING";
+  // 3. Dedicated Admin Subdomain Isolation (Option A)
+  // When ADMIN_SUBDOMAIN_HOST is set (e.g. desk.prodealindustries.com), /admin* and /api/admin*
+  // return a hard 404 on the public domain, and clean paths on the admin subdomain rewrite to /admin*.
+  const hostHeader = req.headers.get('host');
+  const hostDecision = classifyAdminHostRequest(hostHeader, pathname);
+
+  if (hostDecision.action === 'block_not_found') {
+    return applySecurityHeaders(new NextResponse('Not Found', { status: 404 }), true);
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const effectivePath =
+    hostDecision.action === 'rewrite_to_admin' ? hostDecision.targetPath : pathname;
+  const isAdminSurface =
+    hostDecision.action === 'allow_admin' ||
+    hostDecision.action === 'rewrite_to_admin' ||
+    (hostDecision.action === 'allow_public' && hostDecision.isAdminSubdomain);
 
-  // Don't trace internal Next.js static asset requests
-  if (supabaseUrl && supabaseServiceKey && !url.startsWith("/_next") && !url.includes("favicon.ico")) {
-    const regionHeader = req.headers.get("x-vercel-id");
-    const region = regionHeader
-      ? regionHeader.split("::")[0].toUpperCase()
-      : "EDGE";
+  const isAdminPagePath = effectivePath === '/admin' || effectivePath.startsWith('/admin/');
 
-    // Extract rich metadata for anomaly inspection
-    const headers = Object.fromEntries(req.headers.entries());
-    const searchParams = Object.fromEntries(req.nextUrl.searchParams.entries());
-    
-    const metadata = {
-      userAgent: headers['user-agent'] || 'Unknown',
-      ip: headers['x-forwarded-for'] || headers['x-real-ip'] || 'Unknown',
-      geo: { 
-        city: headers['x-vercel-ip-city'] || 'Unknown', 
-        country: headers['x-vercel-ip-country'] || 'Unknown' 
-      },
-      headers: headers,
-      query: searchParams,
-    };
-
-    const trace = {
-      method,
-      endpoint: url,
-      status: status,
-      latency: Math.floor(Math.random() * 60) + 10, // Simulated network overhead
-      region: region,
-      severity: severity,
-      metadata: metadata,
-    };
-
-    // Fire and forget POST to the Supabase REST API
-    fetch(`${supabaseUrl}/rest/v1/ops_network_traces`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseServiceKey,
-        Authorization: `Bearer ${supabaseServiceKey}`,
-        Prefer: "return=minimal",
-      },
-      body: JSON.stringify(trace),
-    }).catch((e) => console.error("Telemetry error:", e));
-  }
-  // -----------------------------
-
-  // --- Execute Tarpit (Shadow Ban) ---
-  if (isVulnerabilityScanner) {
-    // Deliberately hold the connection open to exhaust botnet resources
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    // Return a fake 200 OK with garbage data to waste the attacker's time analyzing it
-    return new NextResponse(JSON.stringify({ status: "success", version: "9.4.2" }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+  let res: NextResponse;
+  if (hostDecision.action === 'rewrite_to_admin') {
+    const rewriteUrl = req.nextUrl.clone();
+    rewriteUrl.pathname = hostDecision.targetPath;
+    res = NextResponse.rewrite(rewriteUrl);
+  } else {
+    res = NextResponse.next();
   }
 
-  const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req, res });
+  // 4. Admin route session enforcement via verified supabase.auth.getUser()
+  if (isAdminPagePath) {
+    const supabase = createMiddlewareClient({ req, res });
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    const isPublicAdminAuthRoute =
+      effectivePath.startsWith('/admin/login') || effectivePath.startsWith('/admin/update-password');
 
-  // If trying to access /admin routes (except login and update-password) and no session exists
-  if (req.nextUrl.pathname.startsWith('/admin') && !req.nextUrl.pathname.startsWith('/admin/login') && !req.nextUrl.pathname.startsWith('/admin/update-password')) {
-    if (!session) {
+    if (!isPublicAdminAuthRoute && !user) {
       const redirectUrl = req.nextUrl.clone();
       redirectUrl.pathname = '/admin/login';
-      redirectUrl.searchParams.set('redirectTo', req.nextUrl.pathname);
-      return NextResponse.redirect(redirectUrl);
+      redirectUrl.searchParams.set('redirectTo', sanitizeSafeRedirect(effectivePath, '/admin', '/admin'));
+      return applySecurityHeaders(NextResponse.redirect(redirectUrl), true);
     }
-  }
 
-  // If trying to access /admin/login but already logged in
-  if (req.nextUrl.pathname.startsWith('/admin/login')) {
-    if (session) {
+    if (effectivePath.startsWith('/admin/login') && user) {
       const redirectUrl = req.nextUrl.clone();
       redirectUrl.pathname = '/admin';
-      return NextResponse.redirect(redirectUrl);
+      redirectUrl.search = '';
+      return applySecurityHeaders(NextResponse.redirect(redirectUrl), true);
     }
   }
 
-  // Developer Operations Firewall
-  if (req.nextUrl.pathname.startsWith("/ops")) {
-    const sessionCookie = req.cookies.get("ops_session")?.value;
-
-    if (!sessionCookie && req.nextUrl.pathname !== "/ops/login") {
-      return NextResponse.redirect(new URL("/ops/login", req.url));
-    }
-
-    if (sessionCookie) {
-      try {
-        const secretKey = process.env.DEV_PORTAL_SESSION_SECRET || "fallback-secret-for-development-only-change-in-prod";
-        const key = new TextEncoder().encode(secretKey);
-        await jwtVerify(sessionCookie, key, { algorithms: ["HS256"] });
-
-        // If logged in and trying to access login, redirect to ops dashboard
-        if (req.nextUrl.pathname === "/ops/login") {
-          return NextResponse.redirect(new URL("/ops", req.url));
-        }
-      } catch (error) {
-        // Token is invalid or expired
-        if (req.nextUrl.pathname !== "/ops/login") {
-          const response = NextResponse.redirect(new URL("/ops/login", req.url));
-          response.cookies.delete("ops_session");
-          return response;
-        }
-      }
-    }
-  }
-
-  // --- Strict Security Headers (Zero Trust) ---
-  res.headers.set("X-Frame-Options", "DENY"); // Prevent Clickjacking
-  res.headers.set("X-Content-Type-Options", "nosniff"); // Prevent MIME-sniffing
-  res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-  res.headers.set(
-    "Strict-Transport-Security",
-    "max-age=31536000; includeSubDomains; preload"
-  ); // Enforce HTTPS
-  res.headers.set(
-    "Permissions-Policy",
-    "camera=(), microphone=(), geolocation=(), interest-cohort=()"
-  ); // Disable unnecessary browser features
-  // Strict CSP to neutralize XSS
-  res.headers.set(
-    "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://vercel.live; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.supabase.co https://*.whatsapp.com; connect-src 'self' wss://*.supabase.co https://*.supabase.co; font-src 'self' data:;"
-  );
-
-  return res;
+  return applySecurityHeaders(res, isAdminSurface);
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };

@@ -1,42 +1,63 @@
 'use client';
 import { useState } from 'react';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Loader2, AlertCircle, ArrowRight } from 'lucide-react';
+import { Loader2, AlertCircle, ArrowRight, Clock } from 'lucide-react';
+import { sanitizeSafeRedirect } from '../../lib/security';
 
 export function AdminLoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = createClientComponentClient();
+  const reason = searchParams.get('reason');
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const redirectTo = sanitizeSafeRedirect(searchParams.get('redirectTo'), '/admin', '/admin');
+      const res = await fetch('/api/admin/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ email, password, redirectTo }),
+      });
 
-    if (error) {
-      setError(error.message);
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setError(data.error || 'Invalid email or password.');
+        setIsLoading(false);
+        return;
+      }
+
+      const safeDest = sanitizeSafeRedirect(data.redirectTo || redirectTo, '/admin', '/admin');
+      router.push(safeDest);
+      router.refresh();
+    } catch {
+      setError('Unable to reach authentication service. Please try again.');
       setIsLoading(false);
-      return;
     }
-
-    const redirectTo = searchParams.get('redirectTo') || '/admin';
-    router.push(redirectTo);
-    router.refresh();
   };
 
   return (
     <div className="space-y-6">
+      {(reason === 'idle' || reason === 'revoked') && !error && (
+        <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 flex items-start gap-3">
+          <Clock className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <p className="text-sm text-amber-800 font-medium">
+            {reason === 'idle'
+              ? 'You were signed out due to inactivity. Please sign in again.'
+              : 'Your session expired or was revoked. Please sign in again.'}
+          </p>
+        </div>
+      )}
+
       {error && (
         <div className="p-4 bg-red-50 rounded-xl border border-red-100 flex items-start gap-3 animate-in fade-in">
           <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
@@ -47,16 +68,17 @@ export function AdminLoginForm() {
       <form onSubmit={handleSignIn} className="space-y-8 animate-in fade-in">
         <div>
           <label htmlFor="login-email" className="block text-xs font-medium text-brand-deep-blue/70 mb-1.5">
-            Email Address
+            Work Email
           </label>
-          <input 
+          <input
             id="login-email"
             type="email"
+            autoComplete="username"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
             className="w-full py-3 px-4 bg-white border border-brand-border/40 rounded-md shadow-sm focus:border-brand-blue focus:ring-1 focus:ring-brand-blue/20 outline-none transition-all text-sm text-brand-deep-blue"
-            placeholder="admin@prodealindustries.com"
+            placeholder="name@company.com"
           />
         </div>
 
@@ -64,9 +86,10 @@ export function AdminLoginForm() {
           <label htmlFor="login-password" className="block text-xs font-medium text-brand-deep-blue/70 mb-1.5">
             Password
           </label>
-          <input 
+          <input
             id="login-password"
             type="password"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

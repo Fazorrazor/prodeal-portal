@@ -1,3 +1,5 @@
+import { sanitizeWhatsAppText } from '../security';
+
 export interface WhatsAppContext {
   divisionSlug: string;
   attachmentCount: number;
@@ -40,11 +42,11 @@ export function buildWhatsAppMessage(toPhone: string, trackingId: string, divisi
           parameters: [
             {
               type: 'text',
-              text: divisionName.toUpperCase()
+              text: sanitizeWhatsAppText(divisionName, 80).toUpperCase()
             },
             {
               type: 'text',
-              text: trackingId
+              text: sanitizeWhatsAppText(trackingId, 64)
             }
           ]
         }
