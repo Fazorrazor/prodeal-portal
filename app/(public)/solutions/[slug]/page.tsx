@@ -1,10 +1,9 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle2, ShieldCheck, AlertCircle, FileText, ChevronRight, MessageSquare, Wrench } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, ShieldCheck, AlertCircle, ChevronRight, MessageSquare, Wrench } from 'lucide-react';
 import { SOLUTIONS_DATA, SOLUTIONS_LIST } from '../../../../lib/config/solutions';
 import { DivisionFAQ } from '../../../../components/shared/DivisionFAQ';
-import { QuickRfqButton } from '../../../../components/shared/QuickRfqButton';
 
 const siteUrl = 'https://www.prodealindustries.com';
 
@@ -304,18 +303,7 @@ export default async function SolutionGuidePage(
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-4">
-                  <QuickRfqButton
-                    variant="badge"
-                    item={{
-                      id: `sol-${guide.slug}-${idx}`,
-                      name: chem.name,
-                      sku: `SOL-${guide.slug.toUpperCase()}-${idx + 1}`,
-                      divisionSlug: 'chemicals',
-                      quantity: 1,
-                      unit: 'Drum/Jerrycan',
-                    }}
-                  />
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-4">
                   <Link
                     href={`https://wa.me/233543888800?text=${encodeURIComponent(`Hello Prodeal Industries, I need an official quote for ${chem.name} for ${guide.title}.`)}`}
                     target="_blank"

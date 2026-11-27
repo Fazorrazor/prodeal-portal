@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { MessageSquare, ArrowRight, Check, Copy, ExternalLink, Printer } from 'lucide-react';
+import { MessageSquare, Check, Copy, ExternalLink } from 'lucide-react';
 
 export default function SuccessReceiptClient() {
   const searchParams = useSearchParams();
@@ -109,18 +109,10 @@ export default function SuccessReceiptClient() {
                   {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
                   <span>{copied ? 'Copied ✓' : 'Copy ID'}</span>
                 </button>
-
-                <Link
-                  href={`/track/${trackingId}`}
-                  className="flex-1 lg:flex-initial text-xs font-medium text-white bg-brand-deep-blue hover:bg-brand-blue transition-colors px-5 py-3 rounded-xl flex items-center justify-center gap-1.5 shadow-sm"
-                >
-                  <span>Live Track</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
               </div>
             </div>
             <p className="text-[10px] font-mono font-medium text-brand-deep-blue/60 mt-3 ml-2">
-              Save this reference ID to track live quotation status anytime without logging in.
+              Save this reference ID for your records when following up with our sales desk.
             </p>
           </div>
 
@@ -179,13 +171,6 @@ export default function SuccessReceiptClient() {
                   </a>
                 </div>
               </div>
-              
-              <Link
-                href="/track"
-                className="block w-full px-4 py-2.5 bg-white text-brand-deep-blue border border-brand-border/40 font-medium text-xs hover:bg-brand-surface rounded-xl transition-all text-center"
-              >
-                Track another quote
-              </Link>
             </div>
 
           </div>

@@ -28,12 +28,6 @@ export const uploadRateLimit = new Ratelimit({
   prefix: 'rl:upload',
 });
 
-export const trackRateLimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(20, '1 m'),
-  prefix: 'rl:track',
-});
-
 export const searchRateLimit = new Ratelimit({
   redis,
   limiter: Ratelimit.slidingWindow(60, '1 m'),

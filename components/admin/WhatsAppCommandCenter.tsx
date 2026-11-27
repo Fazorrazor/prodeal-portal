@@ -33,7 +33,6 @@ export function WhatsAppCommandCenter({ inquiry, latestQuotation }: WhatsAppComm
   }
 
   const trackingCode = inquiry.tracking_uuid.substring(0, 8).toUpperCase();
-  const trackingUrl = `https://www.prodealindustries.com/track/${inquiry.tracking_uuid}`;
   const division = sanitizeWhatsAppText(inquiry.divisions?.display_name || 'Industrial Supplies', 80);
   const safeContactName = sanitizeWhatsAppText(inquiry.contact_name, 100) || 'Valued Client';
   const safeCompany = inquiry.company_name ? sanitizeWhatsAppText(inquiry.company_name, 120) : '';
@@ -48,14 +47,14 @@ export function WhatsAppCommandCenter({ inquiry, latestQuotation }: WhatsAppComm
     {
       key: 'quote_ready',
       title: 'Pro-Forma Quotation Ready',
-      desc: 'Send itemized price breakdown & live spec link',
+      desc: 'Send itemized price breakdown & quotation summary',
       badge: 'Sales Priority',
       badgeClass: 'bg-blue-50 text-brand-blue border-blue-100',
       icon: FileText,
       iconColor: 'text-brand-blue bg-blue-50/80',
       targetStatus: 'quoted',
       targetStatusLabel: 'Quoted',
-      message: `Hello ${safeContactName}${companyGreeting},\n\nThank you for reaching out to Prodeal Industries Ltd (${division}).\n\nYour official Pro-Forma Quotation [${quotePayload.quoteNumber || trackingCode}] is ready for your review:\n👉 Total: ${quoteTotalStr}\n👉 Live Spec Sheet: ${trackingUrl}\n\nPlease review and let us know if you would like us to reserve the stock or issue an official tax invoice for payment.\n\nBest regards,\nProdeal Industries Sales Desk\nTema Heavy Industrial Area`
+      message: `Hello ${safeContactName}${companyGreeting},\n\nThank you for reaching out to Prodeal Industries Ltd (${division}).\n\nYour official Pro-Forma Quotation [${quotePayload.quoteNumber || trackingCode}] is ready for your review:\n👉 Total: ${quoteTotalStr}\n👉 Reference ID: #${trackingCode}\n\nPlease review and let us know if you would like us to reserve the stock or issue an official tax invoice for payment.\n\nBest regards,\nProdeal Industries Sales Desk\nTema Heavy Industrial Area`
     },
     {
       key: 'site_survey',
@@ -67,7 +66,7 @@ export function WhatsAppCommandCenter({ inquiry, latestQuotation }: WhatsAppComm
       iconColor: 'text-teal-600 bg-teal-50/80',
       targetStatus: 'in_progress',
       targetStatusLabel: 'In Progress',
-      message: `Hello ${safeContactName},\n\nOur technical field engineers have scheduled your on-site surface inspection for RFQ #${trackingCode} (${division}).\n\n👉 Tracking Ref: ${trackingUrl}\n\nOur certified application specialist will arrive to assess substrate moisture, surface preparation, and coating thickness requirements.\n\nProdeal Field Engineering Desk`
+      message: `Hello ${safeContactName},\n\nOur technical field engineers have scheduled your on-site surface inspection for Inquiry #${trackingCode} (${division}).\n\nOur certified application specialist will arrive to assess substrate moisture, surface preparation, and coating thickness requirements.\n\nProdeal Field Engineering Desk`
     },
     {
       key: 'production',
@@ -79,7 +78,7 @@ export function WhatsAppCommandCenter({ inquiry, latestQuotation }: WhatsAppComm
       iconColor: 'text-amber-600 bg-amber-50/80',
       targetStatus: 'in_progress',
       targetStatusLabel: 'In Progress',
-      message: `Hello ${safeContactName},\n\nWe have received your order confirmation for RFQ #${trackingCode} (${division}).\n\nOur Tema facility has queued your consignment for batching and quality inspection.\nTrack live milestones here: ${trackingUrl}\n\nWe will notify you once loading and waybill generation commence.\n\nProdeal Operations Team`
+      message: `Hello ${safeContactName},\n\nWe have received your order confirmation for Inquiry #${trackingCode} (${division}).\n\nOur Tema facility has queued your consignment for batching and quality inspection.\n\nWe will notify you once loading and waybill generation commence.\n\nProdeal Operations Team`
     },
     {
       key: 'dispatched',
@@ -91,7 +90,7 @@ export function WhatsAppCommandCenter({ inquiry, latestQuotation }: WhatsAppComm
       iconColor: 'text-emerald-600 bg-emerald-50/80',
       targetStatus: 'closed',
       targetStatusLabel: 'Closed',
-      message: `Hello ${safeContactName},\n\nYour consignment for RFQ #${trackingCode} is now loaded and ready for haulage/pickup at our Tema warehouse.\n\n👉 Tracking & Waybill Ref: ${trackingUrl}\n\nOur logistics coordinator is on standby for gate clearance.\n\nProdeal Logistics Desk`
+      message: `Hello ${safeContactName},\n\nYour consignment for Inquiry #${trackingCode} is now loaded and ready for haulage/pickup at our Tema warehouse.\n\n👉 Dispatch Ref: #${trackingCode}\n\nOur logistics coordinator is on standby for gate clearance.\n\nProdeal Logistics Desk`
     },
     {
       key: 'clarification',

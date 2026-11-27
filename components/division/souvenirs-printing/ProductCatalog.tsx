@@ -1,7 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { ProductImageCarousel } from '../../shared/ProductImageCarousel';
-import { QuickRfqButton } from '../../shared/QuickRfqButton';
 
 export async function ProductCatalog() {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
@@ -131,21 +130,6 @@ function ProductCard({
           <div className="absolute top-3 left-3 bg-white/85 backdrop-blur-md text-brand-deep-blue px-3 py-1 text-[9px] font-medium tracking-wide rounded-full z-20 shadow-xs">
             {priceRange}
           </div>
-          {/* Quick RFQ Action */}
-          <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-            <QuickRfqButton
-              variant="icon"
-              item={{
-                id: product.id,
-                name: product.name,
-                sku: product.sku || product.id.split('-')[0],
-                divisionSlug: from,
-                quantity: moq,
-                unit: `Units (MOQ ${moq})`,
-                image_path: images[0],
-              }}
-            />
-          </div>
         </div>
 
         {/* Content */}
@@ -167,19 +151,7 @@ function ProductCard({
       </Link>
 
       {/* Card Action Footer */}
-      <div className="mt-auto px-1 pt-2 border-t border-brand-border/20 flex items-center justify-between gap-2">
-        <QuickRfqButton
-          variant="badge"
-          item={{
-            id: product.id,
-            name: product.name,
-            sku: product.sku || product.id.split('-')[0],
-            divisionSlug: from,
-            quantity: moq,
-            unit: `Units (MOQ ${moq})`,
-            image_path: images[0],
-          }}
-        />
+      <div className="mt-auto px-1 pt-2 border-t border-brand-border/20 flex items-center justify-end gap-2">
         <Link 
           href={`/inquiry/${product.id}?from=${from}`}
           className="inline-flex items-center text-xs font-medium text-brand-deep-blue hover:text-brand-blue opacity-80 hover:opacity-100 transition-all"

@@ -192,12 +192,35 @@ describe('Google Search Console & SEO Hygiene Guards', () => {
     expect(proxySrc).toContain("lowerPath === '/sitemap.xml'");
   });
 
-  test('private receipt & tracking detail pages declare explicit noindex metadata', () => {
+  test('private receipt page declares explicit noindex metadata', () => {
     const receiptSrc = fs.readFileSync(path.join(ROOT, 'app/(public)/inquiry/success/page.tsx'), 'utf8');
     expect(receiptSrc).toContain('index: false');
+  });
 
-    const trackDetailSrc = fs.readFileSync(path.join(ROOT, 'app/(public)/track/[trackingId]/page.tsx'), 'utf8');
-    expect(trackDetailSrc).toContain('index: false');
+  test('removed Track Inquiry, calculator, estimator, and quick RFQ surfaces stay deleted', () => {
+    const removedPaths = [
+      'app/(public)/track',
+      'components/track',
+      'app/api/inquiries',
+      'components/division/chemicals/ChemicalCoverageCalculator.tsx',
+      'components/division/disposable-bowls/BowlsCartonCalculator.tsx',
+      'components/shared/QuickRfqButton.tsx',
+      'components/shared/RfqTray.tsx',
+      'lib/store/rfqStore.ts',
+    ];
+    for (const rel of removedPaths) {
+      expect(fs.existsSync(path.join(ROOT, rel)), `Expected ${rel} to remain removed`).toBe(false);
+    }
+
+    const navSrc = fs.readFileSync(path.join(ROOT, 'lib/config/navigation.ts'), 'utf8');
+    expect(navSrc).not.toContain('/track');
+    expect(navSrc).not.toContain('Track Inquiry');
+
+    const footerSrc = fs.readFileSync(path.join(ROOT, 'components/layout/FooterLinks.tsx'), 'utf8');
+    expect(footerSrc).not.toContain('/track');
+
+    const layoutSrc = fs.readFileSync(path.join(ROOT, 'app/layout.tsx'), 'utf8');
+    expect(layoutSrc).not.toContain('RfqTray');
   });
 
   test('indexable static public routes declare explicit canonical URLs', () => {
