@@ -154,6 +154,87 @@ export function scanFileContent(filePath, content, options = {}) {
   return findings;
 }
 
+const BENIGN_LIFECYCLE_HOOKS = /^(?:husky|prisma\s+generate|patch-package|next\s+telemetry\s+disable)$/i;
+const DANGEROUS_HOOK_PATTERN =
+  /(?:curl|wget)\s+[^\n|]+\|\s*(?:sudo\s+)?(?:ba)?sh\b|powershell(?:\.exe)?\b[^\n]*(?:-e(?:nc)?|iex|invoke-expression|downloadstring)|node\s+-e\s+["'][^"']*(?:eval|Buffer\.from|child_process|http|https|fetch)|base64\s+(?:-d|--decode)|cmd(?:\.exe)?\s+\/c\s+|\\x[0-9a-f]{2}|https?:\/\/[^\s'"]+\.(?:sh|ps1|exe|bat|vbs)/i;
+
+/**
+ * Inspects high-risk config manifests (`package.json` install hooks and `.vscode/tasks.json` auto-run).
+ */
+export function scanConfigFile(filePath, content) {
+  const findings = [];
+  const normalizedPath = filePath.replace(/\\/g, '/');
+  const baseName = path.basename(normalizedPath).toLowerCase();
+
+  let parsed;
+  try {
+    parsed = JSON.parse(content);
+  } catch {
+    return findings;
+  }
+
+  if (baseName === 'package.json' && parsed && typeof parsed.scripts === 'object' && parsed.scripts) {
+    const lifecycleKeys = ['preinstall', 'install', 'postinstall', 'preprepare', 'prepare'];
+    for (const key of lifecycleKeys) {
+      const cmd = parsed.scripts[key];
+      if (typeof cmd !== 'string' || !cmd.trim()) continue;
+      if (BENIGN_LIFECYCLE_HOOKS.test(cmd.trim())) continue;
+
+      if (DANGEROUS_HOOK_PATTERN.test(cmd)) {
+        findings.push({
+          file: normalizedPath,
+          line: 1,
+          id: 'MALICIOUS_INSTALL_HOOK',
+          severity: 'HIGH',
+          message: `package.json "${key}" hook runs a suspicious download/obfuscated command: ${cmd.slice(0, 120)}`,
+        });
+      } else if (key === 'preinstall' || key === 'install' || key === 'postinstall') {
+        findings.push({
+          file: normalizedPath,
+          line: 1,
+          id: 'CUSTOM_INSTALL_HOOK',
+          severity: 'WARN',
+          message: `package.json defines an automatic "${key}" script that runs on npm install: ${cmd.slice(0, 120)}`,
+        });
+      }
+    }
+  }
+
+  if (normalizedPath.toLowerCase().endsWith('.vscode/tasks.json') && parsed && Array.isArray(parsed.tasks)) {
+    for (const task of parsed.tasks) {
+      if (task?.runOptions?.runOn === 'folderOpen') {
+        findings.push({
+          file: normalizedPath,
+          line: 1,
+          id: 'VSCODE_FOLDER_OPEN_AUTORUN',
+          severity: 'HIGH',
+          message: `VS Code task "${task.label || 'unnamed'}" is configured to auto-execute immediately on folderOpen.`,
+        });
+      }
+    }
+  }
+
+  return findings;
+}
+
+function collectConfigFiles(dir, out = []) {
+  if (!fs.existsSync(dir)) return out;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (SKIP_DIRS.has(entry.name)) continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      collectConfigFiles(full, out);
+    } else if (entry.isFile()) {
+      const norm = full.replace(/\\/g, '/').toLowerCase();
+      if (entry.name.toLowerCase() === 'package.json' || norm.endsWith('/.vscode/tasks.json')) {
+        out.push(full);
+      }
+    }
+  }
+  return out;
+}
+
 function collectSourceFiles(dir, out = []) {
   if (!fs.existsSync(dir)) return out;
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -234,10 +315,15 @@ const SKILL_MD_THREAT_RULES = [
   {
     id: 'SKILL_PROMPT_INJECTION_EXFIL',
     severity: 'HIGH',
-    pattern: /(?:ignore\s+(?:all\s+)?previous\s+instructions|disregard\s+system\s+prompt)[\s\S]{0,160}(?:\.env|secret|token|exfiltrate|curl|upload)|(?:exfiltrate|send|post)\b[^\n]{0,80}(?:\.env\.local|SUPABASE_SERVICE_ROLE_KEY|RESEND_API_KEY|META_WA_ACCESS_TOKEN|UPSTASH_REDIS_REST_TOKEN|webhook\.site|ngrok\.io)/i,
+    pattern: /(?:ignore\s+(?:all\s+)?previous\s+instructions|disregard\s+system\s+prompt)[\s\S]{0,160}(?:\.env|secret|token|exfiltrate|curl|upload)|\b(?:exfiltrate|send|post)\b[^\n]{0,80}(?:\.env\.local|SUPABASE_SERVICE_ROLE_KEY|RESEND_API_KEY|META_WA_ACCESS_TOKEN|UPSTASH_REDIS_REST_TOKEN|webhook\.site|ngrok\.io)/i,
     message: 'Prompt-injection or secret exfiltration instruction inside skill markdown',
   },
 ];
+
+export function isSkillMarkdownPath(filePath) {
+  const norm = filePath.replace(/\\/g, '/').toLowerCase();
+  return (norm.includes('/.agents/skills/') || norm.startsWith('.agents/skills/')) && norm.endsWith('.md');
+}
 
 export function scanSkillMarkdown(relPath, content) {
   const findings = [];
@@ -385,6 +471,41 @@ function runCli() {
       allFindings.push(...scanFileContent(rel, content, { strictLineLength }));
     } catch {
       // skip binary
+    }
+  }
+
+  const configFilesToScan = stagedFiles
+    ? stagedFiles
+        .map((f) => path.resolve(f))
+        .filter((f) => {
+          const norm = f.replace(/\\/g, '/').toLowerCase();
+          return fs.existsSync(f) && fs.statSync(f).isFile() && (norm.endsWith('/package.json') || norm.endsWith('/.vscode/tasks.json'));
+        })
+    : collectConfigFiles(targetDir);
+
+  for (const cfgFile of configFilesToScan) {
+    try {
+      const content = fs.readFileSync(cfgFile, 'utf8');
+      const rel = path.relative(targetDir, cfgFile) || cfgFile;
+      allFindings.push(...scanConfigFile(rel, content));
+    } catch {
+      // skip unreadable
+    }
+  }
+
+  if (stagedFiles) {
+    const skillMdFilesToScan = stagedFiles
+      .map((f) => path.resolve(f))
+      .filter((f) => fs.existsSync(f) && fs.statSync(f).isFile() && isSkillMarkdownPath(f));
+
+    for (const mdFile of skillMdFilesToScan) {
+      try {
+        const content = fs.readFileSync(mdFile, 'utf8');
+        const rel = path.relative(targetDir, mdFile) || mdFile;
+        allFindings.push(...scanSkillMarkdown(rel, content));
+      } catch {
+        // skip unreadable
+      }
     }
   }
 

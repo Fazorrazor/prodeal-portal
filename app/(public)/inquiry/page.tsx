@@ -7,6 +7,9 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Request a Quote',
   description: 'Submit a commercial quote request for industrial chemicals, catering disposables, 3D signages, or corporate printing in Ghana.',
+  alternates: {
+    canonical: 'https://www.prodealindustries.com/inquiry',
+  },
   openGraph: {
     title: 'Request a Quote | Prodeal Industries',
     description: 'Submit a commercial quote request for industrial chemicals, catering disposables, 3D signages, or corporate printing in Ghana.',

@@ -5,66 +5,64 @@ import { SOLUTIONS_LIST } from '../lib/config/solutions';
 // Revalidate every hour — keeps the sitemap fresh without unnecessary rebuilds
 export const revalidate = 3600;
 
+// Update these timestamps only when the corresponding content genuinely changes
+// so Googlebot trusts <lastmod> and prioritizes fresh pages accurately.
+const CONTENT_LAST_MODIFIED = new Date('2026-11-27T00:00:00Z');
+const LEGAL_LAST_MODIFIED = new Date('2026-08-01T00:00:00Z');
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.prodealindustries.com';
-  const now = new Date();
 
-  // Static routes — these are fixed pages that always exist
+  // Indexable static routes (utility/private routes like /track and /inquiry/success are intentionally excluded)
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: now,
+      lastModified: CONTENT_LAST_MODIFIED,
       changeFrequency: 'weekly',
       priority: 1.0,
     },
     {
       url: `${baseUrl}/solutions`,
-      lastModified: now,
+      lastModified: CONTENT_LAST_MODIFIED,
       changeFrequency: 'weekly',
       priority: 0.95,
     },
     {
       url: `${baseUrl}/inquiry`,
-      lastModified: now,
+      lastModified: CONTENT_LAST_MODIFIED,
       changeFrequency: 'monthly',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/support`,
-      lastModified: now,
+      lastModified: LEGAL_LAST_MODIFIED,
       changeFrequency: 'yearly',
       priority: 0.4,
     },
     {
-      url: `${baseUrl}/track`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
       url: `${baseUrl}/privacy`,
-      lastModified: now,
+      lastModified: LEGAL_LAST_MODIFIED,
       changeFrequency: 'yearly',
       priority: 0.2,
     },
     {
       url: `${baseUrl}/terms`,
-      lastModified: now,
+      lastModified: LEGAL_LAST_MODIFIED,
       changeFrequency: 'yearly',
       priority: 0.2,
     },
     {
       url: `${baseUrl}/accessibility`,
-      lastModified: now,
+      lastModified: LEGAL_LAST_MODIFIED,
       changeFrequency: 'yearly',
       priority: 0.2,
     },
   ];
 
-  // Dynamic division routes
+  // Active division routes only (DIVISIONS_LIST filters isActive === true)
   const divisionRoutes: MetadataRoute.Sitemap = DIVISIONS_LIST.map((division) => ({
     url: `${baseUrl}${division.href}`,
-    lastModified: now,
+    lastModified: CONTENT_LAST_MODIFIED,
     changeFrequency: 'weekly' as const,
     priority: 0.9,
   }));
@@ -72,7 +70,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Dynamic problem-solution guide routes (high SEO/GEO priority)
   const solutionRoutes: MetadataRoute.Sitemap = SOLUTIONS_LIST.map((solution) => ({
     url: `${baseUrl}/solutions/${solution.slug}`,
-    lastModified: now,
+    lastModified: CONTENT_LAST_MODIFIED,
     changeFrequency: 'weekly' as const,
     priority: 0.95,
   }));

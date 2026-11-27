@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { createServiceRoleClient } from '../../../../lib/supabase/server';
 import { TrackingTimeline } from '../../../../components/track/TrackingTimeline';
 import Link from 'next/link';
@@ -7,6 +8,16 @@ import { DivisionErrorBoundary } from '../../../../components/shared/DivisionErr
 import { logError } from '../../../../lib/logger';
 
 export const revalidate = 0; // cache = 'no-store' equivalent for this segment
+
+export const metadata: Metadata = {
+  title: 'Order Tracking Status',
+  description: 'Private inquiry status lookup for Prodeal Industries Ltd.',
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+  },
+};
 
 export default async function TrackDetail(props: { params: Promise<{ trackingId: string }> }) {
   const params = await props.params;

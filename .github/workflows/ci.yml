@@ -222,7 +222,8 @@ jobs:
         with:
           urls: |
             ${{ needs.preview-deploy.outputs.preview_url }}
-            ${{ needs.preview-deploy.outputs.preview_url }}/divisions/disposable-bowls
+            ${{ needs.preview-deploy.outputs.preview_url }}/divisions/bowls
+            ${{ needs.preview-deploy.outputs.preview_url }}/divisions/chemicals
           uploadArtifacts: true
           temporaryPublicStorage: true
           configPath: ./lighthouserc.js
@@ -260,11 +261,13 @@ jobs:
         id: smoke_test
         run: |
           echo "Waiting 10 seconds for Edge CDN propagation..."
-          sleep 10 
-          # Ping the production URL. If it 500s or 404s, fail the job.
-          HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" ${{ steps.prod_deploy.outputs.prod_url }})
-          if [ "$HTTP_STATUS" -ne 200 ]; then
-            echo "Smoke test failed with status $HTTP_STATUS!"
+          sleep 10
+          # Ping homepage AND deep /api/health (verifies env + live Supabase readiness).
+          HOME_STATUS=$(curl -o /dev/null -s -w "%{http_code}" "${{ steps.prod_deploy.outputs.prod_url }}")
+          HEALTH_STATUS=$(curl -o /dev/null -s -w "%{http_code}" "${{ steps.prod_deploy.outputs.prod_url }}/api/health")
+          echo "Smoke check statuses -> home=${HOME_STATUS}, health=${HEALTH_STATUS}"
+          if [ "$HOME_STATUS" -ne 200 ] || [ "$HEALTH_STATUS" -ne 200 ]; then
+            echo "Smoke test failed (home=${HOME_STATUS}, health=${HEALTH_STATUS})!"
             exit 1
           fi
 

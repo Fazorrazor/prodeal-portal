@@ -19,6 +19,9 @@
   "lint-staged": {
     "*.{js,mjs,cjs,ts,tsx,json}": [
       "node scripts/check-staged.mjs"
+    ],
+    ".agents/skills/**/*.md": [
+      "node scripts/check-staged.mjs"
     ]
   },
   "dependencies": {

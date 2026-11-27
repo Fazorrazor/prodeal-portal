@@ -86,6 +86,28 @@ export async function proxy(req: NextRequest) {
     return applySecurityHeaders(new NextResponse('Not Found', { status: 404 }), true);
   }
 
+  const isDedicatedAdminSubdomain =
+    hostDecision.action === 'rewrite_to_admin' ||
+    (hostDecision.action === 'allow_admin' && hostDecision.isAdminSubdomain) ||
+    (hostDecision.action === 'allow_public' && hostDecision.isAdminSubdomain);
+
+  if (isDedicatedAdminSubdomain && lowerPath === '/robots.txt') {
+    return applySecurityHeaders(
+      new NextResponse('User-agent: *\nDisallow: /\n', {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'public, max-age=3600',
+        },
+      }),
+      true
+    );
+  }
+
+  if (isDedicatedAdminSubdomain && lowerPath === '/sitemap.xml') {
+    return applySecurityHeaders(new NextResponse('Not Found', { status: 404 }), true);
+  }
+
   const effectivePath =
     hostDecision.action === 'rewrite_to_admin' ? hostDecision.targetPath : pathname;
   const isAdminSurface =
