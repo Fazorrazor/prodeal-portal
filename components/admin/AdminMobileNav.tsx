@@ -2,38 +2,37 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Ticket, Users, Settings, AlertCircle } from 'lucide-react';
+import { LayoutDashboard, Inbox, Users } from 'lucide-react';
 
 export function AdminMobileNav({ userRole = 'agent' }: { userRole?: string }) {
   const pathname = usePathname();
 
   const links = [
-    { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-    { name: 'Tickets', href: '/admin/tickets', icon: Ticket },
-    ...(userRole === 'admin' ? [
-      { name: 'Staff', href: '/admin/staff', icon: Users },
-      { name: 'Support', href: '/admin/complaints', icon: AlertCircle },
-      { name: 'Settings', href: '/admin/settings', icon: Settings },
-    ] : [])
+    { name: 'Overview', href: '/admin', icon: LayoutDashboard },
+    { name: 'Inquiries', href: '/admin/tickets', icon: Inbox },
+    ...(userRole === 'admin' ? [{ name: 'Team', href: '/admin/staff', icon: Users }] : []),
   ];
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-50 flex items-center justify-around px-2 pb-safe shrink-0 shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
+    <nav
+      aria-label="Mobile admin navigation"
+      className="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-xl border-t border-slate-200/80 z-50 flex items-center justify-around px-3 pb-safe shrink-0"
+    >
       {links.map((link) => {
-        const isActive = pathname === link.href || (link.href !== '/admin' && pathname.startsWith(link.href));
+        const isActive =
+          pathname === link.href || (link.href !== '/admin' && pathname.startsWith(link.href));
         const Icon = link.icon;
         return (
           <Link
-            key={link.name}
+            key={link.href}
             href={link.href}
-            className={`flex flex-col items-center justify-center min-w-[56px] h-full py-1 transition-colors duration-200 ${
-              isActive 
-                ? 'text-brand-blue' 
-                : 'text-slate-400 hover:text-slate-600'
+            aria-current={isActive ? 'page' : undefined}
+            className={`flex flex-col items-center justify-center min-w-[68px] min-h-[44px] py-1 transition-colors duration-150 ${
+              isActive ? 'text-[#1A56DB]' : 'text-slate-400 hover:text-slate-600'
             }`}
           >
-            <Icon className={`w-5 h-5 transition-transform ${isActive ? 'stroke-[2.2px] scale-105' : 'stroke-[1.7px]'}`} />
-            <span className={`text-[10px] tracking-tight mt-1 ${isActive ? 'font-bold text-brand-blue' : 'font-medium text-slate-400'}`}>
+            <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.2px]' : 'stroke-[1.75px]'}`} />
+            <span className={`text-[11px] tracking-tight mt-0.5 ${isActive ? 'font-semibold' : 'font-medium'}`}>
               {link.name}
             </span>
           </Link>

@@ -1,4 +1,5 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
@@ -14,7 +15,7 @@ export function NetworkPresence() {
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
-  
+
   useEffect(() => {
     let mounted = true;
     let channel: ReturnType<typeof supabase.channel>;
@@ -25,21 +26,23 @@ export function NetworkPresence() {
         .select('id, full_name, auth_user_id, is_active')
         .eq('is_active', true)
         .order('full_name');
-        
+
       if (!mounted) return;
       if (staffData) setStaff(staffData);
 
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
       setCurrentUser(user.id);
-      
+
       channel = supabase.channel('admin_presence');
 
       channel
         .on('presence', { event: 'sync' }, () => {
           const state = channel.presenceState();
           const onlineIds = new Set(
-            Object.values(state).flatMap((users: any) => 
+            Object.values(state).flatMap((users: any) =>
               users.map((u: any) => u.auth_user_id)
             )
           );
@@ -67,38 +70,40 @@ export function NetworkPresence() {
 
   if (staff.length === 0) return null;
 
+  const onlineCount = staff.filter((m) => onlineUsers.includes(m.auth_user_id)).length;
+
   return (
-    <div className="px-5 py-4 border-t border-slate-100 bg-slate-50/50">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-          Network Status
+    <div className="px-4 py-3.5 border-t border-slate-200/60 bg-slate-50/50">
+      <div className="flex items-center justify-between mb-2.5">
+        <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+          Team Presence
         </span>
-        <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/50">
-          Live
+        <span className="text-[11px] font-mono tabular-nums text-slate-500">
+          {onlineCount}/{staff.length}
         </span>
       </div>
-      <div className="space-y-2.5">
+      <div className="space-y-2 max-h-32 overflow-y-auto pr-1">
         {staff.map((member) => {
           const isOnline = onlineUsers.includes(member.auth_user_id);
           const isMe = member.auth_user_id === currentUser;
           return (
-            <div key={member.id} className="flex items-center justify-between text-xs">
-              <span className="font-medium text-slate-600 truncate pr-2 flex items-center gap-1.5">
-                {member.full_name}
-                {isMe && (
-                  <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-brand-blue/10 text-brand-blue">
-                    You
-                  </span>
-                )}
-              </span>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <span className={`w-2 h-2 rounded-full ${
-                  isOnline ? 'bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.6)]' : 'bg-slate-300'
-                }`} />
-                <span className={`text-[10px] font-medium ${isOnline ? 'text-emerald-700' : 'text-slate-400'}`}>
-                  {isOnline ? 'Active' : 'Offline'}
+            <div key={member.id} className="flex items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-2 min-w-0">
+                <span
+                  className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                    isOnline ? 'bg-emerald-500' : 'bg-slate-300'
+                  }`}
+                />
+                <span
+                  className="font-medium text-slate-600 truncate cursor-help"
+                  title={member.full_name}
+                >
+                  {member.full_name}
                 </span>
               </div>
+              {isMe && (
+                <span className="text-[10px] font-mono text-slate-400 shrink-0">you</span>
+              )}
             </div>
           );
         })}

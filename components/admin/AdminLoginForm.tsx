@@ -1,12 +1,14 @@
 'use client';
+
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Loader2, AlertCircle, ArrowRight, Clock } from 'lucide-react';
+import { Loader2, AlertCircle, ArrowRight, Clock, Eye, EyeOff } from 'lucide-react';
 import { sanitizeSafeRedirect } from '../../lib/security';
 
 export function AdminLoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,11 +48,11 @@ export function AdminLoginForm() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {(reason === 'idle' || reason === 'revoked') && !error && (
-        <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 flex items-start gap-3">
-          <Clock className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-          <p className="text-sm text-amber-800 font-medium">
+        <div className="p-3.5 bg-amber-50/80 rounded-lg border border-amber-200/70 flex items-start gap-2.5">
+          <Clock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <p className="text-xs text-amber-900 leading-relaxed font-medium">
             {reason === 'idle'
               ? 'You were signed out due to inactivity. Please sign in again.'
               : 'Your session expired or was revoked. Please sign in again.'}
@@ -59,15 +61,15 @@ export function AdminLoginForm() {
       )}
 
       {error && (
-        <div className="p-4 bg-red-50 rounded-xl border border-red-100 flex items-start gap-3 animate-in fade-in">
-          <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-          <p className="text-sm text-red-600 font-medium">{error}</p>
+        <div className="p-3.5 bg-rose-50/80 rounded-lg border border-rose-200/70 flex items-start gap-2.5 animate-in fade-in duration-150">
+          <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+          <p className="text-xs text-rose-700 leading-relaxed font-medium">{error}</p>
         </div>
       )}
 
-      <form onSubmit={handleSignIn} className="space-y-8 animate-in fade-in">
-        <div>
-          <label htmlFor="login-email" className="block text-xs font-medium text-brand-deep-blue/70 mb-1.5">
+      <form onSubmit={handleSignIn} className="space-y-4">
+        <div className="space-y-1.5">
+          <label htmlFor="login-email" className="block text-xs font-medium text-slate-700">
             Work Email
           </label>
           <input
@@ -77,43 +79,56 @@ export function AdminLoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full py-3 px-4 bg-white border border-brand-border/40 rounded-md shadow-sm focus:border-brand-blue focus:ring-1 focus:ring-brand-blue/20 outline-none transition-all text-sm text-brand-deep-blue"
-            placeholder="name@company.com"
+            className="w-full h-11 px-3.5 bg-slate-50/80 focus:bg-white border border-slate-200/90 focus:border-[#1A56DB] focus:ring-2 focus:ring-[#1A56DB]/15 rounded-lg outline-none transition-[background-color,border-color,box-shadow] duration-150 text-base sm:text-sm text-[#0A1628] placeholder:text-slate-400"
+            placeholder="name@prodealindustries.com"
           />
         </div>
 
-        <div>
-          <label htmlFor="login-password" className="block text-xs font-medium text-brand-deep-blue/70 mb-1.5">
+        <div className="space-y-1.5">
+          <label htmlFor="login-password" className="block text-xs font-medium text-slate-700">
             Password
           </label>
-          <input
-            id="login-password"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full py-3 px-4 bg-white border border-brand-border/40 rounded-md shadow-sm focus:border-brand-blue focus:ring-1 focus:ring-brand-blue/20 outline-none transition-all text-sm text-brand-deep-blue"
-            placeholder="••••••••"
-          />
+          <div className="relative">
+            <input
+              id="login-password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full h-11 pl-3.5 pr-11 bg-slate-50/80 focus:bg-white border border-slate-200/90 focus:border-[#1A56DB] focus:ring-2 focus:ring-[#1A56DB]/15 rounded-lg outline-none transition-[background-color,border-color,box-shadow] duration-150 text-base sm:text-sm text-[#0A1628] placeholder:text-slate-400"
+              placeholder="••••••••••••"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              className="absolute inset-y-0 right-0 px-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
 
-        <button
-          type="submit"
-          disabled={isLoading || !email || !password}
-          className="w-full py-3 px-4 bg-brand-blue text-white rounded-md shadow-sm font-medium hover:bg-brand-deep-blue transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mt-4 text-sm"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Authenticating...
-            </>
-          ) : (
-            <>
-              Sign In <ArrowRight className="w-4 h-4" />
-            </>
-          )}
-        </button>
+        <div className="pt-2">
+          <button
+            type="submit"
+            disabled={isLoading || !email || !password}
+            className="group w-full h-11 px-4 bg-[#0A1628] hover:bg-[#1A56DB] text-white rounded-lg font-medium text-sm transition-[background-color,transform] duration-150 ease-out active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Signing in...</span>
+              </>
+            ) : (
+              <>
+                <span>Sign in</span>
+                <ArrowRight className="w-4 h-4 transition-transform duration-150 group-hover:translate-x-0.5" />
+              </>
+            )}
+          </button>
+        </div>
       </form>
     </div>
   );

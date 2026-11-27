@@ -3,8 +3,6 @@ import Link from 'next/link';
 
 import { ProductImageCarousel } from '../../shared/ProductImageCarousel';
 import { ChemicalVideoModal } from './ChemicalVideoModal';
-import { ChemicalCoverageCalculator } from './ChemicalCoverageCalculator';
-import { QuickRfqButton } from '../../shared/QuickRfqButton';
 
 export async function ChemicalCatalog() {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
@@ -32,7 +30,6 @@ export async function ChemicalCatalog() {
         </h2>
         <div className="w-12 h-px bg-brand-deep-blue/20 mb-6"></div>
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <ChemicalCoverageCalculator />
           <Link
             href="/solutions"
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-surface border border-brand-border/40 text-xs font-mono font-medium text-brand-deep-blue hover:text-brand-blue hover:border-brand-blue/30 transition-all shadow-2xs"
@@ -103,21 +100,6 @@ function ChemicalCard({ product, priority = false }: {
           <div className="absolute top-3 left-3 bg-white/85 backdrop-blur-md text-brand-deep-blue px-3 py-1 text-[9px] font-medium tracking-wide rounded-full z-20 shadow-xs">
             {grade}
           </div>
-          {/* Quick RFQ Action */}
-          <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-            <QuickRfqButton
-              variant="icon"
-              item={{
-                id: product.id,
-                name: product.name,
-                sku: product.sku || product.id.split('-')[0],
-                divisionSlug: 'chemicals',
-                quantity: 1,
-                unit: 'Drum/Can',
-                image_path: images[0],
-              }}
-            />
-          </div>
         </div>
 
         {/* Content */}
@@ -140,32 +122,19 @@ function ChemicalCard({ product, priority = false }: {
 
       {/* Card Action Footer */}
       <div className="mt-auto px-1 pt-2 border-t border-brand-border/20 flex items-center justify-between gap-2">
-        {demoVideos.length > 0 ? (
-          <div onClick={(e) => e.preventDefault()} className="z-30 relative">
+        {demoVideos.length > 0 && (
+          <div className="z-30 relative">
             <ChemicalVideoModal 
               videoUrl={demoVideos[0]} 
               productName={product.name} 
               cas={cas} 
             />
           </div>
-        ) : (
-          <QuickRfqButton
-            variant="badge"
-            item={{
-              id: product.id,
-              name: product.name,
-              sku: product.sku || product.id.split('-')[0],
-              divisionSlug: 'chemicals',
-              quantity: 1,
-              unit: 'Industrial Drum/Can',
-              image_path: images[0],
-            }}
-          />
         )}
         
         <Link 
           href={`/inquiry/${product.id}?from=chemicals`}
-          className="inline-flex items-center text-xs font-medium text-brand-deep-blue hover:text-brand-blue opacity-80 hover:opacity-100 transition-all"
+          className="ml-auto inline-flex items-center text-xs font-medium text-brand-deep-blue hover:text-brand-blue opacity-80 hover:opacity-100 transition-all"
         >
           <span className="pb-0.5">Quote</span>
           <svg className="w-3.5 h-3.5 ml-1 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

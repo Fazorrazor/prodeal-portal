@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, X, Plus, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
@@ -20,8 +20,16 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
     fullName: '',
     whatsappPhone: '',
     email: '',
-    role: USER_ROLES.STAFF as string
+    role: USER_ROLES.STAFF as string,
   });
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen && !isSubmitting) setIsOpen(false);
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, isSubmitting]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +39,7 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
       const res = await fetch('/api/admin/staff', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       const data = await res.json();
@@ -40,13 +48,15 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
         throw new Error(data.error || 'Failed to create staff member');
       }
 
-      toast.success('Staff member provisioned successfully');
+      toast.success('Invitation sent and account provisioned');
       setIsOpen(false);
       setFormData({
-        fullName: '', whatsappPhone: '', email: '', role: USER_ROLES.STAFF
+        fullName: '',
+        whatsappPhone: '',
+        email: '',
+        role: USER_ROLES.STAFF,
       });
       router.refresh();
-      
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -54,125 +64,138 @@ export function AddStaffPanel({ divisions }: { divisions: Division[] }) {
     }
   };
 
+  const inputClass =
+    'w-full h-11 px-3.5 bg-slate-50/80 focus:bg-white rounded-lg border border-slate-200/90 focus:border-[#1A56DB] focus:ring-2 focus:ring-[#1A56DB]/15 text-base sm:text-sm text-[#0A1628] outline-none transition-[background-color,border-color,box-shadow] duration-150 placeholder:text-slate-400';
+
   return (
     <>
-      <button 
+      <button
+        type="button"
         onClick={() => setIsOpen(true)}
-        className="inline-flex items-center justify-center gap-2 h-10 px-4 bg-brand-deep-blue hover:bg-brand-blue text-white text-xs font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98]"
+        className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 bg-[#0A1628] hover:bg-[#1A56DB] text-white text-xs font-medium rounded-lg shadow-[0_1px_2px_rgba(15,23,42,0.08)] transition-[background-color,transform] duration-150 ease-out active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer"
       >
-        <Plus className="w-4 h-4" />
-        <span>Add Staff Member</span>
+        <Plus className="w-3.5 h-3.5" />
+        <span>Add Member</span>
       </button>
 
-      {/* Slide Over Overlay */}
       {isOpen && (
-        <div 
-          className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm flex items-end sm:block animate-in fade-in duration-200"
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="add-staff-title"
+          className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-[2px] flex items-end sm:block animate-in fade-in duration-150"
           onClick={() => !isSubmitting && setIsOpen(false)}
         >
-          {/* Panel */}
-          <div 
-            className="relative sm:absolute sm:top-0 sm:right-0 w-full sm:max-w-md h-[90vh] sm:h-full bg-white rounded-t-3xl sm:rounded-none sm:rounded-l-3xl shadow-[0_10px_40px_rgba(0,0,0,0.12)] border-l border-slate-100 p-6 sm:p-8 overflow-y-auto animate-in slide-in-from-bottom sm:slide-in-from-right duration-300 flex flex-col"
-            onClick={e => e.stopPropagation()}
+          <div
+            className="relative sm:absolute sm:top-0 sm:right-0 w-full sm:max-w-md h-[90vh] sm:h-full bg-white rounded-t-2xl sm:rounded-none sm:rounded-l-2xl shadow-[0_16px_48px_rgba(15,23,42,0.16)] border-l border-slate-200/80 p-6 sm:p-7 overflow-y-auto animate-in slide-in-from-bottom sm:slide-in-from-right duration-200 flex flex-col"
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between pb-5 border-b border-slate-100 shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-brand-blue/10 flex items-center justify-center text-brand-blue shrink-0">
-                  <UserPlus className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-lg bg-slate-100 border border-slate-200/70 flex items-center justify-center text-[#0A1628] shrink-0">
+                  <UserPlus className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-display font-bold text-brand-deep-blue leading-tight">Add Staff Member</h2>
-                  <p className="text-xs text-slate-400">Provision a new division account</p>
+                  <h2 id="add-staff-title" className="text-base font-semibold text-[#0A1628]">
+                    Add Team Member
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    Invite staff to {divisions.length || 'active'} division workspace
+                  </p>
                 </div>
               </div>
-              <button 
+              <button
+                type="button"
                 onClick={() => !isSubmitting && setIsOpen(false)}
-                className="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-brand-deep-blue hover:bg-slate-50 transition-colors"
+                className="w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-[#0A1628] hover:bg-slate-100 transition-colors cursor-pointer"
                 aria-label="Close panel"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="flex-1 flex flex-col pt-6 gap-5">
-              
               <div className="space-y-4">
-                <div>
-                  <label htmlFor="staff-name" className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                <div className="space-y-1.5">
+                  <label htmlFor="staff-name" className="block text-xs font-medium text-slate-700">
                     Full Name
                   </label>
-                  <input 
+                  <input
                     id="staff-name"
                     required
                     type="text"
                     value={formData.fullName}
-                    onChange={e => setFormData({...formData, fullName: e.target.value})}
-                    className="w-full h-11 px-3.5 bg-slate-50/70 focus:bg-white rounded-xl border border-slate-200/80 text-sm font-semibold text-brand-deep-blue focus:border-brand-blue/50 outline-none transition-all placeholder:text-slate-400"
-                    placeholder="e.g. Arnold Djanie"
+                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                    className={inputClass}
+                    placeholder="e.g. Kwame Mensah"
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="staff-phone" className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                <div className="space-y-1.5">
+                  <label htmlFor="staff-phone" className="block text-xs font-medium text-slate-700">
                     WhatsApp Phone Number
                   </label>
-                  <input 
+                  <input
                     id="staff-phone"
                     required
                     type="tel"
                     value={formData.whatsappPhone}
-                    onChange={e => setFormData({...formData, whatsappPhone: e.target.value})}
-                    className="w-full h-11 px-3.5 bg-slate-50/70 focus:bg-white rounded-xl border border-slate-200/80 text-sm font-mono font-semibold text-brand-deep-blue focus:border-brand-blue/50 outline-none transition-all placeholder:text-slate-400"
-                    placeholder="+233209067556"
+                    onChange={(e) => setFormData({ ...formData, whatsappPhone: e.target.value })}
+                    className={`${inputClass} font-mono`}
+                    placeholder="+233201234567"
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="staff-email" className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                <div className="space-y-1.5">
+                  <label htmlFor="staff-email" className="block text-xs font-medium text-slate-700">
                     Corporate Email Address
                   </label>
-                  <input 
+                  <input
                     id="staff-email"
                     required
                     type="email"
                     value={formData.email}
-                    onChange={e => setFormData({...formData, email: e.target.value})}
-                    className="w-full h-11 px-3.5 bg-slate-50/70 focus:bg-white rounded-xl border border-slate-200/80 text-sm font-medium text-brand-deep-blue focus:border-brand-blue/50 outline-none transition-all placeholder:text-slate-400"
-                    placeholder="agent@prodealindustries.com"
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className={inputClass}
+                    placeholder="member@prodealindustries.com"
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="staff-role" className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
-                    System Authorization Role
+                <div className="space-y-1.5">
+                  <label htmlFor="staff-role" className="block text-xs font-medium text-slate-700">
+                    Authorization Role
                   </label>
                   <select
                     id="staff-role"
                     value={formData.role}
-                    onChange={e => setFormData({...formData, role: e.target.value})}
-                    className="w-full h-11 px-3.5 bg-slate-50/70 focus:bg-white rounded-xl border border-slate-200/80 text-sm font-semibold text-brand-deep-blue focus:border-brand-blue/50 outline-none transition-all cursor-pointer"
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                    className={`${inputClass} cursor-pointer`}
                   >
-                    {ROLE_VALUES.map(role => (
-                      <option key={role} value={role}>{role.toUpperCase()}</option>
+                    {ROLE_VALUES.map((role) => (
+                      <option key={role} value={role}>
+                        {role.toUpperCase()}
+                      </option>
                     ))}
                   </select>
                 </div>
               </div>
 
-              <div className="mt-auto pt-8 pb-4 sm:pb-0">
-                <button 
+              <div className="mt-auto pt-6 pb-4 sm:pb-0 border-t border-slate-100">
+                <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-12 bg-brand-deep-blue hover:bg-brand-blue text-white text-sm font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full h-11 bg-[#0A1628] hover:bg-[#1A56DB] text-white text-sm font-medium rounded-lg transition-[background-color,transform] duration-150 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   {isSubmitting ? (
-                    <><Loader2 className="w-4 h-4 animate-spin" /> Provisioning Account...</>
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Provisioning account...</span>
+                    </>
                   ) : (
-                    'Provision Staff Account'
+                    <span>Send Invite &amp; Provision</span>
                   )}
                 </button>
               </div>
-
             </form>
           </div>
         </div>

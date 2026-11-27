@@ -1,82 +1,100 @@
-import { createServer } from '../../../lib/supabase/server';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { redirect } from 'next/navigation';
+import { getVerifiedActiveStaff } from '../../../lib/supabase/requireStaff';
 import { MetricsRow } from '../../../components/admin/MetricsRow';
 import { RecentTicketsTable } from '../../../components/admin/RecentTicketsTable';
 import { StaffAssignmentTable } from '../../../components/admin/StaffAssignmentTable';
-import { AnimatedBorder } from '../../../components/admin/AnimatedBorder';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
 export default async function AdminDashboardOverview() {
-  const supabase = await createServer() as any;
-  const { data: { user } } = await supabase.auth.getUser();
-  let userRole = 'agent';
-
-  if (user) {
-    const { data: staff } = await supabase
-      .from('staff_members')
-      .select('role')
-      .eq('auth_user_id', user.id)
-      .single();
-    if (staff?.role) userRole = staff.role;
+  const auth = await getVerifiedActiveStaff();
+  if (!auth.ok) {
+    redirect('/admin/login');
   }
 
-  // Fetch inquiries to calculate metrics and get recent tickets
-  // The server client automatically applies RLS!
-  const { data: inquiries, error } = await supabase
-    .from('inquiries')
-    .select(`
-      id,
-      tracking_uuid,
-      status,
-      created_at,
-      contact_name,
-      company_name,
-      divisions (
-        display_name
-      )
-    `)
-    .order('created_at', { ascending: false })
-    .limit(100);
+  const { staff, supabase } = auth.context;
+  const userRole = staff.role || 'agent';
+
+  // Fetch recent inquiries, exact counts, and average resolution time in parallel
+  const [
+    { data: inquiries, error },
+    { count: total },
+    { count: pending },
+    { count: resolved },
+    { data: avgHoursData },
+  ] = await Promise.all([
+    supabase
+      .from('inquiries')
+      .select(`
+        id,
+        tracking_uuid,
+        status,
+        created_at,
+        contact_name,
+        company_name,
+        inquiry_payload,
+        divisions (
+          display_name
+        )
+      `)
+      .order('created_at', { ascending: false })
+      .limit(20),
+    supabase.from('inquiries').select('*', { count: 'exact', head: true }),
+    supabase
+      .from('inquiries')
+      .select('*', { count: 'exact', head: true })
+      .in('status', ['new', 'in_progress']),
+    supabase.from('inquiries').select('*', { count: 'exact', head: true }).eq('status', 'closed'),
+    supabase.rpc('get_avg_resolution_time_hrs'),
+  ]);
 
   if (error) {
-    throw new Error(`Dashboard Supabase Error: ${error.message} | Details: ${error.details || error.hint}`);
+    throw new Error(
+      `Dashboard Supabase Error: ${error.message} | Details: ${error.details || error.hint}`
+    );
   }
 
-  // Calculate true metrics using database counts instead of local arrays
-  const [{ count: total }, { count: pending }, { count: resolved }] = await Promise.all([
-    supabase.from('inquiries').select('*', { count: 'exact', head: true }),
-    supabase.from('inquiries').select('*', { count: 'exact', head: true }).in('status', ['new', 'in_progress']),
-    supabase.from('inquiries').select('*', { count: 'exact', head: true }).eq('status', 'closed')
-  ]);
-  
-  // Calculate avg time via Database RPC (accurately accounts for inquiry events delta)
-  const { data: avgHoursData } = await supabase.rpc('get_avg_resolution_time_hrs');
-  const avgTime = `${avgHoursData || 0} hrs`;
-
-  const recent = (inquiries || []).slice(0, 20);
+  const avgHours = Number(avgHoursData || 0);
+  const avgTime = `${avgHours > 0 ? avgHours.toFixed(1).replace(/\.0$/, '') : '0'} hrs`;
+  const recent = inquiries || [];
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2">
-      <div className="pb-5 border-b border-slate-100">
-        <h1 className="text-2xl sm:text-3xl font-display font-bold text-brand-deep-blue tracking-tight leading-tight mb-1">
-          Operations Dashboard
-        </h1>
-        <p className="text-slate-500 text-xs sm:text-sm">
-          Welcome back. Here is the latest status of your division's inquiries and assignments.
-        </p>
+    <div className="space-y-8 pb-8">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-slate-200/70">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-[#0A1628]">
+            Operations Overview
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Real-time inquiry intake, division routing, and response performance.
+          </p>
+        </div>
+
+        <Link
+          href="/admin/tickets"
+          className="inline-flex items-center justify-center gap-1.5 h-9 px-3.5 rounded-lg border border-slate-200/90 bg-white hover:bg-slate-50 text-xs font-medium text-[#0A1628] shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-[background-color,transform] duration-150 active:scale-[0.98] whitespace-nowrap shrink-0 self-start sm:self-auto"
+        >
+          <span>All Inquiries</span>
+          <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+        </Link>
       </div>
 
+      {/* KPI Strip */}
       <div id="tour-metrics">
-        <MetricsRow 
-          total={total}
-          pending={pending}
-          resolved={resolved}
+        <MetricsRow
+          total={total || 0}
+          pending={pending || 0}
+          resolved={resolved || 0}
           avgTime={avgTime}
         />
       </div>
 
-      <div className="flex flex-col gap-12">
+      {/* Tables Stack */}
+      <div className="space-y-8">
         <div id="tour-recent-tickets">
           <RecentTicketsTable inquiries={recent} />
         </div>

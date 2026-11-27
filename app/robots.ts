@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
         // Never advertise admin paths in robots.txt — admin routes are isolated to
         // ADMIN_SUBDOMAIN_HOST and enforce X-Robots-Tag: noindex, nofollow, noarchive.
-        disallow: ['/api/', '/track/'],
+        disallow: ['/api/'],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

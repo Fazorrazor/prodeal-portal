@@ -13,7 +13,7 @@ const LEGAL_LAST_MODIFIED = new Date('2026-08-01T00:00:00Z');
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.prodealindustries.com';
 
-  // Indexable static routes (utility/private routes like /track and /inquiry/success are intentionally excluded)
+  // Indexable static routes (utility/private routes like /inquiry/success are intentionally excluded)
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,

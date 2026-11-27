@@ -3,11 +3,11 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 
 const STATUSES = [
-  { id: 'all', label: 'All Inquiries' },
+  { id: 'all', label: 'All' },
   { id: 'new', label: 'New' },
   { id: 'in_progress', label: 'In Progress' },
   { id: 'quoted', label: 'Quoted' },
-  { id: 'closed', label: 'Closed' }
+  { id: 'closed', label: 'Closed' },
 ] as const;
 
 export function TicketFilters({ currentStatus }: { currentStatus: string }) {
@@ -21,24 +21,31 @@ export function TicketFilters({ currentStatus }: { currentStatus: string }) {
     } else {
       params.set('status', statusId);
     }
-    params.delete('page'); // Reset to page 1 on filter switch
-    router.push(`/admin/tickets?${params.toString()}`);
+    params.delete('page');
+    const qs = params.toString();
+    router.push(qs ? `/admin/tickets?${qs}` : '/admin/tickets');
   };
 
   return (
-    <div className="w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-      <div className="inline-flex items-center gap-1.5 p-1 bg-slate-100/80 rounded-2xl border border-slate-200/50">
+    <div className="w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0 hide-scrollbar">
+      <div
+        role="tablist"
+        aria-label="Filter inquiries by status"
+        className="inline-flex items-center gap-1 p-1 bg-slate-100/90 rounded-lg border border-slate-200/70"
+      >
         {STATUSES.map((s) => {
           const isActive = currentStatus === s.id;
           return (
             <button
               key={s.id}
               type="button"
+              role="tab"
+              aria-selected={isActive}
               onClick={() => handleSelect(s.id)}
-              className={`h-9 px-3.5 text-xs font-semibold rounded-xl whitespace-nowrap transition-all duration-200 active:scale-[0.97] ${
+              className={`h-8 px-3 text-xs rounded-md whitespace-nowrap transition-[color,background-color,box-shadow,transform] duration-150 ease-out active:scale-[0.98] cursor-pointer ${
                 isActive
-                  ? 'bg-white text-brand-deep-blue shadow-2xs font-bold'
-                  : 'text-slate-500 hover:text-brand-deep-blue hover:bg-white/50'
+                  ? 'bg-white text-[#0A1628] font-semibold shadow-[0_1px_2px_rgba(15,23,42,0.06)]'
+                  : 'text-slate-500 font-medium hover:text-[#0A1628]'
               }`}
             >
               {s.label}

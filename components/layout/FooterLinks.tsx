@@ -15,7 +15,6 @@ export function FooterLinks() {
       <div className="flex flex-col gap-4">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-white/50 mb-1">Support</h2>
         <Link href="/support" className="text-base font-medium text-white/80 hover:text-white transition-colors">Contact Us</Link>
-        <Link href="/track" className="text-base font-medium text-white/80 hover:text-white transition-colors">Track Inquiry</Link>
       </div>
     </div>
   );

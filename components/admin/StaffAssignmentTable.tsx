@@ -1,17 +1,14 @@
-import { createServer } from '../../lib/supabase/server';
-import { USER_ROLES } from '../../lib/config/roles';
-import { format } from 'date-fns';
 import Link from 'next/link';
-import { AnimatedBorder } from './AnimatedBorder';
+import { ArrowRight } from 'lucide-react';
+import { createServer } from '../../lib/supabase/server';
 import { StaffAssignmentClientList } from './StaffAssignmentClientList';
 
-export async function StaffAssignmentTable({ hideManageLink = false, search = '' }: { hideManageLink?: boolean, search?: string } = {}) {
+export async function StaffAssignmentTable({
+  hideManageLink = false,
+  search = '',
+}: { hideManageLink?: boolean; search?: string } = {}) {
   const supabase = await createServer();
 
-  const { data: { user } } = await supabase.auth.getUser();
-
-  // Supabase RLS will naturally filter this for 'agent' role
-  // 'admin' role will see all staff
   let query = supabase
     .from('staff_members')
     .select('*')
@@ -19,38 +16,51 @@ export async function StaffAssignmentTable({ hideManageLink = false, search = ''
     .limit(50);
 
   if (search) {
-    query = query.or(`full_name.ilike.%${search}%,role.ilike.%${search}%,whatsapp_phone.ilike.%${search}%`);
+    query = query.or(
+      `full_name.ilike.%${search}%,role.ilike.%${search}%,whatsapp_phone.ilike.%${search}%`
+    );
   }
 
-  const { data: staff, error } = await query;
+  const [{ data: { user } }, { data: staff, error }, { data: divisions }] = await Promise.all([
+    supabase.auth.getUser(),
+    query,
+    supabase.from('divisions').select('id, display_name'),
+  ]);
 
   if (error) {
     throw new Error(`Failed to fetch staff roster: ${error.message}`);
   }
 
-  const { data: divisions } = await supabase.from('divisions').select('id, display_name');
+  const members = staff || [];
 
   const header = (
-    <div className="py-6 relative flex items-center justify-between border-b-2 border-brand-border/60 bg-transparent">
-      <div className="flex items-center gap-3">
-        <h2 className="font-heading font-bold text-xl tracking-tighter text-brand-deep-blue leading-none">Active Staff Load</h2>
+    <div className="px-5 py-4 flex items-center justify-between gap-3 border-b border-slate-100">
+      <div className="flex items-center gap-2.5">
+        <h2 className="text-sm font-semibold text-[#0A1628] tracking-tight">Team Directory</h2>
+        <span className="text-[11px] font-mono tabular-nums px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">
+          {members.length}
+        </span>
       </div>
       {!hideManageLink && (
-        <Link href="/admin/staff" className="text-[10px] font-bold uppercase tracking-widest text-brand-blue hover:text-brand-deep-blue transition-colors">
-          Manage
+        <Link
+          href="/admin/staff"
+          className="inline-flex items-center gap-1 text-xs font-medium text-[#1A56DB] hover:text-[#0A1628] transition-colors whitespace-nowrap"
+        >
+          <span>Manage team</span>
+          <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       )}
     </div>
   );
 
-  if (!staff || staff.length === 0) {
+  if (members.length === 0) {
     return (
-      <div className="mt-12 bg-transparent border-t border-brand-border/60">
+      <div className="bg-white rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] overflow-hidden">
         {header}
-        <div className="py-16 flex flex-col items-center justify-center text-center">
-          <h3 className="text-3xl font-heading font-bold tracking-tighter text-brand-deep-blue/40 mb-1">ALL CLEAR</h3>
-          <p className="text-[10px] uppercase font-bold tracking-widest text-brand-deep-blue/60">
-            No members assigned to your accessible divisions.
+        <div className="py-16 px-4 flex flex-col items-center justify-center text-center">
+          <h3 className="text-sm font-semibold text-[#0A1628] mb-1">No team members found</h3>
+          <p className="text-xs text-slate-400">
+            No staff accounts match your accessible divisions or search query.
           </p>
         </div>
       </div>
@@ -58,9 +68,9 @@ export async function StaffAssignmentTable({ hideManageLink = false, search = ''
   }
 
   return (
-    <div className="mt-12 bg-transparent">
+    <div className="bg-white rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] overflow-hidden">
       {header}
-      <StaffAssignmentClientList staff={staff} user={user} divisions={divisions || []} />
+      <StaffAssignmentClientList staff={members} user={user} divisions={divisions || []} />
     </div>
   );
 }

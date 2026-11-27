@@ -2,8 +2,6 @@ import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 
 import { ProductImageCarousel } from '../../shared/ProductImageCarousel';
-import { QuickRfqButton } from '../../shared/QuickRfqButton';
-import { BowlsCartonCalculator } from './BowlsCartonCalculator';
 
 export async function InventoryTable() {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
@@ -29,10 +27,7 @@ export async function InventoryTable() {
         <h2 className="font-display font-medium text-4xl sm:text-5xl text-brand-deep-blue leading-tight mb-6 tracking-tight">
           Catering Bowls
         </h2>
-        <div className="w-12 h-px bg-brand-deep-blue/20 mb-6"></div>
-        <div className="flex items-center gap-3">
-          <BowlsCartonCalculator />
-        </div>
+        <div className="w-12 h-px bg-brand-deep-blue/20"></div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-8">
@@ -74,21 +69,6 @@ export async function InventoryTable() {
                         {size}
                       </div>
                     )}
-                    {/* Quick RFQ Action */}
-                    <div className="absolute top-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <QuickRfqButton
-                        variant="icon"
-                        item={{
-                          id: product.id,
-                          name: product.name,
-                          sku: product.sku || product.id.split('-')[0],
-                          divisionSlug: 'bowls',
-                          quantity: 5,
-                          unit: `Cartons (${5 * moq} pcs)`,
-                          image_path: images[0],
-                        }}
-                      />
-                    </div>
                   </div>
 
                   {/* Content Section */}
@@ -110,19 +90,7 @@ export async function InventoryTable() {
                 </Link>
 
                 {/* Footer Controls */}
-                <div className="mt-auto px-1 pt-2 border-t border-brand-border/20 flex items-center justify-between gap-2">
-                  <QuickRfqButton
-                    variant="badge"
-                    item={{
-                      id: product.id,
-                      name: product.name,
-                      sku: product.sku || product.id.split('-')[0],
-                      divisionSlug: 'bowls',
-                      quantity: 5,
-                      unit: `Cartons (${5 * moq} pcs)`,
-                      image_path: images[0],
-                    }}
-                  />
+                <div className="mt-auto px-1 pt-2 border-t border-brand-border/20 flex items-center justify-end gap-2">
                   <Link 
                     href={`/inquiry/${product.id}?from=bowls`}
                     className="inline-flex items-center text-xs font-medium text-brand-deep-blue hover:text-brand-blue opacity-80 hover:opacity-100 transition-all"
