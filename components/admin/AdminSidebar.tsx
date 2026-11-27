@@ -1,9 +1,9 @@
 'use client';
+
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Ticket, Users, Settings, LogOut, Activity, AlertCircle } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { LayoutDashboard, Inbox, Users, LogOut } from 'lucide-react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { useRouter } from 'next/navigation';
 import { NetworkPresence } from './NetworkPresence';
 import { STORAGE_LAST_ACTIVITY, STORAGE_LOGOUT_EVENT } from '../../hooks/useIdleTimeout';
 
@@ -28,55 +28,72 @@ export function AdminSidebar({ userRole = 'agent' }: { userRole?: string }) {
   };
 
   const links = [
-    { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-    { name: 'Tickets', href: '/admin/tickets', icon: Ticket },
-    ...(userRole === 'admin' ? [
-      { name: 'Staff', href: '/admin/staff', icon: Users },
-      { name: 'Analytics', href: '/admin/analytics', icon: Activity },
-      { name: 'Complaints', href: '/admin/complaints', icon: AlertCircle },
-      { name: 'Settings', href: '/admin/settings', icon: Settings },
-    ] : [])
+    { name: 'Overview', href: '/admin', icon: LayoutDashboard },
+    { name: 'Inquiries', href: '/admin/tickets', icon: Inbox },
+    ...(userRole === 'admin' ? [{ name: 'Team', href: '/admin/staff', icon: Users }] : []),
   ];
 
   return (
-    <aside id="tour-sidebar" className="hidden lg:flex w-56 bg-brand-surface/50 text-brand-deep-blue flex-col h-full shrink-0 relative border-r border-slate-200/60">
-      <div className="h-20 flex items-center px-6 relative">
-        <h1 className="font-display text-xl tracking-tight flex items-baseline">
-          <strong className="font-extrabold text-brand-deep-blue mr-1.5">Prodeal</strong>
-          <span className="text-xs text-brand-blue/80 font-body uppercase tracking-widest ml-2">Admin</span>
-        </h1>
+    <aside
+      id="tour-sidebar"
+      className="hidden lg:flex w-[232px] bg-white text-[#0A1628] flex-col h-full shrink-0 border-r border-slate-200/80"
+    >
+      {/* Brand Header */}
+      <div className="h-14 flex items-center justify-between px-4 border-b border-slate-200/60 shrink-0">
+        <Link href="/admin" className="flex items-center gap-2 group outline-none">
+          <span className="w-6 h-6 rounded-md bg-[#0A1628] text-white flex items-center justify-center text-[11px] font-bold tracking-tight shrink-0">
+            P
+          </span>
+          <span className="font-semibold text-sm tracking-tight text-[#0A1628]">Prodeal</span>
+          <span className="text-[10px] font-mono font-medium uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200/70">
+            Desk
+          </span>
+        </Link>
       </div>
-      
-      <nav className="flex-1 py-6 px-4 space-y-1 overflow-y-auto">
-        {links.map((link, i) => {
-          const isActive = pathname === link.href || (link.href !== '/admin' && pathname.startsWith(link.href));
+
+      {/* Focused Navigation */}
+      <nav aria-label="Admin navigation" className="flex-1 p-3 space-y-1 overflow-y-auto">
+        <p className="px-2.5 pt-1 pb-2 text-[10px] font-medium uppercase tracking-wider text-slate-400">
+          Workspace
+        </p>
+        {links.map((link) => {
+          const isActive =
+            pathname === link.href || (link.href !== '/admin' && pathname.startsWith(link.href));
           const Icon = link.icon;
           return (
             <Link
-              key={link.name}
+              key={link.href}
               href={link.href}
-              className={`flex items-center gap-3 px-3.5 py-2.5 text-sm font-semibold transition-all duration-200 rounded-xl ${
-                isActive 
-                  ? 'bg-brand-blue/10 text-brand-blue font-bold shadow-2xs' 
-                  : 'text-slate-500 hover:bg-white hover:shadow-2xs hover:text-brand-deep-blue'
+              aria-current={isActive ? 'page' : undefined}
+              className={`flex items-center gap-2.5 px-2.5 py-2 text-[13px] rounded-lg transition-[color,background-color] duration-150 ease-out ${
+                isActive
+                  ? 'bg-slate-100 text-[#0A1628] font-semibold'
+                  : 'text-slate-600 font-medium hover:bg-slate-50 hover:text-[#0A1628]'
               }`}
             >
-              <Icon className="w-4 h-4 shrink-0" />
+              <Icon
+                className={`w-4 h-4 shrink-0 ${
+                  isActive ? 'text-[#1A56DB]' : 'text-slate-400'
+                }`}
+              />
               <span>{link.name}</span>
             </Link>
           );
         })}
       </nav>
 
+      {/* Online Presence */}
       <NetworkPresence />
 
-      <div className="p-4 relative">
+      {/* Sign Out Footer */}
+      <div className="p-3 border-t border-slate-200/60 shrink-0">
         <button
+          type="button"
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3.5 py-2.5 text-sm font-semibold text-slate-500 hover:bg-red-50 hover:text-brand-red transition-all w-full rounded-xl"
+          className="flex items-center gap-2.5 px-2.5 py-2 text-[13px] font-medium text-slate-500 hover:bg-rose-50 hover:text-rose-600 transition-[color,background-color,transform] duration-150 ease-out active:scale-[0.98] w-full rounded-lg cursor-pointer"
         >
           <LogOut className="w-4 h-4 shrink-0" />
-          <span>Logout</span>
+          <span>Sign out</span>
         </button>
       </div>
     </aside>

@@ -1,50 +1,49 @@
 export function StaffAssignmentTableSkeleton() {
   return (
-    <div className="mt-8">
+    <div className="bg-white rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] overflow-hidden">
+      <div className="px-5 py-4 border-b border-slate-100">
+        <div className="h-4 w-32 bg-slate-200/70 rounded animate-pulse" />
+      </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-brand-border/60">
-              <th className="py-4 pr-4">
-                <div className="h-3 w-16 bg-brand-surface rounded animate-pulse" />
-              </th>
-              <th className="px-4 py-4">
-                <div className="h-3 w-12 bg-brand-surface rounded animate-pulse" />
-              </th>
-              <th className="px-4 py-4">
-                <div className="h-3 w-20 bg-brand-surface rounded animate-pulse" />
-              </th>
-              <th className="px-4 py-4">
-                <div className="h-3 w-24 bg-brand-surface rounded animate-pulse" />
-              </th>
-              <th className="px-4 py-4">
-                <div className="h-3 w-16 bg-brand-surface rounded animate-pulse" />
-              </th>
-              <th className="py-4 pl-4 flex justify-end">
-                <div className="h-3 w-16 bg-brand-surface rounded animate-pulse" />
-              </th>
+            <tr className="border-b border-slate-200/70 bg-slate-50/70">
+              {['w-24', 'w-14', 'w-28', 'w-24', 'w-16', 'w-16', 'w-16', 'w-14'].map((w, idx) => (
+                <th key={idx} className="py-3 px-4">
+                  <div className={`h-3 ${w} bg-slate-200/70 rounded animate-pulse`} />
+                </th>
+              ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-brand-border/40">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <tr key={i}>
-                <td className="py-4 pr-4">
-                  <div className="h-4 w-32 bg-brand-surface rounded animate-pulse" />
+          <tbody className="divide-y divide-slate-100">
+            {[1, 2, 3, 4].map((row) => (
+              <tr key={row}>
+                <td className="py-4 px-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 animate-pulse" />
+                    <div className="h-4 w-28 bg-slate-100 rounded animate-pulse" />
+                  </div>
                 </td>
-                <td className="px-4 py-4">
-                  <div className="h-5 w-16 bg-brand-surface rounded animate-pulse" />
+                <td className="py-4 px-4">
+                  <div className="h-5 w-14 bg-slate-100 rounded-md animate-pulse" />
                 </td>
-                <td className="px-4 py-4">
-                  <div className="h-4 w-24 bg-brand-surface rounded animate-pulse" />
+                <td className="py-4 px-4">
+                  <div className="h-3.5 w-32 bg-slate-100 rounded animate-pulse" />
                 </td>
-                <td className="px-4 py-4">
-                  <div className="h-4 w-28 bg-brand-surface rounded animate-pulse" />
+                <td className="py-4 px-4">
+                  <div className="h-3.5 w-24 bg-slate-100 rounded animate-pulse" />
                 </td>
-                <td className="px-4 py-4">
-                  <div className="h-4 w-16 bg-brand-surface rounded animate-pulse" />
+                <td className="py-4 px-4">
+                  <div className="h-3.5 w-14 bg-slate-100 rounded animate-pulse" />
                 </td>
-                <td className="py-4 pl-4 flex justify-end">
-                  <div className="h-4 w-20 bg-brand-surface rounded animate-pulse" />
+                <td className="py-4 px-4">
+                  <div className="h-5 w-16 bg-slate-100 rounded-full animate-pulse" />
+                </td>
+                <td className="py-4 px-4">
+                  <div className="h-3.5 w-20 bg-slate-100 rounded animate-pulse ml-auto" />
+                </td>
+                <td className="py-4 px-4">
+                  <div className="h-6 w-20 bg-slate-100 rounded-lg animate-pulse ml-auto" />
                 </td>
               </tr>
             ))}

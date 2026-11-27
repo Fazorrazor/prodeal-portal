@@ -223,6 +223,37 @@ describe('Google Search Console & SEO Hygiene Guards', () => {
     expect(layoutSrc).not.toContain('RfqTray');
   });
 
+  test('removed admin Complaints, Analytics, and Settings surfaces stay deleted', () => {
+    const removedAdminPaths = [
+      'app/admin/(dashboard)/complaints',
+      'app/admin/(dashboard)/analytics',
+      'app/admin/(dashboard)/settings',
+      'app/actions/deleteSupportTicket.ts',
+      'app/actions/cache.ts',
+      'components/admin/ClearCacheButton.tsx',
+      'components/admin/SystemLogsTable.tsx',
+    ];
+    for (const rel of removedAdminPaths) {
+      expect(fs.existsSync(path.join(ROOT, rel)), `Expected ${rel} to remain removed`).toBe(false);
+    }
+
+    for (const rel of [
+      'components/admin/AdminSidebar.tsx',
+      'components/admin/AdminMobileNav.tsx',
+      'components/admin/AdminTopbar.tsx',
+    ]) {
+      const src = fs.readFileSync(path.join(ROOT, rel), 'utf8');
+      expect(src).not.toContain('/admin/complaints');
+      expect(src).not.toContain('/admin/analytics');
+      expect(src).not.toContain('/admin/settings');
+    }
+
+    const securitySrc = fs.readFileSync(path.join(ROOT, 'lib/security.ts'), 'utf8');
+    expect(securitySrc).not.toContain("'/complaints'");
+    expect(securitySrc).not.toContain("'/analytics'");
+    expect(securitySrc).not.toContain("'/settings'");
+  });
+
   test('indexable static public routes declare explicit canonical URLs', () => {
     const expectedCanonicals: Array<[string, string]> = [
       ['app/(public)/inquiry/page.tsx', 'https://www.prodealindustries.com/inquiry'],

@@ -5,22 +5,32 @@ import Link from 'next/link';
 import { ChevronRight, Trash2, Loader2, Download } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
-import { useScrambleText } from '../../lib/hooks/useScrambleText';
 import { bulkDeleteInquiriesSafely } from '../../app/actions/deleteInquiry';
 import { useRouter } from 'next/navigation';
 import { ConfirmModal } from './ConfirmModal';
 import { exportInquiriesToCsv } from '../../lib/utils/exportCsv';
 
-function ScrambledUUID({ uuid }: { uuid: string }) {
-  const { displayText } = useScrambleText(uuid.substring(0, 8).toUpperCase(), 400, 1000);
-  return <span className="font-mono text-xs sm:text-sm text-brand-deep-blue font-bold tracking-tight">{displayText}...</span>;
-}
-
 const STATUS_CONFIG = {
-  new:         { label: 'New',         badge: 'border-red-200/80 bg-red-50/80 text-brand-red' },
-  in_progress: { label: 'In Progress', badge: 'border-amber-200/80 bg-amber-50/80 text-amber-700' },
-  quoted:      { label: 'Quoted',      badge: 'border-brand-blue/20 bg-brand-blue/10 text-brand-blue' },
-  closed:      { label: 'Closed',      badge: 'border-slate-200 bg-slate-100 text-slate-500' },
+  new: {
+    label: 'New',
+    dot: 'bg-rose-500',
+    pill: 'bg-rose-50/70 text-rose-700 border-rose-200/70',
+  },
+  in_progress: {
+    label: 'In Progress',
+    dot: 'bg-amber-500',
+    pill: 'bg-amber-50/70 text-amber-700 border-amber-200/70',
+  },
+  quoted: {
+    label: 'Quoted',
+    dot: 'bg-[#1A56DB]',
+    pill: 'bg-blue-50/70 text-[#1A56DB] border-blue-200/70',
+  },
+  closed: {
+    label: 'Closed',
+    dot: 'bg-emerald-500',
+    pill: 'bg-emerald-50/70 text-emerald-700 border-emerald-200/70',
+  },
 } as const;
 
 function getStatus(status: string) {
@@ -39,24 +49,26 @@ interface TicketTableProps {
     inquiry_payload?: { productName?: string; [key: string]: unknown } | null;
     staff_members?: { full_name: string } | null;
   }[];
+  totalCount?: number;
   currentPage?: number;
   totalPages?: number;
   currentStatus?: string;
   currentSearch?: string;
 }
 
-export function TicketTable({ 
-  inquiries, 
-  currentPage = 1, 
-  totalPages = 1, 
-  currentStatus = 'all', 
-  currentSearch = '' 
+export function TicketTable({
+  inquiries,
+  totalCount,
+  currentPage = 1,
+  totalPages = 1,
+  currentStatus = 'all',
+  currentSearch = '',
 }: TicketTableProps) {
   const [selectedTickets, setSelectedTickets] = useState<string[]>([]);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isDeleting] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const router = useRouter();
 
-  // Optimistic UI for instant visual feedback
   const [optimisticInquiries, setOptimisticInquiries] = useOptimistic(
     inquiries,
     (state, deletedIds: string[]) => state.filter((inquiry) => !deletedIds.includes(inquiry.id))
@@ -64,7 +76,7 @@ export function TicketTable({
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setSelectedTickets(optimisticInquiries.map(inq => inq.id));
+      setSelectedTickets(optimisticInquiries.map((inq) => inq.id));
     } else {
       setSelectedTickets([]);
     }
@@ -72,13 +84,11 @@ export function TicketTable({
 
   const handleSelectOne = (id: string) => {
     if (selectedTickets.includes(id)) {
-      setSelectedTickets(selectedTickets.filter(ticketId => ticketId !== id));
+      setSelectedTickets(selectedTickets.filter((ticketId) => ticketId !== id));
     } else {
       setSelectedTickets([...selectedTickets, id]);
     }
   };
-
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleBulkDeleteClick = () => {
     if (selectedTickets.length === 0) return;
@@ -87,29 +97,29 @@ export function TicketTable({
 
   const confirmDelete = async () => {
     setIsConfirmOpen(false);
-    
     const ticketsToDelete = [...selectedTickets];
     startTransition(() => {
       setOptimisticInquiries(ticketsToDelete);
     });
     setSelectedTickets([]);
-    
+
     const result = await bulkDeleteInquiriesSafely(ticketsToDelete);
 
     if (!result.success) {
-      toast.error(result.error || 'Failed to delete tickets');
+      toast.error(result.error || 'Failed to delete inquiries');
       router.refresh();
     } else {
-      toast.success(`${ticketsToDelete.length} tickets permanently deleted`);
+      toast.success(`${ticketsToDelete.length} inquiries permanently deleted`);
     }
   };
 
   const handleExportCsv = () => {
-    const listToExport = selectedTickets.length > 0 
-      ? optimisticInquiries.filter(inq => selectedTickets.includes(inq.id))
-      : optimisticInquiries;
+    const listToExport =
+      selectedTickets.length > 0
+        ? optimisticInquiries.filter((inq) => selectedTickets.includes(inq.id))
+        : optimisticInquiries;
 
-    const exportRows = listToExport.map(inq => ({
+    const exportRows = listToExport.map((inq) => ({
       id: inq.id,
       tracking_uuid: inq.tracking_uuid,
       contact_name: inq.contact_name,
@@ -117,10 +127,13 @@ export function TicketTable({
       status: inq.status,
       division_name: inq.divisions?.display_name || 'General',
       created_at: inq.created_at,
-      item_summary: (inq.inquiry_payload as any)?.productName || 'Quote Request'
+      item_summary: (inq.inquiry_payload as any)?.productName || 'Quote Request',
     }));
 
-    const ok = exportInquiriesToCsv(exportRows, `prodeal-inquiries-${new Date().toISOString().split('T')[0]}.csv`);
+    const ok = exportInquiriesToCsv(
+      exportRows,
+      `prodeal-inquiries-${new Date().toISOString().split('T')[0]}.csv`
+    );
     if (ok) {
       toast.success(`Exported ${exportRows.length} inquiries to CSV`);
     } else {
@@ -130,10 +143,10 @@ export function TicketTable({
 
   if (!optimisticInquiries || optimisticInquiries.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.03)] py-16 flex flex-col items-center justify-center text-center mt-4">
-        <h3 className="text-xl font-display font-semibold text-brand-deep-blue mb-1">No Inquiries Found</h3>
+      <div className="bg-white rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] py-20 px-4 flex flex-col items-center justify-center text-center">
+        <h3 className="text-sm font-semibold text-[#0A1628] mb-1">No inquiries found</h3>
         <p className="text-xs text-slate-400 max-w-sm">
-          No inquiries match your current filter criteria.
+          No records match the current status or search filter.
         </p>
       </div>
     );
@@ -147,19 +160,30 @@ export function TicketTable({
     return `/admin/tickets?${params.toString()}`;
   };
 
+  const displayCount = totalCount ?? optimisticInquiries.length;
+
   return (
-    <div className="mt-4 relative space-y-4">
-      {/* Table Action Bar with Export & Bulk Actions */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
+    <div className="space-y-4">
+      {/* Toolbar */}
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-slate-500 tabular-nums">
+            Showing <strong className="font-semibold text-[#0A1628]">{optimisticInquiries.length}</strong> of{' '}
+            <strong className="font-semibold text-[#0A1628]">{displayCount}</strong> inquiries
+          </span>
           {selectedTickets.length > 0 && (
             <button
+              type="button"
               onClick={handleBulkDeleteClick}
               disabled={isDeleting}
-              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-red-50 text-red-600 border border-red-100 text-xs font-semibold hover:bg-red-100 transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/80 text-xs font-medium transition-[background-color,transform] duration-150 active:scale-[0.98] disabled:opacity-50 whitespace-nowrap cursor-pointer"
             >
-              {isDeleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-              Delete ({selectedTickets.length})
+              {isDeleting ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <Trash2 className="w-3.5 h-3.5" />
+              )}
+              <span>Delete ({selectedTickets.length})</span>
             </button>
           )}
         </div>
@@ -167,173 +191,208 @@ export function TicketTable({
         <button
           onClick={handleExportCsv}
           type="button"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200/80 text-xs font-semibold text-brand-deep-blue hover:bg-slate-50 transition-all shadow-2xs active:scale-[0.98]"
+          className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-white border border-slate-200/90 text-xs font-medium text-[#0A1628] hover:bg-slate-50 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-[background-color,transform] duration-150 active:scale-[0.98] whitespace-nowrap shrink-0 cursor-pointer"
         >
-          <Download className="w-3.5 h-3.5" />
-          {selectedTickets.length > 0 ? `Export (${selectedTickets.length}) CSV` : 'Export CSV'}
+          <Download className="w-3.5 h-3.5 text-slate-500" />
+          <span>
+            {selectedTickets.length > 0 ? `Export (${selectedTickets.length}) CSV` : 'Export CSV'}
+          </span>
         </button>
       </div>
 
-      {/* ── MOBILE: Luxury Stacked Cards ── */}
-      <div className="md:hidden flex flex-col gap-3">
-        {/* Mobile select-all bar */}
-        <div className="flex items-center justify-between px-4 py-3 bg-white rounded-xl border border-slate-100 shadow-2xs">
-          <label className="flex items-center gap-3 cursor-pointer">
+      {/* Mobile Cards */}
+      <div className="md:hidden space-y-3">
+        <div className="flex items-center justify-between px-4 py-2.5 bg-white rounded-lg border border-slate-200/80">
+          <label className="flex items-center gap-2.5 cursor-pointer">
             <input
               type="checkbox"
-              checked={optimisticInquiries.length > 0 && selectedTickets.length === optimisticInquiries.length}
+              checked={
+                optimisticInquiries.length > 0 &&
+                selectedTickets.length === optimisticInquiries.length
+              }
               onChange={handleSelectAll}
-              className="w-4 h-4 rounded text-brand-blue border-slate-300 focus:ring-brand-blue cursor-pointer"
+              className="w-4 h-4 rounded text-[#1A56DB] border-slate-300 focus:ring-[#1A56DB] cursor-pointer"
             />
-            <span className="text-xs font-medium text-slate-600">Select All</span>
+            <span className="text-xs font-medium text-slate-600">Select all</span>
           </label>
-          <span className="text-xs font-mono text-slate-400">
-            {optimisticInquiries.length} item{optimisticInquiries.length !== 1 ? 's' : ''}
+          <span className="text-xs font-mono text-slate-400 tabular-nums">
+            {optimisticInquiries.length}
           </span>
         </div>
 
-        {optimisticInquiries.map((inquiry, i) => {
+        {optimisticInquiries.map((inquiry) => {
           const s = getStatus(inquiry.status);
           const isSelected = selectedTickets.includes(inquiry.id);
+          const shortRef = inquiry.tracking_uuid.substring(0, 8).toUpperCase();
+          const productName = inquiry.inquiry_payload?.productName || 'General Inquiry';
+
           return (
             <div
               key={inquiry.id}
               onClick={() => router.push(`/admin/tickets/${inquiry.id}`)}
-              className={`relative flex flex-col gap-3 p-4 bg-white rounded-2xl border border-slate-100 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.03)] cursor-pointer hover:shadow-md transition-all active:scale-[0.99] ${
-                isSelected ? 'ring-2 ring-brand-blue/30 bg-brand-blue/[0.02]' : ''
+              className={`p-4 bg-white rounded-xl border shadow-[0_1px_2px_rgba(15,23,42,0.04)] cursor-pointer transition-[border-color,background-color] duration-150 space-y-3 ${
+                isSelected
+                  ? 'border-[#1A56DB]/50 bg-[#1A56DB]/[0.02]'
+                  : 'border-slate-200/80 hover:border-slate-300'
               }`}
-              style={{ animationDelay: `${i * 30}ms` }}
             >
-              {/* Top row: UUID + status badge + checkbox */}
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <ScrambledUUID uuid={inquiry.tracking_uuid} />
-                  <span className={`shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${s.badge}`}>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="font-mono text-xs font-semibold text-[#0A1628] tabular-nums">
+                    #{shortRef}
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full border shrink-0 ${s.pill}`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
                     {s.label}
                   </span>
                 </div>
-                <div onClick={e => e.stopPropagation()} className="shrink-0 pt-0.5 p-1">
+                <div onClick={(e) => e.stopPropagation()} className="p-1.5 -mr-1.5">
                   <input
                     type="checkbox"
+                    aria-label={`Select inquiry ${shortRef}`}
                     checked={isSelected}
                     onChange={() => handleSelectOne(inquiry.id)}
-                    className="w-4 h-4 rounded text-brand-blue border-slate-300 focus:ring-brand-blue cursor-pointer"
+                    className="w-4 h-4 rounded text-[#1A56DB] border-slate-300 focus:ring-[#1A56DB] cursor-pointer"
                   />
                 </div>
               </div>
 
-              {/* Client + company */}
               <div>
-                <p className="text-base font-semibold text-brand-deep-blue leading-tight">{inquiry.contact_name}</p>
+                <p className="text-sm font-semibold text-[#0A1628] leading-snug">
+                  {inquiry.contact_name}
+                </p>
                 {inquiry.company_name && (
-                  <p className="text-xs text-slate-400 mt-0.5">{inquiry.company_name}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">{inquiry.company_name}</p>
                 )}
               </div>
 
-              {/* Division + product */}
               <div>
-                <span className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5">
+                <span className="block text-[11px] text-slate-400">
                   {inquiry.divisions?.display_name || 'Industrial'}
                 </span>
-                <span 
-                  className="text-xs font-semibold text-brand-deep-blue line-clamp-1 cursor-help"
-                  title={inquiry.inquiry_payload?.productName || 'General Inquiry'}
+                <span
+                  className="text-xs font-medium text-[#0A1628] line-clamp-1 cursor-help"
+                  title={productName}
                 >
-                  {inquiry.inquiry_payload?.productName || 'General Inquiry'}
+                  {productName}
                 </span>
               </div>
 
-              {/* Bottom row: time + chevron */}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-400">
-                <span className="font-mono text-[11px]">
+              <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 text-xs">
+                <span className="text-slate-400 tabular-nums">
                   {formatDistanceToNow(new Date(inquiry.created_at), { addSuffix: true })}
                 </span>
-                <div className="flex items-center gap-1 text-brand-blue font-semibold text-xs">
-                  <span>View Details</span>
+                <span className="inline-flex items-center gap-1 text-[#1A56DB] font-medium">
+                  <span>Open</span>
                   <ChevronRight className="w-3.5 h-3.5" />
-                </div>
+                </span>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* ── DESKTOP: Borderless Luxury Table ── */}
-      <div className="hidden md:block overflow-x-auto bg-white rounded-2xl border border-slate-100 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.03)]">
+      {/* Desktop Hairline Table */}
+      <div className="hidden md:block overflow-x-auto bg-white rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-slate-100 bg-slate-50/50 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-              <th className="py-3.5 pl-6 pr-2 w-12">
+            <tr className="border-b border-slate-200/70 bg-slate-50/70 text-[11px] font-medium text-slate-500 uppercase tracking-wider">
+              <th className="py-3 pl-5 pr-2 w-10">
                 <input
                   type="checkbox"
-                  checked={optimisticInquiries.length > 0 && selectedTickets.length === optimisticInquiries.length}
+                  aria-label="Select all inquiries"
+                  checked={
+                    optimisticInquiries.length > 0 &&
+                    selectedTickets.length === optimisticInquiries.length
+                  }
                   onChange={handleSelectAll}
-                  className="w-4 h-4 rounded text-brand-blue border-slate-300 focus:ring-brand-blue cursor-pointer"
+                  className="w-4 h-4 rounded text-[#1A56DB] border-slate-300 focus:ring-[#1A56DB] cursor-pointer"
                 />
               </th>
-              <th className="py-3.5 pr-4">Ticket ID</th>
-              <th className="px-4 py-3.5">Product / RFQ</th>
-              <th className="px-4 py-3.5">Client</th>
-              <th className="px-4 py-3.5">Status</th>
-              <th className="px-4 py-3.5">Received</th>
-              <th className="py-3.5 pr-6 pl-4 text-right">Action</th>
+              <th className="py-3 px-3">Ref ID</th>
+              <th className="py-3 px-3">Division / Product</th>
+              <th className="py-3 px-3">Client</th>
+              <th className="py-3 px-3">Status</th>
+              <th className="py-3 px-3">Received</th>
+              <th className="py-3 pl-3 pr-5 text-right">Open</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 text-sm">
-            {optimisticInquiries.map((inquiry, i) => {
+            {optimisticInquiries.map((inquiry) => {
               const s = getStatus(inquiry.status);
               const isSelected = selectedTickets.includes(inquiry.id);
+              const shortRef = inquiry.tracking_uuid.substring(0, 8).toUpperCase();
+              const productName = inquiry.inquiry_payload?.productName || 'General Inquiry';
+
               return (
                 <tr
                   key={inquiry.id}
-                  className={`group transition-colors hover:bg-slate-50/50 ${
-                    isSelected ? 'bg-brand-blue/[0.03]' : ''
+                  onClick={(e) => {
+                    if ((e.target as HTMLElement).tagName.toLowerCase() !== 'input') {
+                      router.push(`/admin/tickets/${inquiry.id}`);
+                    }
+                  }}
+                  className={`group transition-colors duration-150 cursor-pointer ${
+                    isSelected ? 'bg-[#1A56DB]/[0.04]' : 'hover:bg-slate-50/80'
                   }`}
-                  style={{ animationDelay: `${i * 30}ms` }}
                 >
-                  <td className="py-4 pl-6 pr-2">
+                  <td className="py-3.5 pl-5 pr-2" onClick={(e) => e.stopPropagation()}>
                     <input
                       type="checkbox"
+                      aria-label={`Select inquiry ${shortRef}`}
                       checked={isSelected}
                       onChange={() => handleSelectOne(inquiry.id)}
-                      className="w-4 h-4 rounded text-brand-blue border-slate-300 focus:ring-brand-blue cursor-pointer"
+                      className="w-4 h-4 rounded text-[#1A56DB] border-slate-300 focus:ring-[#1A56DB] cursor-pointer"
                     />
                   </td>
-                  <td className="py-4 pr-4"><ScrambledUUID uuid={inquiry.tracking_uuid} /></td>
-                  <td className="px-4 py-4">
-                    <span className="block text-xs font-medium text-slate-400 mb-0.5">
-                      {inquiry.divisions?.display_name || 'Industrial'}
-                    </span>
-                    <span 
-                      className="text-sm font-semibold text-brand-deep-blue line-clamp-1 cursor-help"
-                      title={inquiry.inquiry_payload?.productName || 'General Inquiry'}
+                  <td className="py-3.5 px-3">
+                    <span
+                      className="font-mono text-xs font-semibold text-[#0A1628] tabular-nums cursor-help"
+                      title={inquiry.tracking_uuid}
                     >
-                      {inquiry.inquiry_payload?.productName || 'General Inquiry'}
+                      #{shortRef}
                     </span>
                   </td>
-                  <td className="px-4 py-4">
-                    <p className="font-semibold text-brand-deep-blue">{inquiry.contact_name}</p>
+                  <td className="py-3.5 px-3">
+                    <p
+                      className="text-sm font-medium text-[#0A1628] line-clamp-1 max-w-[260px] cursor-help"
+                      title={productName}
+                    >
+                      {productName}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      {inquiry.divisions?.display_name || 'Industrial'}
+                    </p>
+                  </td>
+                  <td className="py-3.5 px-3">
+                    <p className="font-medium text-[#0A1628]">{inquiry.contact_name}</p>
                     {inquiry.company_name && (
-                      <p 
-                        className="text-xs text-slate-400 truncate max-w-[180px] cursor-help"
+                      <p
+                        className="text-xs text-slate-500 truncate max-w-[180px] cursor-help"
                         title={inquiry.company_name}
                       >
                         {inquiry.company_name}
                       </p>
                     )}
                   </td>
-                  <td className="px-4 py-4">
-                    <span className={`inline-flex items-center text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${s.badge}`}>
+                  <td className="py-3.5 px-3">
+                    <span
+                      className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full border whitespace-nowrap ${s.pill}`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
                       {s.label}
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-xs font-mono text-slate-500 whitespace-nowrap">
+                  <td className="py-3.5 px-3 text-xs text-slate-500 tabular-nums whitespace-nowrap">
                     {formatDistanceToNow(new Date(inquiry.created_at), { addSuffix: true })}
                   </td>
-                  <td className="py-4 pr-6 pl-4 text-right">
+                  <td className="py-3.5 pl-3 pr-5 text-right" onClick={(e) => e.stopPropagation()}>
                     <Link
                       href={`/admin/tickets/${inquiry.id}`}
-                      className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-50 hover:bg-brand-blue hover:text-white text-slate-400 transition-colors shadow-2xs"
+                      aria-label={`Open inquiry ${shortRef}`}
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 group-hover:text-[#1A56DB] group-hover:bg-slate-100 transition-colors duration-150"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </Link>
@@ -347,33 +406,33 @@ export function TicketTable({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between py-4 px-1">
-          <p className="text-xs text-slate-400 font-mono">
+        <div className="flex items-center justify-between pt-2">
+          <p className="text-xs text-slate-500 tabular-nums">
             Page {currentPage} of {totalPages}
           </p>
           <div className="flex items-center gap-2">
             {currentPage > 1 ? (
               <Link
                 href={buildPageUrl(currentPage - 1)}
-                className="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-brand-deep-blue bg-white hover:bg-slate-50 transition-colors shadow-2xs"
+                className="h-8 px-3 inline-flex items-center rounded-lg border border-slate-200/90 text-xs font-medium text-[#0A1628] bg-white hover:bg-slate-50 transition-colors"
               >
-                ← Prev
+                Previous
               </Link>
             ) : (
-              <span className="px-3.5 py-1.5 rounded-xl border border-slate-100 text-xs font-semibold text-slate-300 bg-transparent cursor-not-allowed">
-                ← Prev
+              <span className="h-8 px-3 inline-flex items-center rounded-lg border border-slate-100 text-xs font-medium text-slate-300 cursor-not-allowed">
+                Previous
               </span>
             )}
             {currentPage < totalPages ? (
               <Link
                 href={buildPageUrl(currentPage + 1)}
-                className="px-3.5 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-brand-deep-blue bg-white hover:bg-slate-50 transition-colors shadow-2xs"
+                className="h-8 px-3 inline-flex items-center rounded-lg border border-slate-200/90 text-xs font-medium text-[#0A1628] bg-white hover:bg-slate-50 transition-colors"
               >
-                Next →
+                Next
               </Link>
             ) : (
-              <span className="px-3.5 py-1.5 rounded-xl border border-slate-100 text-xs font-semibold text-slate-300 bg-transparent cursor-not-allowed">
-                Next →
+              <span className="h-8 px-3 inline-flex items-center rounded-lg border border-slate-100 text-xs font-medium text-slate-300 cursor-not-allowed">
+                Next
               </span>
             )}
           </div>
@@ -383,7 +442,7 @@ export function TicketTable({
       <ConfirmModal
         isOpen={isConfirmOpen}
         title="Delete Inquiries"
-        message={`Are you sure you want to permanently delete ${selectedTickets.length} inquiry tickets?`}
+        message={`Permanently delete ${selectedTickets.length} inquiry record${selectedTickets.length > 1 ? 's' : ''}? This action cannot be undone.`}
         onConfirm={confirmDelete}
         onCancel={() => setIsConfirmOpen(false)}
       />

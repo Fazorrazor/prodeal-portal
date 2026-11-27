@@ -1,8 +1,9 @@
 import { Suspense } from 'react';
+import Link from 'next/link';
+import { X } from 'lucide-react';
 import { StaffAssignmentTable } from '../../../../components/admin/StaffAssignmentTable';
 import { StaffAssignmentTableSkeleton } from '../../../../components/admin/StaffAssignmentTableSkeleton';
 import { DivisionErrorBoundary } from '../../../../components/shared/DivisionErrorBoundary';
-
 import { AddStaffPanel } from '../../../../components/admin/AddStaffPanel';
 import { getVerifiedActiveStaff } from '../../../../lib/supabase/requireStaff';
 import { redirect } from 'next/navigation';
@@ -10,7 +11,9 @@ import { redirect } from 'next/navigation';
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
-export default async function StaffPage(props: { searchParams: Promise<{ search?: string }> }) {
+export default async function StaffPage(props: {
+  searchParams: Promise<{ search?: string }>;
+}) {
   const searchParams = await props.searchParams;
   const auth = await getVerifiedActiveStaff();
   if (!auth.ok) {
@@ -25,18 +28,34 @@ export default async function StaffPage(props: { searchParams: Promise<{ search?
   const search = searchParams?.search || '';
 
   return (
-    <div className="space-y-6 max-w-6xl animate-in fade-in slide-in-from-bottom-4 duration-500 pt-2 pb-12">
-      <div className="pb-6 border-b border-slate-100 flex items-center justify-between">
+    <div className="space-y-6 pb-10">
+      <div className="pb-6 border-b border-slate-200/70 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-display font-semibold text-brand-deep-blue leading-none mb-1.5">Staff Roster</h1>
-          <p className="text-slate-500 text-sm">
-            Manage system access and division assignments.
+          <h1 className="text-2xl font-semibold tracking-tight text-[#0A1628]">Team</h1>
+          <p className="text-sm text-slate-500 mt-1">
+            Manage staff access, authorization roles, and division assignments.
           </p>
         </div>
-        <div id="tour-add-staff">
+        <div id="tour-add-staff" className="self-start sm:self-auto">
           <AddStaffPanel divisions={divisions || []} />
         </div>
       </div>
+
+      {search && (
+        <div className="flex items-center justify-between gap-3 px-4 py-2.5 bg-white rounded-lg border border-slate-200/80 text-xs">
+          <span className="text-slate-600">
+            Filtering members for{' '}
+            <strong className="font-semibold text-[#0A1628]">&ldquo;{search}&rdquo;</strong>
+          </span>
+          <Link
+            href="/admin/staff"
+            className="inline-flex items-center gap-1 font-medium text-slate-500 hover:text-[#0A1628] transition-colors"
+          >
+            <X className="w-3.5 h-3.5" />
+            <span>Clear</span>
+          </Link>
+        </div>
+      )}
 
       <DivisionErrorBoundary>
         <div id="tour-staff-table">

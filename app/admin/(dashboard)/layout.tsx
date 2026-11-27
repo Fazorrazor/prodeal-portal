@@ -21,23 +21,19 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
         <SessionGuard />
         <AdminWalkthrough />
 
-        {/* Main Dashboard Layout */}
-        <div className="flex h-screen bg-brand-surface overflow-hidden font-body text-brand-deep-blue pb-16 lg:pb-0">
-          {/* Sidebar */}
+        <div className="flex h-screen bg-[#F8FAFC] overflow-hidden text-[#0A1628] pb-16 lg:pb-0">
           <AdminSidebar userRole={userRole} />
-          
-          {/* Main Content Area */}
+
           <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
             <AdminTopbar />
-            
-            <main className="flex-1 overflow-y-auto bg-brand-surface relative">
-              <div className="p-4 sm:p-8 min-h-full">
+
+            <main className="flex-1 overflow-y-auto bg-[#F8FAFC] relative">
+              <div className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-8 min-h-full">
                 {children}
               </div>
             </main>
           </div>
-          
-          {/* Mobile Bottom Navigation */}
+
           <AdminMobileNav userRole={userRole} />
         </div>
       </>

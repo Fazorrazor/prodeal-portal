@@ -46,6 +46,13 @@ test.describe('Pro Deal Industries — Critical Smoke & Security E2E', () => {
       await expect(page.getByRole('heading').first()).toBeVisible();
     }
 
+    const adminLoginRes = await page.goto('/admin/login', { waitUntil: 'domcontentloaded' });
+    const adminLoginStatus = adminLoginRes?.status();
+    expect([200, 404]).toContain(adminLoginStatus);
+    if (adminLoginStatus === 200) {
+      await expect(page.getByRole('heading', { name: /Staff Sign In/i })).toBeVisible();
+    }
+
     expect(pageErrors).toEqual([]);
   });
 

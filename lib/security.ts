@@ -56,9 +56,6 @@ const ADMIN_SUBDOMAIN_SHORT_PREFIXES = [
   '/update-password',
   '/tickets',
   '/staff',
-  '/analytics',
-  '/complaints',
-  '/settings',
 ];
 
 export type AdminHostRouteDecision =

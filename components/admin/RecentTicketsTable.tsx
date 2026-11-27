@@ -2,39 +2,62 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ChevronRight, Trash2, Loader2 } from 'lucide-react';
+import { ArrowRight, ChevronRight, Trash2, Loader2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
-import { useScrambleText } from '../../lib/hooks/useScrambleText';
 import { bulkDeleteInquiriesSafely } from '../../app/actions/deleteInquiry';
 import { useRouter } from 'next/navigation';
-import { AnimatedBorder } from './AnimatedBorder';
 import { ConfirmModal } from './ConfirmModal';
 
-function ScrambledUUID({ uuid }: { uuid: string }) {
-  const { displayText } = useScrambleText(uuid.substring(0, 8).toUpperCase(), 400, 1000);
-  return <span className="font-mono text-sm text-brand-deep-blue font-bold tracking-tight">{displayText}...</span>;
-}
-
 const STATUS_CONFIG = {
-  new:         { label: 'New',         badge: 'border-red-200/80 bg-red-50/80 text-brand-red' },
-  in_progress: { label: 'In Progress', badge: 'border-amber-200/80 bg-amber-50/80 text-amber-700' },
-  quoted:      { label: 'Quoted',      badge: 'border-brand-blue/20 bg-brand-blue/10 text-brand-blue' },
-  closed:      { label: 'Closed',      badge: 'border-slate-200 bg-slate-100 text-slate-500' },
+  new: {
+    label: 'New',
+    dot: 'bg-rose-500',
+    pill: 'bg-rose-50/70 text-rose-700 border-rose-200/70',
+  },
+  in_progress: {
+    label: 'In Progress',
+    dot: 'bg-amber-500',
+    pill: 'bg-amber-50/70 text-amber-700 border-amber-200/70',
+  },
+  quoted: {
+    label: 'Quoted',
+    dot: 'bg-[#1A56DB]',
+    pill: 'bg-blue-50/70 text-[#1A56DB] border-blue-200/70',
+  },
+  closed: {
+    label: 'Closed',
+    dot: 'bg-emerald-500',
+    pill: 'bg-emerald-50/70 text-emerald-700 border-emerald-200/70',
+  },
 } as const;
 
 function getStatus(status: string) {
   return STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] ?? STATUS_CONFIG.closed;
 }
 
-export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tracking_uuid: string, status: string, created_at: string, contact_name: string, company_name?: string | null, divisions?: { display_name: string } | null, inquiry_payload?: { productName?: string; [key: string]: unknown } | null }[] }) {
+export function RecentTicketsTable({
+  inquiries,
+}: {
+  inquiries: {
+    id: string;
+    tracking_uuid: string;
+    status: string;
+    created_at: string;
+    contact_name: string;
+    company_name?: string | null;
+    divisions?: { display_name: string } | null;
+    inquiry_payload?: { productName?: string; [key: string]: unknown } | null;
+  }[];
+}) {
   const [selectedTickets, setSelectedTickets] = useState<string[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const router = useRouter();
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setSelectedTickets(inquiries.map(inq => inq.id));
+      setSelectedTickets(inquiries.map((inq) => inq.id));
     } else {
       setSelectedTickets([]);
     }
@@ -42,13 +65,11 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
 
   const handleSelectOne = (id: string) => {
     if (selectedTickets.includes(id)) {
-      setSelectedTickets(selectedTickets.filter(ticketId => ticketId !== id));
+      setSelectedTickets(selectedTickets.filter((ticketId) => ticketId !== id));
     } else {
       setSelectedTickets([...selectedTickets, id]);
     }
   };
-
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleBulkDeleteClick = () => {
     if (selectedTickets.length === 0) return;
@@ -61,9 +82,9 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
     const result = await bulkDeleteInquiriesSafely(selectedTickets);
 
     if (!result.success) {
-      toast.error(result.error || 'Failed to delete tickets');
+      toast.error(result.error || 'Failed to delete inquiries');
     } else {
-      toast.success(`${selectedTickets.length} tickets permanently deleted`);
+      toast.success(`${selectedTickets.length} inquiries permanently deleted`);
       setSelectedTickets([]);
       router.refresh();
     }
@@ -71,22 +92,29 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
   };
 
   const header = (
-    <div className="p-6 relative flex items-center justify-between border-b border-slate-100">
-      <div className="flex items-center gap-3">
-        <h2 className="font-display font-semibold text-lg text-brand-deep-blue leading-none">Recent Inquiries</h2>
+    <div className="px-5 py-4 flex items-center justify-between gap-3 border-b border-slate-100">
+      <div className="flex items-center gap-2.5">
+        <h2 className="text-sm font-semibold text-[#0A1628] tracking-tight">Recent Inquiries</h2>
+        <span className="text-[11px] font-mono tabular-nums px-1.5 py-0.5 rounded bg-slate-100 text-slate-500">
+          {inquiries.length}
+        </span>
       </div>
-      <Link href="/admin/tickets" className="text-xs font-semibold text-brand-blue hover:text-brand-deep-blue transition-colors">
-        View all inquiries →
+      <Link
+        href="/admin/tickets"
+        className="inline-flex items-center gap-1 text-xs font-medium text-[#1A56DB] hover:text-[#0A1628] transition-colors whitespace-nowrap"
+      >
+        <span>View all</span>
+        <ArrowRight className="w-3.5 h-3.5" />
       </Link>
     </div>
   );
 
   if (!inquiries || inquiries.length === 0) {
     return (
-      <div className="mt-8 bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] overflow-hidden">
         {header}
-        <div className="py-16 flex flex-col items-center justify-center text-center">
-          <h3 className="text-lg font-semibold text-brand-deep-blue mb-1">All caught up</h3>
+        <div className="py-16 px-4 flex flex-col items-center justify-center text-center">
+          <h3 className="text-sm font-semibold text-[#0A1628] mb-1">All caught up</h3>
           <p className="text-xs text-slate-400">
             No recent inquiries assigned to your division.
           </p>
@@ -96,170 +124,209 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
   }
 
   return (
-    <div className="mt-8 bg-white rounded-2xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-slate-100 overflow-hidden">
-      <div className="sticky top-0 z-30 bg-white/90 backdrop-blur-md">
-        {selectedTickets.length > 0 && (
-          <div className="bg-brand-blue/5 border-b border-brand-blue/10 p-4 flex items-center justify-between animate-in fade-in slide-in-from-top-2">
-            <span className="text-sm font-semibold text-brand-deep-blue">
-              {selectedTickets.length} Selected
-            </span>
-            <button
-              onClick={handleBulkDeleteClick}
-              disabled={isDeleting}
-              className="flex items-center gap-2 bg-red-50 text-brand-red px-4 py-2 text-xs font-semibold rounded-xl hover:bg-red-100 transition-colors disabled:opacity-50"
-            >
-              {isDeleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-              Delete Selected
-            </button>
-          </div>
-        )}
-        {header}
-      </div>
+    <div className="bg-white rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] overflow-hidden">
+      {selectedTickets.length > 0 && (
+        <div className="bg-slate-50 border-b border-slate-200/80 px-5 py-2.5 flex items-center justify-between gap-3 animate-in fade-in duration-150">
+          <span className="text-xs font-medium text-[#0A1628] tabular-nums">
+            {selectedTickets.length} selected
+          </span>
+          <button
+            type="button"
+            onClick={handleBulkDeleteClick}
+            disabled={isDeleting}
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/80 text-xs font-medium transition-[background-color,transform] duration-150 active:scale-[0.98] disabled:opacity-50 whitespace-nowrap cursor-pointer"
+          >
+            {isDeleting ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Trash2 className="w-3.5 h-3.5" />
+            )}
+            <span>Delete selected</span>
+          </button>
+        </div>
+      )}
 
-      {/* Mobile card list */}
-      <div className="md:hidden flex flex-col divide-y divide-slate-100">
-        {inquiries.map((inquiry, i) => {
+      {header}
+
+      {/* Mobile stacked rows */}
+      <div className="md:hidden divide-y divide-slate-100">
+        {inquiries.map((inquiry) => {
           const s = getStatus(inquiry.status);
+          const isSelected = selectedTickets.includes(inquiry.id);
+          const shortRef = inquiry.tracking_uuid.substring(0, 8).toUpperCase();
           return (
             <div
               key={inquiry.id}
-              className={`relative flex flex-col gap-3 p-4 transition-all cursor-pointer ${selectedTickets.includes(inquiry.id) ? 'bg-brand-blue/[0.03]' : 'hover:bg-slate-50/50'}`}
-              style={{ animationDelay: `${i * 40}ms` }}
               onClick={(e) => {
                 if ((e.target as HTMLElement).tagName.toLowerCase() !== 'input') {
                   router.push(`/admin/tickets/${inquiry.id}`);
                 }
               }}
+              className={`p-4 space-y-3 transition-colors duration-150 cursor-pointer ${
+                isSelected ? 'bg-[#1A56DB]/[0.03]' : 'hover:bg-slate-50/70'
+              }`}
             >
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <ScrambledUUID uuid={inquiry.tracking_uuid} />
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="font-mono text-xs font-semibold text-[#0A1628] tabular-nums">
+                    #{shortRef}
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded-full border ${s.pill}`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
+                    {s.label}
+                  </span>
                 </div>
-                <span className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${s.badge} shrink-0`}>
-                  {s.label}
-                </span>
+                <div onClick={(e) => e.stopPropagation()} className="p-1.5 -mr-1.5">
+                  <input
+                    type="checkbox"
+                    aria-label={`Select inquiry ${shortRef}`}
+                    checked={isSelected}
+                    onChange={() => handleSelectOne(inquiry.id)}
+                    className="w-4 h-4 rounded border-slate-300 text-[#1A56DB] focus:ring-[#1A56DB] cursor-pointer"
+                  />
+                </div>
               </div>
 
               <div>
-                <div className="flex items-center justify-between">
-                  <p className="text-base font-semibold text-brand-deep-blue capitalize leading-tight">
-                    {inquiry.contact_name}
-                  </p>
-                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-brand-blue" />
-                </div>
+                <p className="text-sm font-semibold text-[#0A1628] leading-snug">
+                  {inquiry.contact_name}
+                </p>
                 {inquiry.company_name && (
-                  <p className="text-xs text-slate-400 capitalize mt-0.5">
-                    {inquiry.company_name}
-                  </p>
+                  <p className="text-xs text-slate-500 mt-0.5 truncate">{inquiry.company_name}</p>
                 )}
               </div>
 
-              <div className="flex items-end justify-between pt-1 border-t border-slate-50">
-                <div>
-                  <span className="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">
-                    {inquiry.divisions?.display_name || 'Industrial'}
-                  </span>
-                  <span 
-                    className="text-xs font-semibold text-brand-deep-blue line-clamp-1 cursor-help"
-                    title={inquiry.inquiry_payload?.productName || 'General Inquiry'}
-                  >
-                    {inquiry.inquiry_payload?.productName || 'General Inquiry'}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 shrink-0">
-                  <span className="text-[11px] text-slate-400 font-mono whitespace-nowrap">
-                    {formatDistanceToNow(new Date(inquiry.created_at), { addSuffix: true })}
-                  </span>
-                  <div onClick={e => e.stopPropagation()} className="p-1">
-                    <input
-                      type="checkbox"
-                      checked={selectedTickets.includes(inquiry.id)}
-                      onChange={() => handleSelectOne(inquiry.id)}
-                      className="w-4 h-4 rounded text-brand-blue border-slate-300 focus:ring-brand-blue cursor-pointer"
-                    />
-                  </div>
-                </div>
+              <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100 text-xs">
+                <span
+                  className="text-slate-600 truncate cursor-help"
+                  title={inquiry.inquiry_payload?.productName || inquiry.divisions?.display_name || 'General Inquiry'}
+                >
+                  {inquiry.divisions?.display_name || 'Industrial'} ·{' '}
+                  {inquiry.inquiry_payload?.productName || 'General Inquiry'}
+                </span>
+                <span className="text-[11px] text-slate-400 tabular-nums whitespace-nowrap shrink-0">
+                  {formatDistanceToNow(new Date(inquiry.created_at), { addSuffix: true })}
+                </span>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Desktop table */}
-      <div className="hidden md:block overflow-x-auto mt-4">
+      {/* Desktop hairline table */}
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-slate-100 bg-slate-50/50">
-              <th className="py-3 pl-6 pr-3 w-12">
+            <tr className="border-b border-slate-200/70 bg-slate-50/70">
+              <th className="py-3 pl-5 pr-2 w-10">
                 <input
                   type="checkbox"
+                  aria-label="Select all recent inquiries"
                   checked={inquiries.length > 0 && selectedTickets.length === inquiries.length}
                   onChange={handleSelectAll}
-                  className="w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
+                  className="w-4 h-4 rounded border-slate-300 text-[#1A56DB] focus:ring-[#1A56DB] cursor-pointer"
                 />
               </th>
-              <th className="py-3 pr-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Ticket ID</th>
-              <th className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Product / Service</th>
-              <th className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Client</th>
-              <th className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-              <th className="px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Received</th>
-              <th className="py-3 pl-4 pr-6 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Action</th>
+              <th className="py-3 px-3 text-[11px] font-medium text-slate-500 uppercase tracking-wider">
+                Ref ID
+              </th>
+              <th className="py-3 px-3 text-[11px] font-medium text-slate-500 uppercase tracking-wider">
+                Client
+              </th>
+              <th className="py-3 px-3 text-[11px] font-medium text-slate-500 uppercase tracking-wider">
+                Division / Product
+              </th>
+              <th className="py-3 px-3 text-[11px] font-medium text-slate-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="py-3 px-3 text-[11px] font-medium text-slate-500 uppercase tracking-wider">
+                Received
+              </th>
+              <th className="py-3 pl-3 pr-5 text-[11px] font-medium text-slate-500 uppercase tracking-wider text-right">
+                Open
+              </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-brand-border/30">
-            {inquiries.map((inquiry, i) => {
+          <tbody className="divide-y divide-slate-100">
+            {inquiries.map((inquiry) => {
               const s = getStatus(inquiry.status);
+              const isSelected = selectedTickets.includes(inquiry.id);
+              const shortRef = inquiry.tracking_uuid.substring(0, 8).toUpperCase();
+              const productName = inquiry.inquiry_payload?.productName || 'General Inquiry';
+
               return (
                 <tr
                   key={inquiry.id}
-                  className={`group transition-colors animate-in fade-in slide-in-from-bottom-2 duration-300 fill-mode-both border-b border-slate-50 last:border-0 ${selectedTickets.includes(inquiry.id) ? 'bg-brand-blue/[0.04]' : 'hover:bg-slate-50/50'}`}
-                  style={{ animationDelay: `${i * 50}ms` }}
+                  onClick={(e) => {
+                    if ((e.target as HTMLElement).tagName.toLowerCase() !== 'input') {
+                      router.push(`/admin/tickets/${inquiry.id}`);
+                    }
+                  }}
+                  className={`group transition-colors duration-150 cursor-pointer ${
+                    isSelected ? 'bg-[#1A56DB]/[0.04]' : 'hover:bg-slate-50/80'
+                  }`}
                 >
-                  <td className="py-4 pl-6 pr-3">
+                  <td className="py-3.5 pl-5 pr-2" onClick={(e) => e.stopPropagation()}>
                     <input
                       type="checkbox"
-                      checked={selectedTickets.includes(inquiry.id)}
+                      aria-label={`Select inquiry ${shortRef}`}
+                      checked={isSelected}
                       onChange={() => handleSelectOne(inquiry.id)}
-                      className="w-4 h-4 rounded border-slate-300 text-brand-blue focus:ring-brand-blue cursor-pointer"
+                      className="w-4 h-4 rounded border-slate-300 text-[#1A56DB] focus:ring-[#1A56DB] cursor-pointer"
                     />
                   </td>
-                  <td className="py-4 pr-4"><ScrambledUUID uuid={inquiry.tracking_uuid} /></td>
-                  <td className="px-4 py-4">
-                    <span className="block text-xs text-slate-500 font-medium mb-0.5">
-                      {inquiry.divisions?.display_name || 'Unknown'}
-                    </span>
-                    <span 
-                      className="text-sm font-semibold text-brand-deep-blue line-clamp-1 cursor-help"
-                      title={inquiry.inquiry_payload?.productName || 'General Inquiry'}
+                  <td className="py-3.5 px-3">
+                    <span
+                      className="font-mono text-xs font-semibold text-[#0A1628] tabular-nums cursor-help"
+                      title={inquiry.tracking_uuid}
                     >
-                      {inquiry.inquiry_payload?.productName || 'General Inquiry'}
+                      #{shortRef}
                     </span>
                   </td>
-                  <td className="px-4 py-4">
-                    <p className="text-sm font-semibold text-brand-deep-blue">{inquiry.contact_name}</p>
+                  <td className="py-3.5 px-3">
+                    <p className="text-sm font-medium text-[#0A1628] leading-snug">
+                      {inquiry.contact_name}
+                    </p>
                     {inquiry.company_name && (
-                      <p 
-                        className="text-sm text-slate-500 truncate max-w-[180px] cursor-help"
+                      <p
+                        className="text-xs text-slate-500 truncate max-w-[200px] cursor-help"
                         title={inquiry.company_name}
                       >
                         {inquiry.company_name}
                       </p>
                     )}
                   </td>
-                  <td className="px-4 py-4">
-                    <span className={`inline-flex items-center text-xs font-semibold px-2 py-1 rounded-md border ${s.badge}`}>
+                  <td className="py-3.5 px-3">
+                    <p
+                      className="text-sm font-medium text-[#0A1628] line-clamp-1 max-w-[240px] cursor-help"
+                      title={productName}
+                    >
+                      {productName}
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      {inquiry.divisions?.display_name || 'Industrial'}
+                    </p>
+                  </td>
+                  <td className="py-3.5 px-3">
+                    <span
+                      className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-full border whitespace-nowrap ${s.pill}`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
                       {s.label}
                     </span>
                   </td>
-                  <td className="px-4 py-4 text-sm text-slate-500 whitespace-nowrap">
+                  <td className="py-3.5 px-3 text-xs text-slate-500 tabular-nums whitespace-nowrap">
                     {formatDistanceToNow(new Date(inquiry.created_at), { addSuffix: true })}
                   </td>
-                  <td className="py-4 pl-4 pr-6 text-right">
+                  <td className="py-3.5 pl-3 pr-5 text-right" onClick={(e) => e.stopPropagation()}>
                     <Link
                       href={`/admin/tickets/${inquiry.id}`}
-                      className="inline-flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-brand-blue hover:bg-brand-blue/5 transition-colors"
+                      aria-label={`Open inquiry ${shortRef}`}
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-lg text-slate-400 group-hover:text-[#1A56DB] group-hover:bg-slate-100 transition-colors duration-150"
                     >
-                      <ChevronRight className="w-5 h-5" />
+                      <ChevronRight className="w-4 h-4" />
                     </Link>
                   </td>
                 </tr>
@@ -271,8 +338,8 @@ export function RecentTicketsTable({ inquiries }: { inquiries: { id: string, tra
 
       <ConfirmModal
         isOpen={isConfirmOpen}
-        title="Delete Tickets"
-        message={`Are you sure you want to permanently delete ${selectedTickets.length} tickets? This cannot be undone.`}
+        title="Delete Inquiries"
+        message={`Permanently delete ${selectedTickets.length} selected inquiry record${selectedTickets.length > 1 ? 's' : ''}? This action cannot be undone.`}
         onConfirm={confirmDelete}
         onCancel={() => setIsConfirmOpen(false)}
       />

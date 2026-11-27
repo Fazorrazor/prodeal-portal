@@ -1,36 +1,39 @@
 'use client';
 
-import { ReactNode } from 'react';
-import { useScrambleText } from '../../lib/hooks/useScrambleText';
+import type { ReactNode } from 'react';
 
-export function MetricCard({ 
-  title, 
-  value, 
-  icon, 
-  trend 
-}: { 
-  title: string; 
-  value: string | number; 
-  icon: ReactNode; 
-  trend?: string; 
+export function MetricCard({
+  title,
+  value,
+  subtitle,
+  icon,
+  accent = 'neutral',
+}: {
+  title: string;
+  value: string | number;
+  subtitle?: string;
+  icon: ReactNode;
+  accent?: 'neutral' | 'amber';
 }) {
-  const { displayText } = useScrambleText(value, 300, 1000);
   return (
-    <div className="relative flex flex-col justify-between gap-2.5 p-4 sm:p-5 bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-[0_2px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-300">
-      <div className="flex items-center gap-1.5 sm:gap-2 text-slate-400">
-        {icon}
-        <h3 className="text-[10px] sm:text-xs font-semibold uppercase tracking-wider truncate">
-          {title}
-        </h3>
+    <div className="flex flex-col justify-between gap-3 p-4 sm:p-5 bg-white rounded-xl border border-slate-200/80 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-[border-color] duration-150 hover:border-slate-300/80">
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="text-xs font-medium text-slate-500 truncate">{title}</h3>
+        <span className="shrink-0">{icon}</span>
       </div>
-      <div className="flex items-baseline gap-2 flex-wrap">
-        <p className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-brand-deep-blue tracking-tight leading-none">
-          {displayText}
+
+      <div className="space-y-1">
+        <p className="text-2xl sm:text-[28px] font-semibold text-[#0A1628] tracking-tight tabular-nums leading-none">
+          {value}
         </p>
-        {trend && (
-          <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border text-amber-700 bg-amber-50 border-amber-200/60 whitespace-nowrap">
-            {trend}
-          </span>
+        {subtitle && (
+          <p
+            className={`text-[11px] truncate ${
+              accent === 'amber' ? 'text-amber-700 font-medium' : 'text-slate-400'
+            }`}
+          >
+            {subtitle}
+          </p>
         )}
       </div>
     </div>
