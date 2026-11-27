@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prodeal Portal
 
-## Getting Started
+B2B wholesale product catalog, instant Request for Quote (RFQ) submission workflow, and internal operations portal for Prodeal Industries Ltd.
 
-First, run the development server:
+## Features
+
+- **Wholesale Product Catalog:** Browse industrial chemicals, bulk disposable bowls, 3D signages, and corporate souvenirs across dedicated division and solution pages.
+- **Instant RFQ Tray:** Add catalog items to an RFQ tray and submit quote requests with automated email and SMS notifications.
+- **Order and Inquiry Tracking:** Public inquiry tracking and support routes (`/inquiry`, `/track`, `/support`).
+- **Operations and Admin Portal:** Internal operations dashboard (`/ops`, `/admin`) secured with WebAuthn passkeys and Argon2 credential hashing.
+- **Search and Rate Limiting:** Client-side fuzzy search via Fuse.js with Upstash Redis rate limiting and QStash background dispatch.
+
+## Tech Stack
+
+- **Framework:** Next.js 16, React 18, TypeScript, Tailwind CSS
+- **Database and Auth:** Supabase (PostgreSQL), SimpleWebAuthn, Argon2, Jose
+- **Messaging and Queues:** Resend, Twilio, Upstash Redis, Upstash QStash
+- **Testing:** Vitest, Playwright
+
+## Local Development
 
 ```bash
+git clone https://github.com/Fazorrazor/prodeal-portal.git
+cd prodeal-portal
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` - Start the local development server
+- `npm run build` - Build the production bundle
+- `npm run start` - Start the production server
+- `npm run lint` - Run ESLint checks
+- `npm test` - Run unit tests with Vitest
