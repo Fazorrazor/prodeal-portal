@@ -6,6 +6,13 @@ import { headers } from 'next/headers';
 export const metadata: Metadata = {
   title: 'Track Inquiry',
   description: 'Track the real-time status of your quotation and order inquiry with Prodeal Industries Ltd using your 16-character tracking ID.',
+  alternates: {
+    canonical: 'https://www.prodealindustries.com/track',
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default async function TrackPage(props: { searchParams: Promise<{ error?: string }> }) {

@@ -4,6 +4,9 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Privacy Policy',
   description: 'Privacy policy and commercial data handling practices for Prodeal Industries Ltd in accordance with the Data Protection Act of Ghana.',
+  alternates: {
+    canonical: 'https://www.prodealindustries.com/privacy',
+  },
 };
 
 export default function PrivacyPolicyPage() {

@@ -68,6 +68,6 @@ export const DIVISION_SCHEMAS = {
 export const InquirySubmissionSchema = z.object({
   divisionSlug: z.enum(['signages', 'printing', 'bowls', 'chemicals']),
   contact:      ContactDetailsSchema,
-  inquiry:      z.record(z.unknown()), // Validated against DIVISION_SCHEMAS dynamically
+  inquiry:      z.record(z.string(), z.unknown()), // Validated against DIVISION_SCHEMAS dynamically
   fileIds:      z.array(z.string()).max(5),
 });

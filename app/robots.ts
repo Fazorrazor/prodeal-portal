@@ -6,11 +6,11 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        // Google and all standard crawlers
         userAgent: '*',
         allow: '/',
-        // Block admin, API routes, and tracking pages (no SEO value, private)
-        disallow: ['/admin/', '/api/', '/track/'],
+        // Never advertise admin paths in robots.txt — admin routes are isolated to
+        // ADMIN_SUBDOMAIN_HOST and enforce X-Robots-Tag: noindex, nofollow, noarchive.
+        disallow: ['/api/', '/track/'],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

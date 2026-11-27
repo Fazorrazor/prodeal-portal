@@ -3,7 +3,8 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
-  title: 'Admin Login | Prodeal Industries Ltd',
+  title: 'Staff Sign In | Prodeal Industries Ltd',
+  robots: { index: false, follow: false },
 };
 
 export default function AdminLoginPage() {

@@ -1,52 +1,60 @@
 'use server';
 
+import { after } from 'next/server';
 import { createServiceRoleClient } from '../../lib/supabase/server';
-import { inquiryRateLimit } from '../../lib/ratelimit';
+import { inquiryRateLimit, isRateLimitConfigured } from '../../lib/ratelimit';
 import { InquirySubmissionSchema, DIVISION_SCHEMAS } from '../../lib/validators/inquiry';
 import { headers } from 'next/headers';
 import { logError } from '../../lib/logger';
+import { escapeHtml, extractTrustedClientIp, getAdminPortalOrigin, sanitizeHeaderLine } from '../../lib/security';
 import { Resend } from 'resend';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export async function submitInquiry(formData: any) {
   try {
-    // 1. Rate Limit Check (Fail-open on timeout to prevent Redis from becoming a bottleneck)
-    const ip = (await headers()).get('x-forwarded-for') ?? '127.0.0.1';
-    const reqDivisionSlug = formData?.divisionSlug || 'unknown';
-    const limitKey = `${ip}:${reqDivisionSlug}`;
+    // 1. Rate Limit Check (Trusted Edge IP + IPv6 /64 normalization; fail-open on Redis timeout)
+    const { quotaKey } = extractTrustedClientIp(await headers());
+    const reqDivisionSlug = typeof formData?.divisionSlug === 'string' ? formData.divisionSlug : 'unknown';
+    const limitKey = `${quotaKey}:${reqDivisionSlug}`;
 
-    try {
-      const { success } = await Promise.race([
-        inquiryRateLimit.limit(limitKey),
-        new Promise<{ success: boolean }>((_, reject) => 
-          setTimeout(() => reject(new Error('Rate limit timeout')), 800)
-        )
-      ]);
-      
-      if (!success) {
-        return { 
-          success: false, 
-          error: "You've submitted multiple requests for this service recently. Please wait a little while, or contact our priority line." 
-        };
+    if (isRateLimitConfigured) {
+      try {
+        const { success } = await Promise.race([
+          inquiryRateLimit.limit(limitKey),
+          new Promise<{ success: boolean }>((_, reject) =>
+            setTimeout(() => reject(new Error('Rate limit timeout')), 800)
+          ),
+        ]);
+
+        if (!success) {
+          return {
+            success: false,
+            error:
+              "You've submitted multiple requests for this service recently. Please wait a little while, or contact our priority line.",
+          };
+        }
+      } catch (rlError) {
+        console.warn('[Rate Limit Warning] Upstash timed out or failed. Failing open to allow business request:', rlError);
       }
-    } catch (rlError) {
-      console.warn('[Rate Limit Warning] Upstash timed out or failed. Failing open to allow business request:', rlError);
-      // We continue execution. A temporary Redis outage should not stop business inquiries.
     }
 
     // 2. Validate overall schema structure
     const parsedData = InquirySubmissionSchema.safeParse(formData);
     if (!parsedData.success) {
-      return { success: false, error: 'Invalid form data structure.', details: parsedData.error.errors };
+      return { success: false, error: 'Invalid form data structure.', details: parsedData.error.issues };
     }
 
     const { divisionSlug, contact, inquiry, fileIds } = parsedData.data;
 
+    // 2.25. Ensure attachment paths stay strictly inside the selected division namespace
+    const safeFileIds = fileIds.filter(
+      (p) => p.startsWith(`${divisionSlug}/`) && !p.includes('..') && !p.includes('\\')
+    );
+
     // 2.5. Honeypot check for bots
     if (contact.botcheck) {
-      console.warn(`[Spam Blocked] Bot honeypot triggered by IP: ${ip}`);
-      // Return a simulated success to trick the bot into thinking it worked
+      console.warn(`[Spam Blocked] Bot honeypot triggered by IP: ${quotaKey}`);
       return { success: true, trackingId: crypto.randomUUID(), assignedPhone: null };
     }
 
@@ -58,7 +66,7 @@ export async function submitInquiry(formData: any) {
 
     const parsedInquiry = DivisionSchema.safeParse(inquiry);
     if (!parsedInquiry.success) {
-      return { success: false, error: 'Invalid division specific data.', details: parsedInquiry.error.errors };
+      return { success: false, error: 'Invalid division specific data.', details: parsedInquiry.error.issues };
     }
 
     const supabase = createServiceRoleClient() as any;
@@ -159,7 +167,7 @@ export async function submitInquiry(formData: any) {
         contact_phone: contact.phone,
         company_name: contact.companyName || null,
         inquiry_payload: parsedInquiry.data,
-        attachments: fileIds,
+        attachments: safeFileIds,
         status: 'new'
       })
       .select('id, tracking_uuid, divisions(display_name)')
@@ -176,46 +184,58 @@ export async function submitInquiry(formData: any) {
         ? newInquiry.divisions[0]?.display_name 
         : (newInquiry.divisions as any)?.display_name || divisionSlug;
 
-      let baseUrl = 'https://www.prodealindustries.com';
-      if (!baseUrl.startsWith('http')) {
-        baseUrl = `https://${baseUrl}`;
-      }
+      const baseUrl = getAdminPortalOrigin();
       const adminLink = `${baseUrl}/admin/tickets/${newInquiry.id}`;
       
+      const safeDivisionName = escapeHtml(divisionName);
+      const safeContactName = escapeHtml(contact.name);
+      const safeContactPhone = escapeHtml(contact.phone);
+      const safeTrackingUuid = escapeHtml(newInquiry.tracking_uuid);
+      const safeSubject = sanitizeHeaderLine(`New Lead: ${divisionName} - ${contact.name}`, 180);
+
       const emailHtml = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
-          <h2 style="color: #002244; margin-top: 0;">New Lead Assigned: ${divisionName}</h2>
+          <h2 style="color: #002244; margin-top: 0;">New Lead Assigned: ${safeDivisionName}</h2>
           <p style="color: #4b5563; font-size: 16px;">A new inquiry has just been assigned to you. Click below to review the details and respond to the client.</p>
           
           <div style="background-color: #f3f4f6; padding: 16px; border-radius: 6px; margin: 20px 0;">
-            <p style="margin: 0 0 8px 0;"><strong>Client Name:</strong> ${contact.name}</p>
-            <p style="margin: 0 0 8px 0;"><strong>Phone:</strong> ${contact.phone}</p>
-            <p style="margin: 0;"><strong>Tracking ID:</strong> <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">${newInquiry.tracking_uuid}</code></p>
+            <p style="margin: 0 0 8px 0;"><strong>Client Name:</strong> ${safeContactName}</p>
+            <p style="margin: 0 0 8px 0;"><strong>Phone:</strong> ${safeContactPhone}</p>
+            <p style="margin: 0;"><strong>Tracking ID:</strong> <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">${safeTrackingUuid}</code></p>
           </div>
 
-          <a href="${adminLink}" target="_blank" style="display: inline-block; background-color: #002244; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; margin-top: 10px;">Review Inquiry in Admin Portal</a>
+          <a href="${adminLink}" target="_blank" rel="noopener noreferrer" style="display: inline-block; background-color: #002244; color: #ffffff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: bold; margin-top: 10px;">Review Inquiry in Admin Portal</a>
         </div>
       `;
 
-      // Execute asynchronously in the background so it doesn't block the UI response
+      // Schedule non-blocking email dispatch safely via Next.js after() so Vercel serverless does not freeze mid-send
       if (resend) {
-        resend.emails.send({
-          from: 'Prodeal Alerts <alerts@prodealindustries.com>',
-          to: staffEmail,
-          subject: `🚨 New Lead: ${divisionName} - ${contact.name}`,
-          html: emailHtml,
-        }).then(async ({ error }) => {
-          if (error) {
-            console.error('[Resend Error]', error);
-            await supabase.from('inquiries').update({ 
-              internal_notes: `[Email Alert Failed]: ${error.message}` 
-            }).eq('id', newInquiry.id);
-          } else {
-            console.log(`[Email Alert Sent] to ${staffEmail}`);
+        const sendTask = async () => {
+          try {
+            const { error } = await resend.emails.send({
+              from: 'Prodeal Alerts <alerts@prodealindustries.com>',
+              to: staffEmail,
+              subject: safeSubject,
+              html: emailHtml,
+            });
+            if (error) {
+              console.error('[Resend Error]', error);
+              await supabase
+                .from('inquiries')
+                .update({ internal_notes: `[Email Alert Failed]: ${error.message}` })
+                .eq('id', newInquiry.id);
+            }
+          } catch (mailErr) {
+            console.error('[Resend Exception]', mailErr);
           }
-        }).catch(console.error);
+        };
+        try {
+          after(sendTask);
+        } catch {
+          void sendTask();
+        }
       } else {
-        console.warn('RESEND_API_KEY missing. Simulating email alert to', staffEmail);
+        console.warn('RESEND_API_KEY missing. Simulating email alert.');
       }
     } else {
       // If no staff is available, we log a warning but the business decides if it should fail.

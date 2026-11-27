@@ -29,7 +29,7 @@ export function DivisionFAQ({ faqs }: { faqs: FAQ[] }) {
       {/* Invisible JSON-LD Schema for AI/SEO */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
 
       {/* Section header */}

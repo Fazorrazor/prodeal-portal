@@ -5,7 +5,12 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  schedule:
+    - cron: '0 6 * * 1'
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -17,25 +22,46 @@ env:
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
 jobs:
-  # 1. SECURITY & COMPLIANCE (SAST & SCA)
+  # 1. SECURITY & COMPLIANCE (SAST, SCA, Trivy & Supply-Chain Vet)
   security-audit:
-    name: SAST (CodeQL) & SCA (Dependencies)
+    name: SAST (CodeQL), SCA, Trivy & Supply-Chain Vet
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
       - run: npm ci
-      
-      # SCA: Dependency Scanning
-      - name: Dependency Vulnerability Scan (SCA)
-        run: npm audit --audit-level=high
-      
+
+      # Supply-chain & agent skill deterministic vet
+      - name: Deterministic Supply-Chain & Skill Vet
+        run: |
+          npm run vet:self
+          npm run vet:skills
+
+      # SCA: Production Dependency Vulnerability Scan
+      - name: Production Dependency Vulnerability Scan (SCA)
+        run: npm audit --omit=dev --audit-level=high
+
+      # Trivy: Vulnerabilities, Secrets & Misconfigurations
+      - name: Run Trivy Filesystem Security Scan
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          scanners: 'vuln,secret,misconfig'
+          severity: 'CRITICAL,HIGH'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: 'true'
+          trivyignores: '.trivyignore.yaml'
+          skip-dirs: 'node_modules,.next,.git,coverage,resources'
+
       # SAST: CodeQL
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
@@ -44,23 +70,23 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
 
-  # 2. QUALITY & COVERAGE
+  # 2. QUALITY, SECURITY REGRESSION & COVERAGE
   quality-and-build:
-    name: Lint & Unit Tests
+    name: Multi-Gate Verify & Coverage
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
       - run: npm ci
 
-      - name: Linting & Type-Checking
-        run: |
-          npx tsc --noEmit
+      - name: Run Multi-Gate Verification Suite
+        run: npm run verify
 
       - name: Unit Tests & Coverage
         run: npx vitest run --coverage
@@ -86,8 +112,10 @@ jobs:
     outputs:
       preview_url: ${{ steps.deploy.outputs.preview_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
       - run: npm install --global vercel@latest
       - run: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
       
@@ -124,8 +152,10 @@ jobs:
     needs: preview-deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
       - run: npm ci
       
       - name: Install Playwright
@@ -192,7 +222,8 @@ jobs:
         with:
           urls: |
             ${{ needs.preview-deploy.outputs.preview_url }}
-            ${{ needs.preview-deploy.outputs.preview_url }}/divisions/disposable-bowls
+            ${{ needs.preview-deploy.outputs.preview_url }}/divisions/bowls
+            ${{ needs.preview-deploy.outputs.preview_url }}/divisions/chemicals
           uploadArtifacts: true
           temporaryPublicStorage: true
           configPath: ./lighthouserc.js
@@ -206,8 +237,10 @@ jobs:
     permissions:
       issues: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
       - run: npm install --global vercel@latest
       - run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
       
@@ -228,11 +261,13 @@ jobs:
         id: smoke_test
         run: |
           echo "Waiting 10 seconds for Edge CDN propagation..."
-          sleep 10 
-          # Ping the production URL. If it 500s or 404s, fail the job.
-          HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" ${{ steps.prod_deploy.outputs.prod_url }})
-          if [ "$HTTP_STATUS" -ne 200 ]; then
-            echo "Smoke test failed with status $HTTP_STATUS!"
+          sleep 10
+          # Ping homepage AND deep /api/health (verifies env + live Supabase readiness).
+          HOME_STATUS=$(curl -o /dev/null -s -w "%{http_code}" "${{ steps.prod_deploy.outputs.prod_url }}")
+          HEALTH_STATUS=$(curl -o /dev/null -s -w "%{http_code}" "${{ steps.prod_deploy.outputs.prod_url }}/api/health")
+          echo "Smoke check statuses -> home=${HOME_STATUS}, health=${HEALTH_STATUS}"
+          if [ "$HOME_STATUS" -ne 200 ] || [ "$HEALTH_STATUS" -ne 200 ]; then
+            echo "Smoke test failed (home=${HOME_STATUS}, health=${HEALTH_STATUS})!"
             exit 1
           fi
 

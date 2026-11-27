@@ -1,0 +1,6 @@
+# Trivy Security Scan Exceptions (Time-Boxed & Audited)
+# Only add entries here for verified false positives or upstream CVEs with no available patch.
+# Always include an `expired_at` date and review monthly during stack audits.
+vulnerabilities: []
+misconfigurations: []
+secrets: []

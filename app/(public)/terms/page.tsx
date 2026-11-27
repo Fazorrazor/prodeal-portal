@@ -4,6 +4,9 @@ import Link from 'next/link';
 export const metadata = {
   title: 'Terms of Service',
   description: 'Commercial terms of service, warranty, and trade procurement policies for Prodeal Industries Ltd operations in Ghana.',
+  alternates: {
+    canonical: 'https://www.prodealindustries.com/terms',
+  },
 };
 
 export default function TermsOfServicePage() {

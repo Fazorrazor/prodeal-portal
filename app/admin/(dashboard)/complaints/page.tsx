@@ -1,4 +1,4 @@
-import { createServer } from '../../../../lib/supabase/server';
+import { getVerifiedActiveStaff } from '../../../../lib/supabase/requireStaff';
 import { format } from 'date-fns';
 import { AlertCircle, Mail, Clock, MessageSquareWarning } from 'lucide-react';
 import { redirect } from 'next/navigation';
@@ -7,20 +7,13 @@ import { DeleteComplaintButton } from './DeleteComplaintButton';
 export const revalidate = 0;
 
 export default async function ComplaintsPage() {
-  const supabase = await createServer() as any;
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
+  const auth = await getVerifiedActiveStaff();
+  if (!auth.ok) {
     redirect('/admin/login');
   }
+  const { staff, supabase } = auth.context;
 
-  const { data: staff } = await supabase
-    .from('staff_members')
-    .select('role')
-    .eq('auth_user_id', user.id)
-    .single();
-
-  if (staff?.role !== 'admin') {
+  if (staff.role !== 'admin') {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] p-8 text-center">
         <h2 className="text-xl font-bold font-display text-brand-red mb-1">Access Restricted</h2>

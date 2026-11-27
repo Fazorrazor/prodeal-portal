@@ -4,7 +4,7 @@ import { StaffAssignmentTableSkeleton } from '../../../../components/admin/Staff
 import { DivisionErrorBoundary } from '../../../../components/shared/DivisionErrorBoundary';
 
 import { AddStaffPanel } from '../../../../components/admin/AddStaffPanel';
-import { createServer } from '../../../../lib/supabase/server';
+import { getVerifiedActiveStaff } from '../../../../lib/supabase/requireStaff';
 import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
@@ -12,20 +12,13 @@ export const fetchCache = 'force-no-store';
 
 export default async function StaffPage(props: { searchParams: Promise<{ search?: string }> }) {
   const searchParams = await props.searchParams;
-  const supabase = await createServer() as any;
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  if (user) {
-    const { data: staff } = await supabase
-      .from('staff_members')
-      .select('role')
-      .eq('auth_user_id', user.id)
-      .single();
-    if (staff?.role !== 'admin') {
-      redirect('/admin');
-    }
-  } else {
+  const auth = await getVerifiedActiveStaff();
+  if (!auth.ok) {
     redirect('/admin/login');
+  }
+  const { staff, supabase } = auth.context;
+  if (staff.role !== 'admin') {
+    redirect('/admin');
   }
 
   const { data: divisions } = await supabase.from('divisions').select('id, display_name');

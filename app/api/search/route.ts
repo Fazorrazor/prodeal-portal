@@ -1,7 +1,8 @@
 import { createServiceRoleClient } from '../../../lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { searchRateLimit } from '../../../lib/ratelimit';
+import { searchRateLimit, isRateLimitConfigured } from '../../../lib/ratelimit';
+import { extractTrustedClientIp } from '../../../lib/security';
 import Fuse, { Expression } from 'fuse.js';
 export const dynamic = 'force-dynamic';
 
@@ -9,16 +10,16 @@ export const dynamic = 'force-dynamic';
 const searchSchema = z.object({
   q: z.string().trim().min(2, "Search query must be at least 2 characters").max(100, "Search query is too long"),
   limit: z.coerce.number().min(1).max(20).default(10),
-  division: z.string().optional()
+  division: z.string().trim().max(64).regex(/^[a-z0-9-]+$/).optional()
 });
 
 export async function GET(req: NextRequest) {
   try {
-    // 1. Rate Limiting (Security & Performance)
+    // 1. Rate Limiting (Trusted Edge IP + IPv6 /64 normalization)
     try {
-      if (process.env.UPSTASH_REDIS_REST_URL) {
-        const ip = req.headers.get('x-forwarded-for') || 'anonymous';
-        const { success } = await searchRateLimit.limit(ip);
+      if (isRateLimitConfigured) {
+        const { quotaKey } = extractTrustedClientIp(req.headers);
+        const { success } = await searchRateLimit.limit(quotaKey);
         if (!success) {
           return NextResponse.json({ error: 'Too many search requests. Please slow down.' }, { status: 429 });
         }

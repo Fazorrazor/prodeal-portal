@@ -1,5 +1,5 @@
 import { Smartphone, HardDrive, CheckCircle2, AlertCircle } from 'lucide-react';
-import { createServer } from '../../../../lib/supabase/server';
+import { getVerifiedActiveStaff } from '../../../../lib/supabase/requireStaff';
 import { redirect } from 'next/navigation';
 import { ClearCacheButton } from '../../../../components/admin/ClearCacheButton';
 
@@ -21,19 +21,10 @@ function SectionHeader({ icon, title, description }: { icon: React.ReactNode; ti
 }
 
 export default async function SettingsPage() {
-  const supabase = await createServer() as any;
-
-  // STRICT AUTH: Only 'admin' role can view settings
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect('/admin/login');
-
-  const { data: staff } = await supabase
-    .from('staff_members')
-    .select('role')
-    .eq('auth_user_id', user.id)
-    .single();
-
-  if (staff?.role !== 'admin') {
+  // STRICT AUTH: Only active 'admin' role can view settings
+  const auth = await getVerifiedActiveStaff();
+  if (!auth.ok) redirect('/admin/login');
+  if (auth.context.staff.role !== 'admin') {
     redirect('/admin');
   }
 

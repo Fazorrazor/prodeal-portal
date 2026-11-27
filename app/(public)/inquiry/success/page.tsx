@@ -6,6 +6,10 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Inquiry Received',
   description: 'Your inquiry has been successfully submitted to Prodeal Industries Ltd.',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function InquirySuccessPage() {

@@ -1,4 +1,4 @@
-import { createServer } from '../../../../lib/supabase/server';
+import { getVerifiedActiveStaff } from '../../../../lib/supabase/requireStaff';
 import { MetricCard } from '../../../../components/admin/MetricCard';
 import { BarChart3, TrendingUp, Zap, ArrowUpRight, Target, ShieldCheck } from 'lucide-react';
 import { redirect } from 'next/navigation';
@@ -8,20 +8,13 @@ export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
 export default async function AnalyticsPage() {
-  const supabase = await createServer() as any;
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
+  const auth = await getVerifiedActiveStaff();
+  if (!auth.ok) {
     redirect('/admin/login');
   }
+  const { staff, supabase } = auth.context;
 
-  const { data: staff } = await supabase
-    .from('staff_members')
-    .select('role')
-    .eq('auth_user_id', user.id)
-    .single();
-
-  if (staff?.role !== USER_ROLES.ADMIN) {
+  if (staff.role !== USER_ROLES.ADMIN) {
     redirect('/admin');
   }
 

@@ -4,14 +4,22 @@ import { Redis } from '@upstash/redis';
 const redisUrl = process.env.UPSTASH_REDIS_REST_URL || '';
 const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || '';
 
-const redis = redisUrl.startsWith('https://') && redisToken
+export const isRateLimitConfigured = redisUrl.startsWith('https://') && Boolean(redisToken);
+
+const redis = isRateLimitConfigured
   ? new Redis({ url: redisUrl, token: redisToken })
-  : new Redis({ url: 'https://placeholder.upstash.io', token: 'placeholder' }); // Dummy fallback for typecheck if env vars are missing at build
+  : new Redis({ url: 'https://placeholder.upstash.io', token: 'placeholder' });
 
 export const inquiryRateLimit = new Ratelimit({
   redis,
   limiter: Ratelimit.slidingWindow(5, '1 h'),
   prefix: 'rl:inquiry',
+});
+
+export const supportRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(5, '1 h'),
+  prefix: 'rl:support',
 });
 
 export const uploadRateLimit = new Ratelimit({
@@ -22,18 +30,26 @@ export const uploadRateLimit = new Ratelimit({
 
 export const trackRateLimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(20, '1 m'), // 20 requests per minute to prevent brute-forcing IDs
+  limiter: Ratelimit.slidingWindow(20, '1 m'),
   prefix: 'rl:track',
 });
 
 export const searchRateLimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(60, '1 m'), // 60 searches per minute
+  limiter: Ratelimit.slidingWindow(60, '1 m'),
   prefix: 'rl:search',
 });
 
 export const adminRateLimit = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(50, '1 m'), // 50 requests per minute
+  limiter: Ratelimit.slidingWindow(50, '1 m'),
   prefix: 'rl:admin',
 });
+
+export const adminLoginRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(5, '15 m'),
+  prefix: 'rl:admin-login',
+});
+
+export { redis as ratelimitRedis };

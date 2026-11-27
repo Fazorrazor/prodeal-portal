@@ -1,12 +1,10 @@
-import { createServer } from '../../lib/supabase/server';
+import { getVerifiedActiveStaff } from '../../lib/supabase/requireStaff';
 import { redirect } from 'next/navigation';
 
 export async function AdminAuthGuard({ children }: { children: React.ReactNode }) {
-  const supabase = await createServer();
-  
-  const { data: { session }, error } = await supabase.auth.getSession();
+  const auth = await getVerifiedActiveStaff();
 
-  if (error || !session) {
+  if (!auth.ok) {
     redirect('/admin/login');
   }
 

@@ -84,7 +84,6 @@ export function FileUploadZone({ uploadedFiles, onAddFile, onRemoveFile, divisio
       'image/jpeg': [],
       'image/png': [],
       'image/webp': [],
-      'image/svg+xml': [],
       'application/pdf': [],
       'application/illustrator': [],
       'application/postscript': [],
